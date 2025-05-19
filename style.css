@@ -52,17 +52,21 @@ nav a:hover {
 .hero {
   text-align: center;
   padding: 60px 20px;
-  background: linear-gradient(to right, #ff7500, #fe8a01);
-  color: #000000;
+  background-color: rgba(0, 0, 0, 0.6);
+  margin: 40px;
+  border-radius: 12px;
 }
 
 .hero h2 {
   font-size: 2.8em;
   margin-bottom: 20px;
+  color: #ffad00;
+  text-shadow: 2px 2px 4px #000000;
 }
 
 .hero p {
   font-size: 1.2em;
+  color: #ffffff;
 }
 
 /* Conteúdo principal */
