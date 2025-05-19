@@ -9,22 +9,23 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0e0e0e;
-  color: #f1f1f1;
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
   line-height: 1.6;
 }
 
 /* Cabeçalho */
 header {
-  background-color: #111;
+  background-color: #000000cc;
   padding: 20px 0;
   text-align: center;
-  border-bottom: 3px solid #00ff88;
+  border-bottom: 3px solid #ff7500;
 }
 
 header h1 {
   font-size: 2.5em;
-  color: #00ff88;
+  color: #ff7500;
   text-transform: uppercase;
 }
 
@@ -37,22 +38,22 @@ nav ul {
 }
 
 nav a {
-  color: #f1f1f1;
+  color: #ffffff;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 nav a:hover {
-  color: #00ff88;
+  color: #fbb258;
 }
 
 /* Hero Section */
 .hero {
   text-align: center;
   padding: 60px 20px;
-  background: linear-gradient(to right, #00ff88, #00c4ff);
-  color: #000;
+  background: linear-gradient(to right, #ff7500, #fe8a01);
+  color: #000000;
 }
 
 .hero h2 {
@@ -69,6 +70,7 @@ main {
   padding: 40px 20px;
   max-width: 1000px;
   margin: auto;
+  color: #ffffff;
 }
 
 /* Loja */
@@ -80,12 +82,13 @@ main {
 }
 
 .produto {
-  background-color: #1a1a1a;
+  background-color: #1a1a1acc;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
   width: 250px;
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
+  color: #ffffff;
 }
 
 .produto img {
@@ -95,18 +98,20 @@ main {
 
 .produto h3 {
   margin-top: 15px;
+  color: #ffad00;
 }
 
 .produto p {
   font-size: 1.1em;
   margin: 10px 0;
+  color: #ffffff;
 }
 
 .produto button {
-  background-color: #00ff88;
+  background-color: #ff7500;
   border: none;
   padding: 10px 20px;
-  color: #000;
+  color: #000000;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
@@ -114,132 +119,45 @@ main {
 }
 
 .produto button:hover {
-  background-color: #00c477;
+  background-color: #fe8a01;
 }
 
 /* Rodapé */
 footer {
-  background-color: #111;
+  background-color: #000000cc;
   text-align: center;
   padding: 20px;
-  border-top: 2px solid #00ff88;
+  border-top: 2px solid #ff7500;
   margin-top: 40px;
+  color: #ffffff;
 }
 
 footer a {
-  color: #00ff88;
+  color: #ffffff;
   text-decoration: none;
   font-weight: bold;
-}
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #121212;
-  color: #eee;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  background-color: #222;
-  padding: 1rem;
-  text-align: center;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 0;
-  margin: 0;
-}
-
-nav ul li a {
-  color: #eee;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-nav ul li a.ativo,
-nav ul li a:hover {
-  color: #4caf50;
-}
-
-main {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-h2 {
-  border-bottom: 2px solid #4caf50;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-footer {
-  background-color: #222;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-}
-
-footer a {
-  color: #4caf50;
-  text-decoration: none;
 }
 
 footer a:hover {
   text-decoration: underline;
-}
-.produtos {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2rem;
+  color: #fbb258;
 }
 
-.produto {
-  background-color: #1f1f1f;
-  border-radius: 8px;
-  padding: 1rem;
-  width: 220px;
-  text-align: center;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
-  transition: transform 0.2s ease;
+section {
+  margin-bottom: 2rem;
+  color: #ffffff;
 }
 
-.produto:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
-}
-
-.produto img {
-  max-width: 100%;
-  border-radius: 6px;
+h2 {
+  border-bottom: 2px solid #fe8a01;
+  padding-bottom: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.produto h3 {
-  margin-bottom: 0.5rem;
-  color: #4caf50;
-}
-
-.preco {
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #eee;
+  color: #fe8a01;
 }
 
 .btn-comprar {
-  background-color: #4caf50;
-  color: #fff;
+  background-color: #ff7500;
+  color: #000000;
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 4px;
@@ -249,5 +167,5 @@ footer a:hover {
 }
 
 .btn-comprar:hover {
-  background-color: #388e3c;
+  background-color: #fe8a01;
 }
