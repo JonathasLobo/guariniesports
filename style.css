@@ -1,23 +1,19 @@
-/* style.css melhorado */
+/* style.css */
 
 /* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: all 0.3s ease-in-out;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: url('background.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #ffffff;
   line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
 /* Cabeçalho */
@@ -42,8 +38,10 @@ nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 30px;
   margin-top: 15px;
+  padding: 0;
 }
 
 nav a {
@@ -54,8 +52,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #ffad00;
-  text-shadow: 1px 1px 2px #000000;
+  color: #fbb258;
 }
 
 /* Hero Section */
@@ -104,12 +101,11 @@ main {
   width: 250px;
   box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
   color: #ffffff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .produto:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(255, 173, 0, 0.5);
+  transform: scale(1.05);
 }
 
 .produto img {
@@ -128,22 +124,18 @@ main {
   color: #ffffff;
 }
 
-.produto button,
-.btn-comprar {
+.produto button {
   background-color: #ff7500;
   border: none;
   padding: 10px 20px;
   color: #000000;
-  font-weight: 600;
-  font-size: 1em;
-  letter-spacing: 0.5px;
+  font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
-.produto button:hover,
-.btn-comprar:hover {
+.produto button:hover {
   background-color: #ffad00;
   color: #000;
 }
@@ -156,7 +148,6 @@ footer {
   border-top: 2px solid #ff7500;
   margin-top: 40px;
   color: #ffffff;
-  font-size: 0.9em;
 }
 
 footer a {
@@ -182,7 +173,22 @@ h2 {
   color: #fe8a01;
 }
 
-/* Responsivo */
+.btn-comprar {
+  background-color: #ff7500;
+  color: #000000;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-comprar:hover {
+  background-color: #ffad00;
+  color: #000;
+}
+
 @media (max-width: 768px) {
   nav ul {
     flex-direction: column;
