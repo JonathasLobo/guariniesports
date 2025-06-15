@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Confira os produtos oficiais da Guariní e-sport na nossa loja: camisas, bonés, mousepads e muito mais." />
   <title>Loja Guariní e-sport</title>
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <h1>Guariní e-sport</h1>
-    <nav>
+    <nav aria-label="Menu principal">
       <ul>
         <li><a href="index.html">Início</a></li>
         <li><a href="sobre.html">Sobre</a></li>
@@ -23,28 +24,32 @@
 
   <main>
     <h2>Loja Oficial Guariní</h2>
-    <section class="produtos">
+    <section class="produtos" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
       <article class="produto">
         <img src="camisa.jpg" alt="Camisa Oficial Guariní" />
         <h3>Camisa Oficial</h3>
         <p class="preco">R$ 69,90</p>
-        <button class="btn-comprar">Comprar</button>
+        <button type="button" class="btn-comprar">Comprar</button>
       </article>
 
       <article class="produto">
         <img src="bone.jpg" alt="Boné Guariní" />
         <h3>Boné Guariní</h3>
         <p class="preco">R$ 39,90</p>
-        <button class="btn-comprar">Comprar</button>
+        <button type="button" class="btn-comprar">Comprar</button>
       </article>
 
       <article class="produto">
         <img src="mousepad.jpg" alt="Mousepad Gamer Guariní" />
         <h3>Mousepad Gamer</h3>
         <p class="preco">R$ 49,90</p>
-        <button class="btn-comprar">Comprar</button>
+        <button type="button" class="btn-comprar">Comprar</button>
       </article>
     </section>
+
+    <p style="text-align:center; margin-top: 2rem;">
+      <a href="index.html" class="btn-comprar">Voltar para Início</a>
+    </p>
   </main>
 
   <footer>
