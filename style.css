@@ -212,3 +212,9 @@ h2 {
 header h1 {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
+
+.produto button:hover,
+.btn-comprar:hover {
+  background-color: #ffad00;
+  color: #000;
+}
