@@ -27,6 +27,7 @@ header h1 {
   font-size: 2.5em;
   color: #ff7500;
   text-transform: uppercase;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 nav ul {
@@ -42,10 +43,22 @@ nav a {
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 nav a:hover {
   color: #fbb258;
+  background-color: rgba(255, 173, 0, 0.15);
+}
+
+/* Destaque do link ativo no menu */
+nav a.ativo {
+  color: #ffad00;
+  background-color: rgba(255, 173, 0, 0.3);
+  box-shadow: 0 0 8px #ffad00;
+  cursor: default;
+  pointer-events: none; /* opcional: evita clique no link ativo */
 }
 
 /* Hero Section */
@@ -124,6 +137,27 @@ main {
 
 .produto button:hover {
   background-color: #fe8a01;
+  color: #000;
+}
+
+/* Botão genérico .btn-comprar (usado em vários lugares) */
+.btn-comprar {
+  background-color: #ff7500;
+  color: #000000;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none; /* para links com essa classe */
+}
+
+.btn-comprar:hover {
+  background-color: #fe8a01;
+  color: #000000;
 }
 
 /* Rodapé */
@@ -159,21 +193,6 @@ h2 {
   color: #fe8a01;
 }
 
-.btn-comprar {
-  background-color: #ff7500;
-  color: #000000;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-.btn-comprar:hover {
-  background-color: #fe8a01;
-}
-
 @media (max-width: 768px) {
   nav ul {
     flex-direction: column;
@@ -207,12 +226,14 @@ h2 {
   }
 }
 
+/* Sombras para títulos e cabeçalhos importantes */
 .hero h2,
 .hero p,
 header h1 {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
+/* Cor e sombra no hover para botões e links com .btn-comprar */
 .produto button:hover,
 .btn-comprar:hover {
   background-color: #ffad00;
