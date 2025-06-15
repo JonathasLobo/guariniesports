@@ -1,14 +1,19 @@
-/* style.css */
+/* style.css melhorado */
 
 /* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: url('background.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #ffffff;
@@ -21,12 +26,16 @@ header {
   padding: 20px 0;
   text-align: center;
   border-bottom: 3px solid #ff7500;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 header h1 {
   font-size: 2.5em;
   color: #ff7500;
   text-transform: uppercase;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 nav ul {
@@ -45,7 +54,8 @@ nav a {
 }
 
 nav a:hover {
-  color: #fbb258;
+  color: #ffad00;
+  text-shadow: 1px 1px 2px #000000;
 }
 
 /* Hero Section */
@@ -67,6 +77,7 @@ nav a:hover {
 .hero p {
   font-size: 1.2em;
   color: #ffffff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Conteúdo principal */
@@ -93,6 +104,12 @@ main {
   width: 250px;
   box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
   color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.produto:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(255, 173, 0, 0.5);
 }
 
 .produto img {
@@ -111,19 +128,24 @@ main {
   color: #ffffff;
 }
 
-.produto button {
+.produto button,
+.btn-comprar {
   background-color: #ff7500;
   border: none;
   padding: 10px 20px;
   color: #000000;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1em;
+  letter-spacing: 0.5px;
   cursor: pointer;
   border-radius: 5px;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.produto button:hover {
-  background-color: #fe8a01;
+.produto button:hover,
+.btn-comprar:hover {
+  background-color: #ffad00;
+  color: #000;
 }
 
 /* Rodapé */
@@ -134,6 +156,7 @@ footer {
   border-top: 2px solid #ff7500;
   margin-top: 40px;
   color: #ffffff;
+  font-size: 0.9em;
 }
 
 footer a {
@@ -159,21 +182,7 @@ h2 {
   color: #fe8a01;
 }
 
-.btn-comprar {
-  background-color: #ff7500;
-  color: #000000;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-.btn-comprar:hover {
-  background-color: #fe8a01;
-}
-
+/* Responsivo */
 @media (max-width: 768px) {
   nav ul {
     flex-direction: column;
@@ -205,16 +214,4 @@ h2 {
   .hero p {
     font-size: 1em;
   }
-}
-
-.hero h2,
-.hero p,
-header h1 {
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-.produto button:hover,
-.btn-comprar:hover {
-  background-color: #ffad00;
-  color: #000;
 }
