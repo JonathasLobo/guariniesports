@@ -13,7 +13,6 @@ body {
   background-size: cover;
   color: #ffffff;
   line-height: 1.6;
-  scroll-behavior: smooth;
 }
 
 /* Cabeçalho */
@@ -22,26 +21,20 @@ header {
   padding: 20px 0;
   text-align: center;
   border-bottom: 3px solid #ff7500;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 header h1 {
   font-size: 2.5em;
   color: #ff7500;
   text-transform: uppercase;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 30px;
   margin-top: 15px;
-  padding: 0;
 }
 
 nav a {
@@ -74,7 +67,6 @@ nav a:hover {
 .hero p {
   font-size: 1.2em;
   color: #ffffff;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Conteúdo principal */
@@ -101,11 +93,6 @@ main {
   width: 250px;
   box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
   color: #ffffff;
-  transition: transform 0.3s ease;
-}
-
-.produto:hover {
-  transform: scale(1.05);
 }
 
 .produto img {
@@ -136,8 +123,7 @@ main {
 }
 
 .produto button:hover {
-  background-color: #ffad00;
-  color: #000;
+  background-color: #fe8a01;
 }
 
 /* Rodapé */
@@ -185,8 +171,7 @@ h2 {
 }
 
 .btn-comprar:hover {
-  background-color: #ffad00;
-  color: #000;
+  background-color: #fe8a01;
 }
 
 @media (max-width: 768px) {
@@ -220,4 +205,16 @@ h2 {
   .hero p {
     font-size: 1em;
   }
+}
+
+.hero h2,
+.hero p,
+header h1 {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.produto button:hover,
+.btn-comprar:hover {
+  background-color: #ffad00;
+  color: #000;
 }
