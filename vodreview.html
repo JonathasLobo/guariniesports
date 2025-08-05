@@ -34,14 +34,14 @@
 
     <script>
        const apiKey = 'AIzaSyBsPQPn5i7sgA1zngnrC1Yglbt4OKoMKOM';
-        const playlistId = 'PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi&si=kVZp3vUkdY6BcyL6';
+        const playlistId = 'PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi';
         let videoIds = [];
         let currentVideoIndex = 0;
         let player; // Instância do player do YouTube
 
         // Função para buscar os vídeos da playlist
         function fetchPlaylistVideos() {
-            const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=4&playlistId=PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi&si=kVZp3vUkdY6BcyL6&key=${apiKey}';
+            const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=4&playlistId=PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi&key=${apiKey}';
 
             fetch(url)
                 .then(response => {
