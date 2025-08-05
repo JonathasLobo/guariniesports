@@ -17,12 +17,12 @@ function formatDate(date) {
 }
 
 function loadImagePath(teamName) {
-  const imagePath = `./images/logos/${teamName}.png`;
+  const imagePath = `./logos/${teamName}.png`;
   const testImg = new Image();
   testImg.src = imagePath;
   return new Promise((resolve) => {
     testImg.onload = () => resolve(imagePath);
-    testImg.onerror = () => resolve("./images/logos/noimage.png");
+    testImg.onerror = () => resolve("./logos/noimage.png");
   });
 }
 

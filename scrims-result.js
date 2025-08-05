@@ -38,9 +38,9 @@ function reconstruirTabela() {
 
     resultados.forEach((item, index) => {
         const nossoTime = "Guariní";
-        const nossaLogo = '<img src="./images/backgrounds/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
-        const imagemAdversario = `./images/logos/${item.adversario}.png`;
-        const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./images/logos/noimage.png'" alt="${item.adversario}" class="w-10 h-10 inline-block">`;
+        const nossaLogo = '<img src="./logos/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
+        const imagemAdversario = `./logos/${item.adversario}.png`;
+        const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./logos/noimage.png'" alt="${item.adversario}" class="w-10 h-10 inline-block">`;
 
         let time1, placar1, logo1, time2, placar2, logo2;
 
@@ -136,9 +136,9 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, ext
     }
 
     const nossoTime = "Guariní";
-    const nossaLogo = '<img src="./images/backgrounds/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
-    const imagemAdversario = `./images/logos/${nomeAdversario}.png`;
-    const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./images/logos/noimage.png'" alt="${nomeAdversario}" class="w-10 h-10 inline-block">`;
+    const nossaLogo = '<img src="./logos/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
+    const imagemAdversario = `./logos/${nomeAdversario}.png`;
+    const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./logos/noimage.png'" alt="${nomeAdversario}" class="w-10 h-10 inline-block">`;
     const dataHoje = new Date().toLocaleDateString('pt-BR');
 
     let time1, placar1, logo1, time2, placar2, logo2;
