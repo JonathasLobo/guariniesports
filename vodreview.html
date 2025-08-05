@@ -41,7 +41,7 @@
 
         // Função para buscar os vídeos da playlist
         function fetchPlaylistVideos() {
-            const url = https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=4&playlistId=PLzKfK0OG4Cx29w7EIQH8c0Uf8YUGyvOv5&si=rnoqBqGr3-GyPupD&key=${apiKey};
+            const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=4&playlistId=PLzKfK0OG4Cx29w7EIQH8c0Uf8YUGyvOv5&si=rnoqBqGr3-GyPupD&key=${apiKey}';
 
             fetch(url)
                 .then(response => {
@@ -77,7 +77,7 @@
                 };
 
                 const thumbnailImage = document.createElement('img');
-                thumbnailImage.src = https://img.youtube.com/vi/${videoId}/mqdefault.jpg;
+                thumbnailImage.src = 'https://img.youtube.com/vi/${videoId}/mqdefault.jpg';
                 thumbnailDiv.appendChild(thumbnailImage);
 
                 playlistContainer.appendChild(thumbnailDiv);
@@ -96,7 +96,7 @@
             playerContainer.style.display = 'block';
 
             // Carrega o vídeo no player
-            iframe.src = https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1;
+            iframe.src = 'https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1';
         }
 
         // Função para recarregar a página
