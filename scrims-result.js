@@ -286,18 +286,47 @@ function importarResultados(event) {
                         dataRegistro: valores[5]?.replace(/"/g, '') || new Date().toLocaleDateString('pt-BR')
                     };
                     adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, true);
+                    // Atualiza a data do último resultado adicionado com a data do arquivo
                     resultados[resultados.length - 1].dataRegistro = item.dataRegistro;
                 }
             } else {
                 const dadosImportados = JSON.parse(e.target.result);
                 const partidas = dadosImportados.partidas || [];
 
+                // Limpa os resultados atuais antes de importar os novos
+                resultados = [];
+                vitorias = 0;
+                empates = 0;
+                derrotas = 0;
+                document.getElementById('tabelaResultados').innerHTML = '';
+
                 partidas.forEach(item => {
-                    adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, true);
-                    resultados[resultados.length - 1].dataRegistro = item.dataRegistro || new Date().toLocaleDateString('pt-BR');
+                    // Adiciona o resultado mantendo todas as propriedades originais
+                    resultados.push({
+                        time: item.time,
+                        placarNosso: item.placarNosso,
+                        placarAdversario: item.placarAdversario,
+                        adversario: item.adversario,
+                        resultado: item.resultado,
+                        dataRegistro: item.dataRegistro || new Date().toLocaleDateString('pt-BR')
+                    });
+
+                    // Atualiza os contadores
+                    if (item.resultado === "Vitória") {
+                        vitorias++;
+                    } else if (item.resultado === "Derrota") {
+                        derrotas++;
+                    } else {
+                        empates++;
+                    }
                 });
+
+                // Reconstroi a tabela e atualiza os contadores
+                reconstruirTabela();
+                atualizarContadores();
             }
             event.target.value = '';
+            salvarDados();
         } catch (err) {
             alert("Erro ao importar arquivo: " + err.message);
             event.target.value = '';
