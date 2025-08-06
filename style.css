@@ -300,3 +300,17 @@ header h1 {
     background-color: #0056b3;
 }
 
+.botao-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #6441a5; /* roxo Twitch */
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.botao-link:hover {
+  background-color: #503282;
+}
