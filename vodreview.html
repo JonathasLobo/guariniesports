@@ -34,14 +34,14 @@
 
     <script>
        const apiKey = 'AIzaSyCwdZ5GOzzh0P_ihqKg_8eh_TsNDLPA4bI';
-        const playlistId = 'PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi&si=HRM49L9gNhwFi5wC';
+        const playlistId = 'PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi';
         let videoIds = [];
         let currentVideoIndex = 0;
         let player; // Instância do player do YouTube
 
         // Função para buscar os vídeos da playlist
         function fetchPlaylistVideos() {
-            const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=65&playlistId=PLYJf4nRLwPFt1T40kN_sePLvSTD4JWqqi&si=HRM49L9gNhwFi5wC&key=${apiKey}';
+            const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=65&playlistId=${playlistId}&key=${apiKey}`;
 
             fetch(url)
                 .then(response => {
@@ -77,7 +77,7 @@
                 };
 
                 const thumbnailImage = document.createElement('img');
-                thumbnailImage.src = 'https://img.youtube.com/vi/${videoId}/mqdefault.jpg';
+                thumbnailImage.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
                 thumbnailDiv.appendChild(thumbnailImage);
 
                 playlistContainer.appendChild(thumbnailDiv);
@@ -96,7 +96,7 @@
             playerContainer.style.display = 'block';
 
             // Carrega o vídeo no player
-            iframe.src = 'https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
         }
 
         // Função para recarregar a página
