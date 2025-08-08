@@ -62,14 +62,14 @@
 
   <script>
     const pokemons = [
-      "Absol", "Aegislash", "Alcremie", "Alolan Ninetales", "Alolan Raichu", "Armarouge", "Azumarill",
-      "Blastoise", "Blaziken", "Blissey", "Buzzwole", "Ceruledge", "Chandelure", "Charizard",
+      "Absol", "Aegislash", "Alcremie", "Armarouge", "Azumarill", "Blastoise",
+      "Blaziken", "Blissey", "Buzzwole", "Ceruledge", "Chandelure", "Charizard",
       "Cinderace", "Clefable", "Comfey", "Cramorant", "Crustle", "Darkrai", "Decidueye", "Delphox",
       "Dodrio", "Dragapult", "Dragonite", "Duraludon", "Eldegoss", "Espeon", "Falinks",
-      "Galarian Rapidash", "Garchomp", "Gardevoir", "Gengar", "Glaceon", "Goodra", "Greedent",
+      "Garchomp", "Gardevoir", "Gengar", "Glaceon", "Goodra", "Greedent",
       "Greninja", "Gyarados", "Ho-Oh", "Hoopa", "Inteleon", "Lapras", "Latias", "Latios",
       "Leafeon", "Lucario", "Machamp", "Mamoswine", "Meowscarada", "Metagross", "Mew", "Mewtwo Y",
-      "Mewtwo X", "Mimikyu", "Miraidon", "Mr. Mime", "Pikachu", "Psyduck", "Sableye", "Scizor",
+      "Mewtwo X", "Mimikyu", "Miraidon", "Mr. Mime", "Ninetales", "Pikachu", "Psyduck", "Raichu", "Rapidash", "Sableye", "Scizor",
       "Slowbro", "Snorlax", "Suicune", "Sylveon", "Talonflame", "Tinkaton", "Trevenant", "Tsareena",
       "Tyranitar", "Umbreon", "Urshifu", "Venusaur", "Wigglytuff", "Zacian", "Zeraora", "Zoroark"
     ];
@@ -85,7 +85,7 @@
     function atualizarImagemPokemon() {
       const nome = document.getElementById("pokemon").value;
       const img = document.getElementById("imagemPokemon");
-      img.src = `https://img.pokemondb.net/sprites/home/normal/${nome.toLowerCase().replace(/ /g, "-").replace(".", "").replace("♀", "f").replace("♂", "m")}.png`;
+      img.src = `./img-poke/${nome.toLowerCase().replace(/ /g, "-").replace(".", "").replace("♀", "f").replace("♂", "m")}.png`;
       img.style.display = "block";
     }
 
