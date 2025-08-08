@@ -315,16 +315,6 @@ header h1 {
   background-color: #503282;
 }
 
-body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      color: #ffffff;
-      line-height: 1.6;
-    }
     h2 {
       text-align: center;
     }
