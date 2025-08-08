@@ -41,19 +41,20 @@
 </head>
 <body>
 
-  <h2>Calculadora de Desempenho - Pokémon Unite</h2>
+<section class="container calculadora">
+  <h2 class="titulo-pagina">Calculadora de Desempenho - Pokémon Unite</h2>
 
   <label for="jogador">Nome do Jogador:</label>
-  <input type="text" id="jogador" placeholder="Ex: Fulano">
+  <input type="text" id="jogador" class="form-control" placeholder="Ex: Fulano">
 
   <label for="pokemon">Escolha o Pokémon:</label>
-  <select id="pokemon" onchange="atualizarImagemPokemon()">
+  <select id="pokemon" class="form-control" onchange="atualizarImagemPokemon()">
     <option value="" disabled selected>Selecione</option>
   </select>
   <img id="imagemPokemon" src="" alt="Pokémon" style="display: none;">
 
   <label for="role">Selecione a Função (Role):</label>
-  <select id="role">
+  <select id="role" class="form-control">
     <option value="">Selecione</option>
     <option value="ADC">ADC</option>
     <option value="JGL">JGL</option>
@@ -63,14 +64,18 @@
   </select>
 
   <label for="dadosTexto">Cole os dados do site aqui:</label>
-  <textarea id="dadosTexto" rows="6" placeholder="Cole os dados brutos aqui..."></textarea>
+  <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos aqui..."></textarea>
 
-  <button onclick="carregarDados()">Carregar Dados</button>
-  <button onclick="calcularDesempenho()">Calcular Desempenho</button>
-  <button onclick="limparCampos()">Limpar</button>
-  <button onclick="copiarResultado()">Copiar Resultado</button>
+  <div class="botoes-calculadora">
+    <button class="btn" onclick="carregarDados()">Carregar Dados</button>
+    <button class="btn" onclick="calcularDesempenho()">Calcular Desempenho</button>
+    <button class="btn" onclick="limparCampos()">Limpar</button>
+    <button class="btn" onclick="copiarResultado()">Copiar Resultado</button>
+  </div>
 
-  <div id="resultado"></div>
+  <div id="resultado" class="resultado-calculadora"></div>
+</section>
+
 
   <script>
     const pokemons = [
@@ -157,22 +162,27 @@
     }
 
     function calcularDesempenho() {
-      const jogador = document.getElementById("jogador").value;
-      const pokemon = document.getElementById("pokemon").value;
-      const role = document.getElementById("role").value;
+  const jogador = document.getElementById("jogador").value;
+  const pokemon = document.getElementById("pokemon").value;
+  const role = document.getElementById("role").value;
 
-      if (!jogador || !pokemon || !role) {
-        alert("Preencha todos os campos obrigatórios!");
-        return;
-      }
+  if (!jogador || !pokemon || !role) {
+    alert("Preencha todos os campos obrigatórios!");
+    return;
+  }
 
-      const temp = calcularPorcentagens(season);
-      const tot = calcularPorcentagens(total);
+  const temp = calcularPorcentagens(season);
+  const tot = calcularPorcentagens(total);
 
-      const desempenhoTemporada = calcularDesempenhoCombinado(temp.winRate, temp.mvpWinRate, role);
-const desempenhoTotal = calcularDesempenhoCombinado(tot.winRate, tot.mvpWinRate, role);
+  const desempenhoTemporada = calcularDesempenhoCombinado(temp.winRate, temp.mvpWinRate, role);
+  const desempenhoTotal = calcularDesempenhoCombinado(tot.winRate, tot.mvpWinRate, role);
 
-const resultadoFinal = `Jogador: ${jogador}
+  let mensagemMultiplicador = "";
+  if (role === "SUP" || role === "TANK") {
+    mensagemMultiplicador = "\n\n⚠️ No cálculo de desempenho de SUP e TANK é utilizado um multiplicador para o valor de MVP, pois essas roles têm menos MVPs por partida.";
+  }
+
+  const resultadoFinal = `Jogador: ${jogador}
 Pokémon: ${pokemon}
 Função: ${role}
 
@@ -196,10 +206,10 @@ Função: ${role}
 - MVP/Partida: ${tot.mvpRate}%
 - MVP/Vitória: ${tot.mvpWinRate}%
 - 🔍 Desempenho Total: ${desempenhoTotal}%
-- ✅ Avaliação: ${avaliarDesempenho(role, desempenhoTotal)}`;
+- ✅ Avaliação: ${avaliarDesempenho(role, desempenhoTotal)}${mensagemMultiplicador}`;
 
-      document.getElementById("resultado").innerText = resultadoFinal;
-    }
+  document.getElementById("resultado").innerText = resultadoFinal;
+}
 
     function limparCampos() {
       document.getElementById("jogador").value = "";
@@ -223,7 +233,7 @@ function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
 
   // Aumenta o peso do MVP/Vitória para SUP e TANK
   if (role === "SUP" || role === "TANK") {
-    mvp *= 2.5; // Aumenta em 100%
+    mvp *= 2.5; // Multiplicador SUP TANK
   }
 
   return ((win + mvp) / 2).toFixed(2);
