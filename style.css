@@ -1,7 +1,9 @@
 /* style.css */
 
 /* Reset básico */
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -11,75 +13,95 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: url('background.jpg') no-repeat center center fixed;
   background-size: cover;
-  color: #ffffff;
+  color: #fff;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 /* Cabeçalho */
 header {
-  background-color: #000000cc;
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 20px 0;
   text-align: center;
   border-bottom: 3px solid #ff7500;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 header h1 {
-  font-size: 2.5em;
+  font-size: 2.5rem;
   color: #ff7500;
   text-transform: uppercase;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  user-select: none;
 }
 
+/* Navegação */
 nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 2rem;
   margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 nav a {
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-  padding: 5px 10px;
-  border-radius: 5px;
+  font-weight: 700;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: 
+    color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  user-select: none;
+  display: inline-block;
 }
 
-nav a:hover {
+nav a:hover,
+nav a:focus {
   color: #fbb258;
   background-color: rgba(255, 173, 0, 0.15);
+  outline: none;
 }
 
-/* Destaque do link ativo no menu */
 nav a.ativo {
   color: #ffad00;
   background-color: rgba(255, 173, 0, 0.3);
   box-shadow: 0 0 8px #ffad00;
   cursor: default;
-  pointer-events: none; /* opcional: evita clique no link ativo */
+  pointer-events: none;
 }
 
 /* Hero Section */
 .hero {
-  text-align: center;
-  padding: 60px 20px;
-  background-color: rgba(0, 0, 0, 0.6);
-  margin: 40px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 60px 30px;
+  background-color: rgba(0, 0, 0, 0.65);
   border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
 }
 
 .hero h2 {
-  font-size: 2.8em;
+  font-size: 2.8rem;
   margin-bottom: 20px;
   color: #ffad00;
-  text-shadow: 2px 2px 4px #000000;
+  text-shadow: 2px 2px 6px #000;
 }
 
 .hero p {
-  font-size: 1.2em;
-  color: #ffffff;
+  font-size: 1.25rem;
+  color: #fff;
+  line-height: 1.5;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
 /* Conteúdo principal */
@@ -87,10 +109,10 @@ main {
   padding: 40px 20px;
   max-width: 1000px;
   margin: auto;
-  color: #ffffff;
+  color: #fff;
 }
 
-/* Loja */
+/* Loja - Produtos */
 .produtos {
   display: flex;
   gap: 30px;
@@ -99,109 +121,124 @@ main {
 }
 
 .produto {
-  background-color: #1a1a1acc;
+  background-color: rgba(26, 26, 26, 0.8);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   width: 250px;
   box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
-  color: #ffffff;
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.produto:hover,
+.produto:focus-within {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(255, 173, 0, 0.6);
+  outline: none;
 }
 
 .produto img {
   width: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
+  object-fit: cover;
+  height: 180px;
 }
 
 .produto h3 {
   margin-top: 15px;
   color: #ffad00;
+  font-weight: 700;
+  font-size: 1.3rem;
 }
 
 .produto p {
-  font-size: 1.1em;
-  margin: 10px 0;
-  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 12px 0 20px;
+  color: #eee;
+  min-height: 60px;
 }
 
-.produto button {
-  background-color: #ff7500;
-  border: none;
-  padding: 10px 20px;
-  color: #000000;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s ease;
-}
-
-.produto button:hover {
-  background-color: #fe8a01;
-  color: #000;
-}
-
-/* Botão genérico .btn-comprar (usado em vários lugares) */
+/* Botões de compra */
+.produto button,
 .btn-comprar {
   background-color: #ff7500;
-  color: #000000;
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
+  padding: 12px 25px;
+  color: #000;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 600;
+  border-radius: 6px;
   transition: background-color 0.3s ease, color 0.3s ease;
   display: inline-block;
   text-align: center;
-  text-decoration: none; /* para links com essa classe */
+  user-select: none;
 }
 
-.btn-comprar:hover {
-  background-color: #fe8a01;
-  color: #000000;
+.produto button:hover,
+.produto button:focus,
+.btn-comprar:hover,
+.btn-comprar:focus {
+  background-color: #ffad00;
+  color: #000;
+  outline: none;
+  box-shadow: 0 0 10px #ffad00;
 }
 
 /* Rodapé */
 footer {
-  background-color: #000000cc;
+  background-color: rgba(0, 0, 0, 0.8);
   text-align: center;
   padding: 20px;
   border-top: 2px solid #ff7500;
   margin-top: 40px;
-  color: #ffffff;
+  color: #fff;
+  font-size: 0.9rem;
+  user-select: none;
 }
 
 footer a {
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 700;
+  transition: color 0.3s ease;
 }
 
-footer a:hover {
-  text-decoration: underline;
+footer a:hover,
+footer a:focus {
   color: #fbb258;
+  text-decoration: underline;
+  outline: none;
 }
 
+/* Seções gerais */
 section {
-  margin-bottom: 2rem;
-  color: #ffffff;
+  margin-bottom: 2.5rem;
+  color: #fff;
 }
 
+/* Títulos */
 h2 {
   border-bottom: 2px solid #fe8a01;
   padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   color: #fe8a01;
+  text-align: center;
+  font-weight: 700;
+  user-select: none;
 }
 
+/* Responsividade */
 @media (max-width: 768px) {
   nav ul {
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
   }
 
   .hero {
     margin: 20px 10px;
-    padding: 40px 15px;
+    padding: 40px 20px;
   }
 
   .produtos {
@@ -214,130 +251,190 @@ h2 {
   }
 
   header h1 {
-    font-size: 2em;
+    font-size: 2rem;
   }
 
   .hero h2 {
-    font-size: 2em;
+    font-size: 2rem;
   }
 
   .hero p {
-    font-size: 1em;
+    font-size: 1rem;
   }
 }
 
-/* Sombras para títulos e cabeçalhos importantes */
+/* Sombras uniformes para títulos importantes */
 .hero h2,
 .hero p,
 header h1 {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
-/* Cor e sombra no hover para botões e links com .btn-comprar */
-.produto button:hover,
-.btn-comprar:hover {
-  background-color: #ffad00;
-  color: #000;
-}
-
+/* Vídeo - Miniaturas e Player */
 .video-thumbnail {
-    width: 250px;
-    height: 150px;
-    background-color: #ddd;
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 10px;
-    display: inline-block;
-    position: relative;
+  width: 250px;
+  height: 150px;
+  background-color: #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 10px;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .video-thumbnail img {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
 }
 
-.video-thumbnail:hover {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.video-thumbnail:hover,
+.video-thumbnail:focus {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  outline: none;
 }
 
 #video-player {
-    display: none; 
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 640px;
-    height: 360px;
-    background: black;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 640px;
+  max-width: 90vw;
+  height: 360px;
+  max-height: 50vh;
+  background: #000;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+  z-index: 1100;
 }
 
+/* Playlist */
 #playlist {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 15px;
 }
 
+/* Botão voltar no player */
 .back-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  user-select: none;
 }
 
-.back-button:hover {
-    background-color: #0056b3;
+.back-button:hover,
+.back-button:focus {
+  background-color: #0056b3;
+  outline: none;
 }
 
+/* Botão link estilo Twitch */
 .botao-link {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 8px 14px;
   background-color: #6441a5; /* roxo Twitch */
   color: #fff;
   text-decoration: none;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  border-radius: 6px;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+  user-select: none;
 }
 
-.botao-link:hover {
+.botao-link:hover,
+.botao-link:focus {
   background-color: #503282;
+  outline: none;
 }
 
-    h2 {
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input, select, textarea, button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px auto;
-    }
-    #imagemPokemon {
-      display: block;
-      margin: 10px auto;
-      width: 300px;
-      height: 300px;
-    }
-    #resultado {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #000000cc;
-      border-radius: 8px;
-      font-weight: bold;
-      white-space: pre-wrap;
-    }
+/* Formulários e inputs */
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  border-color: #ff7500;
+  box-shadow: 0 0 8px #ff7500;
+  outline: none;
+}
+
+#imagemPokemon {
+  display: block;
+  margin: 1rem auto;
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 173, 0, 0.5);
+}
+
+#resultado {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  font-weight: 700;
+  white-space: pre-wrap;
+  box-shadow: 0 0 10px rgba(255, 173, 0, 0.6);
+}
+
+/* Hover padronizado para botões e links com .btn-comprar */
+.produto button:hover,
+.produto button:focus,
+.btn-comprar:hover,
+.btn-comprar:focus {
+  background-color: #ffad00;
+  color: #000;
+  outline: none;
+  box-shadow: 0 0 10px #ffad00;
+}
+
+.calculadora-container {
+  max-width: 1000px;  /* largura máxima igual à da página principal */
+  margin: 40px auto;  /* centraliza horizontalmente e dá margem em cima e embaixo */
+  padding: 20px;      /* espaço interno */
+  background-color: rgba(0,0,0,0.6); /* opcional: fundo transparente para destacar */
+  border-radius: 12px; /* bordas arredondadas */
+  box-shadow: 0 0 20px rgba(255, 173, 0, 0.4); /* sombra suave para destaque */
+  color: #fff;
+  box-sizing: border-box;
+}
