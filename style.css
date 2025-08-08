@@ -325,7 +325,7 @@ header h1 {
     input, select, textarea, button {
       width: 100%;
       padding: 8px;
-      margin-top: 5px;
+      margin-top: 5px auto;
     }
     #imagemPokemon {
       display: block;
