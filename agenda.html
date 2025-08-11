@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agenda Semanal</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+  h1,h2 { text-align:center; }
+  table { border-collapse:collapse; width:100%; background:white; margin-bottom:20px; }
+  th,td { border:1px solid #ccc; padding:8px; text-align:center; vertical-align:top; min-height:120px; }
+  th { background:#333; color:white; }
+  .atividade { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; padding:6px; border-radius:6px; color:white; position:relative; }
+  .btns { margin-top:6px; display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
+  .btns button { font-size:12px; padding:4px 8px; border:none; cursor:pointer; border-radius:4px; }
+  .btn-delete { background:#e53935; color:white; }
+  .btn-confirm { background:#43a047; color:white; }
+  .btn-copy { background:#1e88e5; color:white; }
+  /* cores (exemplos) */
+  .Livre { background:#4caf50; }
+  .Scrim { background:#d2a679; }
+  .Torneio { background:#e57373; }
+  .Reunião { background:#ba68c8; }
+  .PatchNote { background:#64b5f6; }
+  .VodReview { background:#2196f3; }
+  .Treino5stk { background:#0288d1; }
+  .TreinoDraft { background:#1976d2; }
+  .AnalisedeCall { background:#1976d2; }
+  .TreinodeMicro { background:#1976d2; }
+  .TreinodeMacro { background:#1976d2; }
+  /* histórico */
+  #historico { list-style: none; padding-left: 0; max-width: 100%; }
+  #historico li { background:white; padding:8px; margin:6px 0; border-radius:6px; border:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  #historico li .txt { flex:1; margin-right:10px; }
+  form label { display:inline-block; margin-right:10px; margin-bottom:8px; }
+  form select, form input { padding:4px; margin-left:6px; }
+  @media (max-width:800px){
+    table, thead, tbody, th, td, tr { display:block; }
+    th { text-align:left; }
+    td { margin-bottom:12px; min-height:auto; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Agenda Semanal</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Segunda</th>
+      <th>Terça</th>
+      <th>Quarta</th>
+      <th>Quinta</th>
+      <th>Sexta</th>
+      <th>Sábado</th>
+      <th>Domingo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td id="segunda"></td>
+      <td id="terca"></td>
+      <td id="quarta"></td>
+      <td id="quinta"></td>
+      <td id="sexta"></td>
+      <td id="sabado"></td>
+      <td id="domingo"></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Adicionar Atividade</h2>
+<form id="formAtividade">
+  <label>Data: <input type="date" id="data" required></label>
+  <label>Horário: <input type="time" id="horario" required></label>
+  <label>Atividade:
+    <select id="atividade" required>
+      <option value="">Selecione</option>
+      <option value="Livre">Livre</option>
+      <option value="Scrim">Scrim</option>
+      <option value="Torneio">Torneio</option>
+      <option value="Reunião">Reunião</option>
+      <option value="PatchNote">Patch Note</option>
+      <option value="VodReview">Vod Review</option>
+      <option value="Treino5stk">Treino 5 stk</option>
+      <option value="TreinoDraft">Treino de Draft</option>
+      <option value="AnalisedeCall">Analise de Call</option>
+      <option value="TreinodeMicro">Treino de Micro</option>
+      <option value="TreinodeMacro">Treino de Macro</option>
+    </select>
+  </label>
+  <label>Responsável:
+    <select id="responsavel" required>
+      <option value="">Selecione</option>
+      <option value="Lobo">Lobo</option>
+      <option value="Shad">Shad</option>
+      <option value="K1ng">K1ng</option>
+      <option value="Leone">Leone</option>
+    </select>
+  </label>
+  <label>Participantes:
+    <select id="participantes" required>
+      <option value="">Selecione</option>
+      <option value="Staff">Staff</option>
+      <option value="Time">Time</option>
+      <option value="Todos">Todos</option>
+    </select>
+  </label>
+  <button type="submit">Adicionar</button>
+</form>
+
+<h2>Histórico de Atividades Concluídas</h2>
+<ul id="historico"></ul>
+
+<script>
+/* --- estrutura de dados em memória --- */
+const diasIdx = ["domingo","segunda","terca","quarta","quinta","sexta","sabado"];
+let agendaData = {
+  segunda:[], terca:[], quarta:[], quinta:[], sexta:[], sabado:[], domingo:[]
+};
+let historico = [];
+
+/* --- util: evita problema de timezone --- */
+function getDiaSemanaId(dataStr) {
+  // dataStr = "YYYY-MM-DD"
+  const p = dataStr.split("-");
+  const d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+  return diasIdx[d.getDay()];
+}
+
+/* --- cria elemento visual a partir do objeto de atividade --- */
+function createActivityDiv(activity, day) {
+  const div = document.createElement('div');
+  div.className = 'atividade ' + (activity.atividade ? activity.atividade.replace(/\s+/g,'') : '');
+  // exibição limpa (sem textos de botões)
+  div.innerHTML = `<strong>${activity.data} ${activity.horario}</strong> - ${activity.atividade}
+    <br><small>Resp: ${activity.responsavel}</small>
+    <br><small>Part: ${activity.participantes}</small>`;
+  const btns = document.createElement('div');
+  btns.className = 'btns';
+
+  const btnDelete = document.createElement('button');
+  btnDelete.className = 'btn-delete';
+  btnDelete.textContent = 'Apagar';
+  btnDelete.onclick = () => { deleteActivity(activity.id, day); };
+
+  const btnConfirm = document.createElement('button');
+  btnConfirm.className = 'btn-confirm';
+  btnConfirm.textContent = 'Confirmar';
+  btnConfirm.onclick = () => { confirmActivity(activity.id, day); };
+
+  const btnCopy = document.createElement('button');
+  btnCopy.className = 'btn-copy';
+  btnCopy.textContent = 'Copiar';
+  btnCopy.onclick = () => { copyActivityToClipboard(activity); };
+
+  btns.appendChild(btnDelete);
+  btns.appendChild(btnConfirm);
+  btns.appendChild(btnCopy);
+  div.appendChild(btns);
+  return div;
+}
+
+/* --- ações --- */
+function deleteActivity(id, day) {
+  agendaData[day] = agendaData[day].filter(a => a.id !== id);
+  renderDay(day);
+  saveToStorage();
+}
+
+function confirmActivity(id, day) {
+  const idx = agendaData[day].findIndex(a => a.id === id);
+  if (idx === -1) return;
+  const [activity] = agendaData[day].splice(idx, 1);
+  // adiciona no topo do histórico
+  historico.unshift(activity);
+  renderDay(day);
+  renderHistorico();
+  saveToStorage();
+}
+
+function copyActivityToClipboard(activity) {
+  const texto = `${activity.data} ${activity.horario} - ${activity.atividade} | Resp: ${activity.responsavel} | Part: ${activity.participantes}`;
+  navigator.clipboard.writeText(texto).then(() => {
+    alert('Atividade copiada para a área de transferência!');
+  }, () => {
+    alert('Não foi possível copiar (permissão negada).');
+  });
+}
+
+/* --- render --- */
+function renderDay(day) {
+  const col = document.getElementById(day);
+  col.innerHTML = '';
+  // ordenar pelo horário
+  agendaData[day].sort((a,b) => (a.horario || '').localeCompare(b.horario || ''));
+  agendaData[day].forEach(activity => {
+    col.appendChild(createActivityDiv(activity, day));
+  });
+}
+
+function renderHistorico() {
+  const ul = document.getElementById('historico');
+  ul.innerHTML = '';
+  historico.forEach(item => {
+    const li = document.createElement('li');
+    const txt = document.createElement('div');
+    txt.className = 'txt';
+    txt.textContent = `${item.data} ${item.horario} - ${item.atividade} (Resp: ${item.responsavel}, Part: ${item.participantes})`;
+    const btns = document.createElement('div');
+    btns.style.display = 'flex';
+    btns.style.gap = '6px';
+
+    const btnCopy = document.createElement('button');
+    btnCopy.className = 'btn-copy';
+    btnCopy.textContent = 'Copiar';
+    btnCopy.onclick = () => { navigator.clipboard.writeText(txt.textContent).then(()=>alert('Copiado!')); };
+
+
+    btns.appendChild(btnCopy);
+
+    li.appendChild(txt);
+    li.appendChild(btns);
+    ul.appendChild(li);
+  });
+}
+
+/* --- armazenamento --- */
+function saveToStorage() {
+  try {
+    localStorage.setItem('agendaData', JSON.stringify(agendaData));
+    localStorage.setItem('historico', JSON.stringify(historico));
+  } catch (e) {
+    console.error('Erro ao salvar localStorage', e);
+  }
+}
+
+function loadFromStorage() {
+  try {
+    const savedAgenda = JSON.parse(localStorage.getItem('agendaData'));
+    const savedHist = JSON.parse(localStorage.getItem('historico'));
+    if (savedAgenda) {
+      // garantir chaves existentes (compatibilidade)
+      for (let k in agendaData) {
+        if (Array.isArray(savedAgenda[k])) agendaData[k] = savedAgenda[k];
+      }
+    }
+    if (Array.isArray(savedHist)) historico = savedHist;
+  } catch (e) {
+    console.error('Erro ao carregar localStorage', e);
+  }
+  // renderizar tudo
+  for (let k of Object.keys(agendaData)) renderDay(k);
+  renderHistorico();
+}
+
+/* --- manipulação do formulário --- */
+document.getElementById('formAtividade').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const data = document.getElementById('data').value;
+  const horario = document.getElementById('horario').value;
+  const atividade = document.getElementById('atividade').value;
+  const responsavel = document.getElementById('responsavel').value;
+  const participantes = document.getElementById('participantes').value;
+
+  if (!data || !horario || !atividade) {
+    alert('Preencha os campos Data, Horário e Atividade.');
+    return;
+  }
+
+  const dia = getDiaSemanaId(data);
+  if (!dia) { alert('Data inválida'); return; }
+
+  if (agendaData[dia].length >= 6) {
+    alert('Máximo de 6 atividades por dia.');
+    return;
+  }
+
+  const activityObj = {
+    id: Date.now().toString(),
+    data: data,
+    horario: horario,
+    atividade: atividade,
+    responsavel: responsavel,
+    participantes: participantes
+  };
+
+  agendaData[dia].push(activityObj);
+  // ordenar e renderizar
+  renderDay(dia);
+  saveToStorage();
+  this.reset();
+});
+
+/* --- init --- */
+loadFromStorage();
+</script>
+
+</body>
+</html>
