@@ -53,7 +53,7 @@ async function renderSchedule() {
     } else {
       for (let j = 0; j < dayScrims.length; j++) {
         const { team2, time } = dayScrims[j];
-        const team1 = "Guariní";
+        const team1 = "Guarini";
 
         const [img1, img2] = await Promise.all([
           loadImagePath(team1),
