@@ -169,10 +169,11 @@
   }
 
   /* Responsividade mobile */
-  @media (max-width: 800px) {
+/* Responsividade mobile */
+@media (max-width: 800px) {
     body { 
       padding: 10px;
-      overflow-x: hidden; /* Evita barra de rolagem horizontal */
+      overflow-x: hidden;
     }
     
     form { 
@@ -185,23 +186,46 @@
     form label { 
       width: 100%; 
       margin-bottom: 0; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
     
-    form select, form input, form button { 
-      width: 100%; 
-      font-size: 16px; 
-      /* Garante que padding não aumente a largura */
+    /* Padronização de todos os campos */
+    form select, 
+    form input:not([type="date"]):not([type="time"]), 
+    form button {
+      width: 100%;
+      font-size: 16px;
+      box-sizing: border-box;
+      height: 40px; /* Altura padronizada */
+      padding: 8px 12px;
     }
     
-    /* Ajustes específicos para campos de data e hora no mobile */
-    input[type="date"], input[type="time"] {
-      width: 98%;
+    /* Campos de data e hora com tratamento especial */
+    input[type="date"], 
+    input[type="time"] {
+      width: 100%;
+      font-size: 16px;
+      box-sizing: border-box;
+      height: 40px; /* Mesma altura dos outros campos */
+      padding: 8px 12px;
+      -webkit-appearance: none; /* Remove estilo padrão no iOS */
+      -moz-appearance: none;
+      appearance: none;
     }
     
-    /* Tabela vira lista de blocos */
+    /* Ajuste adicional para ícones nos inputs de data/hora */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Tabela */
     table {
       width: 100%;
-      table-layout: fixed; /* Força larguras iguais */
+      table-layout: fixed;
     }
     
     table, thead, tbody, th, td, tr { 
@@ -209,27 +233,21 @@
       width: 100%; 
     }
     
-    thead { 
-      display: none; 
-    }
+    thead { display: none; }
     
     td { 
-      border: 1px solid #fff; 
-      padding: 10px; 
-      margin-bottom: 12px; 
-      background: #fff; 
-      position: relative; 
-      width: 100%;
+      border: 1px solid #fff;
+      padding: 10px;
+      margin-bottom: 12px;
+      background: #fff;
       box-sizing: border-box;
     }
     
-    /* Remove bordas laterais para evitar sobreposição */
     td {
       border-left: none;
       border-right: none;
     }
     
-    /* Exibe o nome do dia no topo */
     td::before { 
       content: attr(id); 
       text-transform: capitalize; 
@@ -239,10 +257,7 @@
       color: #333; 
     }
     
-    /* Ajuste das atividades */
-    .atividade { 
-      font-size: 14px; 
-    }
+    .atividade { font-size: 14px; }
     
     .btns {
       flex-direction: row;
@@ -256,7 +271,6 @@
       margin-top: 5px;
     }
     
-    /* Histórico adaptável */
     #historico li {
       flex-direction: column;
       align-items: flex-start;
@@ -276,12 +290,11 @@
       gap: 10px; 
     }
     
-    /* Garante que a tabela ocupe 100% sem espaços laterais */
     table {
       margin-left: 0;
       margin-right: 0;
     }
-  }
+}
 </style>
 </head>
 <body>
