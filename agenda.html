@@ -33,11 +33,99 @@
   form label { display:inline-block; margin-right:10px; margin-bottom:8px; }
   form select, form input { padding:4px; margin-left:6px; }
   #scrimExtra { display:none; margin-top:10px; padding:10px; border:1px solid #ccc; background:#fff; border-radius:6px; }
-  #scrimExtra label { display:block; margin-bottom:8px; }
-  @media (max-width:800px){
-    table, thead, tbody, th, td, tr { display:block; }
-    th { text-align:left; }
-    td { margin-bottom:12px; min-height:auto; }
+  #scrimExtra .scrim-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  #scrimExtra .scrim-row label { display: flex; align-items: center; margin-bottom: 0; }
+  #scrimExtra .scrim-row input, #scrimExtra .scrim-row select { flex: 1; min-width: 120px; }
+  .team-logo { width: 20px; height: 20px; margin-right: 5px; vertical-align: middle; object-fit: contain; }
+
+  /* Responsividade mobile melhorada */
+  @media (max-width: 800px) {
+    body {
+      padding: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    form label {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    form select,
+    form input,
+    form button {
+      width: 100%;
+      font-size: 16px;
+    }
+
+    /* Tabela vira lista de blocos */
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+      width: 100%;
+    }
+
+    thead {
+      display: none;
+    }
+
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 12px;
+      background: #fff;
+      position: relative;
+    }
+
+    /* Exibe o nome do dia no topo */
+    td::before {
+      content: attr(id);
+      text-transform: capitalize;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    /* Ajuste das atividades */
+    .atividade {
+      font-size: 14px;
+    }
+
+    .btns {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .btns button {
+      flex: 1 1 48%;
+      min-width: 100px;
+      margin-top: 5px;
+    }
+
+    /* Histórico adaptável */
+    #historico li {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #historico li .txt {
+      margin-bottom: 8px;
+    }
+
+    #historico li button {
+      width: 48%;
+      min-width: 100px;
+    }
   }
 </style>
 </head>
@@ -45,6 +133,7 @@
 
 <h1>Agenda Semanal</h1>
 
+<!-- FORMULÁRIO -->
 <h2>Adicionar Atividade</h2>
 <form id="formAtividade">
   <label>Data: <input type="date" id="data" required></label>
@@ -85,25 +174,28 @@
 
   <!-- Campos extras para Scrim -->
   <div id="scrimExtra">
-    <label>Adversário:
-      <select id="adversario"></select>
-    </label>
-    <label>Formato:
-      <select id="formato">
-        <option value="2x2">2x2</option>
-        <option value="3x3">3x3</option>
-      </select>
-    </label>
-    <label>Banimentos:
-      <select id="banimentos">
-        <option value="All Open">All Open</option>
-      </select>
-    </label>
+    <div class="scrim-row">
+      <label>Adversário:
+        <input type="text" id="adversario" placeholder="Nome do time" required>
+      </label>
+      <label>Formato:
+        <select id="formato">
+          <option value="2x2">2x2</option>
+          <option value="3x3">3x3</option>
+        </select>
+      </label>
+      <label>Banimentos:
+        <select id="banimentos">
+          <option value="All Open">All Open</option>
+        </select>
+      </label>
+    </div>
   </div>
 
   <button type="submit">Adicionar</button>
 </form>
 
+<!-- TABELA -->
 <table>
   <thead>
     <tr>
@@ -129,6 +221,7 @@
   </tbody>
 </table>
 
+<!-- HISTÓRICO -->
 <h2>Histórico de Atividades Concluídas</h2>
 <ul id="historico"></ul>
 
@@ -152,14 +245,29 @@ function getDiaSemanaId(dataStr) {
   return diasIdx[d.getDay()];
 }
 
+function formatTeamNameForImage(teamName) {
+  // Mantém o nome exatamente como foi digitado, apenas adiciona .png no final
+  return teamName + '.png';
+}
+
 function createActivityDiv(activity, day) {
   const div = document.createElement('div');
   div.className = 'atividade ' + (activity.atividade ? activity.atividade.replace(/\s+/g,'') : '');
+  
+  // Formata o nome do adversário para exibir a logo
+  let advDisplay = activity.adversario;
+  if (activity.atividade === "Scrim" && activity.adversario) {
+    const logoPath = './logos/' + formatTeamNameForImage(activity.adversario);
+    advDisplay = `<img src="${logoPath}" class="team-logo" alt="${activity.adversario}" 
+                 onerror="this.style.display='none'" 
+                 title="${activity.adversario}">${activity.adversario}`;
+  }
+  
   div.innerHTML = `<strong>${activity.data} ${activity.horario}</strong> - ${activity.atividade}
     <br><small>Resp: ${activity.responsavel}</small>
     <br><small>Part: ${activity.participantes}</small>`;
   if(activity.atividade === "Scrim"){
-    div.innerHTML += `<br><small>Adv: ${activity.adversario} | Formato: ${activity.formato} | Ban: ${activity.banimentos}</small>`;
+    div.innerHTML += `<br><small>Versus: ${advDisplay} | Formato: ${activity.formato} | Ban: ${activity.banimentos}</small>`;
   }
   const btns = document.createElement('div');
   btns.className = 'btns';
@@ -217,7 +325,7 @@ function deleteFromHistorico(index){
 function copyActivityToClipboard(activity) {
   let texto = `${activity.data} ${activity.horario} - ${activity.atividade} | Resp: ${activity.responsavel} | Part: ${activity.participantes}`;
   if(activity.atividade === "Scrim"){
-    texto += ` | Adv: ${activity.adversario} | Formato: ${activity.formato} | Ban: ${activity.banimentos}`;
+    texto += ` | Versus: ${activity.adversario} | Formato: ${activity.formato} | Ban: ${activity.banimentos}`;
   }
   navigator.clipboard.writeText(texto).then(() => {
     alert('Atividade copiada!');
@@ -240,9 +348,17 @@ function renderHistorico() {
     const li = document.createElement('li');
     const txt = document.createElement('div');
     txt.className = 'txt';
-    txt.textContent = `${item.data} ${item.horario} - ${item.atividade} (Resp: ${item.responsavel}, Part: ${item.participantes})`;
+    
+    // Formata o nome do adversário para exibir a logo no histórico
+    let advDisplay = item.adversario;
+    if (item.atividade === "Scrim" && item.adversario) {
+      const logoPath = './logos/' + formatTeamNameForImage(item.adversario);
+      advDisplay = `<img src="${logoPath}" class="team-logo" alt="${item.adversario}" onerror="this.style.display='none'">${item.adversario}`;
+    }
+    
+    txt.innerHTML = `${item.data} ${item.horario} - ${item.atividade} (Resp: ${item.responsavel}, Part: ${item.participantes})`;
     if(item.atividade === "Scrim"){
-      txt.textContent += ` Adv: ${item.adversario} | Formato: ${item.formato} | Ban: ${item.banimentos}`;
+      txt.innerHTML += ` Adv: ${advDisplay} | Formato: ${item.formato} | Ban: ${item.banimentos}`;
     }
     const btns = document.createElement('div');
     btns.style.display = 'flex';
@@ -285,18 +401,6 @@ function loadFromStorage() {
   renderHistorico();
 }
 
-function loadAdversarios(){
-  const advSelect = document.getElementById('adversario');
-  advSelect.innerHTML = '';
-  const times = ["TeamA","TeamB","TeamC"]; // exemplo, substituir pelos times reais
-  times.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t;
-    opt.textContent = t;
-    advSelect.appendChild(opt);
-  });
-}
-
 function loadBanimentos(){
   const banSelect = document.getElementById('banimentos');
   pokemons.forEach(p => {
@@ -326,12 +430,17 @@ document.getElementById('formAtividade').addEventListener('submit', function(e) 
   let adversario="", formato="", banimentos="";
 
   if(atividade === "Scrim"){
-    adversario = document.getElementById('adversario').value;
+    adversario = document.getElementById('adversario').value.trim();
     formato = document.getElementById('formato').value;
     banimentos = document.getElementById('banimentos').value;
+    
+    if (!adversario) {
+      alert('Por favor, informe o nome do time adversário.');
+      return;
+    }
   }
 
-  if (!data || !horario || !atividade) {
+  if (!data || !horario || !atividade || !responsavel || !participantes) {
     alert('Preencha todos os campos obrigatórios.');
     return;
   }
@@ -356,7 +465,6 @@ document.getElementById('formAtividade').addEventListener('submit', function(e) 
 });
 
 loadBanimentos();
-loadAdversarios();
 loadFromStorage();
 </script>
 
