@@ -26,14 +26,15 @@ pokemons.forEach(p => {
   select.appendChild(opt);
 });
 
-// Remove a função atualizarImagemPokemon pois não é mais necessária
-
 let season = {}, total = {};
 
 // Carrega os dados do textarea (inglês ou português)
 function carregarDados() {
   const texto = document.getElementById("dadosTexto").value;
-  if (!texto) return alert("Cole os dados do site!");
+  if (!texto) {
+    alert("Cole os dados do site!");
+    return false;
+  }
 
   // Regex para dados em inglês
   const seasonBattlesEN = texto.match(/Season Battles\s*\*?\*?(\d+)\*?\*?/i)?.[1];
@@ -68,14 +69,10 @@ function carregarDados() {
 
   if (season.battles === 0 && total.battles === 0) {
     alert("Dados inválidos. Verifique o conteúdo colado.");
-    return;
+    return false;
   }
 
-  // Detecta o idioma para feedback ao usuário
-  const isEnglish = seasonBattlesEN || totalBattlesEN;
-  const idioma = isEnglish ? "inglês" : "português";
-  
-  alert(`Dados carregados com sucesso! (Detectado: ${idioma})`);
+  return true;
 }
 
 // Avalia o desempenho baseado na role
@@ -131,8 +128,8 @@ function calcularDesempenho() {
     return;
   }
 
-  if (season.battles === 0 && total.battles === 0) {
-    alert("Carregue os dados primeiro!");
+  // Primeiro carrega os dados
+  if (!carregarDados()) {
     return;
   }
 
