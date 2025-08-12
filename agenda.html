@@ -5,18 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Agenda Semanal</title>
 <style>
-  body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
-  h1,h2 { text-align:center; }
-  table { border-collapse:collapse; width:100%; background:white; margin-bottom:20px; }
-  th,td { border:1px solid #ccc; padding:8px; text-align:center; vertical-align:top; min-height:120px; }
-  th { background:#333; color:white; }
-  .atividade { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; padding:6px; border-radius:6px; color:white; position:relative; }
-  .btns { margin-top:6px; display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
-  .btns button { font-size:12px; padding:4px 8px; border:none; cursor:pointer; border-radius:4px; }
-  .btn-delete { background:#e53935; color:white; }
-  .btn-confirm { background:#43a047; color:white; }
-  .btn-copy { background:#1e88e5; color:white; }
-  .btn-result { background:#ff9800; color:white; }
+  body { 
+    font-family: Arial, sans-serif; 
+    background: #000 url('./background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    padding:20px; 
+    color: white;
+  }
+  h1,h2 { 
+    text-align:center; 
+    color: white;
+  }
+  table { 
+    border-collapse:collapse; 
+    width:100%; 
+    background:rgba(255,255,255,0.9); 
+    margin-bottom:20px; 
+  }
+  th,td { 
+    border:1px solid #ccc; 
+    padding:8px; 
+    text-align:center; 
+    vertical-align:top; 
+    min-height:120px; 
+  }
+  th { 
+    background:#333; 
+    color:white; 
+  }
+  .atividade { 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+    margin-bottom:8px; 
+    padding:6px; 
+    border-radius:6px; 
+    color:white; 
+    position:relative; 
+  }
+  .btns { 
+    margin-top:6px; 
+    display:flex; 
+    gap:6px; 
+    justify-content:flex-end; 
+    flex-wrap:wrap; 
+  }
+  .btns button { 
+    font-size:12px; 
+    padding:4px 8px; 
+    border:none; 
+    cursor:pointer; 
+    border-radius:4px; 
+  }
+  .btn-delete { 
+    background:#e53935; 
+    color:white; 
+  }
+  .btn-confirm { 
+    background:#43a047; 
+    color:white; 
+  }
+  .btn-copy { 
+    background:#1e88e5; 
+    color:white; 
+  }
+  .btn-result { 
+    background:#ff9800; 
+    color:white; 
+  }
   /* cores */
   .Livre { background:#4caf50; }
   .Scrim { background:#d2a679; }
@@ -27,105 +83,104 @@
   .Treino5stk { background:#0288d1; }
   .TreinoDraft, .AnalisedeCall, .TreinodeMicro, .TreinodeMacro { background:#1976d2; }
   /* histórico */
-  #historico { list-style: none; padding-left: 0; max-width: 100%; }
-  #historico li { background:white; padding:8px; margin:6px 0; border-radius:6px; border:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
-  #historico li .txt { flex:1; margin-right:10px; }
-  form label { display:inline-block; margin-right:10px; margin-bottom:8px; }
-  form select, form input { padding:4px; margin-left:6px; }
-  #scrimExtra { display:none; margin-top:10px; padding:10px; border:1px solid #ccc; background:#fff; border-radius:6px; }
-  #scrimExtra .scrim-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  #scrimExtra .scrim-row label { display: flex; align-items: center; margin-bottom: 0; }
-  #scrimExtra .scrim-row input, #scrimExtra .scrim-row select { flex: 1; min-width: 120px; }
-  .team-logo { width: 20px; height: 20px; margin-right: 5px; vertical-align: middle; object-fit: contain; }
+  #historico { 
+    list-style: none; 
+    padding-left: 0; 
+    max-width: 100%; 
+  }
+  #historico li { 
+    background:rgba(255,255,255,0.9); 
+    padding:8px; 
+    margin:6px 0; 
+    border-radius:6px; 
+    border:1px solid #ddd; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    gap:10px; 
+    flex-wrap:wrap; 
+    color: #333;
+  }
+  #historico li .txt { 
+    flex:1; 
+    margin-right:10px; 
+  }
+  form label { 
+    display:inline-block; 
+    margin-right:10px; 
+    margin-bottom:8px; 
+    color: white;
+  }
+  form select, form input { 
+    padding:4px; 
+    margin-left:6px; 
+    background: rgba(255,255,255,0.9);
+  }
+  #extraInfo { 
+    display:none; 
+    margin-top:10px; 
+    padding:10px; 
+    color: #333;
+  }
+  #extraInfo .extra-row { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+  }
+  #extraInfo .extra-row label { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 0; 
+    color: white;
+  }
+  #extraInfo .extra-row input, #extraInfo .extra-row select { 
+    flex: 1; 
+    min-width: 120px; 
+  }
+  .team-logo { 
+    width: 20px; 
+    height: 20px; 
+    margin-right: 5px; 
+    vertical-align: middle; 
+    object-fit: contain; 
+  }
+  .form-row { 
+    display: flex; 
+    flex-wrap: wrap; 
+    align-items: flex-end; 
+    gap: 10px; 
+    margin-bottom: 10px;
+  }
+  form button[type="submit"] {
+    height: fit-content;
+    margin-bottom: 0;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    top: -6px;
+  }
 
-  /* Responsividade mobile melhorada */
+  /* Responsividade mobile */
   @media (max-width: 800px) {
-    body {
-      padding: 10px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    form label {
-      width: 100%;
-      margin-bottom: 0;
-    }
-
-    form select,
-    form input,
-    form button {
-      width: 100%;
-      font-size: 16px;
-    }
-
-    /* Tabela vira lista de blocos */
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-      display: block;
-      width: 100%;
-    }
-
-    thead {
-      display: none;
-    }
-
-    td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 12px;
-      background: #fff;
-      position: relative;
-    }
-
-    /* Exibe o nome do dia no topo */
-    td::before {
-      content: attr(id);
-      text-transform: capitalize;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    /* Ajuste das atividades */
-    .atividade {
-      font-size: 14px;
-    }
-
-    .btns {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-
-    .btns button {
-      flex: 1 1 48%;
-      min-width: 100px;
-      margin-top: 5px;
-    }
-
-    /* Histórico adaptável */
-    #historico li {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    #historico li .txt {
-      margin-bottom: 8px;
-    }
-
-    #historico li button {
-      width: 48%;
-      min-width: 100px;
-    }
+    body { padding: 10px; }
+    form { display: flex; flex-direction: column; gap: 10px; }
+    form label { width: 100%; margin-bottom: 0; }
+    form select, form input, form button { width: 100%; font-size: 16px; }
+    table, thead, tbody, th, td, tr { display: block; width: 100%; }
+    thead { display: none; }
+    td { border: 1px solid #ccc; padding: 10px; margin-bottom: 12px; background: #fff; position: relative; }
+    td::before { content: attr(id); text-transform: capitalize; font-weight: bold; display: block; margin-bottom: 8px; color: #333; }
+    .atividade { font-size: 14px; }
+    .btns { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+    .btns button { flex: 1 1 48%; min-width: 100px; margin-top: 5px; }
+    #historico li { flex-direction: column; align-items: flex-start; }
+    #historico li .txt { margin-bottom: 8px; }
+    #historico li button { width: 48%; min-width: 100px; }
+    .form-row { flex-direction: column; gap: 10px; }
   }
 </style>
 </head>
@@ -136,47 +191,50 @@
 <!-- FORMULÁRIO -->
 <h2>Adicionar Atividade</h2>
 <form id="formAtividade">
-  <label>Data: <input type="date" id="data" required></label>
-  <label>Horário: <input type="time" id="horario" required></label>
-  <label>Atividade:
-    <select id="atividade" required>
-      <option value="">Selecione</option>
-      <option value="Livre">Livre</option>
-      <option value="Scrim">Scrim</option>
-      <option value="Torneio">Torneio</option>
-      <option value="Reunião">Reunião</option>
-      <option value="PatchNote">Patch Note</option>
-      <option value="VodReview">Vod Review</option>
-      <option value="Treino5stk">Treino 5 stk</option>
-      <option value="TreinoDraft">Treino de Draft</option>
-      <option value="AnalisedeCall">Analise de Call</option>
-      <option value="TreinodeMicro">Treino de Micro</option>
-      <option value="TreinodeMacro">Treino de Macro</option>
-    </select>
-  </label>
-  <label>Responsável:
-    <select id="responsavel" required>
-      <option value="">Selecione</option>
-      <option value="Lobo">Lobo</option>
-      <option value="Shad">Shad</option>
-      <option value="K1ng">K1ng</option>
-      <option value="Leone">Leone</option>
-    </select>
-  </label>
-  <label>Participantes:
-    <select id="participantes" required>
-      <option value="">Selecione</option>
-      <option value="Staff">Staff</option>
-      <option value="Time">Time</option>
-      <option value="Todos">Todos</option>
-    </select>
-  </label>
+  <div class="form-row">
+    <label>Data: <input type="date" id="data" required></label>
+    <label>Horário: <input type="time" id="horario" required></label>
+    <label>Atividade:
+      <select id="atividade" required>
+        <option value="">Selecione</option>
+        <option value="Livre">Livre</option>
+        <option value="Scrim">Scrim</option>
+        <option value="Torneio">Torneio</option>
+        <option value="Reunião">Reunião</option>
+        <option value="PatchNote">Patch Note</option>
+        <option value="VodReview">Vod Review</option>
+        <option value="Treino5stk">Treino 5 stk</option>
+        <option value="TreinoDraft">Treino de Draft</option>
+        <option value="AnalisedeCall">Analise de Call</option>
+        <option value="TreinodeMicro">Treino de Micro</option>
+        <option value="TreinodeMacro">Treino de Macro</option>
+      </select>
+    </label>
+    <label>Responsável:
+      <select id="responsavel" required>
+        <option value="">Selecione</option>
+        <option value="Lobo">Lobo</option>
+        <option value="Shad">Shad</option>
+        <option value="K1ng">K1ng</option>
+        <option value="Leone">Leone</option>
+      </select>
+    </label>
+    <label>Participantes:
+      <select id="participantes" required>
+        <option value="">Selecione</option>
+        <option value="Staff">Staff</option>
+        <option value="Time">Time</option>
+        <option value="Todos">Todos</option>
+      </select>
+    </label>
+    <button type="submit">Adicionar</button>
+  </div>
 
-  <!-- Campos extras para Scrim -->
-  <div id="scrimExtra">
-    <div class="scrim-row">
+  <!-- Campos extras para Scrim e Torneio -->
+  <div id="extraInfo">
+    <div class="extra-row">
       <label>Adversário:
-        <input type="text" id="adversario" placeholder="Nome do time" required>
+        <input type="text" id="adversario" placeholder="Nome do time">
       </label>
       <label>Formato:
         <select id="formato">
@@ -189,10 +247,11 @@
           <option value="All Open">All Open</option>
         </select>
       </label>
+      <label id="campeonatoLabel" style="display:none;">Campeonato:
+        <input type="text" id="campeonato" placeholder="Nome do campeonato">
+      </label>
     </div>
   </div>
-
-  <button type="submit">Adicionar</button>
 </form>
 
 <!-- TABELA -->
@@ -246,7 +305,6 @@ function getDiaSemanaId(dataStr) {
 }
 
 function formatTeamNameForImage(teamName) {
-  // Mantém o nome exatamente como foi digitado, apenas adiciona .png no final
   return teamName + '.png';
 }
 
@@ -254,21 +312,27 @@ function createActivityDiv(activity, day) {
   const div = document.createElement('div');
   div.className = 'atividade ' + (activity.atividade ? activity.atividade.replace(/\s+/g,'') : '');
   
-  // Formata o nome do adversário para exibir a logo
   let advDisplay = activity.adversario;
-  if (activity.atividade === "Scrim" && activity.adversario) {
+  if ((activity.atividade === "Scrim" || activity.atividade === "Torneio") && activity.adversario) {
     const logoPath = './logos/' + formatTeamNameForImage(activity.adversario);
     advDisplay = `<img src="${logoPath}" class="team-logo" alt="${activity.adversario}" 
                  onerror="this.style.display='none'" 
                  title="${activity.adversario}">${activity.adversario}`;
   }
   
-  div.innerHTML = `<strong>${activity.data} ${activity.horario}</strong> - ${activity.atividade}
-    <br><small>Resp: ${activity.responsavel}</small>
-    <br><small>Part: ${activity.participantes}</small>`;
-  if(activity.atividade === "Scrim"){
+  div.innerHTML = `<strong>${activity.data} ${activity.horario}</strong> - ${activity.atividade}`;
+  
+  if(activity.atividade === "Torneio" && activity.campeonato) {
+    div.innerHTML += `<br><small>Campeonato: ${activity.campeonato}</small>`;
+  }
+  
+  div.innerHTML += `<br><small>Resp: ${activity.responsavel}</small>
+                   <br><small>Part: ${activity.participantes}</small>`;
+  
+  if(activity.atividade === "Scrim" || activity.atividade === "Torneio"){
     div.innerHTML += `<br><small>Versus: ${advDisplay} | Formato: ${activity.formato} | Ban: ${activity.banimentos}</small>`;
   }
+  
   const btns = document.createElement('div');
   btns.className = 'btns';
 
@@ -295,7 +359,7 @@ function createActivityDiv(activity, day) {
   btns.appendChild(btnDelete);
   btns.appendChild(btnConfirm);
   btns.appendChild(btnCopy);
-  if(activity.atividade === "Scrim") btns.appendChild(btnResult);
+  if(activity.atividade === "Scrim" || activity.atividade === "Torneio") btns.appendChild(btnResult);
   div.appendChild(btns);
   return div;
 }
@@ -324,9 +388,15 @@ function deleteFromHistorico(index){
 
 function copyActivityToClipboard(activity) {
   let texto = `${activity.data} ${activity.horario} - ${activity.atividade} | Resp: ${activity.responsavel} | Part: ${activity.participantes}`;
-  if(activity.atividade === "Scrim"){
+  
+  if(activity.atividade === "Torneio" && activity.campeonato) {
+    texto += ` | Campeonato: ${activity.campeonato}`;
+  }
+  
+  if(activity.atividade === "Scrim" || activity.atividade === "Torneio"){
     texto += ` | Versus: ${activity.adversario} | Formato: ${activity.formato} | Ban: ${activity.banimentos}`;
   }
+  
   navigator.clipboard.writeText(texto).then(() => {
     alert('Atividade copiada!');
   });
@@ -349,17 +419,22 @@ function renderHistorico() {
     const txt = document.createElement('div');
     txt.className = 'txt';
     
-    // Formata o nome do adversário para exibir a logo no histórico
     let advDisplay = item.adversario;
-    if (item.atividade === "Scrim" && item.adversario) {
+    if ((item.atividade === "Scrim" || item.atividade === "Torneio") && item.adversario) {
       const logoPath = './logos/' + formatTeamNameForImage(item.adversario);
       advDisplay = `<img src="${logoPath}" class="team-logo" alt="${item.adversario}" onerror="this.style.display='none'">${item.adversario}`;
     }
     
     txt.innerHTML = `${item.data} ${item.horario} - ${item.atividade} (Resp: ${item.responsavel}, Part: ${item.participantes})`;
-    if(item.atividade === "Scrim"){
-      txt.innerHTML += ` Adv: ${advDisplay} | Formato: ${item.formato} | Ban: ${item.banimentos}`;
+    
+    if(item.atividade === "Torneio" && item.campeonato) {
+      txt.innerHTML += ` | Campeonato: ${item.campeonato}`;
     }
+    
+    if(item.atividade === "Scrim" || item.atividade === "Torneio"){
+      txt.innerHTML += ` | Adv: ${advDisplay} | Formato: ${item.formato} | Ban: ${item.banimentos}`;
+    }
+    
     const btns = document.createElement('div');
     btns.style.display = 'flex';
     btns.style.gap = '6px';
@@ -412,11 +487,36 @@ function loadBanimentos(){
 }
 
 document.getElementById('atividade').addEventListener('change', function(){
-  if(this.value === "Scrim"){
-    document.getElementById('scrimExtra').style.display = 'block';
+  const extraInfo = document.getElementById('extraInfo');
+  const campeonatoLabel = document.getElementById('campeonatoLabel');
+  const formatoSelect = document.getElementById('formato');
+  
+  if(this.value === "Scrim") {
+    extraInfo.style.display = 'block';
+    campeonatoLabel.style.display = 'none';
     document.getElementById('participantes').value = "Time";
-  } else {
-    document.getElementById('scrimExtra').style.display = 'none';
+    
+    // Resetar para opções padrão de Scrim
+    formatoSelect.innerHTML = `
+      <option value="2x2">2x2</option>
+      <option value="3x3">3x3</option>
+    `;
+  } 
+  else if(this.value === "Torneio") {
+    extraInfo.style.display = 'block';
+    campeonatoLabel.style.display = 'flex';
+    document.getElementById('participantes').value = "Time";
+    
+    // Adicionar opções específicas para Torneio
+    formatoSelect.innerHTML = `
+      <option value="MD3">MD3</option>
+      <option value="MD5">MD5</option>
+      <option value="2x2">2x2</option>
+      <option value="3x3">3x3</option>
+    `;
+  }
+  else {
+    extraInfo.style.display = 'none';
   }
 });
 
@@ -427,12 +527,16 @@ document.getElementById('formAtividade').addEventListener('submit', function(e) 
   const atividade = document.getElementById('atividade').value;
   const responsavel = document.getElementById('responsavel').value;
   const participantes = document.getElementById('participantes').value;
-  let adversario="", formato="", banimentos="";
+  let adversario="", formato="", banimentos="", campeonato="";
 
-  if(atividade === "Scrim"){
+  if(atividade === "Scrim" || atividade === "Torneio"){
     adversario = document.getElementById('adversario').value.trim();
     formato = document.getElementById('formato').value;
     banimentos = document.getElementById('banimentos').value;
+    
+    if(atividade === "Torneio") {
+      campeonato = document.getElementById('campeonato').value.trim();
+    }
     
     if (!adversario) {
       alert('Por favor, informe o nome do time adversário.');
@@ -454,14 +558,14 @@ document.getElementById('formAtividade').addEventListener('submit', function(e) 
   const activityObj = {
     id: Date.now().toString(),
     data, horario, atividade, responsavel, participantes,
-    adversario, formato, banimentos
+    adversario, formato, banimentos, campeonato
   };
 
   agendaData[dia].push(activityObj);
   renderDay(dia);
   saveToStorage();
   this.reset();
-  document.getElementById('scrimExtra').style.display = 'none';
+  document.getElementById('extraInfo').style.display = 'none';
 });
 
 loadBanimentos();
