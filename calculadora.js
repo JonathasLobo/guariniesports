@@ -29,30 +29,51 @@
     let season = {}, total = {};
 
     function carregarDados() {
-      const texto = document.getElementById("dadosTexto").value;
-      if (!texto) return alert("Cole os dados do site!");
+    const texto = document.getElementById("dadosTexto").value;
+    if (!texto) return alert("Cole os dados do site!");
 
-      season = {
-        battles: parseInt(texto.match(/Season Battles\s+(\d+)/)?.[1]) || 0,
-        wins: parseInt(texto.match(/Season Wins\s+(\d+)/)?.[1]) || 0,
-        mvps: parseInt(texto.match(/Season MVP\s+(\d+)/)?.[1]) || 0
-      };
-      season.losses = season.battles - season.wins;
+    // Regex para dados em inglês
+    const seasonBattlesEN = texto.match(/Season Battles\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const seasonWinsEN = texto.match(/Season Wins\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const seasonMVPEN = texto.match(/Season MVP\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalBattlesEN = texto.match(/Total Battles\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalWinsEN = texto.match(/(?:No\.\s*Of\s*Wins|Total Wins)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalMVPEN = texto.match(/Total MVP\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
-      total = {
-        battles: parseInt(texto.match(/Total Battles\s+(\d+)/)?.[1]) || 0,
-        wins: parseInt(texto.match(/No\. Of Wins\s+(\d+)/)?.[1]) || 0,
-        mvps: parseInt(texto.match(/Total MVP\s+(\d+)/)?.[1]) || 0
-      };
-      total.losses = total.battles - total.wins;
+    // Regex para dados em português
+    const seasonBattlesPT = texto.match(/Batalhas\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const seasonWinsPT = texto.match(/Vitórias\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const seasonMVPPT = texto.match(/MVP\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalBattlesPT = texto.match(/Batalhas\s+totais\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalWinsPT = texto.match(/(?:No\.\s*de\s*Vitórias|Vitórias\s+totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+    const totalMVPPT = texto.match(/MVP\s+Total\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
-      if (season.battles === 0 && total.battles === 0) {
-        alert("Dados inválidos. Verifique o conteúdo colado.");
-        return;
-      }
+    // Usa dados em inglês se encontrados, senão usa português
+    season = {
+      battles: parseInt(seasonBattlesEN || seasonBattlesPT) || 0,
+      wins: parseInt(seasonWinsEN || seasonWinsPT) || 0,
+      mvps: parseInt(seasonMVPEN || seasonMVPPT) || 0
+    };
+    season.losses = season.battles - season.wins;
 
-      alert("Dados carregados com sucesso!");
+    total = {
+      battles: parseInt(totalBattlesEN || totalBattlesPT) || 0,
+      wins: parseInt(totalWinsEN || totalWinsPT) || 0,
+      mvps: parseInt(totalMVPEN || totalMVPPT) || 0
+    };
+    total.losses = total.battles - total.wins;
+
+    if (season.battles === 0 && total.battles === 0) {
+      alert("Dados inválidos. Verifique o conteúdo colado.");
+      return;
     }
+
+    // Detecta o idioma para feedback ao usuário
+    const isEnglish = seasonBattlesEN || totalBattlesEN;
+    const idioma = isEnglish ? "inglês" : "português";
+    
+    alert(`Dados carregados com sucesso! (Detectado: ${idioma})`);
+  }
 
     function avaliarDesempenho(role, desempenho) {
       if (["ADC", "JGL", "TOP"].includes(role)) {
