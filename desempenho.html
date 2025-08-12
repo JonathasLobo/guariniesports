@@ -8,7 +8,174 @@
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  </head>
+  <style>
+    /* Estilos para o select com imagens */
+    #pokemon {
+      background-image: none;
+      padding-right: 30px;
+    }
+    
+    /* Cores específicas para cada role */
+    .role-adc { background-color: #dc3545; color: white; }
+    .role-jgl { background-color: #007bff; color: white; }
+    .role-tank { background-color: #28a745; color: white; }
+    .role-sup { background-color: #fd7e14; color: white; }
+    .role-top { background-color: #6f42c1; color: white; }
+    
+    /* Estilos específicos para o resultado em colunas */
+    .resultado-container {
+      display: none;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 25px;
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border: 2px solid #e9ecef;
+    }
+    
+    .resultado-image {
+      flex-shrink: 0;
+      text-align: center;
+      min-width: 180px;
+    }
+    
+    .resultado-image img {
+      max-width: 160px;
+      height: auto;
+      border: 3px solid #ddd;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .info-jogador {
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .resultado-dados {
+      display: flex;
+      gap: 25px;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .coluna-temporada, .coluna-total {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      min-width: 280px;
+    }
+    
+    .coluna-temporada h3 {
+      color: #007bff;
+      margin: 0 0 15px 0;
+      border-bottom: 3px solid #007bff;
+      padding-bottom: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .coluna-total h3 {
+      color: #28a745;
+      margin: 0 0 15px 0;
+      border-bottom: 3px solid #28a745;
+      padding-bottom: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    
+    .stat-line:last-child {
+      border-bottom: none;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .desempenho-line {
+      background: #f8f9fa;
+      margin: 10px -10px;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+    
+    .avaliacao {
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      font-size: 15px;
+    }
+    
+    .avaliacao.fraco { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .avaliacao.mediano { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    .avaliacao.bom { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .avaliacao.muito-bom { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .avaliacao.excelente { background: #cce5ff; color: #004085; border: 1px solid #a3d5ff; }
+    
+    .multiplicador-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+      color: #856404;
+    }
+    
+    @media (max-width: 992px) {
+      .resultado-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .resultado-dados {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .coluna-temporada, .coluna-total {
+        min-width: auto;
+      }
+      
+      .resultado-image {
+        min-width: auto;
+        align-self: center;
+      }
+    }
+  </style>
+</head>
 <body>
   <header>
     <h1>Guariní e-sport</h1>
@@ -24,45 +191,68 @@
     </nav>
   </header>
 
-<div class="calculadora-container">
+  <div class="calculadora-container">
+    <section class="container calculadora">
+      <h2 class="titulo-pagina">Calculadora de Desempenho - Pokémon Unite</h2>
 
-<section class="container calculadora">
-  <h2 class="titulo-pagina">Calculadora de Desempenho - Pokémon Unite</h2>
+      <label for="jogador">Nome do Jogador:</label>
+      <input type="text" id="jogador" class="form-control" placeholder="Ex: Fulano">
 
-  <label for="jogador">Nome do Jogador:</label>
-  <input type="text" id="jogador" class="form-control" placeholder="Ex: Fulano">
+      <label for="pokemon">Escolha o Pokémon:</label>
+      <select id="pokemon" class="form-control">
+        <option value="" disabled selected>Selecione</option>
+      </select>
 
-  <label for="pokemon">Escolha o Pokémon:</label>
-  <select id="pokemon" class="form-control" onchange="atualizarImagemPokemon()">
-    <option value="" disabled selected>Selecione</option>
-  </select>
-  <img id="imagemPokemon" src="" alt="Pokémon" style="display: none;">
+      <label for="role">Selecione a Função (Role):</label>
+      <select id="role" class="form-control">
+        <option value="">Selecione</option>
+        <option value="ADC">ADC</option>
+        <option value="JGL">JGL</option>
+        <option value="TOP">TOP</option>
+        <option value="SUP">SUP</option>
+        <option value="TANK">TANK</option>
+      </select>
 
-  <label for="role">Selecione a Função (Role):</label>
-  <select id="role" class="form-control">
-    <option value="">Selecione</option>
-    <option value="ADC">ADC</option>
-    <option value="JGL">JGL</option>
-    <option value="TOP">TOP</option>
-    <option value="SUP">SUP</option>
-    <option value="TANK">TANK</option>
-  </select>
+      <label for="dadosTexto">Cole os dados do site aqui:</label>
+      <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos do seu Pokémon no seu Unite API em Inglês ou Português aqui..."></textarea>
 
-  <label for="dadosTexto">Cole os dados do site aqui:</label>
-  <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos do seu Pokémon no seu Unite API em Inglês aqui..."></textarea>
+      <div class="botoes-calculadora">
+        <button class="btn" onclick="carregarDados()">Carregar Dados</button>
+        <button class="btn" onclick="calcularDesempenho()">Calcular Desempenho</button>
+        <button class="btn" onclick="limparCampos()">Limpar</button>
+        <button class="btn" onclick="copiarResultado()">Copiar Resultado</button>
+      </div>
 
-  <div class="botoes-calculadora">
-    <button class="btn" onclick="carregarDados()">Carregar Dados</button>
-    <button class="btn" onclick="calcularDesempenho()">Calcular Desempenho</button>
-    <button class="btn" onclick="limparCampos()">Limpar</button>
-    <button class="btn" onclick="copiarResultado()">Copiar Resultado</button>
+      <!-- Resultado em layout de colunas -->
+      <div id="resultado-completo" class="resultado-container">
+        <div class="resultado-image">
+          <img id="imagemPokemonResultado" alt="Pokémon">
+          <div id="info-jogador" class="info-jogador"></div>
+        </div>
+        
+        <div class="resultado-dados">
+          <div class="coluna-temporada">
+            <h3>🔹 Temporada</h3>
+            <div id="dados-temporada"></div>
+          </div>
+          
+          <div class="coluna-total">
+            <h3>🔸 Total</h3>
+            <div id="dados-total"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="multiplicador-info" class="multiplicador-info">
+        ⚠️ No cálculo de desempenho de SUP e TANK é utilizado um multiplicador para o valor de MVP, pois essas roles têm menos MVPs por partida.
+      </div>
+
+      <!-- Div original mantida oculta para a função copiar resultado -->
+      <div id="resultado" class="resultado-calculadora" style="display: none;"></div>
+    </section>
+
+    <script src="calculadora.js"></script>
   </div>
-
-  <div id="resultado" class="resultado-calculadora"></div>
-</section>
-
-<script src="calculadora.js"></script>
-</div>
 
   <footer>
     <p>&copy; 2025 Guariní e-sport. Todos os direitos reservados.</p>
