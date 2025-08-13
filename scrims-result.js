@@ -4,6 +4,9 @@ let empates = 0;
 let derrotas = 0;
 let resultados = [];
 
+// Armazena as composições de cada jogo
+let composicoes = {};
+
 // ==============================================
 // FUNÇÕES DE PERSISTÊNCIA (localStorage)
 // ==============================================
@@ -67,14 +70,22 @@ function reconstruirTabela() {
             logo2 = logoAdversario;
         }
 
+        // Linha principal
         const novaLinha = document.createElement('tr');
+        novaLinha.className = 'cursor-pointer hover:bg-gray-50';
+        novaLinha.onclick = () => toggleExpansao(index);
+        
         const celula = document.createElement('td');
         celula.className = "p-2 border-b group";
         
         // Conteúdo principal alinhado à esquerda
         const conteudoPrincipal = document.createElement('div');
         conteudoPrincipal.className = "inline-block";
-        conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${item.dataRegistro})</span>`;
+        
+        // Adiciona o formato após a data se existir
+        const formatoTexto = item.formato ? ` (${item.formato})` : '';
+        
+        conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${item.dataRegistro})${formatoTexto}</span>`;
         
         // Botão de excluir alinhado à direita
         const botaoExcluir = document.createElement('button');
@@ -89,7 +100,308 @@ function reconstruirTabela() {
         celula.appendChild(botaoExcluir);
         novaLinha.appendChild(celula);
         tabela.appendChild(novaLinha);
+
+        // Linha expandida (inicialmente oculta)
+        const linhaExpandida = document.createElement('tr');
+        linhaExpandida.id = `expandida-${index}`;
+        linhaExpandida.className = 'hidden';
+        
+        const celulaExpandida = document.createElement('td');
+        celulaExpandida.className = 'p-4 bg-gray-50 border-b';
+        
+        // Calcula o número total de jogos baseado no placar
+        const totalJogos = item.placarNosso + item.placarAdversario;
+        
+        // Conteúdo da área expandida
+        celulaExpandida.innerHTML = `
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h4 class="font-bold text-sm mb-3">Composições dos Jogos (Total: ${totalJogos} jogos)</h4>
+                <div id="jogos-${index}" class="space-y-3">
+                    ${criarJogosHTML(totalJogos, index)}
+                </div>
+            </div>
+        `;
+        
+        linhaExpandida.appendChild(celulaExpandida);
+        tabela.appendChild(linhaExpandida);
     });
+    
+    // Restaurar composições salvas após um breve delay para garantir que os elementos foram criados
+    setTimeout(restaurarComposicoes, 100);
+}
+
+function restaurarComposicoes() {
+    Object.keys(composicoes).forEach(resultadoIndex => {
+        Object.keys(composicoes[resultadoIndex]).forEach(jogoIndex => {
+            Object.keys(composicoes[resultadoIndex][jogoIndex]).forEach(elementId => {
+                const pokemon = composicoes[resultadoIndex][jogoIndex][elementId];
+                const elemento = document.getElementById(elementId);
+                
+                if (elemento) {
+                    elemento.innerHTML = `
+                        <img src="./images/sprites/${pokemon}.png" 
+                             alt="${pokemon}" 
+                             class="w-10 h-10 object-contain"
+                             onerror="this.src='./images/sprites/noimage.png'">
+                        <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
+                    `;
+                    
+                    elemento.dataset.pokemon = pokemon;
+                    elemento.classList.remove('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
+                    elemento.classList.add('border-green-500', 'bg-green-50');
+                }
+            });
+        });
+    });
+}
+
+function criarJogosHTML(totalJogos, resultadoIndex) {
+    let html = '';
+    
+    for (let i = 1; i <= totalJogos; i++) {
+        html += `
+            <div class="border p-3 rounded bg-gray-50">
+                <div class="text-sm font-medium mb-2">Jogo ${i}</div>
+                <div class="flex items-center justify-center gap-4">
+                    <!-- Time 1 (Guariní) -->
+                    <div class="flex gap-1">
+                        ${criarQuadradosComposicao(`guarini-jogo-${resultadoIndex}-${i}`)}
+                    </div>
+                    
+                    <span class="font-bold text-lg">X</span>
+                    
+                    <!-- Time 2 (Adversário) -->
+                    <div class="flex gap-1">
+                        ${criarQuadradosComposicao(`adversario-jogo-${resultadoIndex}-${i}`)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    return html;
+}
+
+function criarQuadradosComposicao(prefixoId) {
+    let html = '';
+    
+    for (let i = 1; i <= 5; i++) {
+        html += `
+            <div class="w-16 h-20 border-2 border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors p-1" 
+                 id="${prefixoId}-${i}" 
+                 onclick="selecionarComposicao('${prefixoId}-${i}')">
+                <span class="text-gray-400 text-lg font-bold">+</span>
+            </div>
+        `;
+    }
+    
+    return html;
+}
+
+function toggleExpansao(index) {
+    const linhaExpandida = document.getElementById(`expandida-${index}`);
+    
+    if (linhaExpandida.classList.contains('hidden')) {
+        // Fecha todas as outras expansões antes de abrir esta
+        document.querySelectorAll('[id^="expandida-"]').forEach(el => {
+            if (el !== linhaExpandida) {
+                el.classList.add('hidden');
+            }
+        });
+        
+        linhaExpandida.classList.remove('hidden');
+    } else {
+        linhaExpandida.classList.add('hidden');
+    }
+}
+
+function selecionarComposicao(elementId) {
+    const elemento = document.getElementById(elementId);
+    
+    if (!elemento) return;
+    
+    // Se já tem um Pokémon selecionado, abrir modal para trocar
+    if (elemento.dataset.pokemon) {
+        abrirModalPokemon(elementId, elemento.dataset.pokemon);
+    } else {
+        // Se está vazio, abrir modal para selecionar
+        abrirModalPokemon(elementId);
+    }
+}
+
+function abrirModalPokemon(elementId, pokemonAtual = null) {
+    // Verifica se util.js foi carregado e se pokemonBaseImages está disponível
+    if (typeof pokemonBaseImages === 'undefined') {
+        alert('Erro: util.js não carregado. Verifique se o arquivo está incluído no HTML.');
+        return;
+    }
+    
+    // Remove modal existente se houver
+    const modalExistente = document.getElementById('pokemon-modal');
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+    
+    // Cria o modal
+    const modal = document.createElement('div');
+    modal.id = 'pokemon-modal';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+    
+    // Obter Pokémons já selecionados neste jogo
+    const resultadoIndex = elementId.split('-')[2];
+    const jogoIndex = elementId.split('-')[3];
+    const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
+    
+    modal.innerHTML = `
+        <div class="bg-white rounded-lg shadow-xl w-96 h-96 flex flex-col">
+            <div class="p-3 border-b flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold">Selecionar Pokémon</h3>
+                <div class="flex gap-2">
+                    ${pokemonAtual ? `<button onclick="removerPokemon('${elementId}')" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Remover</button>` : ''}
+                    <button onclick="fecharModalPokemon()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+                </div>
+            </div>
+            <div class="p-2 overflow-y-auto flex-grow">
+                <div class="grid grid-cols-6 gap-1">
+                    ${Object.keys(pokemonBaseImages).map(pokemon => {
+                        const isUsado = pokemonsUsados.includes(pokemon) && pokemon !== pokemonAtual;
+                        return `
+                            <div class="text-center ${isUsado ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} p-1 rounded transition-all" 
+                                 ${isUsado ? '' : `onclick="selecionarPokemon('${elementId}', '${pokemon}')"`}>
+                                <img src="./images/sprites/${pokemon}.png" 
+                                     alt="${pokemon}" 
+                                     class="w-10 h-10 mx-auto object-contain mb-1"
+                                     onerror="this.src='./images/sprites/noimage.png'">
+                                <div class="text-xs capitalize truncate">${pokemon.replace(/[-_]/g, ' ')}</div>
+                                ${isUsado ? '<div class="text-xs text-red-500">Em uso</div>' : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex) {
+    const pokemonsUsados = [];
+    
+    // Verifica todos os quadrados do jogo atual
+    for (let i = 1; i <= 5; i++) {
+        // Time Guariní
+        const elemGuarini = document.getElementById(`guarini-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
+        if (elemGuarini && elemGuarini.dataset.pokemon) {
+            pokemonsUsados.push(elemGuarini.dataset.pokemon);
+        }
+        
+        // Time Adversário
+        const elemAdversario = document.getElementById(`adversario-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
+        if (elemAdversario && elemAdversario.dataset.pokemon) {
+            pokemonsUsados.push(elemAdversario.dataset.pokemon);
+        }
+    }
+    
+    return pokemonsUsados;
+}
+
+function selecionarPokemon(elementId, pokemon) {
+    const elemento = document.getElementById(elementId);
+    if (!elemento) return;
+    
+    // Verifica se o Pokémon já está em uso neste jogo
+    const resultadoIndex = elementId.split('-')[2];
+    const jogoIndex = elementId.split('-')[3];
+    const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
+    
+    if (pokemonsUsados.includes(pokemon)) {
+        alert('Este Pokémon já está sendo usado neste jogo!');
+        return;
+    }
+    
+    // Atualiza o elemento com imagem e nome
+    elemento.innerHTML = `
+        <img src="./images/sprites/${pokemon}.png" 
+             alt="${pokemon}" 
+             class="w-10 h-10 object-contain"
+             onerror="this.src='./images/sprites/noimage.png'">
+        <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
+    `;
+    
+    elemento.dataset.pokemon = pokemon;
+    elemento.classList.remove('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
+    elemento.classList.add('border-green-500', 'bg-green-50');
+    
+    // Salva a composição
+    salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon);
+    
+    fecharModalPokemon();
+}
+
+function removerPokemon(elementId) {
+    const elemento = document.getElementById(elementId);
+    if (!elemento) return;
+    
+    // Volta ao estado original
+    elemento.innerHTML = '<span class="text-gray-400 text-lg font-bold">+</span>';
+    delete elemento.dataset.pokemon;
+    elemento.classList.remove('border-green-500', 'bg-green-50');
+    elemento.classList.add('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
+    
+    // Remove da composição salva
+    const resultadoIndex = elementId.split('-')[2];
+    const jogoIndex = elementId.split('-')[3];
+    removerDaComposicao(resultadoIndex, jogoIndex, elementId);
+    
+    fecharModalPokemon();
+}
+
+function fecharModalPokemon() {
+    const modal = document.getElementById('pokemon-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon) {
+    if (!composicoes[resultadoIndex]) {
+        composicoes[resultadoIndex] = {};
+    }
+    if (!composicoes[resultadoIndex][jogoIndex]) {
+        composicoes[resultadoIndex][jogoIndex] = {};
+    }
+    
+    composicoes[resultadoIndex][jogoIndex][elementId] = pokemon;
+    
+    // Salva no localStorage
+    localStorage.setItem('composicoes', JSON.stringify(composicoes));
+}
+
+function removerDaComposicao(resultadoIndex, jogoIndex, elementId) {
+    if (composicoes[resultadoIndex] && composicoes[resultadoIndex][jogoIndex]) {
+        delete composicoes[resultadoIndex][jogoIndex][elementId];
+        
+        // Se o jogo ficou vazio, remove o jogo
+        if (Object.keys(composicoes[resultadoIndex][jogoIndex]).length === 0) {
+            delete composicoes[resultadoIndex][jogoIndex];
+        }
+        
+        // Se o resultado ficou vazio, remove o resultado
+        if (Object.keys(composicoes[resultadoIndex]).length === 0) {
+            delete composicoes[resultadoIndex];
+        }
+    }
+    
+    // Salva no localStorage
+    localStorage.setItem('composicoes', JSON.stringify(composicoes));
+}
+
+function carregarComposicoes() {
+    const composicoesSalvas = localStorage.getItem('composicoes');
+    if (composicoesSalvas) {
+        composicoes = JSON.parse(composicoesSalvas);
+    }
 }
 
 function removerResultado(index) {
@@ -119,11 +431,12 @@ function removerResultado(index) {
 // FUNÇÕES PRINCIPAIS
 // ==============================================
 
-function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, externo = false) {
+function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, formato, externo = false) {
     if (!externo) {
         placarMeuTime = parseInt(document.getElementById('placarMeuTime').value);
         placarAdversario = parseInt(document.getElementById('placarAdversario').value);
         nomeAdversario = document.getElementById('nomeAdversario').value.trim();
+        formato = document.getElementById('formatoScrim').value;
 
         if (isNaN(placarMeuTime) || isNaN(placarAdversario) || nomeAdversario === "") {
             alert("Preencha todos os campos corretamente!");
@@ -133,6 +446,7 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, ext
         document.getElementById('placarMeuTime').value = '';
         document.getElementById('placarAdversario').value = '';
         document.getElementById('nomeAdversario').value = '';
+        document.getElementById('formatoScrim').value = '2x2'; // Reset para valor padrão
     }
 
     const nossoTime = "Guariní";
@@ -172,19 +486,26 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, ext
     }
 
     const novaLinha = document.createElement('tr');
+    novaLinha.className = 'cursor-pointer hover:bg-gray-50';
+    const novoIndice = resultados.length; // Armazena o índice antes de adicionar
+    novaLinha.onclick = () => toggleExpansao(novoIndice);
+    
     const celula = document.createElement('td');
     celula.className = "p-2 border-b group text-sm";
     
     // Conteúdo principal
     const conteudoPrincipal = document.createElement('div');
     conteudoPrincipal.className = "inline-block";
-    conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${dataHoje})</span>`;
+    
+    // Adiciona o formato após a data
+    const formatoTexto = formato ? ` (${formato})` : '';
+    
+    conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${dataHoje})${formatoTexto}</span>`;
     
     // Botão de excluir
     const botaoExcluir = document.createElement('button');
     botaoExcluir.innerHTML = '❌';
     botaoExcluir.className = 'float-right text-red-500 hover:text-red-700 text-xs ml-4';
-    const novoIndice = resultados.length; // Armazena o índice antes de adicionar
     botaoExcluir.onclick = (e) => {
         e.stopPropagation();
         removerResultado(novoIndice);
@@ -194,13 +515,38 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, ext
     novaLinha.appendChild(celula);
     document.getElementById('tabelaResultados').appendChild(novaLinha);
 
+    // Criar linha expandida para o novo resultado
+    const linhaExpandida = document.createElement('tr');
+    linhaExpandida.id = `expandida-${novoIndice}`;
+    linhaExpandida.className = 'hidden';
+    
+    const celulaExpandida = document.createElement('td');
+    celulaExpandida.className = 'p-4 bg-gray-50 border-b';
+    
+    // Calcula o número total de jogos baseado no placar
+    const totalJogos = placarMeuTime + placarAdversario;
+    
+    // Conteúdo da área expandida
+    celulaExpandida.innerHTML = `
+        <div class="bg-white p-4 rounded shadow-sm">
+            <h4 class="font-bold text-sm mb-3">Composições dos Jogos (Total: ${totalJogos} jogos)</h4>
+            <div id="jogos-${novoIndice}" class="space-y-3">
+                ${criarJogosHTML(totalJogos, novoIndice)}
+            </div>
+        </div>
+    `;
+    
+    linhaExpandida.appendChild(celulaExpandida);
+    document.getElementById('tabelaResultados').appendChild(linhaExpandida);
+
     const resultadoObj = {
         time: nossoTime,
         placarNosso: placarMeuTime,
         placarAdversario: placarAdversario,
         adversario: nomeAdversario,
         resultado: resultado,
-        dataRegistro: dataHoje
+        dataRegistro: dataHoje,
+        formato: formato || '2x2' // Valor padrão se não especificado
     };
 
     resultados.push(resultadoObj);
@@ -246,10 +592,10 @@ function exportarResultados() {
 
 function exportarCSV() {
     const agora = new Date();
-    let csvContent = "Time;Placar Nosso;Adversário;Placar Adversário;Resultado;Data\n";
+    let csvContent = "Time;Placar Nosso;Adversário;Placar Adversário;Resultado;Data;Formato\n";
 
     resultados.forEach(item => {
-        csvContent += `"${item.time}";${item.placarNosso};"${item.adversario}";${item.placarAdversario};"${item.resultado}";"${item.dataRegistro}"\n`;
+        csvContent += `"${item.time}";${item.placarNosso};"${item.adversario}";${item.placarAdversario};"${item.resultado}";"${item.dataRegistro}";"${item.formato || '2x2'}"\n`;
     });
 
     const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
@@ -283,9 +629,10 @@ function importarResultados(event) {
                         adversario: valores[2].replace(/"/g, ''),
                         placarAdversario: parseInt(valores[3]),
                         resultado: valores[4].replace(/"/g, ''),
-                        dataRegistro: valores[5]?.replace(/"/g, '') || new Date().toLocaleDateString('pt-BR')
+                        dataRegistro: valores[5]?.replace(/"/g, '') || new Date().toLocaleDateString('pt-BR'),
+                        formato: valores[6]?.replace(/"/g, '') || '2x2'
                     };
-                    adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, true);
+                    adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, item.formato, true);
                     // Atualiza a data do último resultado adicionado com a data do arquivo
                     resultados[resultados.length - 1].dataRegistro = item.dataRegistro;
                 }
@@ -308,7 +655,8 @@ function importarResultados(event) {
                         placarAdversario: item.placarAdversario,
                         adversario: item.adversario,
                         resultado: item.resultado,
-                        dataRegistro: item.dataRegistro || new Date().toLocaleDateString('pt-BR')
+                        dataRegistro: item.dataRegistro || new Date().toLocaleDateString('pt-BR'),
+                        formato: item.formato || '2x2'
                     });
 
                     // Atualiza os contadores
@@ -355,6 +703,7 @@ function limparResultados() {
 
 document.addEventListener("DOMContentLoaded", function () {
     carregarDados();
+    carregarComposicoes();
 
     document.getElementById("botaoAdicionar").addEventListener("click", adicionarResultado);
     document.getElementById("botaoExportar").addEventListener("click", exportarResultados);
