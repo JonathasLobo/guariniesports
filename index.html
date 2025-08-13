@@ -6,13 +6,503 @@
   <meta name="description" content="Site oficial da equipe Guariní e-sport">
   <title>Guariní e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* style.css */
+
+    /* Reset básico */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
+
+    /* HEADER ESTILIZADO */
+    .header-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 0 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .logo-center {
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      height: 70px;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .header-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .nav-group ul {
+      display: flex;
+      gap: 20px;
+    }
+
+    .left-nav {
+      margin-right: auto;
+    }
+
+    .right-nav {
+      margin-left: auto;
+    }
+
+    /* Menu hamburger - escondido no desktop */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      margin: 4px 0;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+
+    .menu-toggle.ativo span:nth-child(1) {
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    .menu-toggle.ativo span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.ativo span:nth-child(3) {
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+    /* Menu mobile */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.95);
+      border-top: 3px solid #ff7500;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .mobile-menu.ativo {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-menu ul {
+      list-style: none;
+      padding: 20px 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mobile-menu li {
+      border-bottom: 1px solid rgba(255, 117, 0, 0.2);
+    }
+
+    .mobile-menu li:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 15px 30px;
+      transition: 
+        color 0.3s ease,
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
+      user-select: none;
+      display: block;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a:focus {
+      color: #fbb258;
+      background-color: rgba(255, 173, 0, 0.15);
+      outline: none;
+    }
+
+    .mobile-menu a.ativo {
+      color: #ffad00;
+      background-color: rgba(255, 173, 0, 0.3);
+      box-shadow: inset 0 0 8px #ffad00;
+    }
+
+    /* RESPONSIVIDADE ORIGINAL + MODIFICAÇÕES MOBILE */
+    @media (max-width: 900px) {
+      .header-wrapper {
+        flex-wrap: nowrap;
+        gap: 20px;
+        padding: 10px;
+        justify-content: center;
+      }
+      
+      /* Esconder navegação desktop no mobile */
+      .nav-group {
+        display: none;
+      }
+      
+      /* Mostrar menu hamburger no mobile */
+      .menu-toggle {
+        display: block;
+      }
+      
+      /* Mostrar menu mobile */
+      .mobile-menu {
+        display: block;
+      }
+      
+      .logo-center {
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-logo {
+        height: 50px;
+      }
+      
+      .menu-toggle {
+        right: 15px;
+      }
+    }
+
+    .logo-center a {
+      display: block;
+      text-decoration: none;
+      border: none;
+      outline: none;
+      cursor: default;
+    }
+
+    /* Suaviza a rolagem para o topo */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Esconde a âncora visualmente mas mantém acessível */
+    #topo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+    }
+
+    /* Efeito de hover na logo */
+    .logo-center a:hover .header-logo,
+    .logo-center a:focus .header-logo {
+      transform: scale(1.05);
+      opacity: 0.9;
+      cursor: default;
+    }
+
+    /* Cabeçalho */
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 10px 0;
+      text-align: center;
+      border-bottom: 3px solid #ff7500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #ff7500;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+      user-select: none;
+    }
+
+    /* Navegação */
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: 
+        color 0.3s ease,
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
+      user-select: none;
+      display: inline-block;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      color: #fbb258;
+      background-color: rgba(255, 173, 0, 0.15);
+      outline: none;
+    }
+
+    nav a.ativo {
+      color: #ffad00;
+      background-color: rgba(255, 173, 0, 0.3);
+      box-shadow: 0 0 8px #ffad00;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 60px 30px;
+      background-color: rgba(0, 0, 0, 0.65);
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    }
+
+    .hero h2 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: #ffad00;
+      text-shadow: 2px 2px 6px #000;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #fff;
+      line-height: 1.5;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+
+    /* Conteúdo principal */
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+      color: #fff;
+    }
+
+    /* Loja - Produtos */
+    .produtos {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .produto {
+      background-color: rgba(26, 26, 26, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 250px;
+      box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
+      color: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .produto:hover,
+    .produto:focus-within {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(255, 173, 0, 0.6);
+      outline: none;
+    }
+
+    .produto img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+      height: 180px;
+    }
+
+    .produto h3 {
+      margin-top: 15px;
+      color: #ffad00;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .produto p {
+      font-size: 1.1rem;
+      margin: 12px 0 20px;
+      color: #eee;
+      min-height: 60px;
+    }
+
+    /* Botões de compra */
+    .produto button,
+    .btn-comprar {
+      background-color: #ff7500;
+      border: none;
+      padding: 12px 25px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: inline-block;
+      text-align: center;
+      user-select: none;
+    }
+
+    .produto button:hover,
+    .produto button:focus,
+    .btn-comprar:hover,
+    .btn-comprar:focus {
+      background-color: #ffad00;
+      color: #000;
+      outline: none;
+      box-shadow: 0 0 10px #ffad00;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: rgba(0, 0, 0, 0.8);
+      text-align: center;
+      padding: 20px;
+      border-top: 2px solid #ff7500;
+      margin-top: 40px;
+      color: #fff;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover,
+    footer a:focus {
+      color: #fbb258;
+      text-decoration: underline;
+      outline: none;
+    }
+
+    /* Seções gerais */
+    section {
+      margin-bottom: 2.5rem;
+      color: #fff;
+    }
+
+    /* Títulos */
+    h2 {
+      border-bottom: 2px solid #fe8a01;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      color: #fe8a01;
+      text-align: center;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Responsividade original mantida */
+    @media (max-width: 768px) {
+      .hero {
+        margin: 20px 10px;
+        padding: 40px 20px;
+      }
+
+      .produtos {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .produto {
+        width: 90%;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .hero h2 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+
+    /* Resto do CSS original mantido */
+    .hero h2,
+    .hero p,
+    header h1 {
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+    .calculadora-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 173, 0, 0.4);
+      color: #fff;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
-  <a id="topo"></a> <!-- Âncora para voltar ao topo -->
+  <a id="topo"></a>
   
   <header>
     <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
           <li><a href="index.html" class="ativo">Início</a></li>
@@ -21,14 +511,35 @@
         </ul>
       </nav>
       
+      <!-- Logo Central -->
       <div class="logo-center">
-        <a href="#topo" aria-label="Voltar ao topo"> <!-- Link para a âncora -->
+        <a href="#topo" aria-label="Voltar ao topo">
           <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
       
+      <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="desempenho.html">Calculadora</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Botão Menu Mobile -->
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Menu Mobile -->
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html" class="ativo">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="times.html">Times</a></li>
           <li><a href="loja.html">Loja</a></li>
           <li><a href="desempenho.html">Calculadora</a></li>
           <li><a href="contato.html">Contato</a></li>
@@ -38,7 +549,7 @@
   </header>
 
   <main>
-    <section id="home" class="home">
+    <section id="home" class="hero">
       <h2>Seja bem-vindo à Guariní e-sport</h2>
       <p>Unindo força, estratégia e paixão pelos games desde 2019.</p>
     </section>
@@ -80,5 +591,33 @@
     <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
     <p>Created by: Lobo</p>
   </footer>
+
+  <script>
+    // Funcionalidade do menu mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('ativo');
+      mobileMenu.classList.toggle('ativo');
+    });
+
+    // Fechar menu ao clicar em um link
+    const mobileLinks = document.querySelectorAll('.mobile-menu a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      });
+    });
+
+    // Fechar menu ao redimensionar para desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      }
+    });
+  </script>
 </body>
 </html>
