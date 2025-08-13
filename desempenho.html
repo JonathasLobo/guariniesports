@@ -153,7 +153,25 @@
       display: none;
       color: #856404;
     }
-    
+
+    /* NOVO: Estilo para alinhar os botões lado a lado */
+    .botoes-calculadora {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* NOVO: Container para os campos lado a lado */
+    .campos-linha {
+      display: flex;
+      gap: 20px;
+    }
+
+    /* NOVO: Ajuste para os campos dentro do container */
+    .campos-linha > div {
+      flex: 1;
+    }
+
+    /* NOVO: Responsividade */
     @media (max-width: 992px) {
       .resultado-container {
         flex-direction: column;
@@ -172,6 +190,18 @@
       .resultado-image {
         min-width: auto;
         align-self: center;
+      }
+
+      /* NOVO: Responsividade para os botões */
+      .botoes-calculadora {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* NOVO: Responsividade para os campos lado a lado */
+      .campos-linha {
+        flex-direction: column;
+        gap: 0;
       }
     }
   </style>
@@ -198,23 +228,30 @@
       <label for="jogador">Nome do Jogador:</label>
       <input type="text" id="jogador" class="form-control" placeholder="Ex: Fulano">
 
-      <label for="pokemon">Escolha o Pokémon:</label>
-      <select id="pokemon" class="form-control">
-        <option value="" disabled selected>Selecione</option>
-      </select>
-
-      <label for="role">Selecione a Função (Role):</label>
-      <select id="role" class="form-control">
-        <option value="">Selecione</option>
-        <option value="ADC">ADC</option>
-        <option value="JGL">JGL</option>
-        <option value="TOP">TOP</option>
-        <option value="SUP">SUP</option>
-        <option value="TANK">TANK</option>
-      </select>
+      <!-- NOVO: Container para os campos lado a lado -->
+      <div class="campos-linha">
+        <div>
+          <label for="pokemon">Escolha o Pokémon:</label>
+          <select id="pokemon" class="form-control">
+            <option value="" disabled selected>Selecione</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="role">Selecione a Função (Role):</label>
+          <select id="role" class="form-control">
+            <option value="">Selecione</option>
+            <option value="ADC">ADC (ADCarry)</option>
+            <option value="JGL">JGL (Jungler)</option>
+            <option value="TOP">TOP (Top lane)</option>
+            <option value="SUP">SUP (Supporter)</option>
+            <option value="TANK">TANK (Tanker/Defender)</option>
+          </select>
+        </div>
+      </div>
 
       <label for="dadosTexto">Cole os dados do site aqui:</label>
-      <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos do seu Pokémon no seu Unite API em Inglês ou Português aqui..."></textarea>
+      <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos do seu Pokémon no seu Unite API em Inglês ou Português aqui...&#10;Exemplo:&#10;Season Battles&#10;0&#10;Season Wins&#10;0&#10;Season Loses&#10;0&#10;Season MVP&#10;0&#10;Total Battles&#10;0&#10;No. Of Wins&#10;0&#10;Total Loses&#10;0&#10;Total MVP&#10;0"></textarea>
 
       <div class="botoes-calculadora">
         <button class="btn" onclick="calcularDesempenho()">Calcular Desempenho</button>
