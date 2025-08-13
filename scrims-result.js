@@ -139,10 +139,10 @@ function restaurarComposicoes() {
                 
                 if (elemento) {
                     elemento.innerHTML = `
-                        <img src="./images/sprites/${pokemon}.png" 
+                        <img src="./sprites/${pokemon}.png" 
                              alt="${pokemon}" 
                              class="w-10 h-10 object-contain"
-                             onerror="this.src='./images/sprites/noimage.png'">
+                             onerror="this.src='./sprites/noimage.png'">
                         <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
                     `;
                     
@@ -268,10 +268,10 @@ function abrirModalPokemon(elementId, pokemonAtual = null) {
                         return `
                             <div class="text-center ${isUsado ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} p-1 rounded transition-all" 
                                  ${isUsado ? '' : `onclick="selecionarPokemon('${elementId}', '${pokemon}')"`}>
-                                <img src="./images/sprites/${pokemon}.png" 
+                                <img src="./sprites/${pokemon}.png" 
                                      alt="${pokemon}" 
                                      class="w-10 h-10 mx-auto object-contain mb-1"
-                                     onerror="this.src='./images/sprites/noimage.png'">
+                                     onerror="this.src='./sprites/noimage.png'">
                                 <div class="text-xs capitalize truncate">${pokemon.replace(/[-_]/g, ' ')}</div>
                                 ${isUsado ? '<div class="text-xs text-red-500">Em uso</div>' : ''}
                             </div>
@@ -322,10 +322,10 @@ function selecionarPokemon(elementId, pokemon) {
     
     // Atualiza o elemento com imagem e nome
     elemento.innerHTML = `
-        <img src="./images/sprites/${pokemon}.png" 
+        <img src="./sprites/${pokemon}.png" 
              alt="${pokemon}" 
              class="w-10 h-10 object-contain"
-             onerror="this.src='./images/sprites/noimage.png'">
+             onerror="this.src='./sprites/noimage.png'">
         <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
     `;
     
