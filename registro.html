@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro Firebase</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: url('background.jpg');
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    width: 300px;
+    text-align: center;
+  }
+  h2 { margin-bottom: 20px; color: #333; }
+  input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  button {
+    border: none;
+    background-color: #ff7500;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover { background-color: #ffad00; }
+  .google-btn {
+    background-color: #DB4437;
+  }
+  .google-btn:hover {
+    background-color: #A33629;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Registrar</h2>
+  <input type="email" id="email" placeholder="Digite seu email">
+  <input type="password" id="senha" placeholder="Digite sua senha">
+  <button id="btnRegistrar">Criar Conta</button>
+  <button id="btnGoogle">Registrar com Google</button>
+  <button id="btnVoltar">Voltar ao Login</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+    authDomain: "site-grn.firebaseapp.com",
+    projectId: "site-grn",
+    storageBucket: "site-grn.firebasestorage.app",
+    messagingSenderId: "27613322806",
+    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+    measurementId: "G-84NHN394WF"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  const email = document.getElementById("email");
+  const senha = document.getElementById("senha");
+  const btnRegistrar = document.getElementById("btnRegistrar");
+  const btnGoogle = document.getElementById("btnGoogle");
+  const btnVoltar = document.getElementById("btnVoltar");
+
+  // Criar conta com email e senha
+  btnRegistrar.addEventListener("click", () => {
+    createUserWithEmailAndPassword(auth, email.value, senha.value)
+      .then(() => {
+        alert("Conta criada com sucesso!");
+        window.location.href = "index.html";
+      })
+      .catch(err => alert(err.message));
+  });
+
+  // Criar conta com Google
+  btnGoogle.addEventListener("click", () => {
+    signInWithPopup(auth, provider)
+      .then(() => {
+        alert("Conta criada com Google!");
+        window.location.href = "index.html";
+      })
+      .catch(err => alert(err.message));
+  });
+
+  // Voltar para login
+  btnVoltar.addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
+</script>
+</body>
+</html>
