@@ -1,0 +1,116 @@
+/* Estilos específicos para a página de Materiais */
+
+/* Container das ferramentas */
+.ferramentas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+/* Estilo de cada ferramenta */
+.ferramenta {
+  background-color: rgba(26, 26, 26, 0.9);
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.2);
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ferramenta:hover,
+.ferramenta:focus-within {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 173, 0, 0.4);
+  outline: none;
+}
+
+.ferramenta img {
+  width: auto; /* Largura automática baseada na altura */
+  max-width: 100%; /* Nunca ultrapassar a largura do container */
+  border-radius: 10px;
+  object-fit: contain; /* Alterado de 'cover' para 'contain' para mostrar imagem inteira */
+  height: 60px; /* Aumentei um pouco para melhor visualização */
+  margin-bottom: 10px;
+  filter: grayscale(20%);
+  transition: all 0.3s ease;
+  margin: 0 auto 15px;
+  display: block;
+}
+
+.ferramenta:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.05); /* Efeito de zoom suave no hover */
+}
+.ferramenta h3 {
+  margin: 15px 0 10px;
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.ferramenta .descricao {
+  font-size: 1rem;
+  margin: 15px 0 25px;
+  color: #ddd;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botão desabilitado */
+.btn-comprar:disabled {
+  background: linear-gradient(45deg, #555, #777);
+  color: #aaa;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-comprar:disabled:hover {
+  background: linear-gradient(45deg, #555, #777);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .ferramentas {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .ferramenta {
+    padding: 20px;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  
+  .ferramenta img {
+    height: 180px;
+  }
+  
+  .ferramenta .descricao {
+    min-height: auto;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ferramenta {
+    padding: 15px;
+  }
+  
+  .ferramenta h3 {
+    font-size: 1.2rem;
+  }
+  
+  .ferramenta .descricao {
+    font-size: 0.95rem;
+    margin: 10px 0 20px;
+  }
+}

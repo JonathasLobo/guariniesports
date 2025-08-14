@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Conheça os times da Guariní e-sport, focados em Pokémon Unite, VGC, TCG e Pokémon GO, com jogadores e staff dedicados." />
-  <title>Times | Guariní e-sport</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Ferramentas e materiais da Guariní e-sport: calculadoras e utilitários para jogadores." />
+  <title>Materiais Guariní e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="materiais.css" />
 </head>
 <body>
-   <a id="topo"></a>
+  <a id="topo"></a>
   
   <header>
     <div class="header-wrapper">
@@ -18,23 +19,21 @@
         <ul>
           <li><a href="loja.html">Loja</a></li>
           <li><a href="sobre.html">Sobre</a></li>
-          
         </ul>
       </nav>
       
       <!-- Logo Central -->
       <div class="logo-center">
-        <a href="index.html" aria-label="Início" class="ativo">
+        <a href="index.html" aria-label="Início">
           <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
 
-      
       <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
           <li><a href="times.html">Times</a></li>
-          <li><a href="material.html">Material</a></li>
+          <li><a href="material.html" class="ativo">Material</a></li>
         </ul>
       </nav>
       
@@ -50,9 +49,9 @@
         <ul>
           <li><a href="index.html">Início</a></li>
           <li><a href="sobre.html">Sobre</a></li>
-          <li><a href="times.html" class="ativo">Times</a></li>
+          <li><a href="times.html">Times</a></li>
           <li><a href="loja.html">Loja</a></li>
-          <li><a href="material.html">Calculadora</a></li>
+          <li><a href="material.html" class="ativo">Material</a></li>
           <li><a href="contato.html">Contato</a></li>
         </ul>
       </nav>
@@ -60,51 +59,28 @@
   </header>
 
   <main>
-    <h2>Nossos Times</h2>
-    <section class="times" style="background-color: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
-      <div class="time">
-        <h3>Pokémon Unite</h3>
-        <p>Equipe competitiva focada em torneios nacionais e internacionais de Pokémon Unite.</p>
-        <ul>
-          <li>Coach: Shad</li>
-          <li>Analista: GK1ng</li>
-          <li>Manager: Leone</li>
-          <li>Jogadores: Almeida, Anúbis, Draxx, Deivid e Draco.</li>
-        </ul>
-      </div>
+    <h2>Ferramentas</h2>
+    <section class="ferramentas" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
+      <article class="ferramenta">
+        <img src="./img-site/calculadora.png" alt="Calculadora de Performance">
+        <h3>Calculadora de Performance</h3>
+        <p class="descricao">Calcule suas estatísticas de jogo e compare com outros jogadores</p>
+        <button type="button" class="btn-comprar" onclick="window.location.href='desempenho.html'">Acessar</button>
+      </article>
 
-      <div class="time">
-        <h3>Pokémon VGC</h3>
-        <p>Jogador especializado em batalhas estratégicas no circuito oficial do Video Game Championships (VGC).</p>
-        <ul>
-          <li>Jogador: Lobo</li>
-        </ul>
-      </div>
+      <article class="ferramenta">
+        <img src="./img-site/agenda.png" alt="Agenda Semanal" />
+        <h3>Agenda Semanal</h3>
+        <p class="descricao">Agenda Semanal da Guariní</p>
+        <button type="button" class="btn-comprar" onclick="window.location.href='agenda.html'">Acessar</button>
+      </article>
 
-      <div class="time">
-        <h3>Yu-Gi-Oh! TCG</h3>
-        <p>Jogador experiente no competitivo do card game de Yu-Gi-Oh!, participando de ligas e campeonatos.</p>
-        <ul>
-          <li>Jogador: Yagami</li>
-        </ul>
-      </div>
-
-     <div class="time">
-  <h3>Streamers</h3>
-  <p>Equipe de Streamers parceiros.</p>
-  <ul>
-    <li>
-      LeandroDecidueye:
-      <a href="https://www.twitch.tv/leandrodecidueye" target="_blank" class="botao-link">Visitar canal</a>
-    </li>
-  </ul>
-  <ul>
-    <li>
-      Hiragimoi:
-      <a href="https://www.twitch.tv/hiragimoi" target="_blank" class="botao-link">Visitar canal</a>
-    </li>
-  </ul>
-</div>
+      <article class="ferramenta">
+        <img src="./shop/embreve.jpg" alt="Em Breve" />
+        <h3>Em Breve</h3>
+        <p class="descricao">Nova ferramenta em desenvolvimento</p>
+        <button type="button" class="btn-comprar" disabled>Indisponível</button>
+      </article>
     </section>
 
     <p style="text-align:center; margin-top: 2rem;">

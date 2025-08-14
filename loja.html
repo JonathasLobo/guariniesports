@@ -9,18 +9,54 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <a id="topo"></a>
+  
   <header>
-    <h1>Guariní e-sport</h1>
-    <nav aria-label="Menu principal">
-      <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="sobre.html">Sobre</a></li>
-        <li><a href="times.html">Times</a></li>
-        <li><a href="loja.html" class="ativo">Loja</a></li>
-        <li><a href="desempenho.html">Calculadora</a></li>
-        <li><a href="contato.html">Contato</a></li>
-      </ul>
-    </nav>
+    <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          
+        </ul>
+      </nav>
+      
+      <!-- Logo Central -->
+      <div class="logo-center">
+        <a href="index.html" aria-label="Início" class="ativo">
+          <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
+        </a>
+      </div>
+
+      
+      <!-- Navegação Desktop - Direita -->
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="times.html">Times</a></li>
+          <li><a href="material.html">Material</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Botão Menu Mobile -->
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Menu Mobile -->
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="times.html">Times</a></li>
+          <li><a href="loja.html" class="ativo">Loja</a></li>
+          <li><a href="material.html">Calculadora</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main>
@@ -58,5 +94,33 @@
     <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">Conheça nossas redes sociais</a></p>
     <p>Created by: Lobo</p>
   </footer>
+
+  <script>
+    // Funcionalidade do menu mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('ativo');
+      mobileMenu.classList.toggle('ativo');
+    });
+
+    // Fechar menu ao clicar em um link
+    const mobileLinks = document.querySelectorAll('.mobile-menu a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      });
+    });
+
+    // Fechar menu ao redimensionar para desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      }
+    });
+  </script>
 </body>
 </html>

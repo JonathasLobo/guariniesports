@@ -1,0 +1,389 @@
+body { 
+    font-family: Arial, sans-serif; 
+    background: #000 url('./background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+  }
+  h1,h2 { 
+    text-align:center; 
+    color: white;
+  }
+  table { 
+    border-collapse:collapse; 
+    width:100%; 
+    background:rgba(255,255,255,0.9); 
+    margin-bottom:20px; 
+  }
+  th,td { 
+    border:1px solid #ccc; 
+    padding:8px; 
+    text-align:center; 
+    vertical-align:top; 
+    min-height:120px; 
+  }
+  th { 
+    background:#333; 
+    color:white; 
+  }
+  .atividade { 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+    margin-bottom:8px; 
+    padding:6px; 
+    border-radius:6px; 
+    color:white; 
+    position:relative; 
+  }
+  .btns { 
+    margin-top:6px; 
+    display:flex; 
+    gap:6px; 
+    justify-content:flex-end; 
+    flex-wrap:wrap; 
+  }
+  .btns button { 
+    font-size:12px; 
+    padding:4px 8px; 
+    border:none; 
+    cursor:pointer; 
+    border-radius:4px; 
+  }
+  .btn-delete { 
+    background:#e53935; 
+    color:white; 
+  }
+  .btn-confirm { 
+    background:#43a047; 
+    color:white; 
+  }
+  .btn-copy { 
+    background:#1e88e5; 
+    color:white; 
+  }
+  .btn-result { 
+    background:#ff9800; 
+    color:white; 
+  }
+
+  /* Botão Copiar Dia */
+  .btn-copy-day {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-copy-day:hover {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-copy-day:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-copy-day:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+  }
+
+  /* Botões Copiar Dia - Fora da tabela */
+  #copy-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .btn-copy-day {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+  }
+
+  .btn-copy-day:hover {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-copy-day:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-copy-day:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+  }
+
+  /* cores */
+  .Livre { background:#4caf50; }
+  .Scrim { background:#d2a679; }
+  .Torneio { background:#e57373; }
+  .Reunião { background:#ba68c8; }
+  .PatchNote { background:#64b5f6; }
+  .VodReview { background:#2196f3; }
+  .Treino5stk { background:#0288d1; }
+  .TreinoDraft, .AnalisedeCall, .TreinodeMicro, .TreinodeMacro { background:#1976d2; }
+  /* histórico */
+  #historico { 
+    list-style: none; 
+    padding-left: 0; 
+    max-width: 100%; 
+  }
+  #historico li { 
+    background:rgba(255,255,255,0.9); 
+    padding:8px; 
+    margin:6px 0; 
+    border-radius:6px; 
+    border:1px solid #fff; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    gap:10px; 
+    flex-wrap:wrap; 
+    color: #333;
+  }
+  #historico li .txt { 
+    flex:1; 
+    margin-right:10px; 
+  }
+  form label { 
+    display:inline-block; 
+    margin-right:10px; 
+    margin-bottom:8px; 
+    color: white;
+  }
+  form select, form input { 
+    padding:4px; 
+    margin-left:6px; 
+    background: rgba(255,255,255,0.9);
+  }
+  #extraInfo { 
+    display:none; 
+    margin-top:10px; 
+    padding:10px; 
+    color: #333;
+  }
+  #extraInfo .extra-row { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+  }
+  #extraInfo .extra-row label { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 0; 
+    color: white;
+  }
+  #extraInfo .extra-row input, #extraInfo .extra-row select { 
+    flex: 1; 
+    min-width: 120px; 
+  }
+  .team-logo { 
+    width: 20px; 
+    height: 20px; 
+    margin-right: 5px; 
+    vertical-align: middle; 
+    object-fit: contain; 
+  }
+  .form-row { 
+    display: flex; 
+    flex-wrap: wrap; 
+    align-items: flex-end; 
+    gap: 10px; 
+    margin-bottom: 10px;
+  }
+  form button[type="submit"] {
+    height: fit-content;
+    margin-bottom: 0;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Ajustes específicos para campos de data e hora */
+  input[type="date"], input[type="time"] {
+    width: 140px;
+  }
+
+  /* Responsividade mobile */
+@media (max-width: 800px) {
+    body { 
+      padding: 10px;
+      overflow-x: hidden;
+    }
+    
+    form { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      width: 100%;
+    }
+    
+    form label { 
+      width: 100%; 
+      margin-bottom: 0; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    /* Padronização de todos os campos */
+    form select, 
+    form input:not([type="date"]):not([type="time"]), 
+    form button {
+      width: 100%;
+      font-size: 16px;
+      box-sizing: border-box;
+      height: 40px; /* Altura padronizada */
+      padding: 8px 12px;
+    }
+    
+    /* Campos de data e hora com tratamento especial */
+    input[type="date"], 
+    input[type="time"] {
+      width: 100%;
+      font-size: 16px;
+      box-sizing: border-box;
+      height: 40px; /* Mesma altura dos outros campos */
+      padding: 8px 12px;
+      -webkit-appearance: none; /* Remove estilo padrão no iOS */
+      -moz-appearance: none;
+      appearance: none;
+    }
+    
+    /* Ajuste adicional para ícones nos inputs de data/hora */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Tabela */
+    table {
+      width: 100%;
+      table-layout: fixed;
+    }
+    
+    table, thead, tbody, th, td, tr { 
+      display: block; 
+      width: 100%; 
+    }
+    
+    thead { display: none; }
+    
+    td { 
+      border: 1px solid #fff;
+      padding: 10px;
+      margin-bottom: 12px;
+      background: #fff;
+      box-sizing: border-box;
+    }
+    
+    td {
+      border-left: none;
+      border-right: none;
+    }
+    
+    td::before { 
+      content: attr(id); 
+      text-transform: capitalize; 
+      font-weight: bold; 
+      display: block; 
+      margin-bottom: 8px; 
+      color: #333; 
+    }
+    
+    .atividade { font-size: 14px; }
+    
+    .btns {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    
+    .btns button {
+      flex: 1 1 48%;
+      min-width: 100px;
+      margin-top: 5px;
+    }
+
+    /* Botão Copiar Dia - Mobile */
+    .btn-copy-day {
+      font-size: 14px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    /* Botões Copiar Dia - Mobile */
+    #copy-buttons-container {
+      flex-direction: column;
+      gap: 8px;
+      margin: 15px 0;
+      padding: 10px;
+    }
+
+    .btn-copy-day {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px 12px;
+      min-width: auto;
+    }
+    
+    #historico li {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    #historico li .txt {
+      margin-bottom: 8px;
+    }
+    
+    #historico li button {
+      width: 48%;
+      min-width: 100px;
+    }
+    
+    .form-row { 
+      flex-direction: column; 
+      gap: 10px; 
+    }
+    
+    table {
+      margin-left: 0;
+      margin-right: 0;
+    }
+}
