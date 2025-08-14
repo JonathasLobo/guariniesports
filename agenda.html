@@ -136,44 +136,81 @@
   const listaNotas = document.getElementById("listaNotas");
 
   // Função para salvar no Firestore
-  btnSalvar.addEventListener("click", async () => {
-    const titulo = document.getElementById("titulo").value;
-    const descricao = document.getElementById("descricao").value;
+  btnSalvar.addEventListener("click", async (e) => {
+  e.preventDefault(); // evita refresh da página
 
-    if (!titulo || !descricao) {
-      alert("Preencha todos os campos!");
-      return;
-    }
+  const data = document.getElementById("data").value;
+  const horario = document.getElementById("horario").value;
+  const atividade = document.getElementById("atividade").value;
+  const responsavel = document.getElementById("responsavel").value;
+  const participantes = document.getElementById("participantes").value;
+  const adversario = document.getElementById("adversario").value;
+  const formato = document.getElementById("formato").value;
+  const banimentos = document.getElementById("banimentos").value;
+  const campeonato = document.getElementById("campeonato").value;
 
-    try {
-      await addDoc(collection(db, "agenda"), {
-        titulo: titulo,
-        descricao: descricao,
-        data: new Date()
-      });
-      document.getElementById("titulo").value = "";
-      document.getElementById("descricao").value = "";
-    } catch (e) {
-      alert("Erro ao salvar: " + e.message);
-    }
-  });
+  if (!data || !horario || !atividade || !responsavel || !participantes) {
+    alert("Preencha todos os campos obrigatórios!");
+    return;
+  }
 
-  // Leitura em tempo real
-  const q = query(collection(db, "agenda"), orderBy("data", "desc"));
-  onSnapshot(q, (snapshot) => {
-    listaNotas.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const nota = doc.data();
-      const div = document.createElement("div");
-      div.classList.add("nota");
-      div.innerHTML = `
-        <h3>${nota.titulo}</h3>
-        <p>${nota.descricao}</p>
-        <p class="data">${nota.data.toDate().toLocaleString()}</p>
-      `;
-      listaNotas.appendChild(div);
+  try {
+    await addDoc(collection(db, "agenda"), {
+      data,
+      horario,
+      atividade,
+      responsavel,
+      participantes,
+      adversario,
+      formato,
+      banimentos,
+      campeonato,
+      criadoEm: new Date()
     });
+    
+    // Limpar formulário
+    document.getElementById("formAtividade").reset();
+  } catch (e) {
+    alert("Erro ao salvar: " + e.message);
+  }
+});
+
+const diasSemana = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+
+const tbodyCells = {
+  "segunda": document.getElementById("segunda"),
+  "terca": document.getElementById("terca"),
+  "quarta": document.getElementById("quarta"),
+  "quinta": document.getElementById("quinta"),
+  "sexta": document.getElementById("sexta"),
+  "sabado": document.getElementById("sabado"),
+  "domingo": document.getElementById("domingo")
+};
+
+// Leitura em tempo real
+const q = query(collection(db, "agenda"), orderBy("data"));
+onSnapshot(q, (snapshot) => {
+  // Limpar todas as células
+  Object.values(tbodyCells).forEach(td => td.innerHTML = "");
+
+  snapshot.forEach(doc => {
+    const item = doc.data();
+    const dia = new Date(item.data).getDay(); // 0=domingo, 1=segunda...
+    const td = tbodyCells[diasSemana[dia]];
+
+    const div = document.createElement("div");
+    div.classList.add("agenda-item");
+    div.innerHTML = `
+      <strong>${item.horario} - ${item.atividade}</strong><br>
+      Responsável: ${item.responsavel}<br>
+      Participantes: ${item.participantes}<br>
+      ${item.adversario ? "Adversário: " + item.adversario + "<br>" : ""}
+      ${item.campeonato ? "Campeonato: " + item.campeonato + "<br>" : ""}
+    `;
+    td.appendChild(div);
   });
+});
+
 </script>
 
 </body>
