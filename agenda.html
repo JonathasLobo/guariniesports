@@ -53,7 +53,7 @@
       </select>
     </label>
     <label>Confirmar Dados:
-      <button type="submit">Adicionar</button>
+      <button id="btnSalvar" type="submit">Adicionar</button>
     </label>
   </div>
 
@@ -111,5 +111,70 @@
 <h2>Histórico de Atividades Concluídas</h2>
 <ul id="historico"></ul>
 <script src="agenda.js"></script>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  // Configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+    authDomain: "site-grn.firebaseapp.com",
+    projectId: "site-grn",
+    storageBucket: "site-grn.firebasestorage.app",
+    messagingSenderId: "27613322806",
+    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+    measurementId: "G-84NHN394WF"
+  };
+
+  // Inicializa Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const btnSalvar = document.getElementById("btnSalvar");
+  const listaNotas = document.getElementById("listaNotas");
+
+  // Função para salvar no Firestore
+  btnSalvar.addEventListener("click", async () => {
+    const titulo = document.getElementById("titulo").value;
+    const descricao = document.getElementById("descricao").value;
+
+    if (!titulo || !descricao) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "agenda"), {
+        titulo: titulo,
+        descricao: descricao,
+        data: new Date()
+      });
+      document.getElementById("titulo").value = "";
+      document.getElementById("descricao").value = "";
+    } catch (e) {
+      alert("Erro ao salvar: " + e.message);
+    }
+  });
+
+  // Leitura em tempo real
+  const q = query(collection(db, "agenda"), orderBy("data", "desc"));
+  onSnapshot(q, (snapshot) => {
+    listaNotas.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const nota = doc.data();
+      const div = document.createElement("div");
+      div.classList.add("nota");
+      div.innerHTML = `
+        <h3>${nota.titulo}</h3>
+        <p>${nota.descricao}</p>
+        <p class="data">${nota.data.toDate().toLocaleString()}</p>
+      `;
+      listaNotas.appendChild(div);
+    });
+  });
+</script>
+
 </body>
 </html>
