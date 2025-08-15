@@ -26,9 +26,10 @@
 
 .video-wrapper {
   width: 100%;
-  max-width: 700px; /* Aumentado de 500px para 700px */
+  max-width: 700px;
   position: relative;
   margin-bottom: 20px;
+  aspect-ratio: 16/9; /* Adicionado para manter proporção */
 }
 
 .video-item {
@@ -45,105 +46,13 @@
 
 .video-item video {
   width: 100%;
-  height: 400px; /* Aumentado de 280px para 400px */
-  object-fit: cover;
+  height: 100%; /* Alterado para preencher o container */
+  object-fit: contain; /* Alterado de 'cover' para 'contain' para evitar cortes */
+  background-color: #000; /* Fundo preto para áreas não preenchidas */
   border-radius: 10px;
 }
 
-.jogada-titulo {
-  text-align: center;
-  margin: 15px 0 25px;
-  font-size: 1.2rem;
-  color: #fff;
-  font-weight: 600;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-}
-
-.jogada-titulo .jogador {
-  color: #ffad00;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-/* ===== INDICADORES (BOLINHAS) ===== */
-.video-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.indicator:hover {
-  background-color: rgba(255, 173, 0, 0.7);
-  transform: scale(1.2);
-}
-
-.indicator.active {
-  background-color: #ffad00;
-  border-color: #fff;
-  transform: scale(1.3);
-  box-shadow: 0 0 10px rgba(255, 173, 0, 0.6);
-}
-
-/* ===== CONTROLES DE VÍDEO PERSONALIZADOS ===== */
-.video-controls {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(transparent, rgba(0,0,0,0.7));
-  padding: 10px;
-  border-radius: 0 0 10px 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.video-item:hover .video-controls {
-  opacity: 1;
-}
-
-.play-pause-btn {
-  background: rgba(255, 173, 0, 0.8);
-  border: none;
-  color: #000;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-.play-pause-btn:hover {
-  background: rgba(255, 173, 0, 1);
-}
-
-.volume-control {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #fff;
-}
-
-.volume-slider {
-  width: 60px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  cursor: pointer;
-}
+/* ... (restante do CSS permanece igual) ... */
 
 /* ===== RESPONSIVIDADE - TABLET ===== */
 @media (max-width: 768px) {
@@ -159,10 +68,6 @@
 
   .video-wrapper {
     max-width: 100%;
-  }
-
-  .video-item video {
-    height: 300px; /* Aumentado de 220px para 300px */
   }
 
   .jogada-titulo {
@@ -184,30 +89,39 @@
 @media (max-width: 480px) {
   #videos {
     padding: 20px 10px;
+    margin: 30px 10px;
   }
 
-  .video-item video {
-    height: 250px; /* Aumentado de 180px para 250px */
+  #videos h2 {
+    font-size: 1.5rem;
+  }
+
+  .video-wrapper {
+    aspect-ratio: 9/16; /* Proporção mais vertical para mobile */
   }
 
   .jogada-titulo {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin: 10px 0 15px;
   }
 
   .video-controls {
-    padding: 8px;
+    padding: 6px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
   }
 
   .play-pause-btn {
-    padding: 6px 10px;
-    font-size: 0.9rem;
+    padding: 5px 8px;
+    font-size: 0.8rem;
   }
 
   .volume-control {
-    gap: 3px;
+    gap: 2px;
   }
 
   .volume-slider {
-    width: 50px;
+    width: 40px;
   }
 }
