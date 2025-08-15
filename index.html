@@ -8,6 +8,7 @@
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="noticias.css">
+  <link rel="stylesheet" href="videos.css">
 </head>
 <body>
   <a id="topo"></a>
@@ -155,6 +156,71 @@
       </div>
     </section>
 
+    <!-- NOVA SEÇÃO DE VÍDEOS -->
+    <section id="videos">
+      <h2>Melhores Jogadas da Semana</h2>
+      <div class="video-container">
+        <div class="video-wrapper">
+          <!-- Vídeo 1 -->
+          <div class="video-item active" data-video="1">
+            <video muted loop>
+              <source src="./videos/jogada1.mp4" type="video/mp4">
+              Seu navegador não suporta vídeos HTML5.
+            </video>
+            <div class="video-controls">
+              <button class="play-pause-btn" onclick="togglePlay(this)">▶</button>
+              <div class="volume-control">
+                <span>🔊</span>
+                <div class="volume-slider" onclick="adjustVolume(this, event)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vídeo 2 -->
+          <div class="video-item" data-video="2">
+            <video muted loop>
+              <source src="./videos/jogada2.mp4" type="video/mp4">
+              Seu navegador não suporta vídeos HTML5.
+            </video>
+            <div class="video-controls">
+              <button class="play-pause-btn" onclick="togglePlay(this)">▶</button>
+              <div class="volume-control">
+                <span>🔊</span>
+                <div class="volume-slider" onclick="adjustVolume(this, event)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vídeo 3 -->
+          <div class="video-item" data-video="3">
+            <video muted loop>
+              <source src="./videos/jogada3.mp4" type="video/mp4">
+              Seu navegador não suporta vídeos HTML5.
+            </video>
+            <div class="video-controls">
+              <button class="play-pause-btn" onclick="togglePlay(this)">▶</button>
+              <div class="volume-control">
+                <span>🔊</span>
+                <div class="volume-slider" onclick="adjustVolume(this, event)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título das jogadas -->
+        <div class="jogada-titulo">
+          <span id="jogada-texto">Roubo de Rayquaza espetacular do <span class="jogador">LOBO</span></span>
+        </div>
+
+        <!-- Indicadores (bolinhas) -->
+        <div class="video-indicators">
+          <div class="indicator active" onclick="showVideo(1)"></div>
+          <div class="indicator" onclick="showVideo(2)"></div>
+          <div class="indicator" onclick="showVideo(3)"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="loja">
       <h2>Loja Oficial</h2>
       <div class="produtos">
@@ -186,6 +252,8 @@
     <p>Created by: Lobo</p>
   </footer>
 
+  <!-- Scripts -->
+  <script src="videos.js"></script>
   <script>
     // Funcionalidade do menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
