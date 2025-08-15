@@ -264,7 +264,8 @@ nav a.ativo {
 .hero-content {
   text-align: center;
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 50px;
+  margin-top: 110px;
 }
 
 .hero-content p {
