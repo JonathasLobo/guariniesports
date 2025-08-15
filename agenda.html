@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Agenda Semanal</title>
 <link rel="icon" href="favicon.png" type="image/png" />
-<link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="agenda.css" />
 </head>
 <body>
@@ -110,19 +109,18 @@
 <!-- HISTÓRICO -->
 <h2>Histórico de Atividades Concluídas</h2>
 <ul id="historico"></ul>
-<script src="agenda.js"></script>
 
 <!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
   // Configuração do Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
     authDomain: "site-grn.firebaseapp.com",
     projectId: "site-grn",
-    storageBucket: "site-grn.firebasestorage.app",
+    storageBucket: "site-grn.appspot.com",
     messagingSenderId: "27613322806",
     appId: "1:27613322806:web:ad4dc08ce043f19d530297",
     measurementId: "G-84NHN394WF"
@@ -131,87 +129,12 @@
   // Inicializa Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  window.firebase = { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc };
 
-  const btnSalvar = document.getElementById("btnSalvar");
-  const listaNotas = document.getElementById("listaNotas");
-
-  // Função para salvar no Firestore
-  btnSalvar.addEventListener("click", async (e) => {
-  e.preventDefault(); // evita refresh da página
-
-  const data = document.getElementById("data").value;
-  const horario = document.getElementById("horario").value;
-  const atividade = document.getElementById("atividade").value;
-  const responsavel = document.getElementById("responsavel").value;
-  const participantes = document.getElementById("participantes").value;
-  const adversario = document.getElementById("adversario").value;
-  const formato = document.getElementById("formato").value;
-  const banimentos = document.getElementById("banimentos").value;
-  const campeonato = document.getElementById("campeonato").value;
-
-  if (!data || !horario || !atividade || !responsavel || !participantes) {
-    alert("Preencha todos os campos obrigatórios!");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "agenda"), {
-      data,
-      horario,
-      atividade,
-      responsavel,
-      participantes,
-      adversario,
-      formato,
-      banimentos,
-      campeonato,
-      criadoEm: new Date()
-    });
-    
-    // Limpar formulário
-    document.getElementById("formAtividade").reset();
-  } catch (e) {
-    alert("Erro ao salvar: " + e.message);
-  }
-});
-
-const diasSemana = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
-
-const tbodyCells = {
-  "segunda": document.getElementById("segunda"),
-  "terca": document.getElementById("terca"),
-  "quarta": document.getElementById("quarta"),
-  "quinta": document.getElementById("quinta"),
-  "sexta": document.getElementById("sexta"),
-  "sabado": document.getElementById("sabado"),
-  "domingo": document.getElementById("domingo")
-};
-
-// Leitura em tempo real
-const q = query(collection(db, "agenda"), orderBy("data"));
-onSnapshot(q, (snapshot) => {
-  // Limpar todas as células
-  Object.values(tbodyCells).forEach(td => td.innerHTML = "");
-
-  snapshot.forEach(doc => {
-    const item = doc.data();
-    const dia = new Date(item.data).getDay(); // 0=domingo, 1=segunda...
-    const td = tbodyCells[diasSemana[dia]];
-
-    const div = document.createElement("div");
-    div.classList.add("agenda-item");
-    div.innerHTML = `
-      <strong>${item.horario} - ${item.atividade}</strong><br>
-      Responsável: ${item.responsavel}<br>
-      Participantes: ${item.participantes}<br>
-      ${item.adversario ? "Adversário: " + item.adversario + "<br>" : ""}
-      ${item.campeonato ? "Campeonato: " + item.campeonato + "<br>" : ""}
-    `;
-    td.appendChild(div);
-  });
-});
-
+  // Carrega o script da agenda após o Firebase estar pronto
+  const script = document.createElement('script');
+  script.src = 'agenda.js';
+  document.body.appendChild(script);
 </script>
-
 </body>
 </html>

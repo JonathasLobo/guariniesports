@@ -1,29 +1,32 @@
-const diasIdx = ["domingo","segunda","terca","quarta","quinta","sexta","sabado"];
-let agendaData = { segunda:[], terca:[], quarta:[], quinta:[], sexta:[], sabado:[], domingo:[] };
-let historico = [];
+const diasIdx = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+let agendaData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [], domingo: [] };
 
 const pokemons = [
-  "Absol","Aegislash","Alcremie","Armarouge","Azumarill","Blastoise","Blaziken","Blissey","Buzzwool","Ceruledge","Chandelure","Charizard",
-  "Cinderace","Clefable","Comfey","Cramorant","Crustle","Darkrai","Decidueye","Delphox","Dodrio","Dragapult","Dragonite","Duraludon","Eldegoss",
-  "Espeon","Falinks","Garchomp","Gardevoir","Gengar","Glaceon","Goodra","Greedent","Greninja","Gyarados","Ho-Oh","Hoopa","Inteleon","Lapras",
-  "Latias","Latios","Leafeon","Lucario","Machamp","Mamoswine","Meowscarada","Metagross","Mew","Mewtwo Y","Mewtwo X","Mimikyu","Miraidon",
-  "Mr. Mime","Ninetales","Pawmot","Pikachu","Psyduck","Raichu","Rapidash","Sableye","Scizor","Slowbro","Snorlax","Suicune","Sylveon","Talonflame",
-  "Tinkaton","Trevenant","Tsareena","Tyranitar","Umbreon","Urshifu","Venusaur","Wigglytuff","Zacian","Zeraora","Zoroark"
+  "Absol", "Aegislash", "Alcremie", "Armarouge", "Azumarill", "Blastoise", "Blaziken", "Blissey", "Buzzwool", 
+  "Ceruledge", "Chandelure", "Charizard", "Cinderace", "Clefable", "Comfey", "Cramorant", "Crustle", "Darkrai", 
+  "Decidueye", "Delphox", "Dodrio", "Dragapult", "Dragonite", "Duraludon", "Eldegoss", "Espeon", "Falinks", 
+  "Garchomp", "Gardevoir", "Gengar", "Glaceon", "Goodra", "Greedent", "Greninja", "Gyarados", "Ho-Oh", "Hoopa", 
+  "Inteleon", "Lapras", "Latias", "Latios", "Leafeon", "Lucario", "Machamp", "Mamoswine", "Meowscarada", 
+  "Metagross", "Mew", "Mewtwo Y", "Mewtwo X", "Mimikyu", "Miraidon", "Mr. Mime", "Ninetales", "Pawmot", 
+  "Pikachu", "Psyduck", "Raichu", "Rapidash", "Sableye", "Scizor", "Slowbro", "Snorlax", "Suicune", "Sylveon", 
+  "Talonflame", "Tinkaton", "Trevenant", "Tsareena", "Tyranitar", "Umbreon", "Urshifu", "Venusaur", "Wigglytuff", 
+  "Zacian", "Zeraora", "Zoroark"
 ];
 
+// Função corrigida para timezone
 function getDiaSemanaId(dataStr) {
   const p = dataStr.split("-");
-  const d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+  const d = new Date(p[0], p[1] - 1, p[2]);
   return diasIdx[d.getDay()];
 }
 
 function formatTeamNameForImage(teamName) {
-  return teamName + '.png';
+  return teamName.replace(/\s+/g, '-') + '.png';
 }
 
 function createActivityDiv(activity, day) {
   const div = document.createElement('div');
-  div.className = 'atividade ' + (activity.atividade ? activity.atividade.replace(/\s+/g,'') : '');
+  div.className = 'atividade ' + (activity.atividade ? activity.atividade.replace(/\s+/g, '') : '');
   
   let advDisplay = activity.adversario;
   if ((activity.atividade === "Scrim" || activity.atividade === "Torneio") && activity.adversario) {
@@ -66,8 +69,8 @@ function createActivityDiv(activity, day) {
 
   const btnResult = document.createElement('button');
   btnResult.className = 'btn-result';
-  btnResult.textContent = 'Cadastrar resultado';
-  btnResult.onclick = () => { window.location.href = 'scrims-result.html'; };
+  btnResult.textContent = 'Resultado';
+  btnResult.onclick = () => { window.location.href = 'scrims-result.html?id=' + activity.id; };
 
   btns.appendChild(btnDelete);
   btns.appendChild(btnConfirm);
@@ -77,26 +80,35 @@ function createActivityDiv(activity, day) {
   return div;
 }
 
-function deleteActivity(id, day) {
-  agendaData[day] = agendaData[day].filter(a => a.id !== id);
-  renderDay(day);
-  saveToStorage();
+async function deleteActivity(id, day) {
+  if(confirm('Tem certeza que deseja apagar esta atividade?')) {
+    try {
+      await firebase.deleteDoc(firebase.doc(firebase.getFirestore(), "agenda", id));
+      agendaData[day] = agendaData[day].filter(a => a.id !== id);
+      renderDay(day);
+    } catch (error) {
+      console.error("Erro ao deletar atividade:", error);
+      alert("Erro ao deletar atividade. Tente novamente.");
+    }
+  }
 }
 
-function confirmActivity(id, day) {
-  const idx = agendaData[day].findIndex(a => a.id === id);
-  if (idx === -1) return;
-  const [activity] = agendaData[day].splice(idx, 1);
-  historico.unshift(activity);
-  renderDay(day);
-  renderHistorico();
-  saveToStorage();
-}
-
-function deleteFromHistorico(index){
-  historico.splice(index,1);
-  renderHistorico();
-  saveToStorage();
+async function confirmActivity(id, day) {
+  if(confirm('Confirmar esta atividade como concluída?')) {
+    try {
+      await firebase.updateDoc(firebase.doc(firebase.getFirestore(), "agenda", id), {
+        status: "concluido"
+      });
+      const idx = agendaData[day].findIndex(a => a.id === id);
+      if (idx !== -1) {
+        agendaData[day].splice(idx, 1);
+        renderDay(day);
+      }
+    } catch (error) {
+      console.error("Erro ao confirmar atividade:", error);
+      alert("Erro ao confirmar atividade. Tente novamente.");
+    }
+  }
 }
 
 function copyActivityToClipboard(activity) {
@@ -106,12 +118,15 @@ function copyActivityToClipboard(activity) {
     texto += ` | Campeonato: ${activity.campeonato}`;
   }
   
-  if(activity.atividade === "Scrim" || activity.atividade === "Torneio"){
+  if(activity.atividade === "Scrim" || activity.atividade === "Torneio") {
     texto += ` | Versus: ${activity.adversario} | Formato: ${activity.formato} | Ban: ${activity.banimentos}`;
   }
   
   navigator.clipboard.writeText(texto).then(() => {
-    alert('Atividade copiada!');
+    alert('Atividade copiada para a área de transferência!');
+  }).catch(err => {
+    console.error('Falha ao copiar: ', err);
+    prompt('Copie manualmente:', texto);
   });
 }
 
@@ -135,7 +150,7 @@ function copyDayActivities(day) {
       texto += `   Campeonato: ${activity.campeonato}\n`;
     }
     
-    if(activity.atividade === "Scrim" || activity.atividade === "Torneio"){
+    if(activity.atividade === "Scrim" || activity.atividade === "Torneio") {
       texto += `   Adversário: ${activity.adversario}\n`;
       texto += `   Formato: ${activity.formato}\n`;
       texto += `   Banimentos: ${activity.banimentos}\n`;
@@ -145,7 +160,7 @@ function copyDayActivities(day) {
   });
   
   navigator.clipboard.writeText(texto).then(() => {
-    alert(`Todas as atividades de ${dayCapitalized.toLowerCase()} foram copiadas!`);
+    alert(`Todas as atividades de ${dayCapitalized} foram copiadas!`);
   }).catch(() => {
     alert('Erro ao copiar as atividades.');
   });
@@ -153,10 +168,12 @@ function copyDayActivities(day) {
 
 function renderDay(day) {
   const col = document.getElementById(day);
+  if (!col) return;
+  
   col.innerHTML = '';
   
   // Ordenar atividades por horário
-  agendaData[day].sort((a,b) => (a.horario || '').localeCompare(b.horario || ''));
+  agendaData[day].sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
   
   // Adicionar atividades
   agendaData[day].forEach(activity => {
@@ -164,17 +181,20 @@ function renderDay(day) {
   });
   
   // Adicionar botão de copiar dia
-  const copyBtn = document.createElement('button');
-  copyBtn.className = 'copy-day-btn';
-  copyBtn.textContent = `Copiar ${day.charAt(0).toUpperCase() + day.slice(1).replace('terca', 'Terça').replace('quarta', 'Quarta').replace('quinta', 'Quinta').replace('sabado', 'Sábado')}`;
-  copyBtn.onclick = () => { copyDayActivities(day); };
-  col.appendChild(copyBtn);
+  if (agendaData[day].length > 0) {
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-day-btn';
+    copyBtn.textContent = `Copiar ${day.charAt(0).toUpperCase() + day.slice(1).replace('terca', 'Terça').replace('quarta', 'Quarta').replace('quinta', 'Quinta').replace('sabado', 'Sábado')}`;
+    copyBtn.onclick = () => { copyDayActivities(day); };
+    col.appendChild(copyBtn);
+  }
 }
 
-function renderHistorico() {
+function renderHistorico(items) {
   const ul = document.getElementById('historico');
   ul.innerHTML = '';
-  historico.forEach((item, idx) => {
+  
+  items.slice(0, 50).forEach((item) => { // Limitar a 50 itens no histórico
     const li = document.createElement('li');
     const txt = document.createElement('div');
     txt.className = 'txt';
@@ -191,23 +211,34 @@ function renderHistorico() {
       txt.innerHTML += ` | Campeonato: ${item.campeonato}`;
     }
     
-    if(item.atividade === "Scrim" || item.atividade === "Torneio"){
+    if(item.atividade === "Scrim" || item.atividade === "Torneio") {
       txt.innerHTML += ` | Adv: ${advDisplay} | Formato: ${item.formato} | Ban: ${item.banimentos}`;
     }
     
     const btns = document.createElement('div');
-    btns.style.display = 'flex';
-    btns.style.gap = '6px';
+    btns.className = 'btns';
 
     const btnCopy = document.createElement('button');
     btnCopy.className = 'btn-copy';
     btnCopy.textContent = 'Copiar';
-    btnCopy.onclick = () => { navigator.clipboard.writeText(txt.textContent).then(()=>alert('Copiado!')); };
+    btnCopy.onclick = () => { 
+      navigator.clipboard.writeText(txt.textContent).then(() => alert('Copiado!'));
+    };
 
     const btnDelete = document.createElement('button');
     btnDelete.className = 'btn-delete';
     btnDelete.textContent = 'Apagar';
-    btnDelete.onclick = () => { deleteFromHistorico(idx); };
+    btnDelete.onclick = async () => { 
+      if(confirm('Tem certeza que deseja apagar este histórico?')) {
+        try {
+          await firebase.deleteDoc(firebase.doc(firebase.getFirestore(), "agenda", item.id));
+          li.remove();
+        } catch (error) {
+          console.error("Erro ao deletar histórico:", error);
+          alert("Erro ao deletar histórico. Tente novamente.");
+        }
+      }
+    };
 
     btns.appendChild(btnCopy);
     btns.appendChild(btnDelete);
@@ -218,26 +249,12 @@ function renderHistorico() {
   });
 }
 
-function saveToStorage() {
-  localStorage.setItem('agendaData', JSON.stringify(agendaData));
-  localStorage.setItem('historico', JSON.stringify(historico));
-}
-
-function loadFromStorage() {
-  const savedAgenda = JSON.parse(localStorage.getItem('agendaData'));
-  const savedHist = JSON.parse(localStorage.getItem('historico'));
-  if (savedAgenda) {
-    for (let k in agendaData) {
-      if (Array.isArray(savedAgenda[k])) agendaData[k] = savedAgenda[k];
-    }
-  }
-  if (Array.isArray(savedHist)) historico = savedHist;
-  for (let k of Object.keys(agendaData)) renderDay(k);
-  renderHistorico();
-}
-
-function loadBanimentos(){
+function loadBanimentos() {
   const banSelect = document.getElementById('banimentos');
+  if (!banSelect) return; // Verificação de segurança
+  
+  banSelect.innerHTML = '<option value="All Open">All Open</option>';
+  
   pokemons.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p;
@@ -246,7 +263,8 @@ function loadBanimentos(){
   });
 }
 
-document.getElementById('atividade').addEventListener('change', function(){
+// Event Listeners
+document.getElementById('atividade').addEventListener('change', function() {
   const extraInfo = document.getElementById('extraInfo');
   const campeonatoLabel = document.getElementById('campeonatoLabel');
   const formatoSelect = document.getElementById('formato');
@@ -261,6 +279,9 @@ document.getElementById('atividade').addEventListener('change', function(){
       <option value="2x2">2x2</option>
       <option value="3x3">3x3</option>
     `;
+    
+    // CORREÇÃO: Carregar banimentos APÓS mostrar o extraInfo
+    loadBanimentos();
   } 
   else if(this.value === "Torneio") {
     extraInfo.style.display = 'block';
@@ -274,22 +295,26 @@ document.getElementById('atividade').addEventListener('change', function(){
       <option value="2x2">2x2</option>
       <option value="3x3">3x3</option>
     `;
+    
+    // CORREÇÃO: Carregar banimentos APÓS mostrar o extraInfo
+    loadBanimentos();
   }
   else {
     extraInfo.style.display = 'none';
   }
 });
 
-document.getElementById('formAtividade').addEventListener('submit', function(e) {
+document.getElementById('formAtividade').addEventListener('submit', async function(e) {
   e.preventDefault();
+  
   const data = document.getElementById('data').value;
   const horario = document.getElementById('horario').value;
   const atividade = document.getElementById('atividade').value;
   const responsavel = document.getElementById('responsavel').value;
   const participantes = document.getElementById('participantes').value;
-  let adversario="", formato="", banimentos="", campeonato="";
+  let adversario = "", formato = "", banimentos = "", campeonato = "";
 
-  if(atividade === "Scrim" || atividade === "Torneio"){
+  if(atividade === "Scrim" || atividade === "Torneio") {
     adversario = document.getElementById('adversario').value.trim();
     formato = document.getElementById('formato').value;
     banimentos = document.getElementById('banimentos').value;
@@ -317,17 +342,85 @@ document.getElementById('formAtividade').addEventListener('submit', function(e) 
 
   const activityObj = {
     id: Date.now().toString(),
-    data, horario, atividade, responsavel, participantes,
-    adversario, formato, banimentos, campeonato
+    data, 
+    horario, 
+    atividade, 
+    responsavel, 
+    participantes,
+    adversario, 
+    formato, 
+    banimentos, 
+    campeonato,
+    status: "pendente",
+    criadoEm: new Date().toISOString()
   };
 
-  agendaData[dia].push(activityObj);
-  renderDay(dia);
-  saveToStorage();
-  this.reset();
-  document.getElementById('extraInfo').style.display = 'none';
+  try {
+    // Salvar no Firebase
+    await firebase.addDoc(firebase.collection(firebase.getFirestore(), "agenda"), activityObj);
+    
+    // Atualizar interface
+    agendaData[dia].push(activityObj);
+    renderDay(dia);
+    
+    // Limpar formulário
+    this.reset();
+    document.getElementById('extraInfo').style.display = 'none';
+    alert('Atividade salva com sucesso!');
+  } catch (error) {
+    console.error("Erro ao salvar no Firebase:", error);
+    alert("Erro ao salvar atividade. Tente novamente.");
+  }
 });
 
-// Inicialização
-loadBanimentos();
-loadFromStorage();
+// Inicialização e carregamento dos dados
+document.addEventListener('DOMContentLoaded', async () => {
+  // CORREÇÃO: Removida a chamada loadBanimentos() daqui
+  
+  // Configurar data padrão para hoje
+  const today = new Date();
+  const dateStr = today.toISOString().split('T')[0];
+  document.getElementById('data').value = dateStr;
+  
+  // Configurar horário padrão para próxima hora redonda
+  const nextHour = today.getHours() + 1;
+  document.getElementById('horario').value = `${nextHour.toString().padStart(2, '0')}:00`;
+
+  // Carregar dados do Firebase
+  try {
+    const db = firebase.getFirestore();
+    const q = firebase.query(
+      firebase.collection(db, "agenda"), 
+      firebase.orderBy("data")
+    );
+    
+    const unsubscribe = firebase.onSnapshot(q, (snapshot) => {
+      // Resetar dados
+      agendaData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [], domingo: [] };
+      const historico = [];
+      
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const dia = getDiaSemanaId(data.data);
+        
+        if(data.status === "concluido") {
+          historico.push(data);
+        } else {
+          if(dia && agendaData[dia]) {
+            agendaData[dia].push(data);
+          }
+        }
+      });
+      
+      // Renderizar todos os dias
+      Object.keys(agendaData).forEach(dia => renderDay(dia));
+      renderHistorico(historico);
+    });
+    
+    // Armazenar a função unsubscribe para limpeza
+    window.unsubscribeFirebase = unsubscribe;
+  } catch (error) {
+    console.error("Erro ao carregar dados:", error);
+    alert("Erro ao carregar agenda. Recarregue a página.");
+  }
+});
