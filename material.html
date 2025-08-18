@@ -100,24 +100,12 @@
     <p>Created by: Lobo</p>
   </footer>
 
-  <button id="loginBtn">Login</button>
-  <button id="logoutBtn" style="display:none;">Logout</button>
-
-  <div id="calcTool" style="display:none;">
-    <h2>Calculadora</h2>
-    <!-- Sua calculadora aqui -->
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
       getAuth, 
-      signInWithPopup, 
-      GoogleAuthProvider, 
-      signOut, 
-      onAuthStateChanged,
-      setPersistence,
-      browserSessionPersistence
+      onAuthStateChanged, 
+      signOut 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { 
       getFirestore, 
@@ -140,39 +128,36 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Configurar persistência de sessão
-    setPersistence(auth, browserSessionPersistence)
-      .then(() => {
-        console.log("Persistência de autenticação configurada");
-      })
-      .catch((error) => {
-        console.error("Erro na persistência:", error);
-      });
-
     const loginLogoutBtn = document.getElementById("loginLogoutBtn");
     const userStatus = document.getElementById("userStatus");
     const userName = document.getElementById("userName");
     const calcBtn = document.getElementById("calcBtn");
     const accessMessage = document.getElementById("accessMessage");
 
-    // Verificar estado de autenticação imediatamente
-    const user = auth.currentUser;
-    if (user) {
-      updateUI(user);
-      checkUserPermissions(user);
+    // Função para lidar com login
+    async function handleLogin() {
+      try {
+        // Armazena a página atual para redirecionamento
+        sessionStorage.setItem('redirectAfterLogin', 'material.html');
+        // Redireciona para a página de login
+        window.location.href = 'login.html';
+      } catch (err) {
+        console.error("Erro ao redirecionar para login:", err);
+        alert('Erro ao tentar fazer login. Por favor, tente novamente.');
+      }
     }
 
-    // Monitorar mudanças no estado de autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        updateUI(user);
-        checkUserPermissions(user);
-      } else {
-        updateUI(null);
-        setupUnauthenticatedUI();
+    // Função para lidar com logout
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error("Erro no logout:", error);
+        alert('Erro ao fazer logout. Tente novamente.');
       }
-    });
+    }
 
+    // Atualiza a UI baseada no estado de autenticação
     function updateUI(user) {
       if (user) {
         loginLogoutBtn.textContent = 'Logout';
@@ -188,6 +173,7 @@
       }
     }
 
+    // Verifica permissões do usuário
     async function checkUserPermissions(user) {
       const docRef = doc(db, "usuarios", user.uid);
       const docSnap = await getDoc(docRef);
@@ -202,7 +188,6 @@
           setupRestrictedAccessUI();
         }
       } else {
-        // Criar registro se não existir
         await setDoc(doc(db, "usuarios", user.uid), {
           email: user.email,
           role: 'user',
@@ -222,41 +207,23 @@
       };
     }
 
-    function setupUnauthenticatedUI() {
-      calcBtn.onclick = () => {
-        accessMessage.textContent = "Faça login para acessar esta ferramenta";
-        accessMessage.style.display = 'block';
-        setTimeout(() => {
-          accessMessage.style.display = 'none';
-        }, 3000);
-      };
-    }
-
-    async function handleLogout() {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error("Erro no logout:", error);
+    // Monitora estado de autenticação
+    onAuthStateChanged(auth, async (user) => {
+      updateUI(user);
+      
+      if (user) {
+        await checkUserPermissions(user);
+      } else {
+        calcBtn.onclick = () => {
+          accessMessage.textContent = "Faça login para acessar esta ferramenta";
+          accessMessage.style.display = 'block';
+          setTimeout(() => {
+            accessMessage.style.display = 'none';
+          }, 3000);
+        };
       }
-    }
+    });
 
-    async function handleLogin() {
-      const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const userDoc = await getDoc(doc(db, "usuarios", result.user.uid));
-        
-        if (!userDoc.exists()) {
-          await setDoc(doc(db, "usuarios", result.user.uid), {
-            email: result.user.email,
-            role: 'user',
-            createdAt: new Date()
-          });
-        }
-      } catch (err) {
-        console.error("Erro ao logar:", err);
-      }
-    }
     // Funcionalidade do menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
     const mobileMenu = document.querySelector('.mobile-menu');

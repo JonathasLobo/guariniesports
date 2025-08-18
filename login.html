@@ -130,7 +130,14 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  
+  // Configuração do Google Provider
   const provider = new GoogleAuthProvider();
+  provider.addScope('email');
+  provider.addScope('profile');
+  provider.setCustomParameters({
+    prompt: 'select_account'
+  });
 
   // Elementos do DOM
   const email = document.getElementById("email");
@@ -168,6 +175,19 @@
     }
   }
 
+  // Função para login com Google (AGORA DEFINIDA CORRETAMENTE)
+  async function signInWithGoogle() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Usuário logado com Google:", user);
+      return result;
+    } catch (error) {
+      console.error("Erro detalhado do Google:", error);
+      throw error;
+    }
+  }
+
   // Função para tratar erros do Firebase
   function getErrorMessage(errorCode) {
     switch (errorCode) {
@@ -183,8 +203,14 @@
         return 'Erro de conexão. Verifique sua internet.';
       case 'auth/invalid-credential':
         return 'Email ou senha incorretos.';
+      case 'auth/popup-closed-by-user':
+        return 'Login cancelado pelo usuário.';
+      case 'auth/popup-blocked':
+        return 'Popup bloqueado pelo navegador. Permita popups para este site.';
+      case 'auth/cancelled-popup-request':
+        return 'Solicitação de popup cancelada.';
       default:
-        return 'Erro no login. Tente novamente.';
+        return `Erro no login: ${errorCode}. Tente novamente.`;
     }
   }
 
@@ -233,26 +259,34 @@
     }
   });
 
-  // Login com Google
+  // Login com Google (CORRIGIDO)
   btnGoogle.addEventListener("click", async () => {
-  hideAllMessages();
-  setLoading(true);
+    hideAllMessages();
+    setLoading(true);
 
-  try {
-    await signInWithGoogle();
-    showMessage(successMessage, "Login com Google realizado com sucesso!");
-    
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1000);
-    
-  } catch (error) {
-    console.error("Erro no login com Google:", error);
-    showMessage(errorMessage, "Erro no login com Google. Tente novamente.");
-  } finally {
-    setLoading(false);
-  }
-});
+    try {
+      const result = await signInWithGoogle();
+      showMessage(successMessage, "Login com Google realizado com sucesso!");
+      
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000);
+      
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
+      
+      // Tratamento específico para erros do Google
+      if (error.code === 'auth/popup-closed-by-user') {
+        showMessage(errorMessage, "Login cancelado. Tente novamente.");
+      } else if (error.code === 'auth/popup-blocked') {
+        showMessage(errorMessage, "Popup bloqueado. Permita popups neste site.");
+      } else {
+        showMessage(errorMessage, getErrorMessage(error.code));
+      }
+    } finally {
+      setLoading(false);
+    }
+  });
 
   // Redirecionar para registro
   btnRegistrar.addEventListener("click", () => {
