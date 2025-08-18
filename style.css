@@ -435,6 +435,59 @@ footer a:focus {
   outline: none;
 }
 
+ /* Estilos para o botão de login/logout */
+    .btn-login-topo {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff7500;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-login-topo:hover {
+      background: #ffad00;
+    }
+    
+    .user-info {
+      position: fixed;
+      top: 20px;
+      right: 120px;
+      color: #333;
+      font-size: 12px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: none;
+    }
+
+     /* Responsivo */
+    @media (max-width: 900px) {
+          .btn-login-topo {
+            top: 20px;
+            left: 20px;
+            right: auto;
+          }
+          
+          .user-status {
+            top: 50px;
+            left: 20px;
+            right: auto;
+            width: calc(100% - 40px);
+            max-width: 200px;
+            text-align: left;
+          }
+      }
+
 /* Responsividade - Tablet */
 @media (max-width: 900px) {
   .header-wrapper {
@@ -644,17 +697,3 @@ html {
   opacity: 0.9;
 }
 
-.btn-login-topo {
-  display: inline-block;
-  padding: 6px 12px;
-  font-size: 14px;
-  background-color: #ff7500;
-  color: rgb(255, 255, 255);
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-login-topo:hover {
-  background-color: #ffad00;
-}

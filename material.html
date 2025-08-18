@@ -58,6 +58,11 @@
     </div>
   </header>
 
+  <div class="user-status" id="userStatus">
+    Olá, <span id="userName"></span>!
+  </div>
+  <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
+
   <main>
     <h2>Ferramentas</h2>
     <section class="ferramentas" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
@@ -65,7 +70,8 @@
         <img src="./img-site/calculadora.png" alt="Calculadora de Performance">
         <h3>Calculadora de Performance</h3>
         <p class="descricao">Calcule suas estatísticas de jogo e compare com outros jogadores</p>
-        <button type="button" class="btn-comprar" onclick="window.location.href='desempenho.html'">Acessar</button>
+        <button type="button" class="btn-comprar" id="calcBtn">Acessar</button>
+        <div id="accessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
       <article class="ferramenta">
@@ -94,7 +100,163 @@
     <p>Created by: Lobo</p>
   </footer>
 
-  <script>
+  <button id="loginBtn">Login</button>
+  <button id="logoutBtn" style="display:none;">Logout</button>
+
+  <div id="calcTool" style="display:none;">
+    <h2>Calculadora</h2>
+    <!-- Sua calculadora aqui -->
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      signOut, 
+      onAuthStateChanged,
+      setPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc, 
+      setDoc 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Configurar persistência de sessão
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        console.log("Persistência de autenticação configurada");
+      })
+      .catch((error) => {
+        console.error("Erro na persistência:", error);
+      });
+
+    const loginLogoutBtn = document.getElementById("loginLogoutBtn");
+    const userStatus = document.getElementById("userStatus");
+    const userName = document.getElementById("userName");
+    const calcBtn = document.getElementById("calcBtn");
+    const accessMessage = document.getElementById("accessMessage");
+
+    // Verificar estado de autenticação imediatamente
+    const user = auth.currentUser;
+    if (user) {
+      updateUI(user);
+      checkUserPermissions(user);
+    }
+
+    // Monitorar mudanças no estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        updateUI(user);
+        checkUserPermissions(user);
+      } else {
+        updateUI(null);
+        setupUnauthenticatedUI();
+      }
+    });
+
+    function updateUI(user) {
+      if (user) {
+        loginLogoutBtn.textContent = 'Logout';
+        loginLogoutBtn.onclick = handleLogout;
+        
+        const displayName = user.displayName || user.email.split('@')[0];
+        userName.textContent = displayName;
+        userStatus.style.display = 'block';
+      } else {
+        loginLogoutBtn.textContent = 'Login';
+        loginLogoutBtn.onclick = handleLogin;
+        userStatus.style.display = 'none';
+      }
+    }
+
+    async function checkUserPermissions(user) {
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        
+        if (userData.role === 'player' || userData.role === 'admin') {
+          calcBtn.onclick = () => window.location.href = 'desempenho.html';
+          accessMessage.style.display = 'none';
+        } else {
+          setupRestrictedAccessUI();
+        }
+      } else {
+        // Criar registro se não existir
+        await setDoc(doc(db, "usuarios", user.uid), {
+          email: user.email,
+          role: 'user',
+          createdAt: new Date()
+        });
+        setupRestrictedAccessUI();
+      }
+    }
+
+    function setupRestrictedAccessUI() {
+      calcBtn.onclick = () => {
+        accessMessage.textContent = "Você não tem permissão para usar essa ferramenta";
+        accessMessage.style.display = 'block';
+        setTimeout(() => {
+          accessMessage.style.display = 'none';
+        }, 3000);
+      };
+    }
+
+    function setupUnauthenticatedUI() {
+      calcBtn.onclick = () => {
+        accessMessage.textContent = "Faça login para acessar esta ferramenta";
+        accessMessage.style.display = 'block';
+        setTimeout(() => {
+          accessMessage.style.display = 'none';
+        }, 3000);
+      };
+    }
+
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error("Erro no logout:", error);
+      }
+    }
+
+    async function handleLogin() {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const userDoc = await getDoc(doc(db, "usuarios", result.user.uid));
+        
+        if (!userDoc.exists()) {
+          await setDoc(doc(db, "usuarios", result.user.uid), {
+            email: result.user.email,
+            role: 'user',
+            createdAt: new Date()
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao logar:", err);
+      }
+    }
     // Funcionalidade do menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
     const mobileMenu = document.querySelector('.mobile-menu');

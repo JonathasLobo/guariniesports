@@ -3,11 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Site oficial da equipe Guariní e-sport, desde 2019 unindo força, estratégia e paixão pelos games.">
+  <meta name="description" content="Calculadora de Desempenho - Pokémon Unite">
   <title>Calculadora de Desempenho - Pokémon Unite</title>
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="calculadora.css">
+  
+  <!-- 🔥 Verificação de Acesso ANTES de carregar a página -->
+  <script type="module">
+    import { checkAccess } from './auth.js';
+    
+    // Define uma flag global quando o acesso é permitido
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const acessoPermitido = await checkAccess(2);
+        if (!acessoPermitido) return;
+        
+        window.acessoCalculadoraPermitido = true;
+        console.log("Acesso permitido à calculadora");
+        
+        // Carrega a calculadora.js dinamicamente
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'calculadora.js';
+        document.body.appendChild(script);
+        
+      } catch (error) {
+        console.error("Erro na verificação de acesso:", error);
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="calculadora-container">
@@ -48,7 +73,6 @@
         <button class="btn" onclick="copiarResultado()">Copiar Resultado</button>
       </div>
 
-
       <!-- Resultado em layout de colunas -->
       <div id="resultado-completo" class="resultado-container">
         <div class="resultado-image">
@@ -77,8 +101,8 @@
       <div id="resultado" class="resultado-calculadora" style="display: none;"></div>
     </section>
     
-
-    <script src="calculadora.js"></script>
+    <!-- 🔥 Correção: carregando como módulo -->
+    <script type="module" src="calculadora.js"></script>
   </div>
 
   <footer>

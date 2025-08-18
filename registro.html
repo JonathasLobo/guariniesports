@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Firebase</title>
+<title>Registro - Guariní e-sport</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -12,15 +12,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px 0;
   }
   .container {
     background: white;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
-    width: 300px;
+    width: 350px;
+    max-width: 90%;
     text-align: center;
   }
   h2 { margin-bottom: 20px; color: #333; }
@@ -31,35 +33,102 @@
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
+    box-sizing: border-box;
   }
   button {
     border: none;
     background-color: #ff7500;
     color: white;
     cursor: pointer;
+    transition: background-color 0.3s;
   }
   button:hover { background-color: #ffad00; }
-  .google-btn {
-    background-color: #DB4437;
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
-  .google-btn:hover {
-    background-color: #A33629;
+  .error-message {
+    color: #ff0000;
+    font-size: 12px;
+    margin: 5px 0;
+    display: none;
+  }
+  .success-message {
+    color: #00aa00;
+    font-size: 12px;
+    margin: 5px 0;
+    display: none;
+  }
+  .loading {
+    display: none;
+    color: #666;
+    font-size: 12px;
+    margin: 5px 0;
+  }
+  .password-requirements {
+    font-size: 11px;
+    color: #666;
+    text-align: left;
+    margin: 5px 0;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+  .password-requirements ul {
+    margin: 5px 0;
+    padding-left: 15px;
+  }
+  .back-link {
+    margin-top: 15px;
+    font-size: 12px;
+  }
+  .back-link a {
+    color: #ff7500;
+    text-decoration: none;
+  }
+  .back-link a:hover {
+    text-decoration: underline;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <h2>Registrar</h2>
-  <input type="email" id="email" placeholder="Digite seu email">
-  <input type="password" id="senha" placeholder="Digite sua senha">
+  <h2>Criar Conta</h2>
+  
+  <div class="error-message" id="errorMessage"></div>
+  <div class="success-message" id="successMessage"></div>
+  <div class="loading" id="loadingMessage">Criando conta...</div>
+  
+  <input type="text" id="nome" placeholder="Nome completo" required>
+  <input type="email" id="email" placeholder="Digite seu email" required>
+  <input type="password" id="senha" placeholder="Digite sua senha" required>
+  <input type="password" id="confirmarSenha" placeholder="Confirme sua senha" required>
+  
+  <div class="password-requirements">
+    <strong>Sua senha deve ter:</strong>
+    <ul>
+      <li>Pelo menos 6 caracteres</li>
+      <li>Uma letra maiúscula</li>
+      <li>Uma letra minúscula</li>
+      <li>Um número</li>
+    </ul>
+  </div>
+  
   <button id="btnRegistrar">Criar Conta</button>
-  <button id="btnGoogle">Registrar com Google</button>
-  <button id="btnVoltar">Voltar ao Login</button>
+  
+  <div class="back-link">
+    <p>Já tem uma conta? <a href="login.html">Fazer login</a></p>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    updateProfile,
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
@@ -73,38 +142,169 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
 
+  // Elementos do DOM
+  const nome = document.getElementById("nome");
   const email = document.getElementById("email");
   const senha = document.getElementById("senha");
+  const confirmarSenha = document.getElementById("confirmarSenha");
   const btnRegistrar = document.getElementById("btnRegistrar");
-  const btnGoogle = document.getElementById("btnGoogle");
-  const btnVoltar = document.getElementById("btnVoltar");
+  const errorMessage = document.getElementById("errorMessage");
+  const successMessage = document.getElementById("successMessage");
+  const loadingMessage = document.getElementById("loadingMessage");
 
-  // Criar conta com email e senha
-  btnRegistrar.addEventListener("click", () => {
-    createUserWithEmailAndPassword(auth, email.value, senha.value)
-      .then(() => {
-        alert("Conta criada com sucesso!");
+  // Função para mostrar mensagens
+  function showMessage(element, message, duration = 5000) {
+    element.textContent = message;
+    element.style.display = "block";
+    setTimeout(() => {
+      element.style.display = "none";
+    }, duration);
+  }
+
+  function hideAllMessages() {
+    errorMessage.style.display = "none";
+    successMessage.style.display = "none";
+    loadingMessage.style.display = "none";
+  }
+
+  function setLoading(isLoading) {
+    btnRegistrar.disabled = isLoading;
+    
+    if (isLoading) {
+      loadingMessage.style.display = "block";
+    } else {
+      loadingMessage.style.display = "none";
+    }
+  }
+
+  // Função para validar senha
+  function validatePassword(password) {
+    const hasMinLength = password.length >= 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    
+    return {
+      isValid: hasMinLength && hasUpperCase && hasLowerCase && hasNumber,
+      errors: [
+        !hasMinLength && "A senha deve ter pelo menos 6 caracteres",
+        !hasUpperCase && "A senha deve ter pelo menos uma letra maiúscula",
+        !hasLowerCase && "A senha deve ter pelo menos uma letra minúscula",
+        !hasNumber && "A senha deve ter pelo menos um número"
+      ].filter(Boolean)
+    };
+  }
+
+  // Função para tratar erros do Firebase
+  function getErrorMessage(errorCode) {
+    switch (errorCode) {
+      case 'auth/email-already-in-use':
+        return 'Este email já está em uso. Tente fazer login ou use outro email.';
+      case 'auth/invalid-email':
+        return 'Email inválido. Verifique o formato do email.';
+      case 'auth/operation-not-allowed':
+        return 'Operação não permitida. Contate o suporte.';
+      case 'auth/weak-password':
+        return 'Senha muito fraca. Use uma senha mais forte.';
+      case 'auth/network-request-failed':
+        return 'Erro de conexão. Verifique sua internet.';
+      default:
+        return 'Erro ao criar conta. Tente novamente.';
+    }
+  }
+
+  // Verificar se usuário já está logado
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Usuário já está logado, redirecionar
+      window.location.href = "index.html";
+    }
+  });
+
+  // Registro de nova conta
+    btnRegistrar.addEventListener("click", async () => {
+    hideAllMessages();
+    
+    const nomeValue = nome.value.trim();
+    const emailValue = email.value.trim();
+    const senhaValue = senha.value;
+    const confirmarSenhaValue = confirmarSenha.value;
+
+    // Validações básicas
+    if (!nomeValue || !emailValue || !senhaValue || !confirmarSenhaValue) {
+      showMessage(errorMessage, "Por favor, preencha todos os campos.");
+      return;
+    }
+
+    if (!emailValue.includes("@")) {
+      showMessage(errorMessage, "Por favor, digite um email válido.");
+      return;
+    }
+
+    if (senhaValue !== confirmarSenhaValue) {
+      showMessage(errorMessage, "As senhas não coincidem.");
+      return;
+    }
+
+    // Validar força da senha
+    const passwordValidation = validatePassword(senhaValue);
+    if (!passwordValidation.isValid) {
+      showMessage(errorMessage, passwordValidation.errors.join(" "));
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Dentro do try do btnRegistrar.addEventListener("click", ...)
+      const userCredential = await createUserWithEmailAndPassword(auth, emailValue, senhaValue);
+            
+      // Atualizar perfil com o nome
+      await updateProfile(userCredential.user, {
+        displayName: nomeValue
+      });
+
+      // Criar registro no Firestore com role 'user'
+      await setDoc(doc(db, "usuarios", userCredential.user.uid), {
+        email: emailValue,
+        role: 'user',
+        name: nomeValue,
+        createdAt: new Date()
+      });
+
+      showMessage(successMessage, "Conta criada com sucesso! Redirecionando...");
+      
+      // Redirecionar após um breve delay
+      setTimeout(() => {
         window.location.href = "index.html";
-      })
-      .catch(err => alert(err.message));
+      }, 2000);
+      
+    } catch (error) {
+      console.error("Erro no registro:", error);
+      showMessage(errorMessage, getErrorMessage(error.code));
+    } finally {
+      setLoading(false);
+    }
+    
   });
 
-  // Criar conta com Google
-  btnGoogle.addEventListener("click", () => {
-    signInWithPopup(auth, provider)
-      .then(() => {
-        alert("Conta criada com Google!");
-        window.location.href = "index.html";
-      })
-      .catch(err => alert(err.message));
+  // Enter para registrar
+  document.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && !btnRegistrar.disabled) {
+      btnRegistrar.click();
+    }
   });
 
-  // Voltar para login
-  btnVoltar.addEventListener("click", () => {
-    window.location.href = "login.html";
+  // Validação em tempo real da confirmação de senha
+  confirmarSenha.addEventListener("input", () => {
+    if (confirmarSenha.value && senha.value && confirmarSenha.value !== senha.value) {
+      confirmarSenha.style.borderColor = "#ff0000";
+    } else {
+      confirmarSenha.style.borderColor = "#ccc";
+    }
   });
+  
 </script>
 </body>
 </html>

@@ -1,3 +1,52 @@
+import { checkAccess } from "./auth.js";
+
+// Garante que só usuários nível 2 ou superior acessem
+checkAccess(2).then((hasAccess) => {
+  if (!hasAccess) {
+    // O próprio checkAccess já mostra alerta e redireciona
+    return;
+  }
+
+  // Aqui pode continuar carregando a lógica da calculadora normalmente
+  console.log("Acesso liberado para a calculadora.");
+});
+
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { app } from "./auth.js"; // se o firebase for inicializado em auth.js
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("Você precisa logar primeiro");
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Buscar nível no Firestore
+    const userRef = doc(db, "usuarios", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (snap.exists()) {
+      const dados = snap.data();
+      if (dados.nivel === 2) {
+        console.log("Acesso liberado!");
+        // aqui a calculadora carrega normalmente
+      } else {
+        alert("Você não tem acesso a essa ferramenta");
+        window.location.href = "index.html";
+      }
+    } else {
+      alert("Usuário não encontrado no banco de dados");
+      window.location.href = "index.html";
+    }
+  });
+});
+
+
 const pokemons = [
   "Absol", "Aegislash", "Alcremie", "Armarouge", "Azumarill", "Blastoise",
   "Blaziken", "Blissey", "Buzzwole", "Ceruledge", "Chandelure", "Charizard",
@@ -357,3 +406,22 @@ function copiarResultado() {
   navigator.clipboard.writeText(resultadoFinal);
   alert("Resultado copiado para a área de transferência!");
 }
+
+const display = document.getElementById("display");
+const buttons = document.querySelectorAll("button");
+
+buttons.forEach(button => {
+  button.addEventListener("click", () => {
+    if (button.id === "clear") {
+      display.value = "";
+    } else if (button.id === "equals") {
+      try {
+        display.value = eval(display.value);
+      } catch {
+        display.value = "Erro";
+      }
+    } else {
+      display.value += button.textContent;
+    }
+  });
+});

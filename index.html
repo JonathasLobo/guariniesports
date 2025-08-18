@@ -20,7 +20,6 @@
         <ul>
           <li><a href="loja.html">Loja</a></li>
           <li><a href="sobre.html">Sobre</a></li>
-          
         </ul>
       </nav>
       
@@ -31,7 +30,6 @@
         </a>
       </div>
 
-      
       <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
@@ -61,7 +59,11 @@
     </div>
   </header>
 
-   <a href="login.html" class="btn-login-topo">Login</a>
+  <!-- Info do usuário e botão de login/logout -->
+  <div class="user-info" id="userInfo">
+    Olá, <span id="userName"></span>!
+  </div>
+  <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
 
   <main>
     <section id="home" class="hero">
@@ -252,7 +254,82 @@
     <p>Created by: Lobo</p>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Firebase e Autenticação -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elementos do DOM
+    const loginLogoutBtn = document.getElementById('loginLogoutBtn');
+    const userInfo = document.getElementById('userInfo');
+    const userName = document.getElementById('userName');
+
+    // Função para atualizar a interface com base no estado do usuário
+    function updateUI(user) {
+      if (user) {
+        // Usuário está logado
+        loginLogoutBtn.textContent = 'Logout';
+        loginLogoutBtn.onclick = handleLogout;
+        
+        // Mostrar informações do usuário
+        const displayName = user.displayName || user.email.split('@')[0];
+        userName.textContent = displayName;
+        userInfo.style.display = 'block';
+        
+        console.log('Usuário logado:', user.email);
+      } else {
+        // Usuário não está logado
+        loginLogoutBtn.textContent = 'Login';
+        loginLogoutBtn.onclick = handleLogin;
+        
+        // Esconder informações do usuário
+        userInfo.style.display = 'none';
+        
+        console.log('Usuário não logado');
+      }
+    }
+
+    // Função para fazer login
+    function handleLogin() {
+      window.location.href = 'login.html';
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        alert('Logout realizado com sucesso!');
+        // A interface será atualizada automaticamente pelo onAuthStateChanged
+      } catch (error) {
+        console.error('Erro no logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
+      }
+    }
+
+    // Monitorar mudanças no estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+  </script>
+
+  <!-- Scripts originais -->
   <script src="videos.js"></script>
   <script>
     // Funcionalidade do menu mobile
