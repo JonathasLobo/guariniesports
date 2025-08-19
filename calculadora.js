@@ -1,52 +1,11 @@
-import { checkAccess } from "./auth.js";
+// ====================================
+// CALCULADORA POKÉMON - VERSÃO SEM MÓDULOS
+// Funciona diretamente em file://
+// ====================================
 
-// Garante que só usuários nível 2 ou superior acessem
-checkAccess(2).then((hasAccess) => {
-  if (!hasAccess) {
-    // O próprio checkAccess já mostra alerta e redireciona
-    return;
-  }
+console.log("🚀 calculadora.js carregado!");
 
-  // Aqui pode continuar carregando a lógica da calculadora normalmente
-  console.log("Acesso liberado para a calculadora.");
-});
-
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { app } from "./auth.js"; // se o firebase for inicializado em auth.js
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-document.addEventListener("DOMContentLoaded", () => {
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      alert("Você precisa logar primeiro");
-      window.location.href = "login.html";
-      return;
-    }
-
-    // Buscar nível no Firestore
-    const userRef = doc(db, "usuarios", user.uid);
-    const snap = await getDoc(userRef);
-
-    if (snap.exists()) {
-      const dados = snap.data();
-      if (dados.nivel === 2) {
-        console.log("Acesso liberado!");
-        // aqui a calculadora carrega normalmente
-      } else {
-        alert("Você não tem acesso a essa ferramenta");
-        window.location.href = "index.html";
-      }
-    } else {
-      alert("Usuário não encontrado no banco de dados");
-      window.location.href = "index.html";
-    }
-  });
-});
-
-
+// Lista de Pokémons
 const pokemons = [
   "Absol", "Aegislash", "Alcremie", "Armarouge", "Azumarill", "Blastoise",
   "Blaziken", "Blissey", "Buzzwole", "Ceruledge", "Chandelure", "Charizard",
@@ -55,29 +14,65 @@ const pokemons = [
   "Garchomp", "Gardevoir", "Gengar", "Glaceon", "Goodra", "Greedent",
   "Greninja", "Gyarados", "Ho-Oh", "Hoopa", "Inteleon", "Lapras", "Latias", "Latios",
   "Leafeon", "Lucario", "Machamp", "Mamoswine", "Meowscarada", "Metagross", "Mew", "Mewtwo Y",
-  "Mewtwo X", "Mimikyu", "Miraidon", "Mr. Mime", "Ninetales", "Pawmot", "Pikachu", "Psyduck", "Raichu", "Rapidash", "Sableye", "Scizor",
-  "Slowbro", "Snorlax", "Suicune", "Sylveon", "Talonflame", "Tinkaton", "Trevenant", "Tsareena",
-  "Tyranitar", "Umbreon", "Urshifu", "Venusaur", "Wigglytuff", "Zacian", "Zeraora", "Zoroark"
+  "Mewtwo X", "Mimikyu", "Miraidon", "Mr. Mime", "Ninetales", "Pawmot", "Pikachu", "Psyduck", 
+  "Raichu", "Rapidash", "Sableye", "Scizor", "Slowbro", "Snorlax", "Suicune", "Sylveon", 
+  "Talonflame", "Tinkaton", "Trevenant", "Tsareena", "Tyranitar", "Umbreon", "Urshifu", 
+  "Venusaur", "Wigglytuff", "Zacian", "Zeraora", "Zoroark"
 ];
-
-// Popula o select com os Pokémons e suas imagens
-const select = document.getElementById("pokemon");
-pokemons.forEach(p => {
-  const opt = document.createElement("option");
-  opt.value = p;
-  const imagePath = `./img-poke/${p.toLowerCase().replace(/ /g, "-").replace(".", "").replace("♀", "f").replace("♂", "m")}.png`;
-  opt.textContent = p;
-  opt.style.backgroundImage = `url('${imagePath}')`;
-  opt.style.backgroundSize = '20px 20px';
-  opt.style.backgroundRepeat = 'no-repeat';
-  opt.style.backgroundPosition = '8px center';
-  opt.style.paddingLeft = '35px';
-  select.appendChild(opt);
-});
 
 let season = {}, total = {};
 
-// Carrega os dados do textarea (inglês ou português)
+// Função para popular o select
+function popularSelectPokemons() {
+  console.log("🔄 Populando lista de Pokémons...");
+  
+  const select = document.getElementById("pokemon");
+  if (!select) {
+    console.error("❌ Elemento #pokemon não encontrado!");
+    return;
+  }
+  
+  // Limpa opções existentes (exceto a primeira)
+  while (select.children.length > 1) {
+    select.removeChild(select.lastChild);
+  }
+  
+  // Adiciona cada Pokémon
+  pokemons.forEach(pokemon => {
+    const option = document.createElement("option");
+    option.value = pokemon;
+    option.textContent = pokemon;
+    
+    // Adiciona estilo de imagem
+    const imagePath = `./img-poke/${pokemon.toLowerCase().replace(/ /g, "-").replace(".", "").replace("♀", "f").replace("♂", "m")}.png`;
+    option.style.backgroundImage = `url('${imagePath}')`;
+    option.style.backgroundSize = '20px 20px';
+    option.style.backgroundRepeat = 'no-repeat';
+    option.style.backgroundPosition = '8px center';
+    option.style.paddingLeft = '35px';
+    
+    select.appendChild(option);
+  });
+  
+  console.log(`✅ ${pokemons.length} Pokémons carregados com sucesso!`);
+}
+
+// Função de inicialização
+function inicializar() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', popularSelectPokemons);
+  } else {
+    popularSelectPokemons();
+  }
+}
+
+// Executar inicialização
+inicializar();
+
+// ====================================
+// FUNÇÕES DA CALCULADORA
+// ====================================
+
 function carregarDados() {
   const texto = document.getElementById("dadosTexto").value;
   if (!texto) {
@@ -101,7 +96,6 @@ function carregarDados() {
   const totalWinsPT = texto.match(/(?:No\.\s*de\s*Vitórias|Vitórias\s+totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const totalMVPPT = texto.match(/MVP\s+Total\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
-  // Usa dados em inglês se encontrados, senão usa português
   season = {
     battles: parseInt(seasonBattlesEN || seasonBattlesPT) || 0,
     wins: parseInt(seasonWinsEN || seasonWinsPT) || 0,
@@ -124,7 +118,6 @@ function carregarDados() {
   return true;
 }
 
-// Avalia o desempenho baseado na role
 function avaliarDesempenho(role, desempenho) {
   if (["ADC", "JGL", "TOP"].includes(role)) {
     if (desempenho < 30) return "Fraco";
@@ -141,7 +134,6 @@ function avaliarDesempenho(role, desempenho) {
   }
 }
 
-// Calcula as porcentagens
 function calcularPorcentagens(stats) {
   const winRate = stats.battles ? (stats.wins / stats.battles) * 100 : 0;
   const mvpRate = stats.battles ? (stats.mvps / stats.battles) * 100 : 0;
@@ -153,21 +145,22 @@ function calcularPorcentagens(stats) {
   };
 }
 
-// Calcula desempenho combinado com multiplicador para SUP/TANK
 function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
   const win = parseFloat(winRate);
   let mvp = parseFloat(mvpWinRate);
 
-  // Aumenta o peso do MVP/Vitória para SUP e TANK
   if (role === "SUP" || role === "TANK") {
-    mvp *= 2.5; // Multiplicador SUP TANK
+    mvp *= 2.5;
   }
 
   return ((win + mvp) / 2).toFixed(2);
 }
 
-// Função principal que calcula e exibe o desempenho
-function calcularDesempenho() {
+// ====================================
+// FUNÇÕES GLOBAIS
+// ====================================
+
+window.calcularDesempenho = function() {
   const jogador = document.getElementById("jogador").value;
   const pokemon = document.getElementById("pokemon").value;
   const role = document.getElementById("role").value;
@@ -177,7 +170,6 @@ function calcularDesempenho() {
     return;
   }
 
-  // Primeiro carrega os dados
   if (!carregarDados()) {
     return;
   }
@@ -188,12 +180,12 @@ function calcularDesempenho() {
   const desempenhoTemporada = calcularDesempenhoCombinado(temp.winRate, temp.mvpWinRate, role);
   const desempenhoTotal = calcularDesempenhoCombinado(tot.winRate, tot.mvpWinRate, role);
 
-  // Atualiza imagem do Pokémon no resultado
+  // Atualiza imagem do Pokémon
   const imgResultado = document.getElementById("imagemPokemonResultado");
   imgResultado.src = `./img-poke/${pokemon.toLowerCase().replace(/ /g, "-").replace(".", "").replace("♀", "f").replace("♂", "m")}.png`;
   imgResultado.alt = pokemon;
 
-  // Define a cor da role
+  // Define cores da role
   const roleColors = {
     'ADC': 'role-adc',
     'JGL': 'role-jgl', 
@@ -334,10 +326,9 @@ Função: ${role}
 - ✅ Avaliação: ${avaliacaoTotal}${mensagemMultiplicador}`;
 
   document.getElementById("resultado").innerText = resultadoFinal;
-}
+};
 
-// Limpa todos os campos e oculta resultados
-function limparCampos() {
+window.limparCampos = function() {
   document.getElementById("jogador").value = "";
   document.getElementById("pokemon").value = "";
   document.getElementById("role").value = "";
@@ -347,10 +338,9 @@ function limparCampos() {
   document.getElementById("resultado").innerText = "";
   season = {};
   total = {};
-}
+};
 
-// Copia o resultado formatado para a área de transferência
-function copiarResultado() {
+window.copiarResultado = function() {
   const jogador = document.getElementById("jogador").value;
   const pokemon = document.getElementById("pokemon").value;
   const role = document.getElementById("role").value;
@@ -405,23 +395,4 @@ function copiarResultado() {
 
   navigator.clipboard.writeText(resultadoFinal);
   alert("Resultado copiado para a área de transferência!");
-}
-
-const display = document.getElementById("display");
-const buttons = document.querySelectorAll("button");
-
-buttons.forEach(button => {
-  button.addEventListener("click", () => {
-    if (button.id === "clear") {
-      display.value = "";
-    } else if (button.id === "equals") {
-      try {
-        display.value = eval(display.value);
-      } catch {
-        display.value = "Erro";
-      }
-    } else {
-      display.value += button.textContent;
-    }
-  });
-});
+};
