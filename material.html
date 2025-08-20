@@ -58,10 +58,12 @@
     </div>
   </header>
 
-  <div class="user-status" id="userStatus">
-    Olá, <span id="userName"></span>!
+ <div class="user-container">
+    <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
+    <div class="user-info" id="userInfo">
+      Olá, <span id="userName"></span>!
+    </div>
   </div>
-  <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
 
   <main>
     <h2>Ferramentas</h2>
@@ -129,7 +131,7 @@
     const db = getFirestore(app);
 
     const loginLogoutBtn = document.getElementById("loginLogoutBtn");
-    const userStatus = document.getElementById("userStatus");
+    const userInfo = document.getElementById('userInfo');
     const userName = document.getElementById("userName");
     const calcBtn = document.getElementById("calcBtn");
     const accessMessage = document.getElementById("accessMessage");
@@ -165,11 +167,11 @@
         
         const displayName = user.displayName || user.email.split('@')[0];
         userName.textContent = displayName;
-        userStatus.style.display = 'block';
+        userInfo.style.display = 'block';
       } else {
         loginLogoutBtn.textContent = 'Login';
         loginLogoutBtn.onclick = handleLogin;
-        userStatus.style.display = 'none';
+        userInfo.style.display = 'none';
       }
     }
 

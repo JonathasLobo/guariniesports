@@ -77,21 +77,6 @@
   background: linear-gradient(45deg, #555, #777);
 }
 
- /* Estilo adicional específico para material.html */
-    .user-status {
-      position: fixed;
-      top: 55px;          /* abaixo do botão */
-      left: 20px;         /* alinhado à esquerda da tela */
-      color: #fff;
-      font-size: 14px;
-      z-index: 1000;
-      padding: 2px 2px;
-      border-radius: 6px;
-      display: none;      /* só aparece quando logado */
-      text-align: left;
-      min-width: 160px;       /* garante espaço */
-    }
-
 /* Responsividade */
 @media (max-width: 768px) {
 
