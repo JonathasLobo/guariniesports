@@ -114,8 +114,8 @@ a.ativo .header-logo {
   display: none;
   position: fixed;
   top: 0;
-  right: 0;
-  width: 100%;
+  right: 0;            /* <-- Corrigir aqui */
+  width: 100vw;        /* Usa largura total da viewport */
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.98);
   transform: translateX(100%);
@@ -124,7 +124,9 @@ a.ativo .header-logo {
   transition: all 0.3s ease;
   z-index: 1001;
   padding-top: 100px;
+  overflow-x: hidden;   /* Evita barra horizontal */
 }
+
 
 .mobile-menu.ativo {
   transform: translateX(0);
@@ -435,6 +437,17 @@ footer a:focus {
   outline: none;
 }
 
+    .user-container {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; /* alinhado à direita no desktop */
+      gap: 6px;
+      z-index: 1000;
+    }
+
  /* Estilos para o botão de login/logout */
     .btn-login-topo {
       position: fixed;
@@ -459,15 +472,16 @@ footer a:focus {
     
     .user-info {
       position: fixed;
-      top: 20px;
-      right: 120px;
-      color: #333;
-      font-size: 12px;
+      top: 55px;              /* abaixo do botão */
+      right: 20px;            /* canto direito no desktop */
+      color: white;
+      padding: 2px 2px;
+      border-radius: 6px;
+      font-size: 14px;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 5px 10px;
-      border-radius: 4px;
       display: none;
+      text-align: right;
+      min-width: 160px;
     }
 
      /* Responsivo */
@@ -478,7 +492,7 @@ footer a:focus {
             right: auto;
           }
           
-          .user-status {
+          .user-info {
             top: 50px;
             left: 20px;
             right: auto;
@@ -535,6 +549,21 @@ footer a:focus {
   body {
     font-size: 16px;
   }
+
+  .user-container {
+    right: auto;
+    left: 20px;
+    align-items: flex-start; /* alinhar à esquerda */
+  }
+  
+  .user-info {
+    left: 20px;      /* no mobile vai pro canto esquerdo */
+    right: auto;
+    top: 55px;
+    font-size: 12px;
+    width: auto;
+    max-width: 200px;
+  }
   
   .header-wrapper {
     padding: 8px 10px;
@@ -546,7 +575,7 @@ footer a:focus {
   }
   
   .menu-toggle {
-    right: 10px;
+    right: 25px;
     padding: 8px;
   }
   
@@ -627,7 +656,8 @@ footer a:focus {
   }
   
   .menu-toggle {
-    right: 8px;
+    right: 25px;   /* ainda afastado mas proporcional */
+    padding: 10px;
   }
   
   main {

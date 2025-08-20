@@ -80,26 +80,21 @@
  /* Estilo adicional específico para material.html */
     .user-status {
       position: fixed;
-      top: 20px;
-      right: 120px;
-      color: white;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 5px 10px;
-      border-radius: 4px;
+      top: 55px;          /* abaixo do botão */
+      left: 20px;         /* alinhado à esquerda da tela */
+      color: #fff;
       font-size: 14px;
       z-index: 1000;
-      display: none;
+      padding: 2px 2px;
+      border-radius: 6px;
+      display: none;      /* só aparece quando logado */
+      text-align: left;
+      min-width: 160px;       /* garante espaço */
     }
-    
-    @media (max-width: 768px) {
-      .user-status {
-        right: 80px;
-        font-size: 12px;
-      }
-    }
-    
+
 /* Responsividade */
 @media (max-width: 768px) {
+
   .ferramentas {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -122,6 +117,11 @@
 }
 
 @media (max-width: 480px) {
+  .menu-toggle {
+    right: 15px;     /* ajustado para telas bem pequenas */
+    padding: 10px;
+  }
+
   .ferramenta {
     padding: 15px;
   }
