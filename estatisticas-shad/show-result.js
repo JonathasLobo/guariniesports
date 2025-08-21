@@ -456,34 +456,32 @@ fetch('./results.json')
 
     // ✅ CORREÇÃO: Criar uma tabela para o cabeçalho com estrutura correta
     const headerTable = document.createElement("table");
-    headerTable.style.borderCollapse = 'separate';
-    headerTable.style.borderSpacing = '0 2px';
-    headerTable.style.width = '100%';
-    headerTable.classList.add('w-full');
+    headerTable.classList.add('w-full', 'table-fixed', 'border-collapse'); 
     cabecalhoTable.appendChild(headerTable);
 
+    const thead = document.createElement("thead");
+    headerTable.appendChild(thead);
+
     const headerTr = document.createElement("tr");
-    headerTable.appendChild(headerTr);
+    thead.appendChild(headerTr);
 
-    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-black', 'bg-gray-300');
-
-    const createHeaderCell = (text, className = '') => {
+    const createHeaderCell = (text, widthClass = '') => {
         const th = document.createElement("th");
-        th.classList.add('px-4', 'py-2', 'font-semibold', 'text-xl', 'text-center', className);
+        th.classList.add('px-2', 'py-2', 'font-semibold', 'text-sm', 'text-center', 'text-black', widthClass);
         th.innerText = text;
         return th;
     };
 
-    // ✅ CORREÇÃO: Usar as mesmas larguras que as células da tabela
-    headerTr.appendChild(createHeaderCell('Rank', 'w-36'));
-    headerTr.appendChild(createHeaderCell('Pick', 'w-[370px]'));
-    headerTr.appendChild(createHeaderCell('Pickrate', 'w-40'));
-    headerTr.appendChild(createHeaderCell('Winrate', 'w-80'));
-    headerTr.appendChild(createHeaderCell('Gráfico', 'w-60'));
-    headerTr.appendChild(createHeaderCell('Win Streak', 'w-60'));
-    headerTr.appendChild(createHeaderCell('Lose Streak', 'w-60'));
-    headerTr.appendChild(createHeaderCell('Última Partida', 'w-60'));
-    headerTr.appendChild(createHeaderCell('Índice', 'w-60'));
+    // Aqui definimos as larguras uma vez só
+    headerTr.appendChild(createHeaderCell('Rank', 'w-[80px]'));
+    headerTr.appendChild(createHeaderCell('Pick', 'w-[200px]'));
+    headerTr.appendChild(createHeaderCell('Pickrate', 'w-[120px]'));
+    headerTr.appendChild(createHeaderCell('Winrate', 'w-[120px]'));
+    headerTr.appendChild(createHeaderCell('Gráfico', 'w-[140px]'));
+    headerTr.appendChild(createHeaderCell('Win Streak', 'w-[120px]'));
+    headerTr.appendChild(createHeaderCell('Lose Streak', 'w-[120px]'));
+    headerTr.appendChild(createHeaderCell('Última Partida', 'w-[140px]'));
+    headerTr.appendChild(createHeaderCell('Índice', 'w-[100px]'));
 
     const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
         const table = document.createElement("table");
@@ -509,19 +507,17 @@ fetch('./results.json')
             const role = pokemonRoles[pokemonName]; // Fallback para role
     
             const rowTr = document.createElement("tr");
-            rowTr.classList.add('cursor-pointer', 'flex', 'w-full');
-            rowTr.onclick = () => {
-                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
-            };
-    
+            rowTr.classList.add('hover:bg-gray-100', 'cursor-pointer');
+
+            // Rank
             const rankTd = document.createElement("td");
-            rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'w-20', 'flex', 'items-center', 'justify-center');
-            rankTd.style.backgroundColor = rolesColor[role];
+            rankTd.classList.add('text-center', 'p-2', 'font-bold', 'text-base', 'w-[80px]');
             rankTd.innerText = i + 1;
             rowTr.appendChild(rankTd);
-    
+
+            // Pick
             const pickTd = document.createElement("td");
-            pickTd.classList.add('w-[500px]', 'flex', 'items-center');
+            pickTd.classList.add('w-[200px]', 'p-2', 'flex', 'items-center');
             pickTd.style.background = `linear-gradient(to right, ${rolesColor[role]}, rgb(255, 255, 255))`;
             
             const pickContainer = document.createElement("div");
