@@ -507,17 +507,19 @@ fetch('./results.json')
             const role = pokemonRoles[pokemonName]; // Fallback para role
     
             const rowTr = document.createElement("tr");
-            rowTr.classList.add('hover:bg-gray-100', 'cursor-pointer');
-
-            // Rank
+            rowTr.classList.add('cursor-pointer', 'flex', 'w-full');
+            rowTr.onclick = () => {
+                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+            };
+    
             const rankTd = document.createElement("td");
-            rankTd.classList.add('text-center', 'p-2', 'font-bold', 'text-base', 'w-[80px]');
+            rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'w-20', 'flex', 'items-center', 'justify-center');
+            rankTd.style.backgroundColor = rolesColor[role];
             rankTd.innerText = i + 1;
             rowTr.appendChild(rankTd);
-
-            // Pick
+    
             const pickTd = document.createElement("td");
-            pickTd.classList.add('w-[200px]', 'p-2', 'flex', 'items-center');
+            pickTd.classList.add('w-[500px]', 'flex', 'items-center');
             pickTd.style.background = `linear-gradient(to right, ${rolesColor[role]}, rgb(255, 255, 255))`;
             
             const pickContainer = document.createElement("div");
