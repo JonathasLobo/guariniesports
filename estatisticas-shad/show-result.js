@@ -475,9 +475,9 @@ fetch('./results.json')
     };
 
     // ✅ CORREÇÃO: Usar as mesmas larguras que as células da tabela
-    headerTr.appendChild(createHeaderCell('Rank', 'w-20'));
-    headerTr.appendChild(createHeaderCell('Pick', 'w-[500px]'));
-    headerTr.appendChild(createHeaderCell('Pickrate', 'w-48'));
+    headerTr.appendChild(createHeaderCell('Rank', 'w-36'));
+    headerTr.appendChild(createHeaderCell('Pick', 'w-[370px]'));
+    headerTr.appendChild(createHeaderCell('Pickrate', 'w-40'));
     headerTr.appendChild(createHeaderCell('Winrate', 'w-80'));
     headerTr.appendChild(createHeaderCell('Gráfico', 'w-60'));
     headerTr.appendChild(createHeaderCell('Win Streak', 'w-60'));
@@ -506,7 +506,7 @@ fetch('./results.json')
             }
             
             const { pickRate, winRate, isUp, maxWinStreak, maxLoseStreak } = pokemon;
-            const role = pokemonRoles[pokemonName] || 'Unknown'; // Fallback para role
+            const role = pokemonRoles[pokemonName]; // Fallback para role
     
             const rowTr = document.createElement("tr");
             rowTr.classList.add('cursor-pointer', 'flex', 'w-full');
@@ -516,13 +516,13 @@ fetch('./results.json')
     
             const rankTd = document.createElement("td");
             rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'w-20', 'flex', 'items-center', 'justify-center');
-            rankTd.style.backgroundColor = rolesColor[role] || '#CCCCCC';
+            rankTd.style.backgroundColor = rolesColor[role];
             rankTd.innerText = i + 1;
             rowTr.appendChild(rankTd);
     
             const pickTd = document.createElement("td");
             pickTd.classList.add('w-[500px]', 'flex', 'items-center');
-            pickTd.style.background = `linear-gradient(to right, ${rolesColor[role] || '#CCCCCC'}, rgb(255, 255, 255))`;
+            pickTd.style.background = `linear-gradient(to right, ${rolesColor[role]}, rgb(255, 255, 255))`;
             
             const pickContainer = document.createElement("div");
             pickContainer.classList.add('flex', 'items-center', 'p-2');
