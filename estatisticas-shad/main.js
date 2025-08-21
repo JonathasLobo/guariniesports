@@ -135,6 +135,7 @@ function initializePageWithData(data) {
     populateSections(data);
     setupEventListeners();
     updatePlayersList(data);
+    setupSectionRedirects();
 }
 
 // Preencher seções da página
@@ -177,6 +178,38 @@ function populateSections(data) {
             </div>
         `;
     }
+}
+
+function setupSectionRedirects() {
+    const redirects = {
+        "player-profile-section": () => {
+            const encodedName = encodeURIComponent(selectedPlayerName || '');
+            window.location.href = `show-result.html?id=${encodedName}`;
+        },
+        "ban-section": () => {
+            window.location.href = "bans-result.html";
+        },
+        "ally-section": () => {
+            window.location.href = "show-result.html?id=allyTeam";
+        },
+        "enemy-section": () => {
+            window.location.href = "playerRanking-result.html";
+        },
+        "rayquaza-section": () => {
+            window.location.href = "rayquaza-result.html";
+        },
+        "scrims-section": () => {
+            window.location.href = "scrims-result.html";
+        }
+    };
+
+    Object.keys(redirects).forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.cursor = "pointer"; // garante o cursor clicável
+            section.addEventListener("click", redirects[sectionId]);
+        }
+    });
 }
 
 // Atualizar lista de jogadores
@@ -252,6 +285,7 @@ function updatePlayersList(data) {
         });
     }
 }
+
 
 // Configurar event listeners
 function setupEventListeners() {
@@ -369,6 +403,7 @@ function setupHoverEffects() {
 function initializePageWithoutData() {
     populateSections();
     setupEventListeners();
+    setupSectionRedirects();
     
     // Não adicionar opções de jogadores se não houver dados
     const playerSelect = document.getElementById('player-select');
