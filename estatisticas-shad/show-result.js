@@ -5,8 +5,15 @@ fetch('./results.json')
     const urlParams = new URLSearchParams(queryString);
     const infoType = urlParams.get('id');
     results = results || {}
-    const filterType = window.localStorage.pokemonFilterAttribute || 'pickRate';
-    const orderFilter = window.localStorage.pokemonFilterOrder || 'desc';
+    
+    // ✅ CORREÇÃO: Definir valores padrão se não existirem no localStorage
+    const filterType = localStorage.getItem('pokemonFilterAttribute') || 'pickRate';
+    const orderFilter = localStorage.getItem('pokemonFilterOrder') || 'desc';
+    
+    // ✅ CORREÇÃO: Definir variáveis que estavam undefined
+    const filterAttr = filterType; // Estava usando filterAttr sem definir
+    const filterOrder = orderFilter;
+    
     const containerDiv = document.getElementById("tables-container");
 
     const getObjectAttribute = () => {
@@ -19,6 +26,13 @@ fetch('./results.json')
     }
     
     const objAttribute = getObjectAttribute();
+    
+    // ✅ CORREÇÃO: Verificar se objAttribute existe antes de continuar
+    if (!objAttribute) {
+        console.error('Dados não encontrados para:', infoType);
+        document.body.innerHTML = '<div class="flex items-center justify-center h-screen"><h1 class="text-2xl text-red-500">Dados não encontrados</h1></div>';
+        return;
+    }
     
     const getTitle = () => {
         if (infoType === 'allyTeam') {
@@ -170,14 +184,6 @@ fetch('./results.json')
             `;
             summaryDiv.appendChild(lastGameDateDiv);
         }
-
-        // Total Picks
-        /*const totalPicksDiv = document.createElement("div");
-        totalPicksDiv.className = "flex flex-col items-center";
-        totalPicksDiv.innerHTML = `
-            <div class="font-semibold text-xl text-black">Total Picks</div>
-            <div class="font-bold text-2xl text-black">${totalPickRate}</div>
-        `;*/
 
         // Winrate
         const winRateDiv = document.createElement("div");
@@ -340,7 +346,6 @@ fetch('./results.json')
             summaryDiv.appendChild(averageKillsDiv);
         }
 
-        //summaryDiv.appendChild(totalPicksDiv);
         summaryDiv.appendChild(winRateDiv);
 
         if (infoType === "allyTeam" || infoType === "enemyTeam") {
@@ -383,74 +388,6 @@ fetch('./results.json')
     };
     displaySummaryInfo();
 
-
-    /*const pokemonSearchInput = document.getElementById("pokemonSearch");
-    pokemonSearchInput.addEventListener("input", (event) => {
-        const searchQuery = event.target.value.trim().toLowerCase();
-        renderSearchResults(searchQuery);
-    });
-
-    const renderSearchResults = (searchQuery) => {
-        const searchResultsDiv = document.getElementById("searchResults");
-        searchResultsDiv.innerHTML = "";
-        searchResultsDiv.style.display = searchQuery.length > 0 ? 'block' : 'none';
-    
-        const filteredPokemons = Object.keys(objAttribute).filter((pokemon) => pokemon.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-        if (filteredPokemons.length === 0) {
-            searchResultsDiv.innerHTML = "<p>Nenhum Pokémon encontrado.</p>";
-            return;
-        }
-    
-        const sortedPokemons = filteredPokemons.sort((a, b) => objAttribute[b].pickRate - objAttribute[a].pickRate);
-    
-        sortedPokemons.forEach((pokemonName) => {
-            const role = pokemonRoles[pokemonName];
-            const pokemon = objAttribute[pokemonName];
-            const pickRate = pokemon.pickRate || 0; 
-            const winRate = pokemon.winRate || 0;
-            const rankPosition = sortedKeys.indexOf(pokemonName) + 1;
-    
-            const resultDiv = document.createElement("div");
-            resultDiv.classList.add("rounded-lg", "mb-2");
-    
-            resultDiv.innerHTML = `
-            <div class="flex items-center gap-6 p-2 rounded-lg mb-2" style="background: linear-gradient(to right, ${rolesColor[role]}, rgb(255, 255, 255));">
-                <div class="flex items-center w-1/6">
-                    <img src="./images/backgrounds/${pokemonName}-left-bg.png" alt="${pokemonName}" class="w-32 h-32 rounded-full">
-                </div>
-            
-                <div class="flex flex-row w-full justify-between items-start">
-                    <div class="flex flex-col items-start">
-                        <p class="font-semibold text-xl text-black">Pokémon:</p>
-                        <p class="font-bold text-2xl text-black">${capitalize(pokemonName)}</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <p class="font-semibold text-xl text-black">Posição no Rank:</p>
-                        <p class="font-bold text-2xl text-black">${rankPosition}</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <p class="font-semibold text-xl text-black">Pickrate:</p>
-                        <p class="font-bold text-2xl text-black">${pickRate}</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <p class="font-semibold text-xl text-black">Winrate:</p>
-                        <p class="font-bold text-2xl text-black">${winRate}%</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-
-            resultDiv.classList.add('cursor-pointer');
-            resultDiv.onclick = () => {
-                window.location.href = (`http://127.0.0.1:8080/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
-            };
-
-            searchResultsDiv.appendChild(resultDiv);
-        });
-    };*/
-
     const capitalize = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
@@ -458,71 +395,29 @@ fetch('./results.json')
     const sortedKeys = sortValues(objAttribute, filterType, orderFilter);
     const pokemonKeys = sortedKeys;
 
-    /*const topsInfoDiv = document.getElementById("topsInfo");
-
-    const displayTopRanked = () => {
-        const topPokemonName = sortedKeys[0];
-    
-        const summaryTopsDiv = document.createElement("div");
-        summaryTopsDiv.classList.add("text-white","p-2","flex", "justify-around", "items-center", "gap-8");
-        
-        const createTopBadge = (imageName, title, pokemonName) => {
-            const badgeDiv = document.createElement("div");
-            badgeDiv.classList.add("flex", "flex-col", "items-center", "justify-center", "text-center", "pr-24");
-        
-            badgeDiv.innerHTML = `
-                <img src="./images/backgrounds/${imageName}-left-bg.png" 
-                     alt="${pokemonName}" 
-                     class="w-12 h-12 rounded-full">
-                <span class="font-semibold text-xl text-black">${title}</span>
-                <div class="font-bold text-2xl text-black">${capitalize(pokemonName)}</div>
-            `;
-            badgeDiv.classList.add("cursor-pointer");
-            badgeDiv.onclick = () => {
-                window.location.href = `http://127.0.0.1:8080/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`;
-            };
-        
-            return badgeDiv;
-        };
-    
-        summaryTopsDiv.appendChild(createTopBadge(topPokemonName, "Top 1 Geral", topPokemonName));
-        
-        const bestSpeedster = sortedKeys.find(pokemonName => pokemonRoles[pokemonName] === "Speedster");
-        if (bestSpeedster) {
-            summaryTopsDiv.appendChild(createTopBadge(bestSpeedster, "Top 1 Speedster", bestSpeedster));
-        }
-        
-        const bestAttacker = sortedKeys.find(pokemonName => pokemonRoles[pokemonName] === "Attacker");
-        if (bestAttacker) {
-            summaryTopsDiv.appendChild(createTopBadge(bestAttacker, "Top 1 Attacker", bestAttacker));
-        }
-        
-        const bestAllRounder = sortedKeys.find(pokemonName => pokemonRoles[pokemonName] === "All Rounder");
-        if (bestAllRounder) {
-            summaryTopsDiv.appendChild(createTopBadge(bestAllRounder, "Top 1 All Rounder", bestAllRounder));
-        }
-        
-        const bestSupport = sortedKeys.find(pokemonName => pokemonRoles[pokemonName] === "Support");
-        if (bestSupport) {
-            summaryTopsDiv.appendChild(createTopBadge(bestSupport, "Top 1 Supporter", bestSupport));
-        }
-        
-        const bestDefender = sortedKeys.find(pokemonName => pokemonRoles[pokemonName] === "Defender");
-        if (bestDefender) {
-            summaryTopsDiv.appendChild(createTopBadge(bestDefender, "Top 1 Defender", bestDefender));
-        }
-        
-        topsInfoDiv.appendChild(summaryTopsDiv);
-        
-    };
-    
-    displayTopRanked();*/
-
     const titleSpan = document.getElementById("title-span");
     titleSpan.innerText = getTitle();
 
     const filterSpan = document.getElementById("filter-text");
     filterSpan.innerText = `Ordenado por: ${capitalize(filterAttr)} - ${filterOrder === 'asc' ? 'Crescente' : 'Decrescente'}`;
+
+    // ✅ CORREÇÃO: Definir pokemonRoles e rolesColor que estavam faltando
+    // Estas constantes devem estar no util.js, mas vamos definir aqui também como fallback
+    const pokemonRoles = window.pokemonRoles || {
+        // Adicione aqui os roles dos pokémons se não estiverem no util.js
+        // Exemplo:
+        // "pikachu": "Attacker",
+        // "charizard": "All Rounder",
+        // etc...
+    };
+    
+    const rolesColor = window.rolesColor || {
+        "Speedster": "#FF6B6B",
+        "Attacker": "#4ECDC4", 
+        "All Rounder": "#45B7D1",
+        "Support": "#96CEB4",
+        "Defender": "#FECA57"
+    };
 
     function applyFilters() {
         const selectedClasses = Array.from(document.querySelectorAll('.class-filter:checked'))
@@ -612,20 +507,27 @@ fetch('./results.json')
         for (let i = firstIndex; i < sideLength; i++) {
             const pokemonName = pokemonKeys[i];
             const pokemon = objAttribute[pokemonName];
+            
+            // ✅ CORREÇÃO: Verificar se pokemon existe
+            if (!pokemon) {
+                console.warn(`Pokemon ${pokemonName} não encontrado em objAttribute`);
+                continue;
+            }
+            
             const { pickRate, winRate, isUp, maxWinStreak, maxLoseStreak } = pokemon;
-            const role = pokemonRoles[pokemonName];
+            const role = pokemonRoles[pokemonName] || 'Unknown'; // Fallback para role
     
             const rowTr = document.createElement("tr");
     
             const rankTd = document.createElement("td");
             rankTd.classList.add('text-left', 'p-3', 'font-bold', 'text-2xl');
-            rankTd.style.backgroundColor = rolesColor[role];
+            rankTd.style.backgroundColor = rolesColor[role] || '#CCCCCC';
             rankTd.innerText = i + 1;
             rowTr.appendChild(rankTd);
     
             const pickTd = document.createElement("td");
             pickTd.classList.add('w-[500px]')
-            pickTd.style.background = `linear-gradient(to right, ${rolesColor[role]}, rgb(255, 255, 255))`;
+            pickTd.style.background = `linear-gradient(to right, ${rolesColor[role] || '#CCCCCC'}, rgb(255, 255, 255))`;
             rowTr.appendChild(pickTd);
     
             rowTr.classList.add('cursor-pointer');
@@ -652,13 +554,12 @@ fetch('./results.json')
             const pickRateTd = document.createElement("td");
             pickRateTd.classList.add('text-black', 'font-bold', 'text-xl', 'text-center');
             pickRateTd.style.backgroundColor = 'white';
-            pickRateTd.innerText = pickRate;
+            pickRateTd.innerText = pickRate || 0;
             rowTr.appendChild(pickRateTd);
     
             const winRateTd = document.createElement("td");
             winRateTd.classList.add('text-black', 'text-xl', 'font-bold','w-80');
             winRateTd.style.backgroundColor = 'white';
-            //winRateTd.innerText = `${winRate.toFixed(2)}%`;
             rowTr.appendChild(winRateTd);
     
             const winRateOuterDiv = document.createElement("div");
@@ -667,7 +568,7 @@ fetch('./results.json')
     
             const winRateSpan = document.createElement("span");
             winRateSpan.classList.add('text-black', 'text-xl', 'font-bold');
-            winRateSpan.innerText = `${winRate.toFixed(2)}%`;
+            winRateSpan.innerText = `${(winRate || 0).toFixed(2)}%`;
             winRateOuterDiv.appendChild(winRateSpan);
     
             const winRateBarTd = document.createElement("td");
@@ -682,7 +583,7 @@ fetch('./results.json')
     
             const winRateBar = document.createElement("div");
             winRateBar.classList.add('h-4', 'rounded-full');
-            winRateBar.style.width = `${winRate}%`;
+            winRateBar.style.width = `${winRate || 0}%`;
             winRateBar.style.backgroundColor = 'rgb(29, 181, 52)';
             winRateBarContainer.appendChild(winRateBar);
 
@@ -750,10 +651,13 @@ fetch('./results.json')
         const searchResults = document.getElementById("searchResults");
         const pokemonSearchInput = document.getElementById("pokemonSearch");
     
-        if (!searchButton.contains(event.target) && !pokemonSearchInput.contains(event.target)) {
-            searchResults.style.display = 'none'; 
+        if (searchButton && searchResults && pokemonSearchInput) {
+            if (!searchButton.contains(event.target) && !pokemonSearchInput.contains(event.target)) {
+                searchResults.style.display = 'none'; 
+            }
         }
     });
+    
     document.getElementById("captureTable").addEventListener("click", () => {
         const tablesContainer = document.getElementById("tables-container");
         const statisticsInfo = document.getElementById("statisticsInfo");
@@ -770,13 +674,15 @@ fetch('./results.json')
     
         const filterClone = filterInfo.cloneNode(true);
         const statsClone = statisticsInfo.cloneNode(true);
-        const topsClone = topsInfo.cloneNode(true);
         const topicClone = topicInfo.cloneNode(true);
         const tablesClone = tablesContainer.cloneNode(true);
     
         tempContainer.appendChild(filterClone);
         tempContainer.appendChild(statsClone);
-        tempContainer.appendChild(topsClone);
+        if (topsInfo) {
+            const topsClone = topsInfo.cloneNode(true);
+            tempContainer.appendChild(topsClone);
+        }
         tempContainer.appendChild(topicClone);
         tempContainer.appendChild(tablesClone);
     
@@ -819,8 +725,22 @@ fetch('./results.json')
             document.body.removeChild(tempContainer);
         }).catch((err) => {
             console.error("Erro ao capturar os elementos:", err);
+            document.body.removeChild(tempContainer);
         });
     });
     
-    
+})
+.catch((error) => {
+    console.error('Erro ao carregar results.json:', error);
+    document.body.innerHTML = `
+        <div class="flex items-center justify-center h-screen">
+            <div class="text-center">
+                <h1 class="text-2xl text-red-500 mb-4">Erro ao carregar dados</h1>
+                <p class="text-gray-600">Verifique se o arquivo results.json existe e está no formato correto.</p>
+                <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Tentar Novamente
+                </button>
+            </div>
+        </div>
+    `;
 });
