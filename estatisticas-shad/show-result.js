@@ -5,8 +5,8 @@ fetch('./results.json')
     const urlParams = new URLSearchParams(queryString);
     const infoType = urlParams.get('id');
     results = results || {}
-    const filterType = window.localStorage.pokemonFilterAttribute;
-    const orderFilter = window.localStorage.pokemonFilterOrder;
+    const filterType = window.localStorage.pokemonFilterAttribute || 'pickRate';
+    const orderFilter = window.localStorage.pokemonFilterOrder || 'desc';
     const containerDiv = document.getElementById("tables-container");
 
     const getObjectAttribute = () => {
@@ -517,7 +517,7 @@ fetch('./results.json')
     titleSpan.innerText = getTitle();
 
     const filterSpan = document.getElementById("filter-text");
-    filterSpan.innerText = `Ordenado por: ${capitalize(window.localStorage.pokemonFilterAttribute)} - ${window.localStorage.pokemonFilterOrder === 'asc' ? 'Crescente' : 'Decrescente'}`;
+    filterSpan.innerText = `Ordenado por: ${capitalize(filterAttr)} - ${filterOrder === 'asc' ? 'Crescente' : 'Decrescente'}`;
 
     function applyFilters() {
         const selectedClasses = Array.from(document.querySelectorAll('.class-filter:checked'))
