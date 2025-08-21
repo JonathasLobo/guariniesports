@@ -1,4 +1,4 @@
-fetch('./estatisticas-shad/results.json')
+fetch('./results.json')
 .then((response) => response.json())
 .then((results) => {
     const queryString = window.location.search;
