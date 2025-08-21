@@ -1,0 +1,70 @@
+{
+  "playerName": "GRN・LEONE",
+  "pokemonName": "delphox",
+  "pickRate": 10,
+  "winRate": 50,
+  "skills": [
+    {
+      "skillName": "Fire Blast",
+      "pickRate": 10,
+      "winRate": "50.00"
+    },
+    {
+      "skillName": "Mystical Fire",
+      "pickRate": 0,
+      "winRate": 0
+    },
+    {
+      "skillName": "Fire Spin",
+      "pickRate": 10,
+      "winRate": "50.00"
+    },
+    {
+      "skillName": "Flame Charge",
+      "pickRate": 0,
+      "winRate": 0
+    }
+  ],
+  "lanes": {
+    "Bot": {
+      "pickRate": 10,
+      "wins": 5
+    }
+  },
+  "battleItems": {
+    "ejectbutton": {
+      "pickRate": 10,
+      "wins": 5
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Support": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 10,
+      "winRate": 0,
+      "wins": 5
+    }
+  },
+  "killsRate": 3.7,
+  "assistsRate": 8.3,
+  "interruptsRate": 1.7,
+  "damageDoneRate": 52404.4,
+  "damageTakenRate": 39985.5,
+  "damageHealedRate": 6680.1,
+  "scoreRate": 64.4
+}

@@ -1,0 +1,70 @@
+{
+  "playerName": "GRN・LEANDCD",
+  "pokemonName": "eldegoss",
+  "pickRate": 10,
+  "winRate": 70,
+  "skills": [
+    {
+      "skillName": "Pollen Puff",
+      "pickRate": 10,
+      "winRate": "70.00"
+    },
+    {
+      "skillName": "Leaf Tornado",
+      "pickRate": 0,
+      "winRate": 0
+    },
+    {
+      "skillName": "Cotton Guard",
+      "pickRate": 0,
+      "winRate": 0
+    },
+    {
+      "skillName": "Cotton Spore",
+      "pickRate": 10,
+      "winRate": "70.00"
+    }
+  ],
+  "lanes": {
+    "Top": {
+      "pickRate": 10,
+      "wins": 7
+    }
+  },
+  "battleItems": {
+    "xspeed": {
+      "pickRate": 10,
+      "wins": 7
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Support": {
+      "pickRate": 10,
+      "winRate": 0,
+      "wins": 7
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 0,
+      "winRate": 0
+    }
+  },
+  "killsRate": 3.8,
+  "assistsRate": 12,
+  "interruptsRate": 0.5,
+  "damageDoneRate": 41819,
+  "damageTakenRate": 68312.1,
+  "damageHealedRate": 51155.4,
+  "scoreRate": 33.1
+}

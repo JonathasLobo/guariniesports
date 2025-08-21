@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultados - Pokémon Unite</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .hidden { display: none; }
+    .logo-preview { max-width: 40px; max-height: 40px; }
+    
+    /* Ajustes específicos para mobile */
+    @media (max-width: 640px) {
+      /* Melhorar visualização da tabela no mobile */
+      .mobile-table-text {
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      
+      /* Formulário mais compacto no mobile */
+      .mobile-form input, .mobile-form select, .mobile-form button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+      
+      /* Botões menores no mobile */
+      .mobile-buttons {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="w-full min-h-screen bg-cover bg-no-repeat bg-center" style="background-image: url(./images/backgrounds/index-background.png)">
+  <div class="max-w-3xl mx-auto p-2 sm:p-4 pb-20 rounded">
+    <!-- Título Principal -->
+    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6 text-white">Resultados do Guariní</h1>
+
+    <!-- Contadores de Vitórias/Empates/Derrotas -->
+    <div class="flex justify-around mb-4 text-lg font-semibold text-white">
+      <div>Vitórias: <span id="winCount" class="text-green-400">0</span></div>
+      <div>Empates: <span id="drawCount" class="text-yellow-400">0</span></div>
+      <div>Derrotas: <span id="lossCount" class="text-red-400">0</span></div>
+    </div>
+
+    <!-- Formulário de Adição de Resultados -->
+    <div class="mb-4 flex flex-col md:flex-row gap-2 items-center">
+      <img src="./images/backgrounds/Guarini.png" alt="Guariní" class="w-16 h-16 object-contain" />
+      <input id="placarMeuTime" type="number" placeholder="Placar Guariní" class="w-full p-2 border rounded text-black" />
+      <span class="font-bold text-xl text-white">X</span>
+      <input id="placarAdversario" type="number" placeholder="Placar Adversário" class="w-full p-2 border rounded text-black" />
+      <input id="nomeAdversario" type="text" placeholder="Nome do Time Adversário" class="w-full p-2 border rounded text-black" />
+      <select id="formatoScrim" class="w-full p-2 border rounded text-black">
+        <option value="2x2">2x2</option>
+        <option value="3x3">3x3</option>
+      </select>
+      <button id="botaoAdicionar" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded whitespace-nowrap">Adicionar</button>
+    </div>
+
+    <!-- Botões de Importar/Exportar -->
+    <div class="flex gap-2 sm:gap-4 mb-4 flex-wrap">
+      <input type="file" id="importarArquivo" accept=".json,.csv" class="block text-white bg-gray-800 p-2 rounded text-sm">
+      <button id="botaoExportar" class="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded text-sm sm:text-base">Exportar JSON</button>
+      <button id="botaoExportarCSV" class="bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-2 rounded text-sm sm:text-base">Exportar CSV</button>
+      <button id="botaoLimpar" class="bg-red-600 hover:bg-red-700 text-white px-2 py-2 rounded text-sm sm:text-base">Limpar Dados</button>
+    </div>
+
+    <!-- Tabela de Resultados -->
+    <table class="w-full bg-white rounded shadow text-black">
+      <thead class="bg-gray-200 text-left">
+        <tr>
+          <th class="p-3">Resultado</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaResultados">
+        <!-- Resultados serão inseridos via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Painel lateral de agendamento - Responsivo -->
+  <!--<div class="fixed bottom-4 right-2 sm:right-4 w-[280px] sm:w-[300px] bg-white rounded-lg shadow-lg z-50 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
+    <div class="p-3 sm:p-4 border-b font-bold text-center bg-gray-100 text-sm sm:text-base">Próximos Scrims</div>
+    <div id="schedule" class="p-2 sm:p-3 space-y-2 sm:space-y-3 text-xs sm:text-sm"></div>
+  </div>-->
+
+  <!-- Modal de Agendamento - Responsivo -->
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm sm:w-80">
+      <h2 class="text-lg font-bold mb-4">Agendar Scrim</h2>
+      <form id="scrimForm" class="space-y-4">
+        <input type="hidden" id="selectedDate" />
+        <input type="hidden" id="editIndex" value="-1" />
+        <div>
+          <label class="block text-sm font-medium mb-1">Adversário</label>
+          <input type="text" id="team2" class="w-full border rounded p-2 text-sm" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Horário</label>
+          <input type="time" id="matchTime" class="w-full border rounded p-2 text-sm" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Formato</label>
+          <select id="matchFormat" class="w-full border rounded p-2 text-sm" required>
+            <option value="2x2">2x2</option>
+            <option value="3x3">3x3</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" onclick="closeModal()" class="text-gray-500 px-3 py-1 text-sm">Cancelar</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="util.js"></script>
+  <script src="scrims-result.js"></script>
+  <!--<script src="agendamentos-scrims.js"></script>-->
+</body>
+</html>

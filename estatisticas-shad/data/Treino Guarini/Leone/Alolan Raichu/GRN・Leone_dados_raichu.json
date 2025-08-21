@@ -1,0 +1,70 @@
+{
+  "playerName": "GRN・LEONE",
+  "pokemonName": "raichu",
+  "pickRate": 10,
+  "winRate": 70,
+  "skills": [
+    {
+      "skillName": "Stored Power",
+      "pickRate": 10,
+      "winRate": "70.00"
+    },
+    {
+      "skillName": "Electro Ball",
+      "pickRate": 0,
+      "winRate": 0
+    },
+    {
+      "skillName": "Thunderbolt",
+      "pickRate": 10,
+      "winRate": "70.00"
+    },
+    {
+      "skillName": "Psychic",
+      "pickRate": 0,
+      "winRate": 0
+    }
+  ],
+  "lanes": {
+    "Bot": {
+      "pickRate": 10,
+      "wins": 7
+    }
+  },
+  "battleItems": {
+    "xspeed": {
+      "pickRate": 10,
+      "wins": 7
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Support": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 10,
+      "winRate": 0,
+      "wins": 7
+    }
+  },
+  "killsRate": 6.8,
+  "assistsRate": 8.1,
+  "interruptsRate": 1.2,
+  "damageDoneRate": 62819.2,
+  "damageTakenRate": 36100.1,
+  "damageHealedRate": 1886.9,
+  "scoreRate": 81.1
+}

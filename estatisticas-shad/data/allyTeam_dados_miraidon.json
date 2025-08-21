@@ -1,0 +1,88 @@
+{
+  "playerName": "FORCE TEAM",
+  "pokemonName": "miraidon",
+  "pickRate": 104,
+  "winRate": 57.69,
+  "skills": [
+    {
+      "skillName": "Charge Beam",
+      "pickRate": 83,
+      "winRate": "55.42"
+    },
+    {
+      "skillName": "Electro Drift",
+      "pickRate": 17,
+      "winRate": "64.71"
+    },
+    {
+      "skillName": "Thunder",
+      "pickRate": 83,
+      "winRate": "55.42"
+    },
+    {
+      "skillName": "Parabolic Charge",
+      "pickRate": 20,
+      "winRate": "65.00"
+    }
+  ],
+  "lanes": {
+    "Jungle": {
+      "pickRate": 1
+    },
+    "Bot": {
+      "pickRate": 103,
+      "wins": 60
+    }
+  },
+  "battleItems": {
+    "ejectbutton": {
+      "pickRate": 85,
+      "wins": 51
+    },
+    "xspeed": {
+      "pickRate": 8,
+      "wins": 3
+    },
+    "shedinjadoll": {
+      "pickRate": 2
+    },
+    "purify": {
+      "pickRate": 8,
+      "wins": 5
+    },
+    "potion": {
+      "pickRate": 1,
+      "wins": 1
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Support": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 104,
+      "winRate": 0,
+      "wins": 60
+    }
+  },
+  "killsRate": 5.4,
+  "assistsRate": 7.2,
+  "interruptsRate": 1.8,
+  "damageDoneRate": 71069.8,
+  "damageTakenRate": 29122.4,
+  "damageHealedRate": 2274.6,
+  "scoreRate": 39.1
+}

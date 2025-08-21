@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Results - Pokémon Unite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="mesclagem-results.js" defer></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-yellow-400">Merge Results - Pokémon Unite</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-400">Arquivo 1</h2>
+                <input type="file" id="file1" class="mb-4 w-full p-2 bg-gray-700 rounded border border-gray-600">
+                <div id="preview1" class="bg-gray-700 p-4 rounded max-h-64 overflow-y-auto"></div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-400">Arquivo 2</h2>
+                <input type="file" id="file2" class="mb-4 w-full p-2 bg-gray-700 rounded border border-gray-600">
+                <div id="preview2" class="bg-gray-700 p-4 rounded max-h-64 overflow-y-auto"></div>
+            </div>
+        </div>
+        
+        <div class="flex justify-center mb-8">
+            <button id="mergeBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                Mesclar Arquivos
+            </button>
+        </div>
+        
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4 text-green-400">Resultado Mesclado</h2>
+            <div class="flex justify-between mb-4">
+                <button id="copyBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-200">
+                    Copiar JSON
+                </button>
+                <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition duration-200">
+                    Baixar Arquivo
+                </button>
+            </div>
+            <div id="mergedResult" class="bg-gray-700 p-4 rounded max-h-96 overflow-y-auto whitespace-pre-wrap"></div>
+        </div>
+    </div>
+</body>
+</html>

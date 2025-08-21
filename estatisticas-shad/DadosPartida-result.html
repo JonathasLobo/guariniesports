@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./style.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="flex flex-col w-full pb-3.5">
+    <div class="fixed inset-0 bg-cover bg-no-repeat bg-center" style="background-image: url(./images/backgrounds/main-background-results.png)"></div>
+        <div class="relative z-10 flex flex-col w-full h-full gap-y-8">
+            <div class="text-center mt-8">
+                <span class="text-7xl text-white">ESTATÍSTICAS DA PARTIDA</span>
+                    <div id="cabecalho" class=" flex flex-col text-white justify-center text-center"></div>
+            </div>
+            <div id="center-content" class="flex flex-row justify-start mt-2">
+            </div>
+            
+            <div class="flex flex-col w-full items-center" style="background-image: url(./images/backgrounds/pokemon-right-background.png)">
+            </div>
+            <div id="graficoPontuacao" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoKills" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoAssists" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoInterrupts" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoDanoCausado" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoDanoRecebido" class="flex justify-start items-start pt-6"></div>
+            <div id="graficoCura" class="flex justify-start items-start pt-6"></div>
+        </div>
+
+    <script src="./util.js"></script>
+    <script src="./DadosPartida-result.js"></script>
+</body>
+</html>

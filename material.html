@@ -77,10 +77,10 @@
       </article>
 
       <article class="ferramenta">
-        <img src="./img-site/embreve.png" alt="Em Breve" />
-        <h3>Em Breve</h3>
-        <p class="descricao">Nova ferramenta em desenvolvimento</p>
-        <button type="button" class="btn-comprar" disabled>Indisponível</button>
+        <img src="./img-site/grafico.png" alt="Estatísticas" />
+        <h3>Estatísticas do time</h3>
+        <p class="descricao">Veja seu perfil com seus e os números da sua equipe</p>
+        <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
       </article>
 
       <article class="ferramenta">
@@ -134,6 +134,7 @@
     const userInfo = document.getElementById('userInfo');
     const userName = document.getElementById("userName");
     const calcBtn = document.getElementById("calcBtn");
+    const statBtn = document.getElementById("statBtn");
     const accessMessage = document.getElementById("accessMessage");
 
     // Função para lidar com login
@@ -175,7 +176,7 @@
       }
     }
 
-    // Verifica permissões do usuário
+    // Verifica permissões do usuário para a calculadora
     async function checkUserPermissions(user) {
       const docRef = doc(db, "usuarios", user.uid);
       const docSnap = await getDoc(docRef);
@@ -199,8 +200,37 @@
       }
     }
 
+    // Verifica permissões do usuário para estatísticas
+    async function checkStatsPermissions(user) {
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        
+        // Permite acesso para jogadores e administradores
+        if (userData.role === 'player' || userData.role === 'admin') {
+          statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
+        } else {
+          setupRestrictedStatsAccessUI();
+        }
+      } else {
+        setupRestrictedStatsAccessUI();
+      }
+    }
+
     function setupRestrictedAccessUI() {
       calcBtn.onclick = () => {
+        accessMessage.textContent = "Você não tem permissão para usar essa ferramenta";
+        accessMessage.style.display = 'block';
+        setTimeout(() => {
+          accessMessage.style.display = 'none';
+        }, 3000);
+      };
+    }
+
+    function setupRestrictedStatsAccessUI() {
+      statBtn.onclick = () => {
         accessMessage.textContent = "Você não tem permissão para usar essa ferramenta";
         accessMessage.style.display = 'block';
         setTimeout(() => {
@@ -215,8 +245,17 @@
       
       if (user) {
         await checkUserPermissions(user);
+        await checkStatsPermissions(user);
       } else {
         calcBtn.onclick = () => {
+          accessMessage.textContent = "Faça login para acessar esta ferramenta";
+          accessMessage.style.display = 'block';
+          setTimeout(() => {
+            accessMessage.style.display = 'none';
+          }, 3000);
+        };
+        
+        statBtn.onclick = () => {
           accessMessage.textContent = "Faça login para acessar esta ferramenta";
           accessMessage.style.display = 'block';
           setTimeout(() => {

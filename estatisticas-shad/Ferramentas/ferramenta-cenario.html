@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cenários Possíveis - Pokémon Unite</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ferramenta-cenario.css">
+</head>
+<body>
+    <header>
+        <div class="header-wrapper">
+            <div class="logo-center">
+                <a href="#">
+                    <img src="https://unite.pokemon.com/images/pokemon-unite/logo-pokemon-unite.png" alt="Pokémon Unite" class="header-logo">
+                </a>
+            </div>
+            <h1>Cenários Possíveis</h1>
+        </div>
+    </header>
+
+    <main>
+        <section id="calculadora">
+            <h2>Simulador de Rotas</h2>
+            <div class="calculadora-container">
+                <div class="form-group">
+                    <label for="pokemon-select">Escolha seu Pokémon:</label>
+                    <select id="pokemon-select" class="form-control">
+                        <option value="">Selecione um Pokémon</option>
+                        <!-- Os Pokémon serão preenchidos via JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Escolha sua rota:</label>
+                    <div class="route-options">
+                        <button class="route-btn" data-route="top">Topo</button>
+                        <button class="route-btn" data-route="bot">Base</button>
+                        <button class="route-btn" data-route="jungle">Selva</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="score-option">Incluir cenários com pontuação?</label>
+                    <select id="score-option" class="form-control">
+                        <option value="no">Não</option>
+                        <option value="yes">Sim</option>
+                    </select>
+                </div>
+
+                <button id="calcular-btn" class="btn-comprar">Calcular Cenários</button>
+
+                <div id="resultados" class="resultados-container">
+                    <h3>Resultados</h3>
+                    <div class="table-container">
+                        <table id="resultados-table">
+                            <thead>
+                                <tr>
+                                    <th>Pokémon</th>
+                                    <th>Cenário</th>
+                                    <th>Level</th>
+                                    <th>Avaliação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Os resultados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Ferramenta desenvolvida para Pokémon Unite - Cenários Possíveis</p>
+        <p>© 2023 - Não afiliado à Nintendo ou The Pokémon Company</p>
+    </footer>
+
+    <script src="ferramenta-cenario.js"></script>
+</body>
+</html>

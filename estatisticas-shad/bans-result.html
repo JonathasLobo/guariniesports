@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="./style.css" type="text/css" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <style>
+            html {
+                background-color: #1F2937; /* Cor bg-gray-800 */
+            }
+            body {
+                background-color: #1F2937;
+                min-height: 100vh;
+                margin: 0;
+            }
+        </style>
+    </head>
+
+        <div class="flex flex-col items-center w-full h-auto bg-gray-400 fixed top-0 left-0 right-0 z-10">
+            <div class="flex justify-between w-full pr-24">
+                <div id="mainLogo" style="cursor: pointer;">
+                    <img src="./images/backgrounds/copasonhos.png" width="80">
+                </div>
+                <div class="flex gap-x-2 pl-24 pt-6">
+                    <span id="title-span" class="text-4xl font-bold text-white">FORCE TEAM</span>
+                </div>
+                <button id="captureTable" class="h-8 px-2 bg-blue-500 text-white rounded">Gerar Print da Tabela</button>
+            </div>
+    
+            <!--<div class="w-full flex justify-center mb-2">
+                <div id="searchButton" class="bg-gray-100 bg-opacity-70 shadow-lg rounded-lg w-[1500px] min-h-[120px] flex flex-col justify-start border border-gray-300 relative">
+                    <span class="text-xl font-semibold text-center text-black pt-2">Pesquise aqui um Pokémon</span>
+                    <div class="flex justify-center p-4">
+                        <input type="text" id="pokemonSearch" placeholder="Digite o nome do Pokémon..." class="p-2 w-96 border border-gray-300 rounded-lg" />
+                    </div>
+                    <div id="searchResults" class="bg-white p-4 rounded-lg mt-2 shadow-lg max-h-[400px] overflow-y-auto absolute w-full left-0 top-full hidden">
+                    </div>
+                </div>
+            </div>-->
+        </div>
+
+        <div class="flex items-center justify-center w-full bg-gray-400 gap-x-8 gap-y-8 pt-[120px]">
+            <div id="filterInfo" class="bg-gray-100 bg-opacity-70 shadow-lg rounded-lg w-full min-h-[120px] flex flex-col justify-start border border-gray-300">
+                <div class="flex flex-col items-center text-black">
+                    <div class="flex items-center justify-center py-1">
+                        <span id="filter-text" class="text-xl text-black">
+                        </span>
+                    </div>
+                    <div id="filter-container" class="flex gap-x-2 mt-4 text-xl">
+                        <style>
+                            input[type="checkbox"] {
+                                display: none;
+                            }
+
+                            label {
+                                display: inline-block;
+                                padding: 10px 50px;
+                                margin: 5px;
+                                background-color: #f4f4f4;
+                                color: #333;
+                                border-radius: 30px;
+                                cursor: pointer;
+                                transition: background-color 0.3s, color 0.3s;
+                                font-weight: bold;
+                            }
+
+                            label:hover {
+                                background-color: #ddd;
+                            }
+                            
+                            input[type="checkbox"]:checked + label {
+                                background-color: #007bff; 
+                                color: white; 
+                            }
+                        </style>
+                        
+                        <input type="checkbox" id="todos" class="class-filter" value="Todos" checked>
+                        <label for="todos">Todos</label><br>
+
+                        <input type="checkbox" id="bansWinner" class="class-filter" value="Bans Winner">
+                        <label for="bansWinner">Bans Winners</label><br>
+
+                        <input type="checkbox" id="bansLoser" class="class-filter" value="Bans Loser">
+                        <label for="bansLoser">Bans Losers</label><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full bg-gray-400 gap-x-8 gap-y-8 pt-6">
+            <div id="statisticsInfo" class="bg-gray-100 bg-opacity-70 shadow-lg rounded-lg w-full min-h-[120px] flex flex-col justify-start border border-gray-300">
+            </div>
+        </div>
+
+        <div id="topicInfo" class="bg-gray-400 w-full h-16 flex items-start pt-4">
+        </div>
+
+        <div class="bg-gray-400 h-full">
+            <div id="tables-container" class="flex px-3.5 gap-x-1.5">
+            </div>
+        </div>
+        
+        <script src="./util.js"></script>
+        <script src="./pokemon-result.js"></script>
+        <script src="./bans-result.js"></script>
+    </body>
+</html>

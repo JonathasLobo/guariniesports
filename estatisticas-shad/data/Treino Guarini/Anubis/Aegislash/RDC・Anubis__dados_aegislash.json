@@ -1,0 +1,70 @@
+{
+  "playerName": "RDC・ANUBIS?",
+  "pokemonName": "aegislash",
+  "pickRate": 10,
+  "winRate": 40,
+  "skills": [
+    {
+      "skillName": "Sacred Sword",
+      "pickRate": 9,
+      "winRate": "33.33"
+    },
+    {
+      "skillName": "Shadow Claw",
+      "pickRate": 1,
+      "winRate": "100.00"
+    },
+    {
+      "skillName": "Wide Guard",
+      "pickRate": 10,
+      "winRate": "40.00"
+    },
+    {
+      "skillName": "Iron Head",
+      "pickRate": 0,
+      "winRate": 0
+    }
+  ],
+  "lanes": {
+    "Top": {
+      "pickRate": 10,
+      "wins": 4
+    }
+  },
+  "battleItems": {
+    "purify": {
+      "pickRate": 10,
+      "wins": 4
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 10,
+      "winRate": 0,
+      "wins": 4
+    },
+    "Support": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 0,
+      "winRate": 0
+    }
+  },
+  "killsRate": 7.9,
+  "assistsRate": 5.5,
+  "interruptsRate": 0.4,
+  "damageDoneRate": 67778.4,
+  "damageTakenRate": 56045.6,
+  "damageHealedRate": 8619.2,
+  "scoreRate": 64.5
+}

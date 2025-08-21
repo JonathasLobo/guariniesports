@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dashboard com estatísticas e dados dos Pokémon no Pokémon Unite" />
+    <title>Dashboard Pokémon - Pokémon Unite</title>
+    <link href="./style.css" type="text/css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="flex flex-col w-full h-full bg-gray-300">
+
+    <!-- TOPO -->
+    <div class="flex items-center justify-between w-full bg-black">
+      <!--<div id="mainLogo" style="cursor: pointer;">
+        <img src="./images/backgrounds/copasonhos.png" width="20" alt="Logo principal" />
+      </div>-->
+    <div 
+        id="mainInfo" 
+        class="relative bg-opacity-90 shadow-md rounded-lg w-full h-64 flex gap-x-2"
+        style="background: linear-gradient(to right, #525151 0%, #232323 50%, #525151 100%);"
+        >
+        <!-- Barra cinza com borda branca (parte inferior) -->
+        <div id="mainInfoDrop" class="absolute bottom-0 left-0 right-0 h-16 bg-gray-300 bg-opacity-40 border-t-2 border-white border-opacity-30 rounded-b-lg"></div>
+        </div>
+      <div id="exportButton" class="flex flex-col text-white"></div>
+    </div>
+
+    <!-- SEÇÕES INFERIORES -->
+    <div class="h-screen overflow-y-auto flex flex-wrap gap-x-56 gap-y-8 pl-8 pt-6" style="background-image: url('./images/backgrounds/backgroundblack.jpg'); background-size: cover; background-position: center;">
+
+      <!-- Box padrão -->
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Sugestão de Builds
+        </span>
+        <div id="infoFirst" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Build de Skills Utilizada
+        </span>
+        <div id="infoSecond" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Matchups (WinRate%)
+        </span>
+        <div id="infoThird" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Melhores Battle Itens
+        </span>
+        <div id="infoFourth" class="transition-shadow duration-200 rounded-lg w-full h-[300px]"></div>
+      </div>
+
+      <div class="relative">
+        <span id="importLink" class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Médias Gerais
+        </span>
+        <div id="infoFifty" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Gráfico de Desempenho
+        </span>
+        <div id="infoSixty" class="transition-shadow duration-200 rounded-lg w-full h-[300px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Top 5 jogadores do pokemon
+        </span>
+        <div id="infoSeventh" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Lanes jogadas
+        </span>
+        <div id="infoEighth" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Melhores com (sinergias)
+        </span>
+        <div id="infoNinety" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Roles Principais
+        </span>
+        <div id="infoTenth" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>
+
+      <!--<div class="relative">
+        <span class="text-gray-200 text-3xl font-bold whitespace-nowrap z-10">
+          Última Partida
+        </span>
+        <div id="infoEleven" class="transition-shadow duration-200 rounded-lg w-full h-[200px]"></div>
+      </div>-->
+
+      <!-- Rodapé ou seção final -->
+      <div class="flex w-full h-full items-center gap-x-4 justify-center">
+        <div class="flex flex-col z-10 pl-4 pt-5">
+          <div class="flex items-center w-full justify-between pl-6 pr-3 pb-7"></div>
+        </div>
+
+        <div class="flex flex-col gap-y-4 items-center pl-8">
+          <div class="flex flex-row gap-x-4 items-center"></div>
+          <div id="chart-container" class="flex justify-center items-center pt-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="./util.js"></script>
+    <script src="./pokemon-result.js"></script>
+    <script src="./bans-result.js"></script>
+    <script src="./synergies-result.js"></script>
+    <script src="./rendimento-result.js"></script>
+  </body>
+</html>

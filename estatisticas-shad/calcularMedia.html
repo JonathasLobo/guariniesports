@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar JSON</title>
+    <script>
+        let playerData = null;
+        let savedPlayers = [];
+
+        function handleFiles(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        processJson(data);
+                    } catch (error) {
+                        alert("Erro ao processar o arquivo JSON.");
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        function processJson(data) {
+            if (!playerData || playerData.playerName !== data.playerName) {
+                playerData = {
+                    playerName: data.playerName,
+                    pokemons: [{ name: data.pokemonName, pickRate: data.pickRate }],
+                    killsRate: data.killsRate,
+                    assistsRate: data.assistsRate,
+                    interruptsRate: data.interruptsRate,
+                    damageDoneRate: data.damageDoneRate,
+                    damageTakenRate: data.damageTakenRate,
+                    damageHealedRate: data.damageHealedRate,
+                    scoreRate: data.scoreRate,
+                    totalPickRate: data.pickRate
+                };
+            } else {
+                if (!playerData.pokemons.some(p => p.name === data.pokemonName)) {
+                    playerData.pokemons.push({ name: data.pokemonName, pickRate: data.pickRate });
+                }
+                playerData.killsRate += data.killsRate;
+                playerData.assistsRate += data.assistsRate;
+                playerData.interruptsRate += data.interruptsRate;
+                playerData.damageDoneRate += data.damageDoneRate;
+                playerData.damageTakenRate += data.damageTakenRate;
+                playerData.damageHealedRate += data.damageHealedRate;
+                playerData.scoreRate += data.scoreRate;
+                playerData.totalPickRate += data.pickRate;
+            }
+            displayData();
+        }
+
+        function formatNumber(value) {
+            return (value).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function displayData() {
+            if (!playerData) return;
+            
+            const totalPokemons = playerData.pokemons.length;
+            
+            document.getElementById("playerInfo").innerHTML = `
+                <h2>Jogador: ${playerData.playerName}</h2>
+                <p><strong>Pokémons Utilizados:</strong></p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    ${playerData.pokemons.map(pokemon => `
+                        <div style="text-align: center;">
+                            <img src="images/backgrounds/${pokemon.name}-left-bg.png" alt="${pokemon.name}" style="width: 50px; height: auto;">
+                            <p>${pokemon.pickRate}</p>
+                        </div>
+                    `).join("")}
+                </div>
+                <p><strong>Kills Rate:</strong> ${(playerData.killsRate / totalPokemons).toFixed(0)}</p>
+                <p><strong>Assists Rate:</strong> ${(playerData.assistsRate / totalPokemons).toFixed(0)}</p>
+                <p><strong>Interrupts Rate:</strong> ${(playerData.interruptsRate / totalPokemons).toFixed(1)}</p>
+                <p><strong>Dano Causado:</strong> ${formatNumber(playerData.damageDoneRate / totalPokemons)}</p>
+                <p><strong>Dano Recebido:</strong> ${formatNumber(playerData.damageTakenRate / totalPokemons)}</p>
+                <p><strong>Dano Curado:</strong> ${formatNumber(playerData.damageHealedRate / totalPokemons)}</p>
+                <p><strong>Pontuação:</strong> ${(playerData.scoreRate / totalPokemons).toFixed(0)}</p>
+                <button onclick="saveData()">Salvar</button>
+            `;
+        }
+
+        function saveData() {
+            if (!playerData) return;
+            savedPlayers.push({ ...playerData });
+            updateTable();
+        }
+
+        function updateTable() {
+            const table = document.getElementById("savedPlayers");
+            table.innerHTML = "<tr><th>Jogador</th><th>Total de Partidas</th><th>Pokémons</th><th>Kills</th><th>Assists</th><th>Interrupts</th><th>Dano Causado</th><th>Dano Recebido</th><th>Dano Curado</th><th>Pontuação</th></tr>";
+            
+            savedPlayers.forEach(player => {
+                const totalPokemons = player.pokemons.length;
+                table.innerHTML += `
+                    <tr>
+                        <td>${player.playerName}</td>
+                        <td>${player.totalPickRate}</td>
+                        <td>${totalPokemons}</td>
+                        <td>${(player.killsRate / totalPokemons).toFixed(0)}</td>
+                        <td>${(player.assistsRate / totalPokemons).toFixed(0)}</td>
+                        <td>${(player.interruptsRate / totalPokemons).toFixed(1)}</td>
+                        <td>${formatNumber(player.damageDoneRate / totalPokemons)}</td>
+                        <td>${formatNumber(player.damageTakenRate / totalPokemons)}</td>
+                        <td>${formatNumber(player.damageHealedRate / totalPokemons)}</td>
+                        <td>${(player.scoreRate / totalPokemons).toFixed(0)}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Importar Arquivo JSON</h1>
+    <input type="file" accept="application/json" multiple onchange="handleFiles(event)">
+    <div id="playerInfo"></div>
+    <h2>Dados Salvos</h2>
+    <table border="1" id="savedPlayers"></table>
+</body>
+</html>

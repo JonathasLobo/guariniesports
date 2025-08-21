@@ -1,0 +1,54 @@
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.bg-stripes-amber {
+    background-color: #e879f91a;
+    background-image: linear-gradient(135deg, #fde68a 10%,#0000 0,#0000 50%,#fde68a 0,#fde68a 60%,#0000 0,#0000);
+    background-size: 7.07px 7.07px;
+}
+
+.text-glow {
+  color: rgb(0, 0, 0);
+  text-shadow: 
+    0 0 5px #558286, 
+    0 0 10px #558286, 
+    0 0 15px #558286, 
+    0 0 20px #558286, 
+    0 0 30px #558286,
+    0 0 40px #558286, 
+    0 0 50px #558286;
+}
+.text-glowJogos {
+  color: white; /* Cor do texto */
+  text-shadow: 
+    0 0 5px #fff, 
+    0 0 10px #fff, 
+    0 0 15px #fff, 
+    0 0 20px #7c3fe2, 
+    0 0 30px #7c3fe2, 
+    0 0 40px #7c3fe2, 
+    0 0 50px #7c3fe2;
+}
+.text-glowWR {
+  color: white; /* Cor do texto */
+  text-shadow: 
+    0 0 5px #fff, 
+    0 0 10px #fff, 
+    0 0 15px #fff, 
+    0 0 20px #fc801e, 
+    0 0 30px #fc801e, 
+    0 0 40px #fc801e, 
+    0 0 50px #fc801e;
+}

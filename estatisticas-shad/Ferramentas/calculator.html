@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Desempenho - Pokémon Unite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-select {
+            position: relative;
+            cursor: pointer;
+        }
+        .custom-select-options {
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 50;
+        }
+        .custom-select-option {
+            transition: background-color 0.2s;
+        }
+        .custom-select-option:hover {
+            background-color: #f3f4f6;
+        }
+        .custom-select-option img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto max-w-3xl p-5">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Calculadora de Desempenho - Pokémon Unite</h1>
+            
+            <div class="mb-6">
+                <label for="pokemon" class="block text-sm font-medium text-gray-700 mb-1">Selecione o Pokémon:</label>
+                <select id="pokemon" class="hidden">
+                    <option value="">-- Selecione --</option>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <div id="customPokemonSelect" class="custom-select">
+                    <!-- Custom select will be inserted here by JavaScript -->
+                </div>
+            </div>
+            
+            <div id="pokemonImageContainer" class="flex justify-center my-6">
+                <!-- Pokémon image will be loaded here -->
+            </div>
+            
+            <div class="mb-6">
+                <label for="pasteData" class="block text-sm font-medium text-gray-700 mb-1">Cole os dados aqui (formato do jogo):</label>
+                <textarea id="pasteData" rows="5" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Cole os dados no formato:
+Batalhas da Temporada
+1
+Vitórias da Temporada
+0
+Derrotas da Temporada
+1
+MVP da Temporada
+1
+Batalhas totais
+728
+No. de Vitórias
+416
+Derrotas totais
+312
+MVP Total
+373"></textarea>
+                <button id="parseDataBtn" class="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
+                    Preencher Automaticamente
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 border-b-2 border-blue-800 pb-2 mb-4">Dados da Temporada</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="seasonBattles" class="text-sm text-gray-700">Batalhas da Temporada:</label>
+                            <input type="number" id="seasonBattles" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="seasonWins" class="text-sm text-gray-700">Vitórias da Temporada:</label>
+                            <input type="number" id="seasonWins" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="seasonLosses" class="text-sm text-gray-700">Derrotas da Temporada:</label>
+                            <input type="number" id="seasonLosses" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="seasonMVP" class="text-sm text-gray-700">MVP da Temporada:</label>
+                            <input type="number" id="seasonMVP" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 border-b-2 border-blue-800 pb-2 mb-4">Dados Totais</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="totalBattles" class="text-sm text-gray-700">Batalhas totais:</label>
+                            <input type="number" id="totalBattles" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="totalWins" class="text-sm text-gray-700">No. de Vitórias:</label>
+                            <input type="number" id="totalWins" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="totalLosses" class="text-sm text-gray-700">Derrotas totais:</label>
+                            <input type="number" id="totalLosses" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="totalMVP" class="text-sm text-gray-700">MVP Total:</label>
+                            <input type="number" id="totalMVP" min="0" class="w-20 p-1 border border-gray-300 rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+                <button id="calculateBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md">
+                    Calcular Desempenho
+                </button>
+                <button id="copyDataBtn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md">
+                    Copiar Dados Formatados
+                </button>
+            </div>
+            
+            <div id="resultsContainer" class="hidden bg-blue-50 p-5 rounded-lg">
+                <h2 class="text-2xl font-semibold text-blue-800 mb-4">Resultados</h2>
+                <div id="resultsContent" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="util.js"></script>
+    <script src="calculator.js"></script>
+</body>
+</html>

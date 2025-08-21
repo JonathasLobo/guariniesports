@@ -1,0 +1,70 @@
+{
+  "playerName": "RDC・ANUBIS?",
+  "pokemonName": "blaziken",
+  "pickRate": 10,
+  "winRate": 60,
+  "skills": [
+    {
+      "skillName": "Fire Punch",
+      "pickRate": 6,
+      "winRate": "33.33"
+    },
+    {
+      "skillName": "Overheat",
+      "pickRate": 4,
+      "winRate": "100.00"
+    },
+    {
+      "skillName": "Focus Blast",
+      "pickRate": 6,
+      "winRate": "33.33"
+    },
+    {
+      "skillName": "Blaze Kick",
+      "pickRate": 4,
+      "winRate": "100.00"
+    }
+  ],
+  "lanes": {
+    "Top": {
+      "pickRate": 10,
+      "wins": 6
+    }
+  },
+  "battleItems": {
+    "ejectbutton": {
+      "pickRate": 10,
+      "wins": 6
+    }
+  },
+  "roles": {
+    "Speedster": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "All Rounder": {
+      "pickRate": 10,
+      "winRate": 0,
+      "wins": 6
+    },
+    "Support": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Defender": {
+      "pickRate": 0,
+      "winRate": 0
+    },
+    "Attacker": {
+      "pickRate": 0,
+      "winRate": 0
+    }
+  },
+  "killsRate": 8.9,
+  "assistsRate": 8.8,
+  "interruptsRate": 0.6,
+  "damageDoneRate": 76635,
+  "damageTakenRate": 60844.6,
+  "damageHealedRate": 16602.6,
+  "scoreRate": 105.8
+}
