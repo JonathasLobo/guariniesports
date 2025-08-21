@@ -625,7 +625,7 @@ fetch('./results.json')
     
             rowTr.classList.add('cursor-pointer');
             rowTr.onclick = () => {
-                window.location.href = (`.estatistica-shad/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+                window.location.href = (`./estatisticas-shad/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
             };
     
             const pickContainer = document.createElement("div");
