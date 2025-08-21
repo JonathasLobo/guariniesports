@@ -401,24 +401,6 @@ fetch('./results.json')
     const filterSpan = document.getElementById("filter-text");
     filterSpan.innerText = `Ordenado por: ${capitalize(filterAttr)} - ${filterOrder === 'asc' ? 'Crescente' : 'Decrescente'}`;
 
-    // ✅ CORREÇÃO: Definir pokemonRoles e rolesColor que estavam faltando
-    // Estas constantes devem estar no util.js, mas vamos definir aqui também como fallback
-    const pokemonRoles = window.pokemonRoles || {
-        // Adicione aqui os roles dos pokémons se não estiverem no util.js
-        // Exemplo:
-        // "pikachu": "Attacker",
-        // "charizard": "All Rounder",
-        // etc...
-    };
-    
-    const rolesColor = window.rolesColor || {
-        "Speedster": "#FF6B6B",
-        "Attacker": "#4ECDC4", 
-        "All Rounder": "#45B7D1",
-        "Support": "#96CEB4",
-        "Defender": "#FECA57"
-    };
-
     function applyFilters() {
         const selectedClasses = Array.from(document.querySelectorAll('.class-filter:checked'))
         .map(checkbox => checkbox.value);
@@ -472,27 +454,36 @@ fetch('./results.json')
 
     const cabecalhoTable = document.getElementById("topicInfo")
 
-    const headerTr = document.createElement("tr");
-    cabecalhoTable.appendChild(headerTr);
+    // ✅ CORREÇÃO: Criar uma tabela para o cabeçalho com estrutura correta
+    const headerTable = document.createElement("table");
+    headerTable.style.borderCollapse = 'separate';
+    headerTable.style.borderSpacing = '0 2px';
+    headerTable.style.width = '100%';
+    headerTable.classList.add('w-full');
+    cabecalhoTable.appendChild(headerTable);
 
-    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-black');
+    const headerTr = document.createElement("tr");
+    headerTable.appendChild(headerTr);
+
+    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-black', 'bg-gray-300');
 
     const createHeaderCell = (text, className = '') => {
         const th = document.createElement("th");
-        th.classList.add('px-4', 'py-2', 'font-semibold', 'text-xl', className);
+        th.classList.add('px-4', 'py-2', 'font-semibold', 'text-xl', 'text-center', className);
         th.innerText = text;
         return th;
     };
 
-    headerTr.appendChild(createHeaderCell('Rank', 'w-56'));
-    headerTr.appendChild(createHeaderCell('Pick', 'w-[450px]'));
+    // ✅ CORREÇÃO: Usar as mesmas larguras que as células da tabela
+    headerTr.appendChild(createHeaderCell('Rank', 'w-20'));
+    headerTr.appendChild(createHeaderCell('Pick', 'w-[500px]'));
     headerTr.appendChild(createHeaderCell('Pickrate', 'w-48'));
-    headerTr.appendChild(createHeaderCell('Winrate', 'w-48'));
-    headerTr.appendChild(createHeaderCell('Gráfico', 'w-[320px]'))
-    headerTr.appendChild(createHeaderCell('Win Streak', 'w-[230px]'))
-    headerTr.appendChild(createHeaderCell('Lose Streak', 'w-[230px]'))
-    headerTr.appendChild(createHeaderCell('Última Partida', 'w-[355px]'));
-    headerTr.appendChild(createHeaderCell('Índice', 'flex-1'));
+    headerTr.appendChild(createHeaderCell('Winrate', 'w-80'));
+    headerTr.appendChild(createHeaderCell('Gráfico', 'w-60'));
+    headerTr.appendChild(createHeaderCell('Win Streak', 'w-60'));
+    headerTr.appendChild(createHeaderCell('Lose Streak', 'w-60'));
+    headerTr.appendChild(createHeaderCell('Última Partida', 'w-60'));
+    headerTr.appendChild(createHeaderCell('Índice', 'w-60'));
 
     const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
         const table = document.createElement("table");
@@ -518,27 +509,24 @@ fetch('./results.json')
             const role = pokemonRoles[pokemonName] || 'Unknown'; // Fallback para role
     
             const rowTr = document.createElement("tr");
+            rowTr.classList.add('cursor-pointer', 'flex', 'w-full');
+            rowTr.onclick = () => {
+                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+            };
     
             const rankTd = document.createElement("td");
-            rankTd.classList.add('text-left', 'p-3', 'font-bold', 'text-2xl');
+            rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'w-20', 'flex', 'items-center', 'justify-center');
             rankTd.style.backgroundColor = rolesColor[role] || '#CCCCCC';
             rankTd.innerText = i + 1;
             rowTr.appendChild(rankTd);
     
             const pickTd = document.createElement("td");
-            pickTd.classList.add('w-[500px]')
+            pickTd.classList.add('w-[500px]', 'flex', 'items-center');
             pickTd.style.background = `linear-gradient(to right, ${rolesColor[role] || '#CCCCCC'}, rgb(255, 255, 255))`;
-            rowTr.appendChild(pickTd);
-    
-            rowTr.classList.add('cursor-pointer');
-            rowTr.onclick = () => {
-                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
-            };
-    
+            
             const pickContainer = document.createElement("div");
-            pickContainer.classList.add('flex', 'items-center');
-            pickTd.appendChild(pickContainer);
-    
+            pickContainer.classList.add('flex', 'items-center', 'p-2');
+            
             const pickImage = document.createElement("img");
             pickImage.classList.add('mr-3');
             pickImage.width = 50;
@@ -547,60 +535,59 @@ fetch('./results.json')
             pickContainer.appendChild(pickImage);
     
             const pickSpan = document.createElement("span");
-            pickSpan.classList.add('pl-1.5', 'text-xl', 'font-bold', 'w-28');
+            pickSpan.classList.add('pl-1.5', 'text-xl', 'font-bold');
             pickSpan.innerText = capitalize(pokemonName);
             pickContainer.appendChild(pickSpan);
+            
+            pickTd.appendChild(pickContainer);
+            rowTr.appendChild(pickTd);
     
             const pickRateTd = document.createElement("td");
-            pickRateTd.classList.add('text-black', 'font-bold', 'text-xl', 'text-center');
+            pickRateTd.classList.add('text-black', 'font-bold', 'text-xl', 'text-center', 'w-48', 'flex', 'items-center', 'justify-center');
             pickRateTd.style.backgroundColor = 'white';
             pickRateTd.innerText = pickRate || 0;
             rowTr.appendChild(pickRateTd);
     
             const winRateTd = document.createElement("td");
-            winRateTd.classList.add('text-black', 'text-xl', 'font-bold','w-80');
+            winRateTd.classList.add('text-black', 'text-xl', 'font-bold', 'w-80', 'flex', 'items-center', 'justify-center');
             winRateTd.style.backgroundColor = 'white';
-            rowTr.appendChild(winRateTd);
-    
-            const winRateOuterDiv = document.createElement("div");
-            winRateOuterDiv.classList.add('flex','justify-center');
-            winRateTd.appendChild(winRateOuterDiv);
-    
+            
             const winRateSpan = document.createElement("span");
             winRateSpan.classList.add('text-black', 'text-xl', 'font-bold');
             winRateSpan.innerText = `${(winRate || 0).toFixed(2)}%`;
-            winRateOuterDiv.appendChild(winRateSpan);
+            winRateTd.appendChild(winRateSpan);
+            rowTr.appendChild(winRateTd);
     
             const winRateBarTd = document.createElement("td");
-            winRateBarTd.classList.add('text-black','w-60');
+            winRateBarTd.classList.add('text-black', 'w-60', 'flex', 'items-center', 'justify-center');
             winRateBarTd.style.backgroundColor = 'white';
-            rowTr.appendChild(winRateBarTd);
-    
+            
             const winRateBarContainer = document.createElement("div");
-            winRateBarContainer.classList.add('w-full', 'bg-gray-200', 'rounded-full', 'h-4', 'mb-1');
+            winRateBarContainer.classList.add('bg-gray-200', 'rounded-full', 'h-4');
             winRateBarContainer.style.width = '120px';
-            winRateBarTd.appendChild(winRateBarContainer);
-    
+            
             const winRateBar = document.createElement("div");
             winRateBar.classList.add('h-4', 'rounded-full');
             winRateBar.style.width = `${winRate || 0}%`;
             winRateBar.style.backgroundColor = 'rgb(29, 181, 52)';
             winRateBarContainer.appendChild(winRateBar);
+            winRateBarTd.appendChild(winRateBarContainer);
+            rowTr.appendChild(winRateBarTd);
 
             const maxWinStreakTd = document.createElement("td");
-            maxWinStreakTd.classList.add('text-black', 'text-center', 'font-bold', 'text-xl', 'w-60');
+            maxWinStreakTd.classList.add('text-black', 'text-center', 'font-bold', 'text-xl', 'w-60', 'flex', 'items-center', 'justify-center');
             maxWinStreakTd.style.backgroundColor = 'white';
             maxWinStreakTd.innerText = maxWinStreak || 0;
             rowTr.appendChild(maxWinStreakTd);
 
             const maxLoseStreakTd = document.createElement("td");
-            maxLoseStreakTd.classList.add('text-black', 'text-center', 'font-bold', 'text-xl', 'w-60');
+            maxLoseStreakTd.classList.add('text-black', 'text-center', 'font-bold', 'text-xl', 'w-60', 'flex', 'items-center', 'justify-center');
             maxLoseStreakTd.style.backgroundColor = 'white';
             maxLoseStreakTd.innerText = maxLoseStreak || 0;
             rowTr.appendChild(maxLoseStreakTd);
 
             const lastMatchTd = document.createElement("td");
-            lastMatchTd.classList.add('text-black', 'text-center','font-bold','text-xl', 'pr-4', 'w-60');
+            lastMatchTd.classList.add('text-black', 'text-center', 'font-bold', 'text-xl', 'w-60', 'flex', 'items-center', 'justify-center');
             lastMatchTd.style.backgroundColor = 'white';
             
             if (pokemon.lastMatch === 'W') {
@@ -617,16 +604,12 @@ fetch('./results.json')
             rowTr.appendChild(lastMatchTd);
 
             const lastGameTd = document.createElement("td");
-            lastGameTd.classList.add('w-60');
-
-            lastGameTd.style.textAlign = "right";     
-            lastGameTd.style.verticalAlign = "middle"; 
-            lastGameTd.style.paddingRight = "15px"; 
+            lastGameTd.classList.add('w-60', 'flex', 'items-center', 'justify-center');
             lastGameTd.style.backgroundColor = 'white';
-            rowTr.appendChild(lastGameTd);
 
             const arrowImage = document.createElement("img");
             arrowImage.width = 25;
+            arrowImage.height = 25;
 
             let arrowImgSrc = 'neutral-arrow';
             if (isUp !== undefined) {
@@ -636,8 +619,8 @@ fetch('./results.json')
             }
             arrowImage.src = `images/icons/${arrowImgSrc}`;
 
-            arrowImage.style.display = "inline-block";
             lastGameTd.appendChild(arrowImage);
+            rowTr.appendChild(lastGameTd);
 
             table.appendChild(rowTr);
             
