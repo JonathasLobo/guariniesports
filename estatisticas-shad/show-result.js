@@ -473,8 +473,8 @@ fetch('./results.json')
     };
 
     // Aqui definimos as larguras uma vez só
-    headerTr.appendChild(createHeaderCell('Rank', 'w-[80px]'));
-    headerTr.appendChild(createHeaderCell('Pick', 'w-[200px]'));
+    headerTr.appendChild(createHeaderCell('Rank', 'w-[80px] text-start'));
+    headerTr.appendChild(createHeaderCell('Pick', 'w-[200px] text-start'));
     headerTr.appendChild(createHeaderCell('Pickrate', 'w-[120px]'));
     headerTr.appendChild(createHeaderCell('Winrate', 'w-[120px]'));
     headerTr.appendChild(createHeaderCell('Gráfico', 'w-[140px]'));
@@ -484,14 +484,23 @@ fetch('./results.json')
     headerTr.appendChild(createHeaderCell('Índice', 'w-[100px]'));
 
     const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
-        const table = document.createElement("table");
-    
-        table.style.borderCollapse = 'separate';
-        table.style.borderSpacing = '0 2px';
-        table.style.width = '100%';
-        table.classList.add('w-full', 'h-fit');
+    const table = document.createElement("table");
+
+    // estilos via Tailwind
+    table.classList.add(
+    'w-full', 
+    'h-fit',
+    'table-fixed',         // largura fixa das colunas
+    'border-separate',     // permite espaçamento entre linhas
+    'border-spacing-y-2'   // espaço vertical entre as linhas
+    );
+
+    // se ainda quiser garantir via style (opcional, pode remover se usar só Tailwind)
+    table.style.borderCollapse = 'separate';
+    table.style.borderSpacing = '0 8px'; // um pouco maior que 2px para ficar visível
+    table.style.width = '100%';
         
-        containerDiv.appendChild(table);
+    containerDiv.appendChild(table);
     
         for (let i = firstIndex; i < sideLength; i++) {
             const pokemonName = pokemonKeys[i];
