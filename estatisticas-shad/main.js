@@ -1,7 +1,14 @@
 // Variáveis globais para armazenar dados
 let gameData = null;
-let pokemonFilterAttribute = 'pickRate';
-let pokemonFilterOrder = 'desc';
+if (!localStorage.getItem('pokemonFilterAttribute')) {
+    localStorage.setItem('pokemonFilterAttribute', 'pickRate');
+}
+if (!localStorage.getItem('pokemonFilterOrder')) {
+    localStorage.setItem('pokemonFilterOrder', 'desc');
+}
+
+let pokemonFilterAttribute = localStorage.getItem('pokemonFilterAttribute');
+let pokemonFilterOrder = localStorage.getItem('pokemonFilterOrder');
 let selectedPlayerName = null;
 
 // Mostrar notificação
@@ -298,6 +305,12 @@ function setupEventListeners() {
         filterSelect.addEventListener('change', (e) => {
             const value = e.target.value;
             const [attribute, order] = value.split(',');
+            
+            // Atualizar localStorage
+            localStorage.setItem('pokemonFilterAttribute', attribute);
+            localStorage.setItem('pokemonFilterOrder', order);
+            
+            // Atualizar variáveis
             pokemonFilterAttribute = attribute;
             pokemonFilterOrder = order;
             console.log('Filtro alterado:', attribute, order);

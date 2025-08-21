@@ -73,6 +73,11 @@ fetch('./results.json')
         dropdownMenu.classList.toggle("hidden");
     };
 
+    console.log('filterType:', filterType);
+    console.log('orderFilter:', orderFilter);
+    console.log('objAttribute:', objAttribute);
+    console.log('objAttribute keys:', Object.keys(objAttribute));
+
     const sortValues = (obj, attribute, order) => {
         const keys = Object.keys(obj);
         const secondAttribute = attribute === 'pickRate' ? 'winRate' : 'pickRate';
@@ -625,7 +630,7 @@ fetch('./results.json')
     
             rowTr.classList.add('cursor-pointer');
             rowTr.onclick = () => {
-                window.location.href = (`/estatisticas-shad/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
             };
     
             const pickContainer = document.createElement("div");
@@ -636,7 +641,7 @@ fetch('./results.json')
             pickImage.classList.add('mr-3');
             pickImage.width = 50;
             pickImage.height = 50;
-            pickImage.src = `/estatisticas-shad/images/backgrounds/${pokemonName}-left-bg.png`;
+            pickImage.src = `images/backgrounds/${pokemonName}-left-bg.png`;
             pickContainer.appendChild(pickImage);
     
             const pickSpan = document.createElement("span");
@@ -728,7 +733,7 @@ fetch('./results.json')
             } else {
                 arrowImgSrc = 'neutral-arrow.png';
             }
-            arrowImage.src = `/estatisticas-shad/images/icons/${arrowImgSrc}`;
+            arrowImage.src = `images/icons/${arrowImgSrc}`;
 
             arrowImage.style.display = "inline-block";
             lastGameTd.appendChild(arrowImage);
