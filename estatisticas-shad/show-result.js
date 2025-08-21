@@ -636,7 +636,7 @@ fetch('./results.json')
             pickImage.classList.add('mr-3');
             pickImage.width = 50;
             pickImage.height = 50;
-            pickImage.src = `./images/backgrounds/${pokemonName}-left-bg.png`;
+            pickImage.src = `./estatisticas-shad/images/backgrounds/${pokemonName}-left-bg.png`;
             pickContainer.appendChild(pickImage);
     
             const pickSpan = document.createElement("span");
@@ -728,7 +728,7 @@ fetch('./results.json')
             } else {
                 arrowImgSrc = 'neutral-arrow.png';
             }
-            arrowImage.src = `./images/icons/${arrowImgSrc}`;
+            arrowImage.src = `./estatisticas-shad/images/icons/${arrowImgSrc}`;
 
             arrowImage.style.display = "inline-block";
             lastGameTd.appendChild(arrowImage);
