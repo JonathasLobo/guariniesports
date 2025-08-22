@@ -58,7 +58,7 @@
     </div>
   </header>
 
- <div class="user-container">
+  <div class="user-container">
     <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
     <div class="user-info" id="userInfo">
       Olá, <span id="userName"></span>!
@@ -68,6 +68,8 @@
   <main>
     <h2>Ferramentas</h2>
     <section class="ferramentas" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
+      
+      <!-- Calculadora de Performance -->
       <article class="ferramenta">
         <img src="./img-site/calculadora.png" alt="Calculadora de Performance">
         <h3>Calculadora de Performance</h3>
@@ -76,6 +78,7 @@
         <div id="calcAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
+      <!-- Estatísticas do Time -->
       <article class="ferramenta">
         <img src="./img-site/grafico.png" alt="Estatísticas" />
         <h3>Estatísticas do time</h3>
@@ -84,12 +87,15 @@
         <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
+      <!-- Calculadora de Winrate Ranqueado -->
       <article class="ferramenta">
-        <img src="./img-site/embreve.png" alt="Em Breve" />
-        <h3>Em Breve</h3>
-        <p class="descricao">Nova ferramenta em desenvolvimento</p>
-        <button type="button" class="btn-comprar" disabled>Indisponível</button>
+        <img src="./img-site/winrate.png" alt="Calculadora de Winrate Ranqueado" />
+        <h3>Calculadora de Winrate Ranqueado</h3>
+        <p class="descricao">Calcule seu winrate específico de Rankeds ou qualquer outro tipo de partida</p>
+        <button type="button" class="btn-comprar" id="winrateBtn">Acessar</button>
+        <div id="calcWinrateMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
+
     </section>
 
     <p style="text-align:center; margin-top: 2rem;">
@@ -136,15 +142,15 @@
     const userName = document.getElementById("userName");
     const calcBtn = document.getElementById("calcBtn");
     const statBtn = document.getElementById("statBtn");
+    const winrateBtn = document.getElementById("winrateBtn");
     const calcAccessMessage = document.getElementById("calcAccessMessage");
     const statAccessMessage = document.getElementById("statAccessMessage");
+    const calcWinrateMessage = document.getElementById("calcWinrateMessage");
 
     // Função para lidar com login
     async function handleLogin() {
       try {
-        // Armazena a página atual para redirecionamento
         sessionStorage.setItem('redirectAfterLogin', 'material.html');
-        // Redireciona para a página de login
         window.location.href = 'login.html';
       } catch (err) {
         console.error("Erro ao redirecionar para login:", err);
@@ -178,16 +184,21 @@
       }
     }
 
-    // Configura acesso à calculadora (sempre liberado)
+    // Configura acesso à calculadora de performance (sempre liberado)
     function setupCalculatorAccess() {
       calcBtn.onclick = () => window.location.href = 'desempenho.html';
       calcAccessMessage.style.display = 'none';
     }
 
+    // Configura acesso à calculadora de winrate (sempre liberado)
+    function setupWinrateAccess() {
+      winrateBtn.onclick = () => window.location.href = 'ferramenta-cenario.html';
+      calcWinrateMessage.style.display = 'none';
+    }
+
     // Verifica permissões do usuário para estatísticas
     async function checkStatsPermissions(user) {
       if (!user) {
-        // Usuário não logado - bloquear acesso
         setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
         return;
       }
@@ -199,7 +210,6 @@
         if (docSnap.exists()) {
           const userData = docSnap.data();
           
-          // Permite acesso apenas para jogadores e administradores
           if (userData.role === 'player' || userData.role === 'admin') {
             statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
             statAccessMessage.style.display = 'none';
@@ -207,8 +217,6 @@
             setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
           }
         } else {
-          // Usuário existe no auth mas não tem documento no Firestore
-          // Criar documento com role 'user' e bloquear acesso
           await setDoc(doc(db, "usuarios", user.uid), {
             email: user.email,
             role: 'user',
@@ -236,10 +244,9 @@
     onAuthStateChanged(auth, async (user) => {
       updateUI(user);
       
-      // Calculadora sempre liberada
       setupCalculatorAccess();
+      setupWinrateAccess();
       
-      // Verificar permissões para estatísticas
       await checkStatsPermissions(user);
     });
 
@@ -252,7 +259,6 @@
       mobileMenu.classList.toggle('ativo');
     });
 
-    // Fechar menu ao clicar em um link
     const mobileLinks = document.querySelectorAll('.mobile-menu a');
     mobileLinks.forEach(link => {
       link.addEventListener('click', function() {
@@ -261,7 +267,6 @@
       });
     });
 
-    // Fechar menu ao redimensionar para desktop
     window.addEventListener('resize', function() {
       if (window.innerWidth > 900) {
         menuToggle.classList.remove('ativo');
