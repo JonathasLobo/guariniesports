@@ -18,15 +18,22 @@ function carregarDadosRank() {
     return false;
   }
 
-  // Regex para extrair os dados
+  // Regex para extrair os dados em inglês e português
   const mvp = texto.match(/MVP\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const score = texto.match(/Score\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const totalBattles = texto.match(/Total Battles\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const wins = texto.match(/(?:No\.\s*Of\s*Wins|Total Wins)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const currentLoseStreak = texto.match(/Current Lose Streak\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const currentWinStreak = texto.match(/Current Win Streak\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const winStreakRecord = texto.match(/Win Streak Record\s*\*?\*?(\d+)\*?\*?/i)?.[1];
-  const totalEliminations = texto.match(/Total Eliminations\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const score = texto.match(/(?:Score|Pontuação)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const totalBattles = texto.match(/(?:Total Battles|Batalhas totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const wins = texto.match(/(?:No\.\s*Of\s*Wins|Total Wins|No\.\s*de\s*Vitórias|Vitórias\s*totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const currentLoseStreak = texto.match(/(?:Current Lose Streak|Sequência\s*de\s*Derrotas\s*Atual)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const currentWinStreak = texto.match(/(?:Current Win Streak|Sequência\s*de\s*Vitórias\s*Atual)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const winStreakRecord = texto.match(/(?:Win Streak Record|Recorde\s*de\s*Sequência\s*de\s*Vitórias)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
+  
+  const totalEliminations = texto.match(/(?:Total Eliminations|Eliminações\s*Totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
   rankData = {
     mvp: parseInt(mvp) || 0,
