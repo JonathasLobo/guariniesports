@@ -151,8 +151,8 @@ function populateSections(data) {
         "filters-section": "Filtros",
         "player-profile-section": "Perfil", 
         "ban-section": "Banimentos",
-        "ally-section": "Aliados",
-        "enemy-section": "Inimigos",
+        "ally-section": "Rankings",
+        "enemy-section": "Recordes",
         "rayquaza-section": "Rayquaza",
         "scrims-section": "Scrims"
     };
