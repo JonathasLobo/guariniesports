@@ -489,6 +489,7 @@ fetch('./results.json')
         table.style.borderCollapse = 'separate';
         table.style.borderSpacing = '0 2px';
         table.style.width = '100%';
+        table.style.marginBottom = '4px';
         table.classList.add('w-full', 'h-fit');
         
         containerDiv.appendChild(table);
