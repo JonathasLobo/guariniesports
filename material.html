@@ -73,7 +73,7 @@
         <h3>Calculadora de Performance</h3>
         <p class="descricao">Calcule suas estatísticas de jogo e compare com outros jogadores</p>
         <button type="button" class="btn-comprar" id="calcBtn">Acessar</button>
-        <div id="accessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+        <div id="calcAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
       <article class="ferramenta">
@@ -81,6 +81,7 @@
         <h3>Estatísticas do time</h3>
         <p class="descricao">Veja seu perfil com seus e os números da sua equipe</p>
         <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
+        <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
       <article class="ferramenta">
@@ -99,7 +100,7 @@
   <footer>
     <p>&copy; 2025 Guariní e-sport. Todos os direitos reservados.</p>
     <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">Conheça nossas redes sociais</a></p>
-    <p>Created by: Lobo</p>
+    <p>Created by: Lobo & Shad</p>
   </footer>
 
   <script type="module">
@@ -135,7 +136,8 @@
     const userName = document.getElementById("userName");
     const calcBtn = document.getElementById("calcBtn");
     const statBtn = document.getElementById("statBtn");
-    const accessMessage = document.getElementById("accessMessage");
+    const calcAccessMessage = document.getElementById("calcAccessMessage");
+    const statAccessMessage = document.getElementById("statAccessMessage");
 
     // Função para lidar com login
     async function handleLogin() {
@@ -176,65 +178,56 @@
       }
     }
 
-    // Verifica permissões do usuário para a calculadora
-    async function checkUserPermissions(user) {
-      const docRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        
-        if (userData.role === 'player' || userData.role === 'admin') {
-          calcBtn.onclick = () => window.location.href = 'desempenho.html';
-          accessMessage.style.display = 'none';
-        } else {
-          setupRestrictedAccessUI();
-        }
-      } else {
-        await setDoc(doc(db, "usuarios", user.uid), {
-          email: user.email,
-          role: 'user',
-          createdAt: new Date()
-        });
-        setupRestrictedAccessUI();
-      }
+    // Configura acesso à calculadora (sempre liberado)
+    function setupCalculatorAccess() {
+      calcBtn.onclick = () => window.location.href = 'desempenho.html';
+      calcAccessMessage.style.display = 'none';
     }
 
     // Verifica permissões do usuário para estatísticas
     async function checkStatsPermissions(user) {
-      const docRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(docRef);
+      if (!user) {
+        // Usuário não logado - bloquear acesso
+        setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
+        return;
+      }
 
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        
-        // Permite acesso para jogadores e administradores
-        if (userData.role === 'player' || userData.role === 'admin') {
-          statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
+      try {
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          
+          // Permite acesso apenas para jogadores e administradores
+          if (userData.role === 'player' || userData.role === 'admin') {
+            statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
+            statAccessMessage.style.display = 'none';
+          } else {
+            setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
+          }
         } else {
-          setupRestrictedStatsAccessUI();
+          // Usuário existe no auth mas não tem documento no Firestore
+          // Criar documento com role 'user' e bloquear acesso
+          await setDoc(doc(db, "usuarios", user.uid), {
+            email: user.email,
+            role: 'user',
+            createdAt: new Date()
+          });
+          setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
         }
-      } else {
-        setupRestrictedStatsAccessUI();
+      } catch (error) {
+        console.error("Erro ao verificar permissões:", error);
+        setupRestrictedStatsAccess("Erro ao verificar permissões. Tente novamente.");
       }
     }
 
-    function setupRestrictedAccessUI() {
-      calcBtn.onclick = () => {
-        accessMessage.textContent = "Você não tem permissão para usar essa ferramenta";
-        accessMessage.style.display = 'block';
-        setTimeout(() => {
-          accessMessage.style.display = 'none';
-        }, 3000);
-      };
-    }
-
-    function setupRestrictedStatsAccessUI() {
+    function setupRestrictedStatsAccess(message) {
       statBtn.onclick = () => {
-        accessMessage.textContent = "Você não tem permissão para usar essa ferramenta";
-        accessMessage.style.display = 'block';
+        statAccessMessage.textContent = message;
+        statAccessMessage.style.display = 'block';
         setTimeout(() => {
-          accessMessage.style.display = 'none';
+          statAccessMessage.style.display = 'none';
         }, 3000);
       };
     }
@@ -243,26 +236,11 @@
     onAuthStateChanged(auth, async (user) => {
       updateUI(user);
       
-      if (user) {
-        await checkUserPermissions(user);
-        await checkStatsPermissions(user);
-      } else {
-        calcBtn.onclick = () => {
-          accessMessage.textContent = "Faça login para acessar esta ferramenta";
-          accessMessage.style.display = 'block';
-          setTimeout(() => {
-            accessMessage.style.display = 'none';
-          }, 3000);
-        };
-        
-        statBtn.onclick = () => {
-          accessMessage.textContent = "Faça login para acessar esta ferramenta";
-          accessMessage.style.display = 'block';
-          setTimeout(() => {
-            accessMessage.style.display = 'none';
-          }, 3000);
-        };
-      }
+      // Calculadora sempre liberada
+      setupCalculatorAccess();
+      
+      // Verificar permissões para estatísticas
+      await checkStatsPermissions(user);
     });
 
     // Funcionalidade do menu mobile
