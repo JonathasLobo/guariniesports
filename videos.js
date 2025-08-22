@@ -2,7 +2,7 @@
 
 // Array com os títulos das jogadas (personalize com os nomes dos seus jogadores)
 const jogadas = [
-  "Roubo de Rayquaza espetacular do <span class='jogador'>LOBO</span>",
+  "Excelente play do nosso coach <span class='jogador'>SHAD</span>",
   "Penta de respeito do <span class='jogador'>ANUBIS</span>", 
   "Fora do meta? Não para o <span class='jogador'>SHAD</span>"
 ];
