@@ -9,28 +9,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <a id="topo"></a>
-  
+  <a id="topo"></a>
+
+  <!-- Cabeçalho Mantido -->
   <header>
     <div class="header-wrapper">
-      <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
           <li><a href="loja.html">Loja</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
-          
+          <li><a href="sobre.html" class="ativo">Sobre</a></li>
         </ul>
       </nav>
       
-      <!-- Logo Central -->
       <div class="logo-center">
-        <a href="index.html" aria-label="Início" class="ativo">
+        <a href="index.html" aria-label="Início">
           <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
-
       
-      <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
           <li><a href="times.html">Times</a></li>
@@ -38,14 +34,12 @@
         </ul>
       </nav>
       
-      <!-- Botão Menu Mobile -->
       <button class="menu-toggle" aria-label="Menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
       
-      <!-- Menu Mobile -->
       <nav class="mobile-menu">
         <ul>
           <li><a href="index.html">Início</a></li>
@@ -58,57 +52,106 @@
       </nav>
     </div>
   </header>
-  
+
+  <!-- Botão Login/Logout -->
+  <div class="user-container">
+    <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
+    <div class="user-info" id="userInfo">
+      Olá, <span id="userName"></span>!
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
   <main>
-    <section class="sobre-missao">
-      <h2>Missão da Guariní e-sport</h2>
-      <p>
-        Na Guariní e-sport, nossa missão é fortalecer a paixão pelos jogos eletrônicos, proporcionando aos jogadores uma plataforma única para alcançar a excelência em um ambiente profissional. Fundados em 11 de Maio de 2019, somos uma equipe de jogadores apaixonados que se dedicam a se tornarem os melhores em suas disciplinas.
-      </p>
+    <section class="sobre-container">
+      <div class="sobre-texto">
+        <h2>Sobre a Guariní e-sport</h2>
+        <p>
+          Fundada em <strong>11 de Maio de 2019</strong>, a Guariní e-sport nasceu para impulsionar a paixão pelos jogos eletrônicos e levar os jogadores à excelência. Nosso nome, inspirado no Tupi-Guarani, significa "<em>o que dá força</em>", refletindo nossa determinação e espírito competitivo.
+        </p>
+        <p>
+          Competimos em títulos como <strong>Pokémon Unite</strong>, <strong>VGC</strong>, <strong>TCG</strong> e <strong>Pokémon GO</strong>, sempre buscando evolução, estratégia e inovação.
+        </p>
+        <p>
+          Mais do que competir, queremos <strong>construir comunidade</strong>, compartilhar conhecimento e inspirar novos talentos. Se você ama e-sports, junte-se a nós e faça parte dessa jornada!
+        </p>
+        <a href="index.html" class="btn-comprar">Voltar para Início</a>
+      </div>
+      <div class="sobre-imagem">
+        <img src="./img-site/Guarini.png" alt="Imagem representativa da Guariní e-sport" />
+      </div>
     </section>
-
-    <section class="sobre-identidade">
-      <h2>Nosso Nome, Nossa Identidade</h2>
-      <p>
-        O nome "<strong>Guariní</strong>" é uma expressão do Tupi-Guarani, uma língua indígena brasileira, que significa "<em>o que dá força</em>". Essa palavra reflete o espírito e o compromisso da nossa equipe, que se esforça ao máximo para alcançar seus objetivos com determinação.
-      </p>
-    </section>
-
-    <section class="sobre-representacao">
-      <h2>O Que Representamos</h2>
-      <p>
-        Atualmente, competimos em uma variedade de jogos, incluindo Pokémon Unite, Pokémon VGC, PokémonTCG e Pokémon GO, com planos de expandir ainda mais. Com uma abordagem estratégica e uma equipe dedicada de treinadores e analistas, estamos constantemente aprimorando nossas habilidades e estratégias para nos tornarmos um dos principais times de e-sport do Brasil e do mundo.
-      </p>
-    </section>
-
-    <section class="sobre-comunidade">
-      <h2>Mais do que Competir</h2>
-      <p>
-        Além de competir em torneios online e presenciais, estamos empenhados em construir uma comunidade vibrante de jogadores de e-sport. Por meio de nossas redes sociais e canais de streaming, oferecemos conteúdo educacional e divertido. Acreditamos que ao envolver e educar a comunidade de jogadores, podemos elevar o nível dos jogos eletrônicos como um todo, tornando a experiência de jogar mais emocionante e gratificante para todos.
-      </p>
-    </section>
-
-    <section class="sobre-convite">
-      <h2>Seja Parte da Família Guariní</h2>
-      <p>
-        Se você é um jogador de e-sport talentoso e dedicado ou um fã apaixonado por jogos eletrônicos, a Guariní e-sport é o lugar certo para você! Somos uma organização colaborativa que, atualmente, opera com o apoio e dedicação de seus membros, enquanto buscamos patrocínios e investimentos para impulsionar nossa estrutura.
-      </p>
-      <p>
-        Aqui, acreditamos no poder da união e da força coletiva para enfrentar desafios e alcançar vitórias. Junte-se a nós, ajude a construir essa história e torne cada momento nos e-sports uma experiência inesquecível. Venha fazer parte do futuro da Guariní e-sport!
-      </p>
-    </section>
-
-    <p><a href="index.html" class="btn-comprar">Voltar para Início</a></p>
   </main>
 
+  <!-- Rodapé -->
   <footer>
     <p>&copy; 2025 Guariní e-sport. Todos os direitos reservados.</p>
     <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">Conheça nossas redes sociais</a></p>
-    <p>Created by: Lobo</p>
+    <p>Created by: Lobo & Shad</p>
   </footer>
 
+  <!-- Firebase e Autenticação -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elementos do DOM
+    const loginLogoutBtn = document.getElementById('loginLogoutBtn');
+    const userInfo = document.getElementById('userInfo');
+    const userName = document.getElementById('userName');
+
+    function updateUI(user) {
+      if (user) {
+        loginLogoutBtn.textContent = 'Logout';
+        loginLogoutBtn.onclick = handleLogout;
+        const displayName = user.displayName || user.email.split('@')[0];
+        userName.textContent = displayName;
+        userInfo.style.display = 'block';
+      } else {
+        loginLogoutBtn.textContent = 'Login';
+        loginLogoutBtn.onclick = handleLogin;
+        userInfo.style.display = 'none';
+      }
+    }
+
+    function handleLogin() {
+      window.location.href = 'login.html';
+    }
+
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        alert('Logout realizado com sucesso!');
+      } catch (error) {
+        console.error('Erro no logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+  </script>
+
+  <!-- Script para menu mobile -->
   <script>
-    // Funcionalidade do menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
     const mobileMenu = document.querySelector('.mobile-menu');
 
@@ -117,7 +160,6 @@
       mobileMenu.classList.toggle('ativo');
     });
 
-    // Fechar menu ao clicar em um link
     const mobileLinks = document.querySelectorAll('.mobile-menu a');
     mobileLinks.forEach(link => {
       link.addEventListener('click', function() {
@@ -126,7 +168,6 @@
       });
     });
 
-    // Fechar menu ao redimensionar para desktop
     window.addEventListener('resize', function() {
       if (window.innerWidth > 900) {
         menuToggle.classList.remove('ativo');
