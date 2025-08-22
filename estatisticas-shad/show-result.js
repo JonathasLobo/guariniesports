@@ -467,7 +467,7 @@ fetch('./results.json')
 
     const createHeaderCell = (text, widthClass = '') => {
         const th = document.createElement("th");
-        th.classList.add('px-2', 'py-2', 'font-semibold', 'text-sm', 'text-center', 'text-black', widthClass);
+        th.classList.add('px-2', 'py-2', 'font-semibold', 'text-lg', 'text-center', 'text-black', widthClass);
         th.innerText = text;
         return th;
     };
@@ -489,7 +489,7 @@ fetch('./results.json')
         table.style.borderCollapse = 'separate';
         table.style.borderSpacing = '0 2px';
         table.style.width = '100%';
-        table.style.marginBottom = '4px';
+        table.style.borderBottom = "2px solid #444444ff";
         table.classList.add('w-full', 'h-fit');
         
         containerDiv.appendChild(table);
