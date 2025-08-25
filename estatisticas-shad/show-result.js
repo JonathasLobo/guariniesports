@@ -552,7 +552,7 @@ const displayRoleWinrates = () => {
     
             rowTr.classList.add('cursor-pointer');
             rowTr.onclick = () => {
-                window.location.href = (`http://127.0.0.1:8080/pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
             };
     
             const pickContainer = document.createElement("div");
