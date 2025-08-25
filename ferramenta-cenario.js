@@ -3,7 +3,7 @@
 // Versão Simplificada - Apenas nome e dados
 // ====================================
 
-console.log("🚀 winrate.js carregado!");
+console.log("🚀 ferramenta-cenario.js carregado!");
 
 let rankData = {};
 
