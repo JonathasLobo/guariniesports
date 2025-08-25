@@ -9,6 +9,13 @@ fetch('./results.json')
     const orderFilter = window.localStorage.pokemonFilterOrder;
     const containerDiv = document.getElementById("tables-container");
 
+    // Função para calcular total de bans de um pokémon
+    const getTotalBans = (pokemonName) => {
+        const bansWinner = results.bans?.BansWinnerTeam?.[pokemonName] || 0;
+        const bansLoser = results.bans?.BansLoserTeam?.[pokemonName] || 0;
+        return bansWinner + bansLoser;
+    };
+
     const getObjectAttribute = () => {
         if (infoType === 'allyTeam' || infoType === 'enemyTeam') {
             return results[infoType].overall
@@ -501,7 +508,7 @@ const displayRoleWinrates = () => {
     const headerTr = document.createElement("tr");
     cabecalhoTable.appendChild(headerTr);
 
-    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-white', 'justify-center', 'ml-28');
+    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-white', 'justify-center', 'ml-32');
 
     const createHeaderCell = (text, className = '') => {
         const th = document.createElement("th");
@@ -511,10 +518,11 @@ const displayRoleWinrates = () => {
     };
 
     headerTr.appendChild(createHeaderCell('Rank', 'text-left', 'w-2'));
-    headerTr.appendChild(createHeaderCell('Pokémon', 'w-[240px]', 'text-left'));
-    headerTr.appendChild(createHeaderCell('PickRate', 'w-28', 'text-center'));
-    headerTr.appendChild(createHeaderCell('WinRate', 'w-36', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Gráfico', 'w-44', 'text-center'));
+    headerTr.appendChild(createHeaderCell('Pokémon', 'w-[230px]', 'text-center'));
+    headerTr.appendChild(createHeaderCell('PickRate', 'w-24', 'text-left'));
+    headerTr.appendChild(createHeaderCell('WinRate', 'w-28', 'text-center'));
+    headerTr.appendChild(createHeaderCell('Bans', 'w-28', 'text-left')); // Nova coluna Bans
+    headerTr.appendChild(createHeaderCell('Gráfico', 'w-32', 'text-center'));
     headerTr.appendChild(createHeaderCell('WinStreak', 'w-28', 'text-center'));
     headerTr.appendChild(createHeaderCell('LoseStreak', 'w-28', 'text-center'));
     headerTr.appendChild(createHeaderCell('Resultado', 'w-32', 'text-center'));
@@ -537,6 +545,7 @@ const displayRoleWinrates = () => {
             const pokemon = objAttribute[pokemonName];
             const { pickRate, winRate, isUp, maxWinStreak, maxLoseStreak } = pokemon;
             const role = pokemonRoles[pokemonName];
+            const totalBans = getTotalBans(pokemonName); // Calcular total de bans
     
             const rowTr = document.createElement("tr");
             
@@ -610,6 +619,12 @@ const displayRoleWinrates = () => {
             winRateSpan.classList.add('text-white', 'text-xl', 'font-bold');
             winRateSpan.innerText = `${winRate.toFixed(2)}%`;
             winRateOuterDiv.appendChild(winRateSpan);
+
+            // Nova coluna de Bans
+            const bansTd = document.createElement("td");
+            bansTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-left', 'w-28');
+            bansTd.innerText = totalBans;
+            rowTr.appendChild(bansTd);
     
             const winRateBarTd = document.createElement("td");
             winRateBarTd.classList.add('text-white','w-60');
