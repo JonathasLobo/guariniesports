@@ -501,7 +501,7 @@ const displayRoleWinrates = () => {
     const headerTr = document.createElement("tr");
     cabecalhoTable.appendChild(headerTr);
 
-    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-white');
+    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-white', 'justify-center', 'ml-28');
 
     const createHeaderCell = (text, className = '') => {
         const th = document.createElement("th");
@@ -510,25 +510,27 @@ const displayRoleWinrates = () => {
         return th;
     };
 
-    headerTr.appendChild(createHeaderCell('Rank', 'text-left'));
-    headerTr.appendChild(createHeaderCell('Pokémon', 'w-[220px]', 'text-left'));
-    headerTr.appendChild(createHeaderCell('PickRate', 'w-22', 'text-center'));
+    headerTr.appendChild(createHeaderCell('Rank', 'text-left', 'w-2'));
+    headerTr.appendChild(createHeaderCell('Pokémon', 'w-[240px]', 'text-left'));
+    headerTr.appendChild(createHeaderCell('PickRate', 'w-28', 'text-center'));
     headerTr.appendChild(createHeaderCell('WinRate', 'w-36', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Gráfico', 'w-40', 'text-center'));
-    headerTr.appendChild(createHeaderCell('WinStreak', 'w-24', 'text-center'));
+    headerTr.appendChild(createHeaderCell('Gráfico', 'w-44', 'text-center'));
+    headerTr.appendChild(createHeaderCell('WinStreak', 'w-28', 'text-center'));
     headerTr.appendChild(createHeaderCell('LoseStreak', 'w-28', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Resultado', 'w-28', 'text-center'));
+    headerTr.appendChild(createHeaderCell('Resultado', 'w-32', 'text-center'));
     headerTr.appendChild(createHeaderCell('Tendência', 'w-60', 'text-center'));
 
     const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
-        const table = document.createElement("table");
+    const table = document.createElement("table");
+
+    table.style.borderCollapse = 'separate';
+    table.style.borderSpacing = '0 2px';
+    table.style.width = '100%';
+    table.style.maxWidth = '1200px'; // Largura máxima da tabela
+    table.style.margin = '0 auto'; // Centraliza a tabela
+    table.classList.add('w-full', 'h-fit');
     
-        table.style.borderCollapse = 'separate';
-        table.style.borderSpacing = '0 2px';
-        table.style.width = '50%';
-        table.classList.add('w-full', 'h-fit');
-        
-        containerDiv.appendChild(table);
+    containerDiv.appendChild(table);
     
         for (let i = firstIndex; i < sideLength; i++) {
             const pokemonName = pokemonKeys[i];
