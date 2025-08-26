@@ -53,7 +53,7 @@ fetch('./results.json')
     mainMenuOption.classList.add("p-2", "cursor-pointer", "text-black", "hover:bg-gray-200");
     mainMenuOption.innerText = "Menu Principal";
     mainMenuOption.onclick = () => {
-        window.location.href = window.location.pathname.replace('show-result.html', 'indexStat.html');
+        window.location.href = window.location.pathname.replace('show-result.html', 'index.html');
     };
     dropdownMenu.appendChild(mainMenuOption);
 
@@ -555,6 +555,7 @@ const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
     headerTr.appendChild(createHeaderCell('UR', '80px'));
     headerTr.appendChild(createHeaderCell('T', '80px'));
     headerTr.appendChild(createHeaderCell('GR', '120px'));
+    headerTr.appendChild(createHeaderCell('Tier', '80px'));
     
     // CRIAR O TBODY PARA OS DADOS
     const tbody = document.createElement("tbody");
@@ -720,6 +721,13 @@ const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
         winRateBarContainer.appendChild(winRateBar);
         graphTd.appendChild(winRateBarContainer);
         rowTr.appendChild(graphTd);
+
+        // TIER - largura: 80px
+        const tierTd = document.createElement("td");
+        tierTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        tierTd.style.width = '80px';
+        tierTd.innerText = pokemonTierListUDB[pokemonName] || '-'; // Usa a tier list do util.js
+        rowTr.appendChild(tierTd);
 
         // Adicionar evento de click
         rowTr.classList.add('cursor-pointer');
