@@ -16,6 +16,13 @@ fetch('./results.json')
         return bansWinner + bansLoser;
     };
 
+    // Função para calcular participação
+    const calculateParticipation = (pokemonName, pickRate) => {
+        const totalBans = getTotalBans(pokemonName);
+        const participation = ((parseFloat(pickRate) + totalBans) / 2);
+        return participation.toFixed(1) + '%';
+    };
+
     const getObjectAttribute = () => {
         if (infoType === 'allyTeam' || infoType === 'enemyTeam') {
             return results[infoType].overall
@@ -503,196 +510,226 @@ const displayRoleWinrates = () => {
         }
     }
 
-    const cabecalhoTable = document.getElementById("topicInfo")
 
-    const headerTr = document.createElement("tr");
-    cabecalhoTable.appendChild(headerTr);
-
-    headerTr.classList.add('flex', 'w-full', 'text-left', 'text-white', 'justify-center', 'ml-32');
-
-    const createHeaderCell = (text, className = '') => {
-        const th = document.createElement("th");
-        th.classList.add('px-4', 'py-2', 'font-semibold', 'text-lg', className);
-        th.innerText = text;
-        return th;
-    };
-
-    headerTr.appendChild(createHeaderCell('Rank', 'text-left', 'w-2'));
-    headerTr.appendChild(createHeaderCell('Pokémon', 'w-[230px]', 'text-center'));
-    headerTr.appendChild(createHeaderCell('PickRate', 'w-24', 'text-left'));
-    headerTr.appendChild(createHeaderCell('WinRate', 'w-28', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Bans', 'w-28', 'text-left')); // Nova coluna Bans
-    headerTr.appendChild(createHeaderCell('Gráfico', 'w-32', 'text-center'));
-    headerTr.appendChild(createHeaderCell('WinStreak', 'w-28', 'text-center'));
-    headerTr.appendChild(createHeaderCell('LoseStreak', 'w-28', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Resultado', 'w-32', 'text-center'));
-    headerTr.appendChild(createHeaderCell('Tendência', 'w-60', 'text-center'));
-
-    const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
+const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
     const table = document.createElement("table");
 
     table.style.borderCollapse = 'separate';
-    table.style.borderSpacing = '0 8px'; // Aumentei o espaçamento entre linhas
+    table.style.borderSpacing = '0 8px';
     table.style.width = '100%';
     table.style.maxWidth = '1200px'; 
     table.style.margin = '0 auto'; 
     table.classList.add('w-full', 'h-fit');
     
+    // CRIAR O CABEÇALHO DENTRO DA TABELA
+    const thead = document.createElement("thead");
+    table.appendChild(thead);
+    
+    const headerTr = document.createElement("tr");
+    thead.appendChild(headerTr);
+    
+    headerTr.classList.add('sticky', 'top-0', 'z-10');
+    headerTr.style.cssText = `
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    `;
+    
+    const createHeaderCell = (text, width = '') => {
+        const th = document.createElement("th");
+        th.classList.add('px-4', 'py-3', 'font-semibold', 'text-lg', 'text-white', 'text-center');
+        if (width) th.style.width = width;
+        th.innerText = text;
+        return th;
+    };
+
+    // CABEÇALHOS COM LARGURAS ESPECÍFICAS PARA ALINHAR COM OS DADOS
+    headerTr.appendChild(createHeaderCell('Rank', '60px'));
+    headerTr.appendChild(createHeaderCell('Pokémon', '230px'));
+    headerTr.appendChild(createHeaderCell('PR', '80px'));
+    headerTr.appendChild(createHeaderCell('WR', '100px'));
+    headerTr.appendChild(createHeaderCell('Bans', '80px'));
+    headerTr.appendChild(createHeaderCell('P', '80px'));
+    headerTr.appendChild(createHeaderCell('WS', '80px'));
+    headerTr.appendChild(createHeaderCell('LS', '80px'));
+    headerTr.appendChild(createHeaderCell('UR', '80px'));
+    headerTr.appendChild(createHeaderCell('T', '80px'));
+    headerTr.appendChild(createHeaderCell('GR', '120px'));
+    
+    // CRIAR O TBODY PARA OS DADOS
+    const tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+    
     containerDiv.appendChild(table);
     
-        for (let i = firstIndex; i < sideLength; i++) {
-            const pokemonName = pokemonKeys[i];
-            const pokemon = objAttribute[pokemonName];
-            const { pickRate, winRate, isUp, maxWinStreak, maxLoseStreak } = pokemon;
-            const role = pokemonRoles[pokemonName];
-            const totalBans = getTotalBans(pokemonName); // Calcular total de bans
-    
-            const rowTr = document.createElement("tr");
-            
-            // APLICANDO O ESTILO TRANSPARENTE E COM BORDAS ARREDONDADAS
-            rowTr.style.cssText = `
-                background: ${rolesColor[role]}22;
-                border-radius: 12px;
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease;
-            `;
-            
-            // Efeito hover mais suave
-            rowTr.addEventListener('mouseenter', () => {
-                rowTr.style.background = `${rolesColor[role]}4D`; // 30% opacity no hover
-                rowTr.style.transform = 'translateY(-2px)';
-                rowTr.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-            });
-            
-            rowTr.addEventListener('mouseleave', () => {
-                rowTr.style.background = `${rolesColor[role]}33`; // Volta para 20% opacity
-                rowTr.style.transform = 'translateY(0)';
-                rowTr.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
-            });
-            
-            const rankTd = document.createElement("td");
-            rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'text-white');
-            rankTd.innerText = i + 1;
-            rowTr.appendChild(rankTd);
-    
-            const pickTd = document.createElement("td");
-            pickTd.classList.add('w-[500px]')
-            rowTr.appendChild(pickTd);
-    
-            rowTr.classList.add('cursor-pointer');
-            rowTr.onclick = () => {
-                window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
-            };
-    
-            const pickContainer = document.createElement("div");
-            pickContainer.classList.add('flex', 'items-center');
-            pickTd.appendChild(pickContainer);
-    
-            const pickImage = document.createElement("img");
-            pickImage.classList.add('mr-3');
-            pickImage.width = 50;
-            pickImage.height = 50;
-            pickImage.src = `./images/backgrounds/${pokemonName}-left-bg.png`;
-            pickContainer.appendChild(pickImage);
-    
-            const pickSpan = document.createElement("span");
-            pickSpan.classList.add('pl-1.5', 'text-xl', 'font-bold', 'w-28', 'text-white');
-            pickSpan.innerText = capitalize(pokemonName);
-            pickContainer.appendChild(pickSpan);
-    
-            const pickRateTd = document.createElement("td");
-            pickRateTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center');
-            pickRateTd.innerText = pickRate;
-            rowTr.appendChild(pickRateTd);
-    
-            const winRateTd = document.createElement("td");
-            winRateTd.classList.add('text-white', 'text-xl', 'font-bold','w-80');
-            rowTr.appendChild(winRateTd);
-    
-            const winRateOuterDiv = document.createElement("div");
-            winRateOuterDiv.classList.add('flex','justify-center');
-            winRateTd.appendChild(winRateOuterDiv);
-    
-            const winRateSpan = document.createElement("span");
-            winRateSpan.classList.add('text-white', 'text-xl', 'font-bold');
-            winRateSpan.innerText = `${winRate.toFixed(2)}%`;
-            winRateOuterDiv.appendChild(winRateSpan);
+    for (let i = firstIndex; i < sideLength; i++) {
+        const pokemonName = pokemonKeys[i];
+        const pokemon = objAttribute[pokemonName];
+        const { pickRate, winRate, isUp, maxWinStreak, maxLoseStreak } = pokemon;
+        const role = pokemonRoles[pokemonName];
+        const totalBans = getTotalBans(pokemonName);
+        const participation = calculateParticipation(pokemonName, pickRate);
 
-            // Nova coluna de Bans
-            const bansTd = document.createElement("td");
-            bansTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-left', 'w-28');
-            bansTd.innerText = totalBans;
-            rowTr.appendChild(bansTd);
-    
-            const winRateBarTd = document.createElement("td");
-            winRateBarTd.classList.add('text-white','w-60');
-            rowTr.appendChild(winRateBarTd);
-    
-            const winRateBarContainer = document.createElement("div");
-            winRateBarContainer.classList.add('w-full', 'bg-gray-200', 'rounded-full', 'h-4', 'mb-1');
-            winRateBarContainer.style.width = '120px';
-            winRateBarTd.appendChild(winRateBarContainer);
-    
-            const winRateBar = document.createElement("div");
-            winRateBar.classList.add('h-4', 'rounded-full');
-            winRateBar.style.width = `${winRate}%`;
-            winRateBar.style.backgroundColor = 'rgb(29, 181, 52)';
-            winRateBarContainer.appendChild(winRateBar);
+        const rowTr = document.createElement("tr");
+        
+        rowTr.style.cssText = `
+            background: ${rolesColor[role]}22;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        `;
+        
+        rowTr.addEventListener('mouseenter', () => {
+            rowTr.style.background = `${rolesColor[role]}4D`;
+            rowTr.style.transform = 'translateY(-2px)';
+            rowTr.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+        });
+        
+        rowTr.addEventListener('mouseleave', () => {
+            rowTr.style.background = `${rolesColor[role]}33`;
+            rowTr.style.transform = 'translateY(0)';
+            rowTr.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+        });
+        
+        // RANK - largura: 60px
+        const rankTd = document.createElement("td");
+        rankTd.classList.add('text-center', 'p-3', 'font-bold', 'text-2xl', 'text-white');
+        rankTd.style.width = '60px';
+        rankTd.innerText = i + 1;
+        rowTr.appendChild(rankTd);
 
-            const maxWinStreakTd = document.createElement("td");
-            maxWinStreakTd.classList.add('text-white', 'text-center', 'font-bold', 'text-xl', 'w-60');
-            maxWinStreakTd.innerText = maxWinStreak || 0;
-            rowTr.appendChild(maxWinStreakTd);
+        // POKÉMON - largura: 230px
+        const pokemonTd = document.createElement("td");
+        pokemonTd.style.width = '230px';
+        pokemonTd.classList.add('p-3');
+        
+        const pokemonContainer = document.createElement("div");
+        pokemonContainer.classList.add('flex', 'items-center');
+        
+        const pokemonImage = document.createElement("img");
+        pokemonImage.classList.add('mr-3');
+        pokemonImage.width = 50;
+        pokemonImage.height = 50;
+        pokemonImage.src = `./images/backgrounds/${pokemonName}-left-bg.png`;
+        
+        const pokemonSpan = document.createElement("span");
+        pokemonSpan.classList.add('text-xl', 'font-bold', 'text-white');
+        pokemonSpan.innerText = capitalize(pokemonName);
+        
+        pokemonContainer.appendChild(pokemonImage);
+        pokemonContainer.appendChild(pokemonSpan);
+        pokemonTd.appendChild(pokemonContainer);
+        rowTr.appendChild(pokemonTd);
 
-            const maxLoseStreakTd = document.createElement("td");
-            maxLoseStreakTd.classList.add('text-white', 'text-center', 'font-bold', 'text-xl', 'w-60');
-            maxLoseStreakTd.innerText = maxLoseStreak || 0;
-            rowTr.appendChild(maxLoseStreakTd);
+        // PICK RATE - largura: 80px
+        const pickRateTd = document.createElement("td");
+        pickRateTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        pickRateTd.style.width = '80px';
+        pickRateTd.innerText = pickRate;
+        rowTr.appendChild(pickRateTd);
 
-            const lastMatchTd = document.createElement("td");
-            lastMatchTd.classList.add('text-white', 'text-center','font-bold','text-xl', 'pr-4', 'w-60');
-            
-            if (pokemon.lastMatch === 'W') {
-                lastMatchTd.style.color = 'rgb(29, 181, 52)';
-                lastMatchTd.innerText = 'W';
-            } else if (pokemon.lastMatch === 'L') {
-                lastMatchTd.style.color = 'red';
-                lastMatchTd.innerText = 'L';
-            } else {
-                lastMatchTd.style.color = 'black';
-                lastMatchTd.innerText = '-';
-            }
-            
-            rowTr.appendChild(lastMatchTd);
+        // WIN RATE - largura: 100px
+        const winRateTd = document.createElement("td");
+        winRateTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        winRateTd.style.width = '100px';
+        winRateTd.innerText = `${winRate.toFixed(2)}%`;
+        rowTr.appendChild(winRateTd);
 
-            const lastGameTd = document.createElement("td");
-            lastGameTd.classList.add('w-60');
+        // BANS - largura: 80px
+        const bansTd = document.createElement("td");
+        bansTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        bansTd.style.width = '80px';
+        bansTd.innerText = totalBans;
+        rowTr.appendChild(bansTd);
 
-            lastGameTd.style.textAlign = "center";     
-            lastGameTd.style.verticalAlign = "middle"; 
-            lastGameTd.style.paddingRight = "15px"; 
-            rowTr.appendChild(lastGameTd);
+        // PARTICIPAÇÃO - largura: 80px
+        const participationTd = document.createElement("td");
+        participationTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        participationTd.style.width = '80px';
+        participationTd.innerText = participation;
+        rowTr.appendChild(participationTd);
 
-            const arrowImage = document.createElement("img");
-            arrowImage.width = 25;
+        // WIN STREAK - largura: 80px
+        const maxWinStreakTd = document.createElement("td");
+        maxWinStreakTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        maxWinStreakTd.style.width = '80px';
+        maxWinStreakTd.innerText = maxWinStreak || 0;
+        rowTr.appendChild(maxWinStreakTd);
 
-            let arrowImgSrc = 'neutral-arrow';
-            if (isUp !== undefined) {
-                arrowImgSrc = `${isUp ? 'up-arrow' : 'down-arrow'}.svg`;
-            } else {
-                arrowImgSrc = 'neutral-arrow.png';
-            }
-            arrowImage.src = `./images/icons/${arrowImgSrc}`;
+        // LOSE STREAK - largura: 80px
+        const maxLoseStreakTd = document.createElement("td");
+        maxLoseStreakTd.classList.add('text-white', 'font-bold', 'text-xl', 'text-center', 'p-3');
+        maxLoseStreakTd.style.width = '80px';
+        maxLoseStreakTd.innerText = maxLoseStreak || 0;
+        rowTr.appendChild(maxLoseStreakTd);
 
-            arrowImage.style.display = "inline-block";
-            lastGameTd.appendChild(arrowImage);
-
-            table.appendChild(rowTr);
-            
+        // ÚLTIMO RESULTADO - largura: 80px
+        const lastMatchTd = document.createElement("td");
+        lastMatchTd.classList.add('text-center', 'font-bold', 'text-xl', 'p-3');
+        lastMatchTd.style.width = '80px';
+        
+        if (pokemon.lastMatch === 'W') {
+            lastMatchTd.style.color = 'rgb(29, 181, 52)';
+            lastMatchTd.innerText = 'W';
+        } else if (pokemon.lastMatch === 'L') {
+            lastMatchTd.style.color = 'red';
+            lastMatchTd.innerText = 'L';
+        } else {
+            lastMatchTd.style.color = 'white';
+            lastMatchTd.innerText = '-';
         }
-    };
+        rowTr.appendChild(lastMatchTd);
+
+        // TENDÊNCIA - largura: 80px
+        const trendTd = document.createElement("td");
+        trendTd.classList.add('text-center', 'p-3');
+        trendTd.style.width = '80px';
+        
+        const arrowImage = document.createElement("img");
+        arrowImage.width = 25;
+        arrowImage.style.display = "inline-block";
+
+        let arrowImgSrc = 'neutral-arrow';
+        if (isUp !== undefined) {
+            arrowImgSrc = `${isUp ? 'up-arrow' : 'down-arrow'}.svg`;
+        } else {
+            arrowImgSrc = 'neutral-arrow.png';
+        }
+        arrowImage.src = `./images/icons/${arrowImgSrc}`;
+
+        trendTd.appendChild(arrowImage);
+        rowTr.appendChild(trendTd);
+
+        // GRÁFICO - largura: 120px
+        const graphTd = document.createElement("td");
+        graphTd.classList.add('text-center', 'p-3');
+        graphTd.style.width = '120px';
+
+        const winRateBarContainer = document.createElement("div");
+        winRateBarContainer.classList.add('w-full', 'bg-gray-200', 'rounded-full', 'h-4');
+        winRateBarContainer.style.width = '100px';
+        winRateBarContainer.style.margin = '0 auto';
+
+        const winRateBar = document.createElement("div");
+        winRateBar.classList.add('h-4', 'rounded-full');
+        winRateBar.style.width = `${winRate}%`;
+        winRateBar.style.backgroundColor = 'rgb(29, 181, 52)';
+
+        winRateBarContainer.appendChild(winRateBar);
+        graphTd.appendChild(winRateBarContainer);
+        rowTr.appendChild(graphTd);
+
+        // Adicionar evento de click
+        rowTr.classList.add('cursor-pointer');
+        rowTr.onclick = () => {
+            window.location.href = (`pokemon-result.html?id=${infoType}&pokemon=${pokemonName}`);
+        };
+
+        tbody.appendChild(rowTr);
+    }
+};
     
     applyFilters(); 
 
@@ -701,76 +738,11 @@ const displayRoleWinrates = () => {
         const searchResults = document.getElementById("searchResults");
         const pokemonSearchInput = document.getElementById("pokemonSearch");
     
-        if (!searchButton.contains(event.target) && !pokemonSearchInput.contains(event.target)) {
-            searchResults.style.display = 'none'; 
+        if (searchButton && searchResults && pokemonSearchInput) {
+            if (!searchButton.contains(event.target) && !pokemonSearchInput.contains(event.target)) {
+                searchResults.style.display = 'none'; 
+            }
         }
-    });
-    document.getElementById("captureTable").addEventListener("click", () => {
-        const tablesContainer = document.getElementById("tables-container");
-        const statisticsInfo = document.getElementById("statisticsInfo");
-        const topsInfo = document.getElementById("topsInfo");
-        const topicInfo = document.getElementById("topicInfo");
-        const filterInfo = document.getElementById("filterInfo");
-    
-        const tempContainer = document.createElement("div");
-        tempContainer.style.position = "absolute";
-        tempContainer.style.top = "0";
-        tempContainer.style.left = "0";
-        tempContainer.style.backgroundColor = "white";
-        tempContainer.style.padding = "20px";
-    
-        const filterClone = filterInfo.cloneNode(true);
-        const statsClone = statisticsInfo.cloneNode(true);
-        const topsClone = topsInfo.cloneNode(true);
-        const topicClone = topicInfo.cloneNode(true);
-        const tablesClone = tablesContainer.cloneNode(true);
-    
-        tempContainer.appendChild(filterClone);
-        tempContainer.appendChild(statsClone);
-        tempContainer.appendChild(topsClone);
-        tempContainer.appendChild(topicClone);
-        tempContainer.appendChild(tablesClone);
-    
-        document.body.appendChild(tempContainer);
-    
-        const scaleFactor = 3; 
-    
-        html2canvas(tempContainer, {
-            scale: scaleFactor,
-            useCORS: true,
-        }).then((canvas) => {
-            const targetWidth = canvas.width / 2;
-            const targetHeight = canvas.height / 2;
-    
-            const resizedCanvas = document.createElement("canvas");
-            resizedCanvas.width = targetWidth;
-            resizedCanvas.height = targetHeight;
-    
-            const ctx = resizedCanvas.getContext("2d");
-            ctx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
-    
-            resizedCanvas.toBlob((blob) => {
-                if (blob) {
-                    const url = URL.createObjectURL(blob);
-    
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "rankingGeral.png";
-    
-                    document.body.appendChild(link);
-                    link.click();
-    
-                    URL.revokeObjectURL(url);
-                    document.body.removeChild(link);
-                } else {
-                    console.error("Falha ao gerar Blob para a imagem.");
-                }
-            }, "image/png", 1.0);
-    
-            document.body.removeChild(tempContainer);
-        }).catch((err) => {
-            console.error("Erro ao capturar os elementos:", err);
-        });
     });
     
 });
