@@ -473,10 +473,178 @@ fetch('./results.json')
         const parentContainer = roleWinrateInfo.parentNode;
         parentContainer.insertBefore(rolePicksInfo, roleWinrateInfo.nextSibling);
     };
-
     // Chame estas funções após displaySummaryInfo():
     displayRoleWinrates();
     displayRolePicks();
+
+    const displayPlayerRecords = () => {
+    // Calcular recordes do jogador
+    const playerRecords = {
+        kills: { max: 0, pokemon: '', match: null },
+        assists: { max: 0, pokemon: '', match: null },
+        damageHealed: { max: 0, pokemon: '', match: null },
+        damageDone: { max: 0, pokemon: '', match: null },
+        damageTaken: { max: 0, pokemon: '', match: null, min: Infinity, minPokemon: '', minMatch: null },
+        interrupts: { max: 0, pokemon: '', match: null },
+        playerScore: { max: 0, pokemon: '', match: null }
+    };
+    
+    // Percorrer todos os dados do jogador
+    ["allyTeam", "enemyTeam"].forEach(teamType => {
+        if (results[teamType] && results[teamType][infoType]) {
+            Object.entries(results[teamType][infoType]).forEach(([pokemonName, pokemonData]) => {
+                (pokemonData.matches || []).forEach(match => {
+                    // Verificar recordes máximos
+                    Object.keys(playerRecords).forEach(metric => {
+                        const value = match[metric] || 0;
+                        
+                        if (metric === 'damageTaken') {
+                            // Para dano recebido, track both max and min
+                            if (value > playerRecords[metric].max) {
+                                playerRecords[metric].max = value;
+                                playerRecords[metric].pokemon = pokemonName;
+                                playerRecords[metric].match = match;
+                            }
+                            if (value < playerRecords[metric].min && value > 0) {
+                                playerRecords[metric].min = value;
+                                playerRecords[metric].minPokemon = pokemonName;
+                                playerRecords[metric].minMatch = match;
+                            }
+                        } else {
+                            if (value > playerRecords[metric].max) {
+                                playerRecords[metric].max = value;
+                                playerRecords[metric].pokemon = pokemonName;
+                                playerRecords[metric].match = match;
+                            }
+                        }
+                    });
+                });
+            });
+        }
+    });
+    
+    // Se min damage taken ainda for Infinity, definir como 0
+    if (playerRecords.damageTaken.min === Infinity) {
+        playerRecords.damageTaken.min = 0;
+        playerRecords.damageTaken.minPokemon = '';
+    }
+    
+    // Criar o container do painel de recordes
+    const playerRecordsInfo = document.createElement("div");
+    playerRecordsInfo.id = "playerRecordsInfo";
+    playerRecordsInfo.className = "shadow-md rounded-lg w-1/3 min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+    
+    const recordsTitle = document.createElement("h3");
+    recordsTitle.className = "text-lg font-semibold text-white mb-2 text-center";
+    recordsTitle.textContent = `Recordes de ${infoType}`;
+    playerRecordsInfo.appendChild(recordsTitle);
+    
+    const recordsContainer = document.createElement("div");
+    recordsContainer.className = "grid grid-cols-2 gap-2";
+    
+    // Traduzir nomes das métricas
+    const metricTranslations = {
+        'kills': 'Kills',
+        'assists': 'Assists',
+        'damageHealed': 'Cura',
+        'damageDone': 'Dano Causado',
+        'damageTaken': 'Dano Recebido',
+        'interrupts': 'Interrupções',
+        'playerScore': 'Pontuação'
+    };
+    
+    // Função para formatar números grandes
+    const formatRecordNumber = (num) => {
+        if (num >= 1000) {
+            return num.toLocaleString('pt-BR');
+        }
+        return num.toString();
+    };
+    
+    // Função para capitalizar nomes de pokémon
+    const capitalize = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
+    
+    // Criar itens de recorde
+    Object.entries(playerRecords).forEach(([metric, data]) => {
+        if (data.max > 0) {
+            // Recorde máximo
+            const recordItem = document.createElement("div");
+            recordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
+            
+            const leftContent = document.createElement("div");
+            leftContent.className = "flex items-center gap-2";
+            
+            const metricLabel = document.createElement("span");
+            metricLabel.className = "text-white font-medium text-sm";
+            metricLabel.textContent = metricTranslations[metric];
+            
+            if (data.pokemon) {
+                const pokemonImg = document.createElement("img");
+                pokemonImg.src = `./images/backgrounds/${data.pokemon.toLowerCase()}-left-bg.png`;
+                pokemonImg.alt = data.pokemon;
+                pokemonImg.style.width = '35px';
+                pokemonImg.style.height = '35px';
+                pokemonImg.className = "rounded";
+                leftContent.appendChild(pokemonImg);
+            }
+            
+            leftContent.appendChild(metricLabel);
+            
+            const valueSpan = document.createElement("span");
+            valueSpan.className = "text-white font-bold text-sm";
+            valueSpan.textContent = formatRecordNumber(data.max);
+            
+            recordItem.appendChild(leftContent);
+            recordItem.appendChild(valueSpan);
+            recordsContainer.appendChild(recordItem);
+            
+            // Para dano recebido, adicionar também o recorde mínimo
+            if (metric === 'damageTaken' && data.min > 0 && data.min !== data.max) {
+                const minRecordItem = document.createElement("div");
+                minRecordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
+                
+                const minLeftContent = document.createElement("div");
+                minLeftContent.className = "flex items-center gap-2";
+                
+                if (data.minPokemon) {
+                    const minPokemonImg = document.createElement("img");
+                    minPokemonImg.src = `./images/backgrounds/${data.minPokemon.toLowerCase()}-left-bg.png`;
+                    minPokemonImg.alt = data.minPokemon;
+                    minPokemonImg.style.width = '35px';
+                    minPokemonImg.style.height = '35px';
+                    minPokemonImg.className = "rounded";
+                    minLeftContent.appendChild(minPokemonImg);
+                }
+                
+                const minMetricLabel = document.createElement("span");
+                minMetricLabel.className = "text-white font-medium text-sm";
+                minMetricLabel.textContent = "Menor Dano Recebido";
+                minLeftContent.appendChild(minMetricLabel);
+                
+                const minValueSpan = document.createElement("span");
+                minValueSpan.className = "text-white font-bold text-sm";
+                minValueSpan.textContent = formatRecordNumber(data.min);
+                
+                minRecordItem.appendChild(minLeftContent);
+                minRecordItem.appendChild(minValueSpan);
+                recordsContainer.appendChild(minRecordItem);
+            }
+        }
+    });
+    
+    playerRecordsInfo.appendChild(recordsContainer);
+    
+    // Inserir o painel após o rolePicksInfo
+    const rolePicksInfo = document.getElementById("rolePicksInfo");
+    const parentContainer = rolePicksInfo.parentNode;
+    parentContainer.insertBefore(playerRecordsInfo, rolePicksInfo.nextSibling);
+};
+
+if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
+    displayPlayerRecords(); // <- Nova função aqui
+}
 
     const capitalize = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
