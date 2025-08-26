@@ -517,7 +517,7 @@ const renderCommonInfo = (sideLength, isLeftSide, firstIndex, pokemonKeys) => {
     table.style.borderCollapse = 'separate';
     table.style.borderSpacing = '0 8px';
     table.style.width = '100%';
-    table.style.maxWidth = '1200px'; 
+    table.style.maxWidth = '1500px'; 
     table.style.margin = '0 auto'; 
     table.classList.add('w-full', 'h-fit');
     
