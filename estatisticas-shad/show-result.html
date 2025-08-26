@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="./style.css" type="text/css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <style>
             html {
                 height: 100%;
@@ -19,10 +18,55 @@
                 background-repeat: no-repeat;
                 background-attachment: fixed;
             }
+            
+            /* Estilos para a caixa de legenda */
+            .legend-container {
+                position: relative;
+            }
+            
+            .legend-box {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                z-index: 50;
+                background: rgba(255, 255, 255, 0.95);
+                border: 2px solid #3b82f6;
+                border-radius: 12px;
+                padding: 16px;
+                min-width: 280px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+                backdrop-filter: blur(10px);
+                transform: translateY(8px);
+            }
+            
+            .legend-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            
+            .legend-item:last-child {
+                border-bottom: none;
+            }
+            
+            .legend-abbreviation {
+                font-weight: bold;
+                color: #3b82f6;
+                font-size: 14px;
+                min-width: 30px;
+            }
+            
+            .legend-description {
+                color: #374151;
+                font-size: 14px;
+                text-align: right;
+            }
         </style>
     </head>
     <body> 
-        <div class="flex flex-col items-center w-full h-auto fixed top-0 left-0 right-0 z-10">
+        <div class="flex flex-col items-center w-full h-auto top-0 left-0 right-0 z-10">
             <div class="flex justify-between w-full pt-4 pl-6 pr-12">
                 <div id="mainLogo" style="cursor: pointer;">
                     <img src="./images/backgrounds/copasonhos.png" width="80">
@@ -30,12 +74,50 @@
                 <div class="flex gap-x-2 pl-24 pt-2">
                     <span id="title-span" class="text-4xl font-bold text-white"></span>
                 </div>
-                <button id="captureTable" class="h-8 px-2 bg-blue-500 text-white rounded">Gerar Print da Tabela</button>
+                <div class="legend-container">
+                    <button id="legendToggle" class="h-8 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors duration-200 font-semibold">
+                        Legenda
+                    </button>
+                    <div id="legendBox" class="legend-box hidden">
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">PR</span>
+                            <span class="legend-description">Pickrate</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">WR</span>
+                            <span class="legend-description">Winrate</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">P</span>
+                            <span class="legend-description">Participação</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">WS</span>
+                            <span class="legend-description">WinStreak (Sequencia de vitória)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">LS</span>
+                            <span class="legend-description">LoseStreak (Sequencia de derrota)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">LG</span>
+                            <span class="legend-description">LastGame (Último Resultado)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">T</span>
+                            <span class="legend-description">Tendência</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-abbreviation">GR</span>
+                            <span class="legend-description">Gráfico</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
 
-<div class="flex items-start justify-start w-full gap-x-4 pt-[100px] px-4">
+<div class="flex items-start justify-start w-full gap-x-4 pt-[50px] px-4">
   <!-- Filtro (à esquerda) -->
   <div id="filterInfo" 
        class="shadow-md rounded-lg w-1/6 min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3">
@@ -107,6 +189,32 @@
             <div id="tables-container" class="flex gap-x-1.5 justify-center">
             </div>
         </div>
+        
+        <script>
+            // JavaScript para controlar a legenda
+            document.addEventListener('DOMContentLoaded', function() {
+                const legendToggle = document.getElementById('legendToggle');
+                const legendBox = document.getElementById('legendBox');
+                
+                // Função para toggle da legenda
+                legendToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    legendBox.classList.toggle('hidden');
+                });
+                
+                // Fechar legenda quando clicar fora
+                document.addEventListener('click', function(e) {
+                    if (!legendToggle.contains(e.target) && !legendBox.contains(e.target)) {
+                        legendBox.classList.add('hidden');
+                    }
+                });
+                
+                // Prevenir que cliques dentro da legenda a fechem
+                legendBox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        </script>
         
         <script src="./util.js"></script>
         <script src="./show-result.js"></script>
