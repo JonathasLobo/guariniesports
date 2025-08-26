@@ -2,9 +2,9 @@
 
 // Array com os títulos das jogadas (personalize com os nomes dos seus jogadores)
 const jogadas = [
-  "Excelente play do nosso coach <span class='jogador'>SHAD</span>",
-  "Penta de respeito do <span class='jogador'>ANUBIS</span>", 
-  "Fora do meta? Não para o <span class='jogador'>SHAD</span>"
+  "Pressão no time adversário com direito a QuadraKill do <span class='jogador'>DEIVID</span>",
+  "Tem que ter calma na hora do rayquaza, aulas com <span class='jogador'>DEIVID</span>", 
+  "Excelente play do nosso coach <span class='jogador'>SHAD</span>"
 ];
 
 let currentVideo = 1;
