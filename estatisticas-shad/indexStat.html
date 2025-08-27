@@ -13,6 +13,43 @@
                 box-sizing: border-box;
             }
             
+            /* Botão de voltar */
+            .back-button {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1000;
+                background: linear-gradient(135deg, #ffad00, #ff8c00);
+                border: 2px solid #fff;
+                border-radius: 50px;
+                padding: 12px 20px;
+                color: #fff;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(255, 173, 0, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .back-button:hover {
+                background: linear-gradient(135deg, #ff8c00, #ffad00);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255, 173, 0, 0.4);
+                color: #fff;
+            }
+            
+            .back-arrow {
+                font-size: 1rem;
+                transition: transform 0.3s ease;
+            }
+            
+            .back-button:hover .back-arrow {
+                transform: translateX(-3px);
+            }
+            
             /* Estilos de responsividade específicos */
             @media (max-width: 768px) {
                 body {
@@ -20,6 +57,13 @@
                     overflow-x: hidden;
                     height: 100vh !important; /* Altura fixa da viewport */
                     position: relative !important;
+                }
+                
+                .back-button {
+                    top: 15px;
+                    left: 15px;
+                    padding: 10px 16px;
+                    font-size: 0.8rem;
                 }
                 
                 .main-container {
@@ -178,6 +222,12 @@
     </head>
 
     <body class="w-full bg-cover bg-no-repeat bg-center" style="background-image: url(./images/backgrounds/index-background.png)">
+        <!-- Botão para voltar -->
+        <a href="../material.html" class="back-button">
+            <span class="back-arrow">←</span>
+            <span>Voltar</span>
+        </a>
+
         <div class="flex justify-center w-full main-container">
             <div class="bg-center bg-no-repeat bg-cover w-full max-w-6xl">
                 

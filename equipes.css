@@ -1,0 +1,266 @@
+/* Estilos específicos para a página de Equipes */
+
+/* Container das equipes */
+.equipes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+/* Estilo de cada equipe */
+.equipe {
+  background-color: rgba(26, 26, 26, 0.9);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.2);
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.equipe:hover,
+.equipe:focus-within {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 173, 0, 0.4);
+  outline: none;
+}
+
+.equipe img {
+  width: auto;
+  max-width: 100%;
+  border-radius: 10px;
+  object-fit: contain;
+  height: 60px;
+  margin-bottom: 10px;
+  filter: grayscale(20%);
+  transition: all 0.3s ease;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+.equipe:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+.equipe h3 {
+  margin: 10px 0 8px;
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.equipe .descricao {
+  font-size: 0.9rem;
+  margin: 10px 0 15px;
+  color: #ddd;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: rgba(26, 26, 26, 0.95);
+  margin: 5% auto;
+  padding: 30px;
+  border: none;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: #fff;
+  box-shadow: 0 15px 40px rgba(255, 173, 0, 0.3);
+  position: relative;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+  color: #ffad00;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  position: absolute;
+  top: 15px;
+  right: 25px;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+.modal h2 {
+  color: #ffad00;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+/* Estilo para os cards dos membros dentro do modal */
+.modal-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.membro-card {
+  background-color: rgba(40, 40, 40, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #ffad00;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-align: center;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.membro-card:hover {
+  background-color: rgba(50, 50, 50, 0.8);
+  transform: translateY(-5px);
+}
+
+.membro-card h4 {
+  color: #ffad00;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.membro-card p {
+  margin: 4px 0;
+  color: #ddd;
+  font-size: 0.9rem;
+}
+
+.cargo {
+  font-weight: bold;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.descricao-membro {
+  font-style: italic;
+  margin-top: 8px;
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .equipes {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 400px;
+    margin: 30px auto 0;
+  }
+  
+  .equipe {
+    padding: 20px;
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .equipe img {
+    height: 50px;
+  }
+  
+  .equipe .descricao {
+    min-height: auto;
+    margin-bottom: 15px;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+    padding: 20px;
+  }
+
+  .modal h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-body {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .membro-card {
+    min-height: 180px;
+    aspect-ratio: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-toggle {
+    right: 15px;
+    padding: 10px;
+  }
+  
+  .equipe {
+    padding: 15px;
+  }
+  
+  .equipe h3 {
+    font-size: 1.2rem;
+  }
+  
+  .equipe .descricao {
+    font-size: 0.95rem;
+    margin: 10px 0 20px;
+  }
+
+  .modal-content {
+    margin: 5% auto;
+    padding: 15px;
+  }
+
+  .close {
+    font-size: 24px;
+    top: 10px;
+    right: 15px;
+  }
+}
