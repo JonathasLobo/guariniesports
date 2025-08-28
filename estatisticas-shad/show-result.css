@@ -79,15 +79,15 @@
         width: 100%;
     }
 
-    /* Role panels - mobile only */
+    /* Role panels */
     #roleWinrateInfo,
     #rolePicksInfo {
-        width: 100% !important;
+        width: 100%;
         margin-bottom: 16px;
     }
 
     #playerRecordsInfo {
-        width: 100% !important;
+        width: 100%;
     }
 
     .grid.grid-cols-2.gap-2 {
@@ -206,17 +206,17 @@
         order: 1;
     }
 
-    /* Role panels - tablet layout */
+    /* Role panels */
     #roleWinrateInfo,
     #rolePicksInfo {
-        width: 48% !important;
+        width: 48%;
         display: inline-block;
         vertical-align: top;
         margin-right: 2%;
     }
 
     #playerRecordsInfo {
-        width: 100% !important;
+        width: 100%;
         margin-top: 16px;
     }
 
@@ -244,115 +244,24 @@
     }
 }
 
-/* Desktop styles - 1024px and above */
+/* Large desktop styles */
 @media (min-width: 1024px) {
-    /* Reset any mobile/tablet overrides and maintain original desktop layout */
+    /* Default styles already handle this, but we can add specific large screen optimizations */
     
-    /* Main content container - keep original layout */
-    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        flex-direction: row;
+    /* Role panels container */
+    .role-panels-container {
+        display: flex;
         gap: 16px;
-        align-items: stretch; /* Make all panels same height */
+        margin-top: 16px;
     }
 
-    /* Filter section - original size */
-    #filterInfo {
-        width: calc(100% / 6);
-        order: 0;
-        min-height: 200px; /* Set minimum height for consistency */
-    }
-
-    #filter-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px 16px;
-    }
-
-    /* Statistics section - original size */
-    #statisticsInfo {
-        width: calc(100% / 3);
-        order: 0;
-        min-height: 200px; /* Match filter section height */
-    }
-
-    /* Role panels - desktop layout with consistent sizing */
     #roleWinrateInfo,
     #rolePicksInfo {
-        width: calc(100% / 4) !important;
-        display: block !important;
-        vertical-align: initial !important;
-        margin-right: 0 !important;
-        margin-bottom: 0 !important;
-        min-height: 200px; /* Match other panels height */
-        flex-shrink: 0; /* Prevent shrinking */
+        flex: 1;
     }
 
     #playerRecordsInfo {
-        width: calc(100% / 3) !important;
-        margin-top: 0 !important;
-        min-height: 200px; /* Match other panels height */
-        flex-shrink: 0; /* Prevent shrinking */
-    }
-
-    /* Ensure proper spacing between role panels and other elements */
-    #roleWinrateInfo + #rolePicksInfo {
-        margin-left: 16px;
-    }
-
-    #rolePicksInfo + #playerRecordsInfo {
-        margin-left: 16px;
-    }
-
-    /* Create a flex container for all panels when it's a player page */
-    body:not([data-team-view]) .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        display: flex;
-        align-items: stretch;
-        height: auto;
-    }
-
-    /* Ensure all panels have consistent styling */
-    #filterInfo,
-    #statisticsInfo,
-    #roleWinrateInfo,
-    #rolePicksInfo,
-    #playerRecordsInfo {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Table adjustments - reset to desktop defaults */
-    #tables-container table {
-        font-size: inherit;
-        max-width: 1500px;
-        display: table;
-        white-space: initial;
-    }
-
-    #tables-container thead,
-    #tables-container tbody,
-    #tables-container tr,
-    #tables-container th,
-    #tables-container td {
-        display: initial;
-    }
-
-    #tables-container th {
-        display: table-cell;
-    }
-
-    #tables-container td {
-        display: table-cell;
-        justify-content: initial;
-        border-bottom: none;
-    }
-
-    #tables-container td:before {
-        content: none;
+        flex: 2;
     }
 }
 
