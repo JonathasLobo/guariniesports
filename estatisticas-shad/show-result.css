@@ -1,0 +1,422 @@
+/* ==================== RESPONSIVIDADE GERAL ==================== */
+
+/* Mobile First - Base styles for mobile */
+@media (max-width: 767px) {
+    /* Header adjustments */
+    .flex.justify-between.w-full.pt-4.pl-6.pr-12 {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px 12px;
+    }
+
+    /* Logo container */
+    #mainLogo {
+        align-self: center;
+    }
+
+    #mainLogo img {
+        width: 60px;
+    }
+
+    /* Title adjustments */
+    .flex.gap-x-2.pl-24.pt-2 {
+        padding: 0;
+        justify-content: center;
+    }
+
+    #title-span {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    /* Legend button */
+    .legend-container {
+        align-self: center;
+    }
+
+    .legend-box {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        min-width: 260px;
+    }
+
+    /* Main content container */
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px 12px;
+    }
+
+    /* Filter section */
+    #filterInfo {
+        width: 100%;
+        order: 2;
+    }
+
+    #filter-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    #filter-container label {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+
+    /* Statistics section */
+    #statisticsInfo {
+        width: 100%;
+        order: 1;
+    }
+
+    /* Statistics content */
+    .flex.flex-col.md\:flex-row.gap-4 {
+        flex-direction: column;
+    }
+
+    .md\:w-1\/2 {
+        width: 100%;
+    }
+
+    /* Role panels */
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    #playerRecordsInfo {
+        width: 100%;
+    }
+
+    .grid.grid-cols-2.gap-2 {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* Table container */
+    #tables-container table {
+        font-size: 12px;
+        max-width: 100%;
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+    #tables-container thead,
+    #tables-container tbody,
+    #tables-container tr,
+    #tables-container th,
+    #tables-container td {
+        display: block;
+    }
+
+    #tables-container tr {
+        border: 1px solid #ccc;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    #tables-container th {
+        display: none; /* Hide headers on mobile */
+    }
+
+    #tables-container td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #tables-container td:last-child {
+        border-bottom: none;
+    }
+
+    /* Add labels for mobile table cells */
+    #tables-container td:nth-child(1):before { content: "Rank: "; }
+    #tables-container td:nth-child(2):before { content: "Pokémon: "; }
+    #tables-container td:nth-child(3):before { content: "PR: "; }
+    #tables-container td:nth-child(4):before { content: "WR: "; }
+    #tables-container td:nth-child(5):before { content: "Bans: "; }
+    #tables-container td:nth-child(6):before { content: "P: "; }
+    #tables-container td:nth-child(7):before { content: "WS: "; }
+    #tables-container td:nth-child(8):before { content: "LS: "; }
+    #tables-container td:nth-child(9):before { content: "UR: "; }
+    #tables-container td:nth-child(10):before { content: "T: "; }
+    #tables-container td:nth-child(11):before { content: "GR: "; }
+    #tables-container td:nth-child(12):before { content: "Tier: "; }
+
+    #tables-container td:before {
+        font-weight: bold;
+        color: #fff;
+        min-width: 80px;
+    }
+
+    /* Pokemon container in mobile */
+    #tables-container td:nth-child(2) .flex.items-center {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    #tables-container td:nth-child(2) img {
+        width: 30px;
+        height: 30px;
+    }
+
+    #tables-container td:nth-child(2) span {
+        font-size: 14px;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Header adjustments */
+    .flex.gap-x-2.pl-24.pt-2 {
+        padding-left: 0;
+    }
+
+    #title-span {
+        font-size: 2rem;
+    }
+
+    /* Main content container */
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Filter section */
+    #filterInfo {
+        width: 100%;
+        order: 2;
+    }
+
+    #filter-container {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+    }
+
+    /* Statistics section */
+    #statisticsInfo {
+        width: 100%;
+        order: 1;
+    }
+
+    /* Role panels */
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 2%;
+    }
+
+    #playerRecordsInfo {
+        width: 100%;
+        margin-top: 16px;
+    }
+
+    /* Table adjustments */
+    #tables-container table {
+        font-size: 14px;
+    }
+
+    #tables-container th {
+        font-size: 14px;
+        padding: 8px 4px;
+    }
+
+    #tables-container td {
+        padding: 8px 4px;
+    }
+
+    #tables-container td span {
+        font-size: 16px;
+    }
+
+    #tables-container img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Large desktop styles */
+@media (min-width: 1024px) {
+    /* Default styles already handle this, but we can add specific large screen optimizations */
+    
+    /* Role panels container */
+    .role-panels-container {
+        display: flex;
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        flex: 1;
+    }
+
+    #playerRecordsInfo {
+        flex: 2;
+    }
+}
+
+/* Extra large screens */
+@media (min-width: 1440px) {
+    #tables-container table {
+        max-width: 1600px;
+    }
+    
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+/* Hide elements on specific screen sizes */
+@media (max-width: 767px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Responsive text sizes */
+.text-responsive-sm {
+    font-size: 0.875rem;
+}
+
+.text-responsive-base {
+    font-size: 1rem;
+}
+
+.text-responsive-lg {
+    font-size: 1.125rem;
+}
+
+@media (min-width: 768px) {
+    .text-responsive-sm {
+        font-size: 1rem;
+    }
+    
+    .text-responsive-base {
+        font-size: 1.125rem;
+    }
+    
+    .text-responsive-lg {
+        font-size: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .text-responsive-sm {
+        font-size: 1.125rem;
+    }
+    
+    .text-responsive-base {
+        font-size: 1.25rem;
+    }
+    
+    .text-responsive-lg {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==================== DROPDOWN MENU RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    .absolute.top-\[110px\].left-\[20px\] {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        z-index: 9999;
+    }
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+/* Focus states for keyboard navigation */
+button:focus,
+input:focus,
+[tabindex]:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .legend-box {
+        background: rgba(255, 255, 255, 1);
+        border: 3px solid #000;
+    }
+    
+    #tables-container tr {
+        border: 2px solid #fff;
+    }
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
