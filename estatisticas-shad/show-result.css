@@ -524,3 +524,146 @@ input:focus,
 #playerRecordsInfo {
     background: rgba(245, 158, 11, 0.1); /* Laranja suave para recordes */
 }
+
+/* ==================== ESTILOS PARA OS QUADROS DO HTML ==================== */
+
+/* Estilos para a caixa de legenda */
+.legend-container {
+    position: relative;
+}
+
+.legend-box {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 280px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    transform: translateY(8px);
+}
+
+.legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.legend-item:last-child {
+    border-bottom: none;
+}
+
+.legend-abbreviation {
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 14px;
+    min-width: 30px;
+}
+
+.legend-description {
+    color: #374151;
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Estilos para os checkboxes de filtro */
+input[type="checkbox"] {
+    display: none;
+}
+
+#filter-container label {
+    display: block;
+    text-align: center;
+    padding: 7px 10px;
+    background-color: #f4f4f4;
+    color: #333;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#filter-container label:hover {
+    background-color: #ddd;
+}
+
+#filter-container input[type="checkbox"]:checked + label {
+    background-color: #007bff; 
+    color: white; 
+}
+
+/* Ajustes responsivos para os quadros do HTML */
+@media (max-width: 767px) {
+    #filterInfo, #statisticsInfo {
+        width: 100% !important;
+    }
+    
+    #filter-container {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    #filter-container label {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    #filterInfo, #statisticsInfo {
+        width: 100% !important;
+    }
+    
+    #filter-container {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #filterInfo {
+        width: 25% !important;
+    }
+    
+    #statisticsInfo {
+        width: 75% !important;
+    }
+}
+
+/* Estilos para o container de filtros e estatísticas */
+#filterInfo, #statisticsInfo {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#filterInfo {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+#statisticsInfo {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Texto dentro dos quadros */
+#filterInfo span,
+#statisticsInfo span {
+    color: white;
+}
+
+#filter-text {
+    font-weight: bold;
+    margin-bottom: 12px;
+    display: block;
+    text-align: center;
+    font-size: 1.1rem;
+}
