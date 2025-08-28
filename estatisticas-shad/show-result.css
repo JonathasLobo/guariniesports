@@ -277,6 +277,93 @@
     }
 }
 
+/* ==================== AJUSTES PARA PAINÉIS DE ESTATÍSTICAS ==================== */
+
+/* Container principal para os painéis de role */
+.role-panels-container {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    width: 100%;
+}
+
+/* Ajustes para os painéis de role e recordes */
+#roleWinrateInfo,
+#rolePicksInfo,
+#playerRecordsInfo {
+    min-height: 40px;
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+/* Layout específico para desktop quando é um player */
+@media (min-width: 768px) {
+    /* Container para equipas (allyTeam/enemyTeam) */
+    .team-stats-container .role-panels-container {
+        flex-direction: row;
+    }
+    
+    /* Container para players individuais */
+    .player-stats-container .role-panels-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .player-stats-container #roleWinrateInfo,
+    .player-stats-container #rolePicksInfo {
+        width: 48%;
+        flex: none;
+    }
+    
+    .player-stats-container #playerRecordsInfo {
+        width: 100%;
+        flex: none;
+    }
+}
+
+/* Ajustes para mobile */
+@media (max-width: 767px) {
+    #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo {
+        width: 100% !important;
+        margin-bottom: 16px;
+    }
+    
+    .role-panels-container {
+        flex-direction: column;
+    }
+}
+
+/* ==================== CORREÇÃO DO CONTAINER PRINCIPAL ==================== */
+
+/* Container principal que acomoda tanto equipas como players */
+.flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Ajuste para desktop */
+@media (min-width: 1024px) {
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    /* Filtros à esquerda */
+    #filterInfo {
+        width: 25%;
+        order: 1;
+    }
+    
+    /* Estatísticas à direita */
+    #statisticsInfo {
+        width: 75%;
+        order: 2;
+    }
+}
+
 /* ==================== UTILITY CLASSES ==================== */
 
 /* Hide elements on specific screen sizes */
@@ -419,4 +506,21 @@ input:focus,
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* ==================== UTILITY CLASSES ADICIONAIS ==================== */
+
+/* Para identificar visualmente o tipo de container */
+.team-stats-container #roleWinrateInfo,
+.team-stats-container #rolePicksInfo {
+    background: rgba(59, 130, 246, 0.1); /* Azul suave para equipas */
+}
+
+.player-stats-container #roleWinrateInfo,
+.player-stats-container #rolePicksInfo {
+    background: rgba(34, 197, 94, 0.1); /* Verde suave para players */
+}
+
+#playerRecordsInfo {
+    background: rgba(245, 158, 11, 0.1); /* Laranja suave para recordes */
 }

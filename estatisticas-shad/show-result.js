@@ -12,6 +12,16 @@ fetch('./results.json')
     
     const containerDiv = document.getElementById("tables-container");
 
+    // Identificar o tipo de container (equipa ou player)
+    const mainContainer = document.querySelector('.flex.items-start.justify-start.w-full.gap-x-4.pt-\\[50px\\].px-4');
+    
+    // Adicionar classe baseada no tipo
+    if (infoType === "allyTeam" || infoType === "enemyTeam") {
+        mainContainer.classList.add('team-stats-container');
+    } else {
+        mainContainer.classList.add('player-stats-container');
+    }
+
     // Função para calcular total de bans de um pokémon
     const getTotalBans = (pokemonName) => {
         const bansWinner = results.bans?.BansWinnerTeam?.[pokemonName] || 0;
@@ -335,7 +345,7 @@ fetch('./results.json')
         // Criar o container do painel de roles
         const roleWinrateInfo = document.createElement("div");
         roleWinrateInfo.id = "roleWinrateInfo";
-        roleWinrateInfo.className = "shadow-md rounded-lg w-1/4 min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+        roleWinrateInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
         
         const roleTitle = document.createElement("h3");
         roleTitle.className = "text-lg font-semibold text-white mb-1 text-center";
@@ -387,10 +397,7 @@ fetch('./results.json')
         
         roleWinrateInfo.appendChild(roleContainer);
         
-        // Inserir o painel após o statisticsInfo
-        const statisticsInfo = document.getElementById("statisticsInfo");
-        const parentContainer = statisticsInfo.parentNode;
-        parentContainer.insertBefore(roleWinrateInfo, statisticsInfo.nextSibling);
+        return roleWinrateInfo;
     };
 
     // Adicione esta função após displayRoleWinrates()
@@ -413,7 +420,7 @@ fetch('./results.json')
         // Criar o container do painel de picks por role
         const rolePicksInfo = document.createElement("div");
         rolePicksInfo.id = "rolePicksInfo";
-        rolePicksInfo.className = "shadow-md rounded-lg w-1/4 min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+        rolePicksInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
         
         const picksTitle = document.createElement("h3");
         picksTitle.className = "text-lg font-semibold text-white mb-1 text-center";
@@ -468,14 +475,21 @@ fetch('./results.json')
         
         rolePicksInfo.appendChild(picksContainer);
         
-        // Inserir o painel após o roleWinrateInfo
-        const roleWinrateInfo = document.getElementById("roleWinrateInfo");
-        const parentContainer = roleWinrateInfo.parentNode;
-        parentContainer.insertBefore(rolePicksInfo, roleWinrateInfo.nextSibling);
+        return rolePicksInfo;
     };
-    // Chame estas funções após displaySummaryInfo():
-    displayRoleWinrates();
-    displayRolePicks();
+
+    // Criar container para os painéis de role
+    const rolePanelsContainer = document.createElement("div");
+    rolePanelsContainer.className = "role-panels-container";
+    
+    // Adicionar os painéis de role ao container
+    rolePanelsContainer.appendChild(displayRoleWinrates());
+    rolePanelsContainer.appendChild(displayRolePicks());
+    
+    // Inserir o container de painéis de role após o statisticsInfo
+    const statisticsInfo = document.getElementById("statisticsInfo");
+    const parentContainer = statisticsInfo.parentNode;
+    parentContainer.insertBefore(rolePanelsContainer, statisticsInfo.nextSibling);
 
     const displayPlayerRecords = () => {
     // Calcular recordes do jogador
@@ -532,7 +546,7 @@ fetch('./results.json')
     // Criar o container do painel de recordes
     const playerRecordsInfo = document.createElement("div");
     playerRecordsInfo.id = "playerRecordsInfo";
-    playerRecordsInfo.className = "shadow-md rounded-lg w-1/3 min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+    playerRecordsInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
     
     const recordsTitle = document.createElement("h3");
     recordsTitle.className = "text-lg font-semibold text-white mb-2 text-center";
@@ -636,10 +650,8 @@ fetch('./results.json')
     
     playerRecordsInfo.appendChild(recordsContainer);
     
-    // Inserir o painel após o rolePicksInfo
-    const rolePicksInfo = document.getElementById("rolePicksInfo");
-    const parentContainer = rolePicksInfo.parentNode;
-    parentContainer.insertBefore(playerRecordsInfo, rolePicksInfo.nextSibling);
+    // Adicionar o painel de recordes ao container de painéis de role
+    rolePanelsContainer.appendChild(playerRecordsInfo);
 };
 
 if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
