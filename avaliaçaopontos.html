@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Análise de Equipe - Pokémon Unite">
+  <title>Análise de Equipe - Pokémon Unite</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link href="./style.css" type="text/css" rel="stylesheet">
+  <link href="./avaliaçaopontos.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+  <div class="analise-container">
+    <a href="#" class="voltar-link">← Voltar para o início</a>
+    
+    <h1>Análise de Equipe - Pokémon Unite</h1>
+
+    <div class="equipe-input">
+      <label for="nomeEquipe">Nome da Equipe:</label>
+      <input type="text" id="nomeEquipe" placeholder="Digite o nome da sua equipe...">
+    </div>
+
+    <div class="quadros-container">
+      <div class="quadro quadro-fortes" id="quadro-fortes">
+        <h2>Pontos Fortes</h2>
+      </div>
+
+      <div class="quadro quadro-centro" id="quadro-centro">
+        <h2>Aspectos para Avaliar</h2>
+        <!-- Pontos pré-definidos serão inseridos aqui -->
+      </div>
+
+      <div class="quadro quadro-fracos" id="quadro-fracos">
+        <h2>Pontos Fracos</h2>
+      </div>
+    </div>
+
+    <div class="botoes-container">
+      <button class="btn" onclick="copiarResultado()">Copiar Resultado</button>
+      <button class="btn" onclick="limparAnalise()">Limpar</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <p>&copy; 2025 Guariní e-sport. Todos os direitos reservados.</p>
+    <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+    <p>Created by: Lobo</p>
+  </footer>
+
+  <script>
+    // Pontos pré-definidos para análise
+    const pontosIniciais = [
+      "Gank aos 08:50",
+      "Draft",
+      "Fazer Invade",
+      "Defender Invade",
+      "Farm Lane Top",
+      "Farm Lane Bot",
+      "Tempo de Clear da Jungle",
+      "Defesa de Torres",
+      "Posicionamento",
+      "Macro game",
+      "Micro game",
+      "Call limpa",
+      "Combo de Ults",
+      "Entrosamento",
+      "Engage",
+      "Pit do Rayquaza",
+      "Defender perdendo Rayquaza",
+      "Organização para pontuar",
+      "Smite",
+      "Roubar Jungle inimiga",
+      "Cobrar Side",
+      "Reset Mental entre games",
+      "Pingar no mapa",
+      "Exibir % da ult restante",
+      "Tomar pontuação nas costas",
+      "Call de alvos",
+      "Call de itens usados",
+      "Call de Ultimates inimigas",
+      "Push após perder Rayquaza"
+    ];
+
+    let draggedElement = null;
+
+    function inicializarPontos() {
+      const quadroCentro = document.getElementById('quadro-centro');
+      // Limpar pontos existentes (exceto o h2)
+      const h2 = quadroCentro.querySelector('h2');
+      quadroCentro.innerHTML = '';
+      quadroCentro.appendChild(h2);
+
+      pontosIniciais.forEach(ponto => {
+        const elemento = criarElementoPonto(ponto);
+        quadroCentro.appendChild(elemento);
+      });
+    }
+
+    function criarElementoPonto(texto) {
+      const div = document.createElement('div');
+      div.className = 'ponto-item';
+      div.textContent = texto;
+      div.draggable = true;
+      
+      div.addEventListener('dragstart', handleDragStart);
+      div.addEventListener('dragend', handleDragEnd);
+      
+      return div;
+    }
+
+    function handleDragStart(e) {
+      draggedElement = e.target;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      draggedElement = null;
+    }
+
+    function setupDropZones() {
+      const quadros = document.querySelectorAll('.quadro');
+      
+      quadros.forEach(quadro => {
+        quadro.addEventListener('dragover', handleDragOver);
+        quadro.addEventListener('drop', handleDrop);
+        quadro.addEventListener('dragenter', handleDragEnter);
+        quadro.addEventListener('dragleave', handleDragLeave);
+      });
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleDragEnter(e) {
+      e.preventDefault();
+      if (e.target.classList.contains('quadro')) {
+        e.target.classList.add('drag-over');
+      }
+    }
+
+    function handleDragLeave(e) {
+      if (e.target.classList.contains('quadro')) {
+        e.target.classList.remove('drag-over');
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const quadro = e.target.closest('.quadro');
+      
+      if (quadro && draggedElement) {
+        quadro.classList.remove('drag-over');
+        
+        // Remove o elemento da posição atual
+        if (draggedElement.parentNode) {
+          draggedElement.parentNode.removeChild(draggedElement);
+        }
+        
+        // Adiciona o elemento ao novo quadro
+        quadro.appendChild(draggedElement);
+        
+        // Garante que o elemento seja visível
+        draggedElement.style.display = 'block';
+        draggedElement.style.opacity = '1';
+        draggedElement.style.visibility = 'visible';
+        
+        // Remove classes de drag
+        draggedElement.classList.remove('dragging');
+        
+        console.log('Item movido para:', quadro.id);
+      }
+    }
+
+    function copiarResultado() {
+      const nomeEquipe = document.getElementById('nomeEquipe').value || 'Equipe sem nome';
+      const pontosFortes = Array.from(document.querySelectorAll('#quadro-fortes .ponto-item'))
+        .map(item => `• ${item.textContent}`);
+      const pontosFracos = Array.from(document.querySelectorAll('#quadro-fracos .ponto-item'))
+        .map(item => `• ${item.textContent}`);
+      
+      let resultado = `📊 ANÁLISE DE EQUIPE - POKÉMON UNITE\n`;
+      resultado += `🏆 Equipe: ${nomeEquipe}\n\n`;
+      
+      if (pontosFortes.length > 0) {
+        resultado += `✅ PONTOS FORTES:\n${pontosFortes.join('\n')}\n\n`;
+      }
+      
+      if (pontosFracos.length > 0) {
+        resultado += `❌ PONTOS FRACOS:\n${pontosFracos.join('\n')}\n\n`;
+      }
+      
+      if (pontosFortes.length === 0 && pontosFracos.length === 0) {
+        resultado += `⚠️ Nenhum ponto foi categorizado ainda.\n\n`;
+      }
+      
+      resultado += `📅 Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+      resultado += `🎮 Criado por: Guariní e-sport`;
+      
+      navigator.clipboard.writeText(resultado).then(() => {
+        mostrarToast('Resultado copiado para a área de transferência!');
+      }).catch(() => {
+        mostrarToast('Erro ao copiar. Tente novamente.');
+      });
+    }
+
+    function limparAnalise() {
+      // Limpar campos
+      document.getElementById('nomeEquipe').value = '';
+      
+      // Limpar quadros fortes e fracos
+      const quadroFortes = document.getElementById('quadro-fortes');
+      const quadroFracos = document.getElementById('quadro-fracos');
+      
+      const h2Fortes = quadroFortes.querySelector('h2');
+      const h2Fracos = quadroFracos.querySelector('h2');
+      
+      quadroFortes.innerHTML = '';
+      quadroFracos.innerHTML = '';
+      quadroFortes.appendChild(h2Fortes);
+      quadroFracos.appendChild(h2Fracos);
+      
+      // Reinicializar pontos no centro
+      inicializarPontos();
+      
+      mostrarToast('Análise limpa com sucesso!');
+    }
+
+    function mostrarToast(mensagem) {
+      const toast = document.getElementById('toast');
+      toast.textContent = mensagem;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Inicializar aplicação
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarPontos();
+      setupDropZones();
+    });
+  </script>
+</body>
+</html>
