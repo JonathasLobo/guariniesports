@@ -79,15 +79,15 @@
         width: 100%;
     }
 
-    /* Role panels */
+    /* Role panels - mobile only */
     #roleWinrateInfo,
     #rolePicksInfo {
-        width: 100%;
+        width: 100% !important;
         margin-bottom: 16px;
     }
 
     #playerRecordsInfo {
-        width: 100%;
+        width: 100% !important;
     }
 
     .grid.grid-cols-2.gap-2 {
@@ -206,17 +206,17 @@
         order: 1;
     }
 
-    /* Role panels */
+    /* Role panels - tablet layout */
     #roleWinrateInfo,
     #rolePicksInfo {
-        width: 48%;
+        width: 48% !important;
         display: inline-block;
         vertical-align: top;
         margin-right: 2%;
     }
 
     #playerRecordsInfo {
-        width: 100%;
+        width: 100% !important;
         margin-top: 16px;
     }
 
@@ -244,24 +244,85 @@
     }
 }
 
-/* Large desktop styles */
+/* Desktop styles - 1024px and above */
 @media (min-width: 1024px) {
-    /* Default styles already handle this, but we can add specific large screen optimizations */
+    /* Reset any mobile/tablet overrides and maintain original desktop layout */
     
-    /* Role panels container */
-    .role-panels-container {
-        display: flex;
+    /* Main content container - keep original layout */
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        flex-direction: row;
         gap: 16px;
-        margin-top: 16px;
     }
 
+    /* Filter section - original size */
+    #filterInfo {
+        width: calc(100% / 6);
+        order: 0;
+    }
+
+    #filter-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 16px;
+    }
+
+    /* Statistics section - original size */
+    #statisticsInfo {
+        width: calc(100% / 3);
+        order: 0;
+    }
+
+    /* Role panels - desktop layout with original sizing */
     #roleWinrateInfo,
     #rolePicksInfo {
-        flex: 1;
+        width: calc(100% / 4) !important;
+        display: block !important;
+        vertical-align: initial !important;
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
     }
 
     #playerRecordsInfo {
-        flex: 2;
+        width: calc(100% / 3) !important;
+        margin-top: 0 !important;
+    }
+
+    /* Ensure proper spacing between role panels and other elements */
+    #roleWinrateInfo + #rolePicksInfo {
+        margin-left: 16px;
+    }
+
+    #rolePicksInfo + #playerRecordsInfo {
+        margin-left: 16px;
+    }
+
+    /* Table adjustments - reset to desktop defaults */
+    #tables-container table {
+        font-size: inherit;
+        max-width: 1500px;
+        display: table;
+        white-space: initial;
+    }
+
+    #tables-container thead,
+    #tables-container tbody,
+    #tables-container tr,
+    #tables-container th,
+    #tables-container td {
+        display: initial;
+    }
+
+    #tables-container th {
+        display: table-cell;
+    }
+
+    #tables-container td {
+        display: table-cell;
+        justify-content: initial;
+        border-bottom: none;
+    }
+
+    #tables-container td:before {
+        content: none;
     }
 }
 
