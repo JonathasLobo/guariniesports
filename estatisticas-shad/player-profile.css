@@ -1,0 +1,516 @@
+/* ==================== RESPONSIVIDADE PLAYER PROFILE ==================== */
+
+/* Mobile First - Base styles for mobile */
+@media (max-width: 767px) {
+    /* Header adjustments */
+    .flex.justify-between.w-full.pt-4.pl-6.pr-12 {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px 12px;
+    }
+
+    /* Logo container */
+    #mainLogo {
+        align-self: center;
+    }
+
+    #mainLogo img {
+        width: 60px;
+    }
+
+    /* Title adjustments */
+    .flex.gap-x-2.pl-24.pt-2 {
+        padding: 0;
+        justify-content: center;
+    }
+
+    #title-span {
+        font-size: 1.25rem;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    /* Legend button */
+    .legend-container {
+        align-self: center;
+    }
+
+    .legend-box {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        min-width: 280px;
+        max-width: 90vw;
+    }
+
+    /* Statistics section */
+    .flex.items-start.justify-center.w-full.gap-x-4.pt-\[50px\].px-4 {
+        padding: 20px 12px;
+    }
+
+    #statisticsInfo {
+        width: 100%;
+        max-width: 350px;
+    }
+
+    /* Filter text section */
+    .flex.items-center.justify-center.w-full.pt-8.px-4 {
+        padding: 16px 12px 8px;
+    }
+
+    #filter-text {
+        font-size: 1.125rem;
+    }
+
+    /* Table container */
+    #tables-container {
+        padding: 0 12px;
+    }
+
+    #tables-container table {
+        font-size: 12px;
+        max-width: 100%;
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+    #tables-container thead,
+    #tables-container tbody,
+    #tables-container tr,
+    #tables-container th,
+    #tables-container td {
+        display: block;
+    }
+
+    #tables-container tr {
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        margin-bottom: 12px;
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(59, 130, 246, 0.15) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #tables-container tr:hover {
+        background: rgba(59, 130, 246, 0.25) !important;
+        transform: none;
+    }
+
+    #tables-container th {
+        display: none; /* Hide headers on mobile */
+    }
+
+    #tables-container td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 14px;
+    }
+
+    #tables-container td:last-child {
+        border-bottom: none;
+    }
+
+    /* Add labels for mobile table cells */
+    #tables-container td:nth-child(1):before { content: "Rank: "; }
+    #tables-container td:nth-child(2):before { content: "Jogador: "; }
+    #tables-container td:nth-child(3):before { content: "PJ: "; }
+    #tables-container td:nth-child(4):before { content: "WR: "; }
+    #tables-container td:nth-child(5):before { content: "KAI: "; }
+    #tables-container td:nth-child(6):before { content: "MVP: "; }
+    #tables-container td:nth-child(7):before { content: "Gráfico: "; }
+
+    #tables-container td:before {
+        font-weight: bold;
+        color: #fff;
+        min-width: 80px;
+        font-size: 12px;
+    }
+
+    /* Player name styling in mobile */
+    #tables-container td:nth-child(2) .flex.items-center.justify-center {
+        justify-content: flex-start;
+    }
+
+    #tables-container td:nth-child(2) span {
+        font-size: 16px;
+    }
+
+    /* Win rate bar adjustments for mobile */
+    #tables-container td:nth-child(7) > div {
+        width: 120px !important;
+        margin: 0 !important;
+    }
+
+    #tables-container td:nth-child(7) .h-4 {
+        height: 12px;
+    }
+
+    /* Rank styling */
+    #tables-container td:nth-child(1) {
+        font-size: 18px;
+        color: #3b82f6;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Header adjustments */
+    .flex.gap-x-2.pl-24.pt-2 {
+        padding-left: 0;
+    }
+
+    #title-span {
+        font-size: 1.75rem;
+        text-align: center;
+    }
+
+    /* Statistics section */
+    .flex.items-start.justify-center.w-full.gap-x-4.pt-\[50px\].px-4 {
+        padding: 30px 24px;
+    }
+
+    #statisticsInfo {
+        width: 60%;
+        max-width: 500px;
+    }
+
+    /* Filter text */
+    #filter-text {
+        font-size: 1.25rem;
+    }
+
+    /* Table adjustments */
+    #tables-container table {
+        font-size: 14px;
+        max-width: 900px;
+    }
+
+    #tables-container th {
+        font-size: 16px;
+        padding: 12px 8px;
+    }
+
+    #tables-container td {
+        padding: 12px 8px;
+        font-size: 16px;
+    }
+
+    /* Adjust column widths for tablet */
+    #tables-container th:nth-child(1),
+    #tables-container td:nth-child(1) {
+        width: 70px;
+    }
+
+    #tables-container th:nth-child(2),
+    #tables-container td:nth-child(2) {
+        width: 200px;
+    }
+
+    #tables-container th:nth-child(3),
+    #tables-container td:nth-child(3),
+    #tables-container th:nth-child(4),
+    #tables-container td:nth-child(4),
+    #tables-container th:nth-child(5),
+    #tables-container td:nth-child(5),
+    #tables-container th:nth-child(6),
+    #tables-container td:nth-child(6) {
+        width: 90px;
+    }
+
+    #tables-container th:nth-child(7),
+    #tables-container td:nth-child(7) {
+        width: 180px;
+    }
+
+    /* Win rate bar for tablet */
+    #tables-container td:nth-child(7) > div {
+        width: 140px !important;
+    }
+}
+
+/* Large desktop styles */
+@media (min-width: 1024px) {
+    /* Specific optimizations for larger screens */
+    
+    /* Center content with max width */
+    .flex.items-start.justify-center.w-full.gap-x-4.pt-\[50px\].px-4 {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    #tables-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Ensure proper table sizing */
+    #tables-container table {
+        max-width: 1200px;
+    }
+}
+
+/* Extra large screens */
+@media (min-width: 1440px) {
+    #tables-container table {
+        max-width: 1400px;
+    }
+    
+    .flex.items-start.justify-center.w-full.gap-x-4.pt-\[50px\].px-4 {
+        max-width: 1600px;
+    }
+
+    /* Increase font sizes for very large screens */
+    #title-span {
+        font-size: 3rem;
+    }
+
+    #filter-text {
+        font-size: 1.5rem;
+    }
+
+    #tables-container th {
+        font-size: 1.25rem;
+    }
+
+    #tables-container td {
+        font-size: 1.25rem;
+    }
+}
+
+/* ==================== DROPDOWN MENU RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    .absolute.top-\[110px\].left-\[20px\] {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        z-index: 9999;
+    }
+}
+
+/* ==================== STATISTICS INFO RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    #statisticsInfo .flex.flex-row.items-center.gap-1 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    #statisticsInfo .font-semibold {
+        font-size: 14px;
+    }
+
+    #statisticsInfo .font-bold {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    #statisticsInfo .flex.flex-row.items-center.gap-1 {
+        justify-content: space-between;
+        padding: 4px 0;
+    }
+}
+
+/* ==================== LEGEND BOX RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    .legend-item {
+        padding: 8px 0;
+    }
+
+    .legend-abbreviation {
+        font-size: 13px;
+        min-width: 40px;
+    }
+
+    .legend-description {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+}
+
+/* ==================== HOVER EFFECTS ADJUSTMENTS ==================== */
+
+@media (max-width: 767px) {
+    /* Disable hover effects on mobile to prevent sticky hover states */
+    #tables-container tr:hover {
+        background: rgba(59, 130, 246, 0.15) !important;
+        transform: none !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+}
+
+/* ==================== UTILITY CLASSES FOR PLAYER PROFILE ==================== */
+
+/* Hide elements on specific screen sizes */
+@media (max-width: 767px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Responsive spacing */
+.spacing-responsive {
+    padding: 8px;
+}
+
+@media (min-width: 768px) {
+    .spacing-responsive {
+        padding: 12px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .spacing-responsive {
+        padding: 16px;
+    }
+}
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+
+/* Focus states for keyboard navigation */
+#tables-container tr:focus,
+button:focus,
+[tabindex]:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .legend-box {
+        background: rgba(255, 255, 255, 1);
+        border: 3px solid #000;
+    }
+    
+    #tables-container tr {
+        border: 2px solid #fff;
+    }
+
+    #statisticsInfo {
+        border: 2px solid #fff;
+    }
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    #tables-container tr {
+        transition: none !important;
+    }
+}
+
+/* ==================== PRINT STYLES ==================== */
+
+@media print {
+    body {
+        background: white !important;
+    }
+
+    #mainLogo,
+    .legend-container,
+    button {
+        display: none;
+    }
+
+    #title-span {
+        color: black !important;
+    }
+
+    #tables-container tr {
+        background: white !important;
+        border: 1px solid black !important;
+        color: black !important;
+        break-inside: avoid;
+    }
+
+    #tables-container th,
+    #tables-container td {
+        color: black !important;
+    }
+
+    #statisticsInfo {
+        background: white !important;
+        border: 1px solid black !important;
+        color: black !important;
+    }
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ==================== DARK MODE SUPPORT ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Already using dark theme, but we can add specific dark mode enhancements */
+    
+    .legend-box {
+        background: rgba(0, 0, 0, 0.95);
+        color: white;
+        border-color: #3b82f6;
+    }
+
+    .legend-description {
+        color: #d1d5db;
+    }
+}
