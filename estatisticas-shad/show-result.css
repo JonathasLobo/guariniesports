@@ -246,10 +246,10 @@
 
 /* Large desktop styles */
 @media (min-width: 1024px) {
-    /* NOVO: Container principal - grid flexível para 4 colunas, próxima linha quando necessário */
+    /* NOVO: Container principal - grid com proporções adequadas ao conteúdo */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 280px 1fr 320px 280px;
         gap: 24px;
         max-width: 1600px;
         margin: 0 auto;
