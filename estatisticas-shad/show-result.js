@@ -465,7 +465,6 @@ fetch('./results.json')
         
         rolePicksContent.appendChild(picksContainer);
     };
-
     // FUNÇÃO ATUALIZADA PARA RECORDES DO JOGADOR
     const displayPlayerRecords = () => {
         if (!isPlayerProfile) return;
@@ -476,7 +475,14 @@ fetch('./results.json')
             assists: { max: 0, pokemon: '', match: null },
             damageHealed: { max: 0, pokemon: '', match: null },
             damageDone: { max: 0, pokemon: '', match: null },
-            damageTaken: { max: 0, pokemon: '', match: null, min: Infinity, minPokemon: '', minMatch: null },
+            damageTaken: { 
+                max: 0, 
+                pokemon: '', 
+                match: null, 
+                min: Infinity, 
+                minPokemon: '', 
+                minMatch: null 
+            },
             interrupts: { max: 0, pokemon: '', match: null },
             playerScore: { max: 0, pokemon: '', match: null }
         };
@@ -550,8 +556,8 @@ fetch('./results.json')
             return num.toString();
         };
         
-        // Criar itens de recorde apenas para os principais
-        const mainMetrics = ['kills', 'assists', 'damageDone', 'playerScore', 'damageHealed', 'damageTaken', 'interrupts'];
+        // Criar itens de recorde para as métricas principais
+        const mainMetrics = ['kills', 'assists', 'damageDone', 'playerScore', 'damageHealed', 'interrupts'];
         
         mainMetrics.forEach(metric => {
             const data = playerRecords[metric];
@@ -586,6 +592,73 @@ fetch('./results.json')
                 recordsContainer.appendChild(recordItem);
             }
         });
+        
+        // ADICIONAR ITENS ESPECIAIS PARA DANO RECEBIDO (MAX E MIN)
+        const damageData = playerRecords.damageTaken;
+        
+        // Item para maior dano recebido
+        if (damageData.max > 0) {
+            const maxDamageItem = document.createElement("div");
+            maxDamageItem.className = "role-item";
+            
+            const leftContent = document.createElement("div");
+            leftContent.className = "flex items-center gap-2";
+            
+            if (damageData.pokemon) {
+                const pokemonImg = document.createElement("img");
+                pokemonImg.src = `./images/backgrounds/${damageData.pokemon.toLowerCase()}-left-bg.png`;
+                pokemonImg.alt = damageData.pokemon;
+                pokemonImg.style.width = '30px';
+                pokemonImg.style.height = '30px';
+                pokemonImg.className = "rounded";
+                leftContent.appendChild(pokemonImg);
+            }
+            
+            const metricLabel = document.createElement("span");
+            metricLabel.className = "text-white font-medium text-sm";
+            metricLabel.textContent = "Maior Dano Recebido";
+            leftContent.appendChild(metricLabel);
+            
+            const valueSpan = document.createElement("span");
+            valueSpan.className = "text-white font-bold text-sm";
+            valueSpan.textContent = formatRecordNumber(damageData.max);
+            
+            maxDamageItem.appendChild(leftContent);
+            maxDamageItem.appendChild(valueSpan);
+            recordsContainer.appendChild(maxDamageItem);
+        }
+        
+        // Item para menor dano recebido (apenas se for maior que 0)
+        if (damageData.min > 0 && damageData.min < Infinity) {
+            const minDamageItem = document.createElement("div");
+            minDamageItem.className = "role-item";
+            
+            const leftContent = document.createElement("div");
+            leftContent.className = "flex items-center gap-2";
+            
+            if (damageData.minPokemon) {
+                const pokemonImg = document.createElement("img");
+                pokemonImg.src = `./images/backgrounds/${damageData.minPokemon.toLowerCase()}-left-bg.png`;
+                pokemonImg.alt = damageData.minPokemon;
+                pokemonImg.style.width = '30px';
+                pokemonImg.style.height = '30px';
+                pokemonImg.className = "rounded";
+                leftContent.appendChild(pokemonImg);
+            }
+            
+            const metricLabel = document.createElement("span");
+            metricLabel.className = "text-white font-medium text-sm";
+            metricLabel.textContent = "Menor Dano Recebido";
+            leftContent.appendChild(metricLabel);
+            
+            const valueSpan = document.createElement("span");
+            valueSpan.className = "text-white font-bold text-sm";
+            valueSpan.textContent = formatRecordNumber(damageData.min);
+            
+            minDamageItem.appendChild(leftContent);
+            minDamageItem.appendChild(valueSpan);
+            recordsContainer.appendChild(minDamageItem);
+        }
         
         playerRecordsContent.appendChild(recordsContainer);
     };
