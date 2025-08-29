@@ -127,9 +127,32 @@ body {
     }
 
     #filter-container label {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
         font-size: 12px;
-        padding: 6px 8px;
-        display: block !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        min-height: 36px;
+    }
+
+    #filter-container label:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    #filter-container input[type="checkbox"]:checked + label {
+        background: rgba(59, 130, 246, 0.8);
+        border-color: rgba(59, 130, 246, 1);
+        color: white;
+        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
     }
 
     /* Statistics content */
