@@ -599,36 +599,59 @@ input[type="checkbox"] {
     color: white; 
 }
 
-/* ==================== ESTILOS ESPECÍFICOS PARA OS DOIS QUADROS PRINCIPAIS ==================== */
-
-/* Container principal dos dois quadros */
-.flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+/* Ajustes responsivos para os quadros do HTML */
+@media (max-width: 767px) {
+    #filterInfo, #statisticsInfo {
+        width: 100% !important;
+    }
+    
+    #filter-container {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    #filter-container label {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+    }
 }
 
-/* Estilos base para os dois quadros */
+@media (min-width: 768px) and (max-width: 1023px) {
+    #filterInfo, #statisticsInfo {
+        width: 100% !important;
+    }
+    
+    #filter-container {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #filterInfo {
+        width: 25% !important;
+    }
+    
+    #statisticsInfo {
+        width: 75% !important;
+    }
+}
+
+/* Estilos para o container de filtros e estatísticas */
 #filterInfo, #statisticsInfo {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    min-height: 200px; /* Altura mínima igual para ambos */
-    display: flex;
-    flex-direction: column;
 }
 
-/* Estilo específico para o quadro de filtros */
 #filterInfo {
     background: rgba(255, 255, 255, 0.15);
-    padding: 16px;
 }
 
-/* Estilo específico para o quadro de estatísticas */
 #statisticsInfo {
     background: rgba(255, 255, 255, 0.1);
-    padding: 16px;
 }
 
 /* Texto dentro dos quadros */
@@ -639,104 +662,8 @@ input[type="checkbox"] {
 
 #filter-text {
     font-weight: bold;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: block;
     text-align: center;
     font-size: 1.1rem;
-}
-
-/* Container dos filtros - ajustado para melhor preenchimento */
-#filter-container {
-    display: grid;
-    gap: 12px;
-    width: 100%;
-}
-
-/* Ajustes responsivos para os quadros do HTML */
-@media (max-width: 767px) {
-    #filterInfo, #statisticsInfo {
-        width: 100% !important;
-        min-height: auto;
-    }
-    
-    #filter-container {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-    
-    #filter-container label {
-        font-size: 12px !important;
-        padding: 6px 8px !important;
-    }
-    
-    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        gap: 16px;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-    #filterInfo, #statisticsInfo {
-        width: 100% !important;
-    }
-    
-    #filter-container {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10px !important;
-    }
-    
-    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        gap: 20px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        flex-direction: row;
-        align-items: stretch; /* Faz os dois quadros terem a mesma altura */
-    }
-    
-    #filterInfo {
-        width: 30% !important; /* Largura aumentada para o filtro */
-    }
-    
-    #statisticsInfo {
-        width: 70% !important; /* Largura ajustada para as estatísticas */
-    }
-    
-    #filter-container {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-    }
-    
-    /* Garantir que ambos os quadros tenham a mesma altura */
-    #filterInfo, #statisticsInfo {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-/* Ajustes para conteúdo interno dos quadros */
-#filterInfo > div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-#statisticsInfo > div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-/* Melhorias para o texto do filtro */
-#filter-text {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-}
-
-/* Ajustes para o container de estatísticas */
-.flex.flex-col.md\:flex-row.gap-4 {
-    flex-grow: 1;
 }
