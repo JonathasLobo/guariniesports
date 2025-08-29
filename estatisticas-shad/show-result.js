@@ -551,7 +551,7 @@ fetch('./results.json')
         };
         
         // Criar itens de recorde apenas para os principais
-        const mainMetrics = ['kills', 'assists', 'damageDone', 'playerScore'];
+        const mainMetrics = ['kills', 'assists', 'damageDone', 'playerScore', 'damageHealed', 'damageTaken', 'interrupts'];
         
         mainMetrics.forEach(metric => {
             const data = playerRecords[metric];
