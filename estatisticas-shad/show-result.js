@@ -12,14 +12,24 @@ fetch('./results.json')
     
     const containerDiv = document.getElementById("tables-container");
 
-    // Identificar o tipo de container (equipa ou player)
+    // Identificar o tipo de container e aplicar classes apropriadas
     const mainContainer = document.querySelector('.flex.items-start.justify-start.w-full.gap-x-4.pt-\\[50px\\].px-4');
+    const isPlayerProfile = (infoType !== "allyTeam" && infoType !== "enemyTeam");
     
-    // Adicionar classe baseada no tipo
-    if (infoType === "allyTeam" || infoType === "enemyTeam") {
-        mainContainer.classList.add('team-stats-container');
-    } else {
+    if (isPlayerProfile) {
         mainContainer.classList.add('player-stats-container');
+        // Mostrar painel de recordes para perfis de jogadores
+        const playerRecordsPanel = document.getElementById('playerRecordsInfo');
+        if (playerRecordsPanel) {
+            playerRecordsPanel.style.display = 'flex';
+        }
+    } else {
+        mainContainer.classList.add('team-stats-container');
+        // Esconder painel de recordes para equipas
+        const playerRecordsPanel = document.getElementById('playerRecordsInfo');
+        if (playerRecordsPanel) {
+            playerRecordsPanel.style.display = 'none';
+        }
     }
 
     // Função para calcular total de bans de um pokémon
@@ -150,7 +160,7 @@ fetch('./results.json')
         });
     }
 
-    const summaryInfo = document.getElementById("statisticsInfo")
+    // FUNÇÃO ATUALIZADA PARA EXIBIR ESTATÍSTICAS PRINCIPAIS
     const displaySummaryInfo = () => {
         let totalPickRate = 0;
         let totalWins = 0;
@@ -174,11 +184,9 @@ fetch('./results.json')
         });
 
         const playerMvpCount = combinedMvpCounts[playerId] || 0;
-
         const totalMatches = totalPickRate > 0 ? (totalPickRate / 5).toFixed(0) : 0;
 
         let opponentKills = 0;
-
         if (infoType === "allyTeam") {
             opponentKills = parseFloat(results?.totalKillsSummary?.enemyTeam || 0);
         } else if (infoType === "enemyTeam") {
@@ -189,129 +197,108 @@ fetch('./results.json')
             ? (opponentKills / totalMatches).toFixed(1)
             : '0.00';
 
-        // Container principal que vai conter ambos os painéis (se for jogador individual)
-        const mainContainer = document.createElement("div");
-        mainContainer.className = "flex flex-col md:flex-row gap-4";
-
-        // Painel esquerdo (estatísticas básicas)
-        const leftPanel = document.createElement("div");
-        leftPanel.className = "text-white p-1 flex flex-col flex-wrap items-left justify-start gap-2.5";
-        if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
-            leftPanel.className += " md:w-1/2"; // Ocupa metade da largura em telas médias/grandes
+        // Obter o container de estatísticas existente
+        const summaryInfo = document.getElementById("statisticsInfo");
+        
+        // Limpar conteúdo existente (exceto título)
+        const existingTitle = summaryInfo.querySelector('.info-panel-title');
+        summaryInfo.innerHTML = '';
+        if (existingTitle) {
+            summaryInfo.appendChild(existingTitle);
+        } else {
+            const newTitle = document.createElement("h3");
+            newTitle.className = "info-panel-title";
+            newTitle.textContent = "Estatísticas Gerais";
+            summaryInfo.appendChild(newTitle);
         }
 
-        // Função auxiliar para criar itens de estatística no formato "Label: Valor"
-        const createStatItem = (label, value) => {
+        // Container principal para as estatísticas
+        const statsContainer = document.createElement("div");
+        statsContainer.className = "flex flex-col gap-3";
+
+        // Função auxiliar para criar itens de estatística
+        const createStatItem = (label, value, highlight = false) => {
             const statDiv = document.createElement("div");
-            statDiv.className = "flex flex-row items-center gap-1";
-            statDiv.innerHTML = `
-                <span class="font-semibold text-sm md:text-base text-white">${label}:</span>
-                <span class="font-bold text-base md:text-lg text-white">${value}</span>
-            `;
+            statDiv.className = `flex justify-between items-center p-2 rounded ${highlight ? 'bg-white bg-opacity-10' : ''}`;
+            
+            const labelSpan = document.createElement("span");
+            labelSpan.className = "text-white font-medium text-sm";
+            labelSpan.textContent = label;
+            
+            const valueSpan = document.createElement("span");
+            valueSpan.className = "text-white font-bold text-sm";
+            valueSpan.textContent = value;
+            
+            statDiv.appendChild(labelSpan);
+            statDiv.appendChild(valueSpan);
             return statDiv;
         };
 
-        // Última partida (apenas para equipas)
-        if (infoType === "allyTeam" || infoType === "enemyTeam") {
-            const lastMatchDate = results.lastMatchDate || "Data não disponível";
-            leftPanel.appendChild(createStatItem("Última Partida", lastMatchDate + "h"));
-        }
-
-        // Winrate
-        leftPanel.appendChild(createStatItem("Winrate", overallWinRate + "%"));
-
-        // Total Matches (apenas para equipas)
-        if (infoType === "allyTeam" || infoType === "enemyTeam") {
-            leftPanel.appendChild(createStatItem("Total Partidas", totalMatches));
-        }
-
-        // MVP Count e Partidas (apenas para jogadores individuais)
-        if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
-            leftPanel.appendChild(createStatItem("MVP Count", playerMvpCount));
-            leftPanel.appendChild(createStatItem("Partidas", totalPickRate));
-        }
-
-        // Média de Mortes (apenas para equipas)
-        if (infoType === "allyTeam" || infoType === "enemyTeam") {
-            leftPanel.appendChild(createStatItem("Média de Mortes", averageKills));
-        }
-
-        // Streak (apenas para equipas)
-        if (infoType === "allyTeam" || infoType === "enemyTeam") {
-            const streakData = results.teamStreak?.[infoType] || { maxWinStreak: 0, maxLoseStreak: 0 };
-            leftPanel.appendChild(createStatItem("Win Streak", streakData.maxWinStreak));
-            leftPanel.appendChild(createStatItem("Lose Streak", streakData.maxLoseStreak));
-        }
-
-        mainContainer.appendChild(leftPanel);
-
-        // Painel direito (estatísticas detalhadas do jogador)
-        if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
-            const rightPanel = document.createElement("div");
-            rightPanel.className = "text-white p-1 flex flex-col flex-wrap items-left justify-start gap-1 md:w-1/2";
-
-            // Função para calcular médias
-            const calculatePlayerAverages = (playerName) => {
-                const metrics = {
-                    kills: 0,
-                    assists: 0,
-                    damageHealed: 0,
-                    damageDone: 0,
-                    damageTaken: 0,
-                    interrupts: 0,
-                    playerScore: 0
-                };
-                let matchCount = 0;
-
-                ["allyTeam", "enemyTeam"].forEach(teamType => {
-                    if (results[teamType] && results[teamType][playerName]) {
-                        Object.values(results[teamType][playerName]).forEach(pokemonData => {
-                            (pokemonData.matches || []).forEach(match => {
-                                Object.keys(metrics).forEach(metric => {
-                                    metrics[metric] += match[metric] || 0;
-                                });
-                                matchCount++;
-                            });
-                        });
-                    }
-                });
-
-                if (matchCount > 0) {
-                    Object.keys(metrics).forEach(metric => {
-                        metrics[metric] = metrics[metric] / matchCount;
-                    });
-                }
-
-                return metrics;
-            };
-
-            // Adicionar métricas individuais no painel direito
+        // Adicionar estatísticas baseadas no tipo
+        if (isPlayerProfile) {
+            // Para jogadores individuais
+            statsContainer.appendChild(createStatItem("Winrate", `${overallWinRate}%`, true));
+            statsContainer.appendChild(createStatItem("MVP Count", playerMvpCount.toString()));
+            statsContainer.appendChild(createStatItem("Total Partidas", totalPickRate.toString()));
+            
+            // Adicionar médias detalhadas do jogador
             const playerAverages = calculatePlayerAverages(infoType);
-            const formatLargeNumber = (num) => {
-                if (num >= 1000) {
-                    const formatted = (num / 1000).toFixed(1);
-                    return formatted.endsWith('.0') ? `${formatted.split('.')[0]}k` : `${formatted}k`;
-                }
-                return num.toFixed(1);
-            };
-
-            rightPanel.appendChild(createStatItem("Média de Kills", playerAverages.kills.toFixed(2)));
-            rightPanel.appendChild(createStatItem("Média de Assists", playerAverages.assists.toFixed(2)));
-            rightPanel.appendChild(createStatItem("Média de Cura", formatLargeNumber(playerAverages.damageHealed)));
-            rightPanel.appendChild(createStatItem("Média de Dano Causado", formatLargeNumber(playerAverages.damageDone)));
-            rightPanel.appendChild(createStatItem("Média de Dano Recebido", formatLargeNumber(playerAverages.damageTaken)));
-            rightPanel.appendChild(createStatItem("Média de Interrupções", playerAverages.interrupts.toFixed(2)));
-            rightPanel.appendChild(createStatItem("Média de Pontuação", playerAverages.playerScore.toFixed(2)));
-
-            mainContainer.appendChild(rightPanel);
+            statsContainer.appendChild(createStatItem("Média Kills", playerAverages.kills.toFixed(1)));
+            statsContainer.appendChild(createStatItem("Média Assists", playerAverages.assists.toFixed(1)));
+            statsContainer.appendChild(createStatItem("Média Pontuação", playerAverages.playerScore.toFixed(0)));
+        } else {
+            // Para equipas
+            const lastMatchDate = results.lastMatchDate || "N/A";
+            const streakData = results.teamStreak?.[infoType] || { maxWinStreak: 0, maxLoseStreak: 0 };
+            
+            statsContainer.appendChild(createStatItem("Última Partida", `${lastMatchDate}h`));
+            statsContainer.appendChild(createStatItem("Winrate", `${overallWinRate}%`, true));
+            statsContainer.appendChild(createStatItem("Total Partidas", totalMatches.toString()));
+            statsContainer.appendChild(createStatItem("Média Mortes", averageKills));
+            statsContainer.appendChild(createStatItem("Win Streak", streakData.maxWinStreak.toString()));
+            statsContainer.appendChild(createStatItem("Lose Streak", streakData.maxLoseStreak.toString()));
         }
-        
-        summaryInfo.appendChild(mainContainer);
-    };
-    displaySummaryInfo();
 
-    // Adicione esta função após a função displaySummaryInfo()
-        const displayRoleWinrates = () => {
+        summaryInfo.appendChild(statsContainer);
+    };
+
+    // Função para calcular médias do jogador
+    const calculatePlayerAverages = (playerName) => {
+        const metrics = {
+            kills: 0,
+            assists: 0,
+            damageHealed: 0,
+            damageDone: 0,
+            damageTaken: 0,
+            interrupts: 0,
+            playerScore: 0
+        };
+        let matchCount = 0;
+
+        ["allyTeam", "enemyTeam"].forEach(teamType => {
+            if (results[teamType] && results[teamType][playerName]) {
+                Object.values(results[teamType][playerName]).forEach(pokemonData => {
+                    (pokemonData.matches || []).forEach(match => {
+                        Object.keys(metrics).forEach(metric => {
+                            metrics[metric] += match[metric] || 0;
+                        });
+                        matchCount++;
+                    });
+                });
+            }
+        });
+
+        if (matchCount > 0) {
+            Object.keys(metrics).forEach(metric => {
+                metrics[metric] = metrics[metric] / matchCount;
+            });
+        }
+
+        return metrics;
+    };
+
+    // FUNÇÃO ATUALIZADA PARA WINRATE POR ROLE
+    const displayRoleWinrates = () => {
         // Calcular winrate por role
         const roleStats = {};
         
@@ -342,40 +329,39 @@ fetch('./results.json')
                 : 0;
         });
         
-        // Criar o container do painel de roles - ESTILO PADRONIZADO
-        const roleWinrateInfo = document.createElement("div");
-        roleWinrateInfo.id = "roleWinrateInfo";
-        roleWinrateInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+        // Obter container existente
+        const roleWinrateContent = document.getElementById('roleWinrateContent');
+        if (!roleWinrateContent) return;
         
-        const roleTitle = document.createElement("h3");
-        roleTitle.className = "text-lg font-semibold text-white mb-2 text-center";
-        roleTitle.textContent = "Winrate por Role";
-        roleWinrateInfo.appendChild(roleTitle);
+        // Limpar conteúdo existente
+        roleWinrateContent.innerHTML = '';
         
         const roleContainer = document.createElement("div");
-        roleContainer.className = "flex flex-col gap-1";
+        roleContainer.className = "flex flex-col gap-2";
         
         // Ordenar roles por winrate (decrescente)
         const sortedRoles = Object.entries(roleWinrates)
             .sort(([,a], [,b]) => b - a);
         
+        // Traduzir nomes das roles para português
+        const roleTranslations = {
+            'Speedster': 'Speedsters',
+            'Attacker': 'Attackers', 
+            'All Rounder': 'All Rounders',
+            'Support': 'Supporters',
+            'Defender': 'Defenders'
+        };
+        
         sortedRoles.forEach(([role, winrate]) => {
             const roleItem = document.createElement("div");
-            roleItem.className = "role-item"; // CLASSE PADRONIZADA
+            roleItem.className = "role-item";
             
             const roleLabel = document.createElement("span");
             roleLabel.className = "text-white font-medium text-sm";
-            
-            // Traduzir nomes das roles para português
-            const roleTranslations = {
-                'Speedster': 'Speedsters',
-                'Attacker': 'Attackers', 
-                'All Rounder': 'All Rounders',
-                'Support': 'Supporters',
-                'Defender': 'Defenders'
-            };
-            
             roleLabel.textContent = roleTranslations[role] || role;
+            
+            const valueContainer = document.createElement("div");
+            valueContainer.className = "flex items-center gap-2";
             
             const winrateSpan = document.createElement("span");
             winrateSpan.className = "text-white font-bold text-sm";
@@ -396,8 +382,6 @@ fetch('./results.json')
                 performanceIndicator.classList.add('performance-low');
             }
             
-            const valueContainer = document.createElement("div");
-            valueContainer.className = "flex items-center";
             valueContainer.appendChild(winrateSpan);
             valueContainer.appendChild(performanceIndicator);
             
@@ -406,12 +390,10 @@ fetch('./results.json')
             roleContainer.appendChild(roleItem);
         });
         
-        roleWinrateInfo.appendChild(roleContainer);
-        
-        return roleWinrateInfo;
+        roleWinrateContent.appendChild(roleContainer);
     };
 
-    // Adicione esta função após displayRoleWinrates()
+    // FUNÇÃO ATUALIZADA PARA PICKS POR ROLE
     const displayRolePicks = () => {
         // Calcular total de picks por role
         const rolePicks = {};
@@ -428,47 +410,44 @@ fetch('./results.json')
             rolePicks[role] += picks;
         });
         
-        // Criar o container do painel de picks por role
-        const rolePicksInfo = document.createElement("div");
-        rolePicksInfo.id = "rolePicksInfo";
-        rolePicksInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+        // Obter container existente
+        const rolePicksContent = document.getElementById('rolePicksContent');
+        if (!rolePicksContent) return;
         
-        const picksTitle = document.createElement("h3");
-        picksTitle.className = "text-lg font-semibold text-white mb-1 text-center";
-        picksTitle.textContent = "Total de Picks por Role";
-        rolePicksInfo.appendChild(picksTitle);
+        // Limpar conteúdo existente
+        rolePicksContent.innerHTML = '';
         
         const picksContainer = document.createElement("div");
-        picksContainer.className = "flex flex-col gap-1";
+        picksContainer.className = "flex flex-col gap-2";
         
         // Ordenar roles por número de picks (decrescente)
         const sortedRolePicks = Object.entries(rolePicks)
             .sort(([,a], [,b]) => b - a);
         
+        // Traduzir nomes das roles para português
+        const roleTranslations = {
+            'Speedster': 'Speedsters',
+            'Attacker': 'Attackers', 
+            'All Rounder': 'All Rounders',
+            'Support': 'Supporters',
+            'Defender': 'Defenders'
+        };
+        
+        const maxPicks = Math.max(...Object.values(rolePicks));
+        
         sortedRolePicks.forEach(([role, totalPicks]) => {
             const pickItem = document.createElement("div");
-            pickItem.className = "flex justify-between items-center p-2";
+            pickItem.className = "role-item";
             
             const roleLabel = document.createElement("span");
             roleLabel.className = "text-white font-medium text-sm";
-            
-            // Traduzir nomes das roles para português
-            const roleTranslations = {
-                'Speedster': 'Speedsters',
-                'Attacker': 'Attackers', 
-                'All Rounder': 'All Rounders',
-                'Support': 'Supporters',
-                'Defender': 'Defenders'
-            };
-            
             roleLabel.textContent = roleTranslations[role] || role;
             
             const picksSpan = document.createElement("span");
             picksSpan.className = "text-white font-bold text-sm";
             picksSpan.textContent = totalPicks.toString();
             
-            // Adicionar cor baseada na quantidade de picks (opcional)
-            const maxPicks = Math.max(...Object.values(rolePicks));
+            // Adicionar cor baseada na quantidade de picks
             const pickPercentage = (totalPicks / maxPicks) * 100;
             
             if (pickPercentage >= 80) {
@@ -484,190 +463,132 @@ fetch('./results.json')
             picksContainer.appendChild(pickItem);
         });
         
-        rolePicksInfo.appendChild(picksContainer);
-        
-        return rolePicksInfo;
+        rolePicksContent.appendChild(picksContainer);
     };
 
-    // Criar container para os painéis de role
-    const rolePanelsContainer = document.createElement("div");
-    rolePanelsContainer.className = "role-panels-container";
-    
-    // Adicionar os painéis de role ao container
-    rolePanelsContainer.appendChild(displayRoleWinrates());
-    rolePanelsContainer.appendChild(displayRolePicks());
-    
-    // Inserir o container de painéis de role após o statisticsInfo
-    const statisticsInfo = document.getElementById("statisticsInfo");
-    const parentContainer = statisticsInfo.parentNode;
-    parentContainer.insertBefore(rolePanelsContainer, statisticsInfo.nextSibling);
-
+    // FUNÇÃO ATUALIZADA PARA RECORDES DO JOGADOR
     const displayPlayerRecords = () => {
-    // Calcular recordes do jogador
-    const playerRecords = {
-        kills: { max: 0, pokemon: '', match: null },
-        assists: { max: 0, pokemon: '', match: null },
-        damageHealed: { max: 0, pokemon: '', match: null },
-        damageDone: { max: 0, pokemon: '', match: null },
-        damageTaken: { max: 0, pokemon: '', match: null, min: Infinity, minPokemon: '', minMatch: null },
-        interrupts: { max: 0, pokemon: '', match: null },
-        playerScore: { max: 0, pokemon: '', match: null }
-    };
-    
-    // Percorrer todos os dados do jogador
-    ["allyTeam", "enemyTeam"].forEach(teamType => {
-        if (results[teamType] && results[teamType][infoType]) {
-            Object.entries(results[teamType][infoType]).forEach(([pokemonName, pokemonData]) => {
-                (pokemonData.matches || []).forEach(match => {
-                    // Verificar recordes máximos
-                    Object.keys(playerRecords).forEach(metric => {
-                        const value = match[metric] || 0;
-                        
-                        if (metric === 'damageTaken') {
-                            // Para dano recebido, track both max and min
-                            if (value > playerRecords[metric].max) {
-                                playerRecords[metric].max = value;
-                                playerRecords[metric].pokemon = pokemonName;
-                                playerRecords[metric].match = match;
+        if (!isPlayerProfile) return;
+        
+        // Calcular recordes do jogador
+        const playerRecords = {
+            kills: { max: 0, pokemon: '', match: null },
+            assists: { max: 0, pokemon: '', match: null },
+            damageHealed: { max: 0, pokemon: '', match: null },
+            damageDone: { max: 0, pokemon: '', match: null },
+            damageTaken: { max: 0, pokemon: '', match: null, min: Infinity, minPokemon: '', minMatch: null },
+            interrupts: { max: 0, pokemon: '', match: null },
+            playerScore: { max: 0, pokemon: '', match: null }
+        };
+        
+        // Percorrer todos os dados do jogador
+        ["allyTeam", "enemyTeam"].forEach(teamType => {
+            if (results[teamType] && results[teamType][infoType]) {
+                Object.entries(results[teamType][infoType]).forEach(([pokemonName, pokemonData]) => {
+                    (pokemonData.matches || []).forEach(match => {
+                        // Verificar recordes máximos
+                        Object.keys(playerRecords).forEach(metric => {
+                            const value = match[metric] || 0;
+                            
+                            if (metric === 'damageTaken') {
+                                // Para dano recebido, track both max and min
+                                if (value > playerRecords[metric].max) {
+                                    playerRecords[metric].max = value;
+                                    playerRecords[metric].pokemon = pokemonName;
+                                    playerRecords[metric].match = match;
+                                }
+                                if (value < playerRecords[metric].min && value > 0) {
+                                    playerRecords[metric].min = value;
+                                    playerRecords[metric].minPokemon = pokemonName;
+                                    playerRecords[metric].minMatch = match;
+                                }
+                            } else {
+                                if (value > playerRecords[metric].max) {
+                                    playerRecords[metric].max = value;
+                                    playerRecords[metric].pokemon = pokemonName;
+                                    playerRecords[metric].match = match;
+                                }
                             }
-                            if (value < playerRecords[metric].min && value > 0) {
-                                playerRecords[metric].min = value;
-                                playerRecords[metric].minPokemon = pokemonName;
-                                playerRecords[metric].minMatch = match;
-                            }
-                        } else {
-                            if (value > playerRecords[metric].max) {
-                                playerRecords[metric].max = value;
-                                playerRecords[metric].pokemon = pokemonName;
-                                playerRecords[metric].match = match;
-                            }
-                        }
+                        });
                     });
                 });
-            });
-        }
-    });
-    
-    // Se min damage taken ainda for Infinity, definir como 0
-    if (playerRecords.damageTaken.min === Infinity) {
-        playerRecords.damageTaken.min = 0;
-        playerRecords.damageTaken.minPokemon = '';
-    }
-    
-    // Criar o container do painel de recordes
-    const playerRecordsInfo = document.createElement("div");
-    playerRecordsInfo.id = "playerRecordsInfo";
-    playerRecordsInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
-    
-    const recordsTitle = document.createElement("h3");
-    recordsTitle.className = "text-lg font-semibold text-white mb-2 text-center";
-    recordsTitle.textContent = `Recordes de ${infoType}`;
-    playerRecordsInfo.appendChild(recordsTitle);
-    
-    const recordsContainer = document.createElement("div");
-    recordsContainer.className = "grid grid-cols-2 gap-2";
-    
-    // Traduzir nomes das métricas
-    const metricTranslations = {
-        'kills': 'Kills',
-        'assists': 'Assists',
-        'damageHealed': 'Cura',
-        'damageDone': 'Dano Causado',
-        'damageTaken': 'Dano Recebido',
-        'interrupts': 'Interrupções',
-        'playerScore': 'Pontuação'
-    };
-    
-    // Função para formatar números grandes
-    const formatRecordNumber = (num) => {
-        if (num >= 1000) {
-            return num.toLocaleString('pt-BR');
-        }
-        return num.toString();
-    };
-    
-    // Função para capitalizar nomes de pokémon
-    const capitalize = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    };
-    
-    // Criar itens de recorde
-    Object.entries(playerRecords).forEach(([metric, data]) => {
-        if (data.max > 0) {
-            // Recorde máximo
-            const recordItem = document.createElement("div");
-            recordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
-            
-            const leftContent = document.createElement("div");
-            leftContent.className = "flex items-center gap-2";
-            
-            const metricLabel = document.createElement("span");
-            metricLabel.className = "text-white font-medium text-sm";
-            metricLabel.textContent = metricTranslations[metric];
-            
-            if (data.pokemon) {
-                const pokemonImg = document.createElement("img");
-                pokemonImg.src = `./images/backgrounds/${data.pokemon.toLowerCase()}-left-bg.png`;
-                pokemonImg.alt = data.pokemon;
-                pokemonImg.style.width = '35px';
-                pokemonImg.style.height = '35px';
-                pokemonImg.className = "rounded";
-                leftContent.appendChild(pokemonImg);
             }
-            
-            leftContent.appendChild(metricLabel);
-            
-            const valueSpan = document.createElement("span");
-            valueSpan.className = "text-white font-bold text-sm";
-            valueSpan.textContent = formatRecordNumber(data.max);
-            
-            recordItem.appendChild(leftContent);
-            recordItem.appendChild(valueSpan);
-            recordsContainer.appendChild(recordItem);
-            
-            // Para dano recebido, adicionar também o recorde mínimo
-            if (metric === 'damageTaken' && data.min > 0 && data.min !== data.max) {
-                const minRecordItem = document.createElement("div");
-                minRecordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
+        });
+        
+        // Se min damage taken ainda for Infinity, definir como 0
+        if (playerRecords.damageTaken.min === Infinity) {
+            playerRecords.damageTaken.min = 0;
+            playerRecords.damageTaken.minPokemon = '';
+        }
+        
+        // Obter container existente
+        const playerRecordsContent = document.getElementById('playerRecordsContent');
+        if (!playerRecordsContent) return;
+        
+        // Limpar conteúdo existente
+        playerRecordsContent.innerHTML = '';
+        
+        const recordsContainer = document.createElement("div");
+        recordsContainer.className = "grid grid-cols-1 gap-2";
+        
+        // Traduzir nomes das métricas
+        const metricTranslations = {
+            'kills': 'Kills',
+            'assists': 'Assists',
+            'damageHealed': 'Cura',
+            'damageDone': 'Dano Causado',
+            'damageTaken': 'Dano Recebido',
+            'interrupts': 'Interrupções',
+            'playerScore': 'Pontuação'
+        };
+        
+        // Função para formatar números grandes
+        const formatRecordNumber = (num) => {
+            if (num >= 1000) {
+                return num.toLocaleString('pt-BR');
+            }
+            return num.toString();
+        };
+        
+        // Criar itens de recorde apenas para os principais
+        const mainMetrics = ['kills', 'assists', 'damageDone', 'playerScore'];
+        
+        mainMetrics.forEach(metric => {
+            const data = playerRecords[metric];
+            if (data.max > 0) {
+                const recordItem = document.createElement("div");
+                recordItem.className = "role-item";
                 
-                const minLeftContent = document.createElement("div");
-                minLeftContent.className = "flex items-center gap-2";
+                const leftContent = document.createElement("div");
+                leftContent.className = "flex items-center gap-2";
                 
-                if (data.minPokemon) {
-                    const minPokemonImg = document.createElement("img");
-                    minPokemonImg.src = `./images/backgrounds/${data.minPokemon.toLowerCase()}-left-bg.png`;
-                    minPokemonImg.alt = data.minPokemon;
-                    minPokemonImg.style.width = '35px';
-                    minPokemonImg.style.height = '35px';
-                    minPokemonImg.className = "rounded";
-                    minLeftContent.appendChild(minPokemonImg);
+                if (data.pokemon) {
+                    const pokemonImg = document.createElement("img");
+                    pokemonImg.src = `./images/backgrounds/${data.pokemon.toLowerCase()}-left-bg.png`;
+                    pokemonImg.alt = data.pokemon;
+                    pokemonImg.style.width = '30px';
+                    pokemonImg.style.height = '30px';
+                    pokemonImg.className = "rounded";
+                    leftContent.appendChild(pokemonImg);
                 }
                 
-                const minMetricLabel = document.createElement("span");
-                minMetricLabel.className = "text-white font-medium text-sm";
-                minMetricLabel.textContent = "Menor Dano Recebido";
-                minLeftContent.appendChild(minMetricLabel);
+                const metricLabel = document.createElement("span");
+                metricLabel.className = "text-white font-medium text-sm";
+                metricLabel.textContent = metricTranslations[metric];
+                leftContent.appendChild(metricLabel);
                 
-                const minValueSpan = document.createElement("span");
-                minValueSpan.className = "text-white font-bold text-sm";
-                minValueSpan.textContent = formatRecordNumber(data.min);
+                const valueSpan = document.createElement("span");
+                valueSpan.className = "text-white font-bold text-sm";
+                valueSpan.textContent = formatRecordNumber(data.max);
                 
-                minRecordItem.appendChild(minLeftContent);
-                minRecordItem.appendChild(minValueSpan);
-                recordsContainer.appendChild(minRecordItem);
+                recordItem.appendChild(leftContent);
+                recordItem.appendChild(valueSpan);
+                recordsContainer.appendChild(recordItem);
             }
-        }
-    });
-    
-    playerRecordsInfo.appendChild(recordsContainer);
-    
-    // Adicionar o painel de recordes ao container de painéis de role
-    rolePanelsContainer.appendChild(playerRecordsInfo);
-};
-
-if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
-    displayPlayerRecords(); // <- Nova função aqui
-}
+        });
+        
+        playerRecordsContent.appendChild(recordsContainer);
+    };
 
     const capitalize = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -723,6 +644,7 @@ if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
         applyFilters();
     };
 
+    // Inicializar interface
     const sortedKeys = sortValues(objAttribute, currentSortAttribute, currentSortOrder);
     let pokemonKeys = sortedKeys;
     const titleSpan = document.getElementById("title-span");
@@ -731,6 +653,12 @@ if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
     const filterSpan = document.getElementById("filter-text");
     filterSpan.innerText = `Ordenado por: Pick Rate - Decrescente`;
     filterSpan.classList.add('text-white')
+
+    // Executar funções de display
+    displaySummaryInfo();
+    displayRoleWinrates();
+    displayRolePicks();
+    displayPlayerRecords();
 
     function applyFilters() {
         const selectedClasses = Array.from(document.querySelectorAll('.class-filter:checked'))

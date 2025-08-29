@@ -67,6 +67,7 @@
         </style>
     </head>
 <body> 
+        <!-- Header Section -->
         <div class="flex flex-col items-center w-full h-auto top-0 left-0 right-0 z-10">
             <div class="flex justify-between w-full pt-4 pl-6 pr-12">
                 <div id="mainLogo" style="cursor: pointer;">
@@ -117,44 +118,81 @@
             </div>
         </div>
 
+        <!-- Main Content Container -->
         <div class="flex items-start justify-start w-full gap-x-4 pt-[50px] px-4">
-            <!-- Filtro (à esquerda) -->
-            <div id="filterInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3">
-                <div class="flex flex-col items-start text-black gap-y-2 w-full">
-                    <span id="filter-text" class="text-lg font-semibold text-white text-center w-full"></span>
-                    
-                    <!-- Container dos filtros com duas colunas -->
-                    <div id="filter-container" class="grid grid-cols-2 gap-y-6 gap-x-4 text-base w-full">
-                        <input type="checkbox" id="todos" class="class-filter" value="Todos" checked>
-                        <label for="todos">Todos</label>
+            
+            <!-- Primeira linha de painéis informativos (Desktop: horizontal, Mobile: vertical) -->
+            <div class="info-panels-row">
+                
+                <!-- Painel de Filtros -->
+                <div id="filterInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3">
+                    <div class="flex flex-col items-start text-black gap-y-2 w-full">
+                        <span id="filter-text" class="info-panel-title text-lg font-semibold text-white text-center w-full"></span>
+                        
+                        <!-- Container dos filtros com duas colunas -->
+                        <div id="filter-container" class="grid grid-cols-2 gap-y-6 gap-x-4 text-base w-full">
+                            <input type="checkbox" id="todos" class="class-filter" value="Todos" checked>
+                            <label for="todos">Todos</label>
 
-                        <input type="checkbox" id="speedster" class="class-filter" value="Speedster">
-                        <label for="speedster">Speedsters</label>
+                            <input type="checkbox" id="speedster" class="class-filter" value="Speedster">
+                            <label for="speedster">Speedsters</label>
 
-                        <input type="checkbox" id="attacker" class="class-filter" value="Attacker">
-                        <label for="attacker">Attackers</label>
+                            <input type="checkbox" id="attacker" class="class-filter" value="Attacker">
+                            <label for="attacker">Attackers</label>
 
-                        <input type="checkbox" id="allrounder" class="class-filter" value="All Rounder">
-                        <label for="allrounder">All Rounders</label>
+                            <input type="checkbox" id="allrounder" class="class-filter" value="All Rounder">
+                            <label for="allrounder">All Rounders</label>
 
-                        <input type="checkbox" id="support" class="class-filter" value="Support">
-                        <label for="support">Supporters</label>
+                            <input type="checkbox" id="support" class="class-filter" value="Support">
+                            <label for="support">Supporters</label>
 
-                        <input type="checkbox" id="defender" class="class-filter" value="Defender">
-                        <label for="defender">Defenders</label>
+                            <input type="checkbox" id="defender" class="class-filter" value="Defender">
+                            <label for="defender">Defenders</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Estatísticas Principais -->
+                <div id="statisticsInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3 gap-y-2">
+                    <h3 class="info-panel-title">Estatísticas Gerais</h3>
+                    <!-- Conteúdo gerado via JS -->
+                </div>
+
+                <!-- Painel de Winrate por Role -->
+                <div id="roleWinrateInfo" class="shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3">
+                    <h3 class="info-panel-title">Winrate por Role</h3>
+                    <div id="roleWinrateContent">
+                        <!-- Conteúdo gerado via JS -->
+                    </div>
+                </div>
+
+                <!-- Painel de Picks por Role -->
+                <div id="rolePicksInfo" class="shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3">
+                    <h3 class="info-panel-title">Total de Picks por Role</h3>
+                    <div id="rolePicksContent">
+                        <!-- Conteúdo gerado via JS -->
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Segunda linha: Painel de Recordes do Player (apenas se for perfil individual) -->
+            <div class="role-panels-container">
+                <div id="playerRecordsInfo" class="shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3" style="display: none;">
+                    <h3 class="info-panel-title">Recordes do Jogador</h3>
+                    <div id="playerRecordsContent">
+                        <!-- Conteúdo gerado via JS -->
                     </div>
                 </div>
             </div>
 
-            <!-- Estatísticas -->
-            <div id="statisticsInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3 gap-y-2">
-                <!-- Conteúdo gerado via JS -->
-            </div>
         </div>
 
+        <!-- Topic Info Section -->
         <div id="topicInfo" class="w-full h-12 flex justify-center items-center">
         </div>
 
+        <!-- Tables Container -->
         <div class="h-full">
             <div id="tables-container" class="flex gap-x-1.5 justify-center">
             </div>
@@ -188,6 +226,4 @@
         
         <script src="./util.js"></script>
         <script src="./show-result.js"></script>
-        <!--<script src="./playerRanking-result.js"></script>-->
-    </body>
-</html>
+        <!--

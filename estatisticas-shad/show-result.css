@@ -41,19 +41,27 @@
         min-width: 260px;
     }
 
-    /* Main content container */
+    /* Main content container - EMPILHADO VERTICALMENTE NO MOBILE */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        display: flex;
         flex-direction: column;
         gap: 16px;
         padding: 20px 12px;
+        max-width: 100%;
     }
 
-    /* Filter section */
-    #filterInfo {
-        width: 100%;
-        order: 2;
+    /* Todos os quadros ocupam 100% da largura no mobile */
+    #filterInfo,
+    #statisticsInfo,
+    #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo {
+        width: 100% !important;
+        min-height: 200px;
+        margin-bottom: 16px;
     }
 
+    /* Filter container no mobile */
     #filter-container {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
@@ -62,12 +70,6 @@
     #filter-container label {
         font-size: 12px;
         padding: 6px 8px;
-    }
-
-    /* Statistics section */
-    #statisticsInfo {
-        width: 100%;
-        order: 1;
     }
 
     /* Statistics content */
@@ -79,14 +81,11 @@
         width: 100%;
     }
 
-    /* Role panels */
-    #roleWinrateInfo,
-    #rolePicksInfo {
-        width: 100%;
-        margin-bottom: 16px;
-    }
-
-    #playerRecordsInfo {
+    /* Role panels container */
+    .role-panels-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
         width: 100%;
     }
 
@@ -183,41 +182,59 @@
         font-size: 2rem;
     }
 
-    /* Main content container */
+    /* Main content container - GRID 2x2 PARA TABLET */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
         gap: 20px;
+        padding: 50px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    /* Filter section */
+    /* Posicionamento dos quadros no tablet */
     #filterInfo {
-        width: 100%;
-        order: 2;
+        grid-column: 1;
+        grid-row: 1;
     }
 
-    #filter-container {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 10px;
-    }
-
-    /* Statistics section */
     #statisticsInfo {
-        width: 100%;
-        order: 1;
+        grid-column: 2;
+        grid-row: 1;
     }
 
-    /* Role panels */
-    #roleWinrateInfo,
+    #roleWinrateInfo {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
     #rolePicksInfo {
-        width: 48%;
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 2%;
+        grid-column: 2;
+        grid-row: 2;
     }
 
     #playerRecordsInfo {
-        width: 100%;
-        margin-top: 16px;
+        grid-column: 1 / -1; /* Ocupa toda a largura */
+        grid-row: 3;
+    }
+
+    /* Filter container para tablet */
+    #filter-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    /* Todos os quadros têm altura e estilo padronizados */
+    #filterInfo,
+    #statisticsInfo,
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        min-height: 280px;
+    }
+
+    #playerRecordsInfo {
+        min-height: 200px;
     }
 
     /* Table adjustments */
@@ -244,20 +261,41 @@
     }
 }
 
-/* Large desktop styles */
+/* Desktop styles - GRID HORIZONTAL */
 @media (min-width: 1024px) {
-    /* NOVO: Container principal - grid com proporções adequadas ao conteúdo */
+    /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        display: grid;
-        grid-template-columns: 280px 1fr 320px 280px;
+        display: flex;
+        flex-direction: column;
         gap: 24px;
         max-width: 1600px;
         margin: 0 auto;
         padding: 50px 20px;
     }
-    
-    /* NOVO: Estilização padronizada para todos os quadros */
-    #filterInfo, #statisticsInfo, #roleWinrateInfo, #rolePicksInfo {
+
+    /* Container dos quadros principais - LINHA HORIZONTAL */
+    .info-panels-row {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px 280px;
+        gap: 24px;
+        width: 100%;
+    }
+
+    /* Container dos painéis de role - LINHA HORIZONTAL */
+    .role-panels-container {
+        display: flex;
+        flex-direction: row;
+        gap: 24px;
+        width: 100%;
+        margin-top: 24px;
+    }
+
+    /* Estilização padronizada para TODOS os quadros */
+    #filterInfo,
+    #statisticsInfo,
+    #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -266,45 +304,57 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
         transition: all 0.3s ease;
         padding: 20px;
-        min-height: 280px;
+        min-height: 300px;
         width: 100%;
     }
-    
-    #filterInfo:hover, #statisticsInfo:hover, #roleWinrateInfo:hover, #rolePicksInfo:hover {
+
+    /* Efeito hover para todos os quadros */
+    #filterInfo:hover,
+    #statisticsInfo:hover,
+    #roleWinrateInfo:hover,
+    #rolePicksInfo:hover,
+    #playerRecordsInfo:hover {
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
         transform: translateY(-2px);
     }
-    
-    /* NOVO: Posicionamento sequencial dos quadros */
+
+    /* Cores diferenciadas por tipo de quadro */
     #filterInfo {
-        grid-column: 1;
         background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
     }
-    
+
     #statisticsInfo {
-        grid-column: 2;
         background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
     }
-    
+
     #roleWinrateInfo {
-        grid-column: 3;
         background: rgba(168, 85, 247, 0.1);
+        border-color: rgba(168, 85, 247, 0.3);
     }
-    
+
     #rolePicksInfo {
-        grid-column: 4;
         background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.3);
     }
-    
-    /* NOVO: Container de filtros com grid melhorado */
+
+    #playerRecordsInfo {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        flex: 1;
+        min-height: 280px;
+    }
+
+    /* Container de filtros com grid otimizado */
     #filter-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         margin-top: 16px;
     }
-    
-    /* NOVO: Labels dos filtros com design consistente */
+
+    /* Labels dos filtros com design consistente */
     #filter-container label {
         display: flex;
         align-items: center;
@@ -321,54 +371,30 @@
         text-align: center;
         min-height: 48px;
     }
-    
+
     #filter-container label:hover {
         background: rgba(255, 255, 255, 0.25);
         border-color: rgba(255, 255, 255, 0.4);
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    
+
     #filter-container input[type="checkbox"]:checked + label {
         background: rgba(59, 130, 246, 0.8);
         border-color: rgba(59, 130, 246, 1);
         color: white;
         box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
     }
-    
-    /* NOVO: Título dos filtros */
-    #filter-text {
+
+    /* Títulos padronizados */
+    #filter-text,
+    .info-panel-title {
         font-size: 16px;
         font-weight: 700;
         text-align: center;
         margin-bottom: 16px;
         color: white;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* NOVO: Role panels container removido - agora são quadros independentes */
-    .role-panels-container {
-        display: contents; /* Permite que os filhos sejam tratados como se estivessem no grid pai */
-    }
-
-    /* NOVO: Painel de recordes do player - 5º quadro inicia nova linha */
-    #playerRecordsInfo {
-        grid-column: 1 / -1; /* Ocupa toda a largura da nova linha */
-        background: rgba(245, 158, 11, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(245, 158, 11, 0.2);
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-        transition: all 0.3s ease;
-        padding: 20px;
-        margin-top: 24px;
-        min-height: 280px;
-    }
-    
-    #playerRecordsInfo:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-        transform: translateY(-2px);
     }
 }
 
@@ -383,235 +409,67 @@
         padding: 50px 40px;
     }
     
-    /* Aumentar ligeiramente a largura do filtro em telas muito grandes */
-    #filterInfo {
-        width: 320px;
-        min-width: 320px;
+    /* Ajustar grid para telas muito grandes */
+    .info-panels-row {
+        grid-template-columns: 320px 1fr 320px 320px;
+        gap: 32px;
     }
-}
 
-/* ==================== AJUSTES PARA PAINÉIS DE ESTATÍSTICAS ==================== */
-
-/* Container principal para os painéis de role */
-.role-panels-container {
-    display: flex;
-    gap: 16px;
-    margin-top: 16px;
-    width: 100%;
-}
-
-/* Ajustes para os painéis de role e recordes */
-#roleWinrateInfo,
-#rolePicksInfo,
-#playerRecordsInfo {
-    min-height: 40px;
-    flex: 1;
-    margin-bottom: 16px;
-}
-
-/* Layout específico para desktop quando é um player */
-@media (min-width: 768px) {
-    /* Container para equipas (allyTeam/enemyTeam) */
-    .team-stats-container .role-panels-container {
-        flex-direction: row;
-    }
-    
-    /* Container para players individuais */
-    .player-stats-container .role-panels-container {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .player-stats-container #roleWinrateInfo,
-    .player-stats-container #rolePicksInfo {
-        width: 48%;
-        flex: none;
-    }
-    
-    .player-stats-container #playerRecordsInfo {
-        width: 100%;
-        flex: none;
-    }
-}
-
-/* Ajustes para mobile */
-@media (max-width: 767px) {
-    #roleWinrateInfo,
-    #rolePicksInfo,
-    #playerRecordsInfo {
-        width: 100% !important;
-        margin-bottom: 16px;
-    }
-    
     .role-panels-container {
-        flex-direction: column;
+        gap: 32px;
     }
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+/* ==================== ESTILOS PARA ITENS INTERNOS DOS QUADROS ==================== */
 
-/* Hide elements on specific screen sizes */
-@media (max-width: 767px) {
-    .desktop-only {
-        display: none !important;
-    }
+/* Itens de role padronizados */
+.role-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
-@media (min-width: 768px) {
-    .mobile-only {
-        display: none !important;
-    }
+.role-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(2px);
 }
 
-/* Responsive text sizes */
-.text-responsive-sm {
-    font-size: 0.875rem;
+.role-item:last-child {
+    margin-bottom: 0;
 }
 
-.text-responsive-base {
-    font-size: 1rem;
+/* Performance indicators */
+.performance-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
 }
 
-.text-responsive-lg {
-    font-size: 1.125rem;
+.performance-high {
+    background-color: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
 }
 
-@media (min-width: 768px) {
-    .text-responsive-sm {
-        font-size: 1rem;
-    }
-    
-    .text-responsive-base {
-        font-size: 1.125rem;
-    }
-    
-    .text-responsive-lg {
-        font-size: 1.25rem;
-    }
+.performance-medium {
+    background-color: #eab308;
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
 }
 
-@media (min-width: 1024px) {
-    .text-responsive-sm {
-        font-size: 1.125rem;
-    }
-    
-    .text-responsive-base {
-        font-size: 1.25rem;
-    }
-    
-    .text-responsive-lg {
-        font-size: 1.5rem;
-    }
+.performance-low {
+    background-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
-/* ==================== DROPDOWN MENU RESPONSIVE ==================== */
+/* ==================== ESTILOS PARA LEGENDAS E DROPDOWNS ==================== */
 
-@media (max-width: 767px) {
-    .absolute.top-\[110px\].left-\[20px\] {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 250px;
-        z-index: 9999;
-    }
-}
-
-/* ==================== SCROLLBAR STYLING ==================== */
-
-/* Custom scrollbar for webkit browsers */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-/* ==================== LOADING STATES ==================== */
-
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.skeleton {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-/* ==================== ACCESSIBILITY ==================== */
-
-/* Focus states for keyboard navigation */
-button:focus,
-input:focus,
-[tabindex]:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .legend-box {
-        background: rgba(255, 255, 255, 1);
-        border: 3px solid #000;
-    }
-    
-    #tables-container tr {
-        border: 2px solid #fff;
-    }
-}
-
-/* Reduced motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* ==================== UTILITY CLASSES ADICIONAIS ==================== */
-
-/* Para identificar visualmente o tipo de container */
-.team-stats-container #roleWinrateInfo,
-.team-stats-container #rolePicksInfo {
-    background: rgba(59, 130, 246, 0.1) !important; /* Azul suave para equipas */
-}
-
-.player-stats-container #roleWinrateInfo,
-.player-stats-container #rolePicksInfo {
-    background: rgba(34, 197, 94, 0.1) !important; /* Verde suave para players */
-}
-
-#playerRecordsInfo {
-    background: rgba(245, 158, 11, 0.1) !important; /* Laranja suave para recordes */
-}
-
-/* ==================== ESTILOS PARA OS QUADROS DO HTML ==================== */
-
-/* Estilos para a caixa de legenda */
 .legend-container {
     position: relative;
 }
@@ -656,52 +514,107 @@ input:focus,
     text-align: right;
 }
 
-/* Estilos para os checkboxes de filtro */
+/* ==================== DROPDOWN MENU RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    .absolute.top-\[110px\].left-\[20px\] {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        z-index: 9999;
+    }
+}
+
+/* ==================== SCROLLBAR E ACESSIBILIDADE ==================== */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Focus states for keyboard navigation */
+button:focus,
+input:focus,
+[tabindex]:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .legend-box {
+        background: rgba(255, 255, 255, 1);
+        border: 3px solid #000;
+    }
+    
+    #tables-container tr {
+        border: 2px solid #fff;
+    }
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+/* Hide elements on specific screen sizes */
+@media (max-width: 767px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Estilos para checkboxes */
 input[type="checkbox"] {
     display: none;
 }
 
-/* NOVO: Estilos melhorados para itens de role */
-.role-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    margin-bottom: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
-.role-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+.skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
 }
 
-.role-item:last-child {
-    margin-bottom: 0;
-}
-
-/* Performance indicators */
-.performance-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-left: 8px;
-}
-
-.performance-high {
-    background-color: #22c55e;
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
-}
-
-.performance-medium {
-    background-color: #eab308;
-    box-shadow: 0 0 6px rgba(234, 179, 8, 0.6);
-}
-
-.performance-low {
-    background-color: #ef4444;
-    box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+@keyframes loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
