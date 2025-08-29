@@ -535,7 +535,7 @@ fetch('./results.json')
         playerRecordsContent.innerHTML = '';
         
         const recordsContainer = document.createElement("div");
-        recordsContainer.className = "grid grid-cols-2 gap-2";
+        recordsContainer.className = "grid grid-cols-2 gap-2 auto-rows-fr";
         
         // Traduzir nomes das métricas
         const metricTranslations = {
