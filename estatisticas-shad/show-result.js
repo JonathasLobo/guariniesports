@@ -412,7 +412,7 @@ fetch('./results.json')
     };
 
     // Adicione esta função após displayRoleWinrates()
-        const displayRolePicks = () => {
+    const displayRolePicks = () => {
         // Calcular total de picks por role
         const rolePicks = {};
         
@@ -428,13 +428,13 @@ fetch('./results.json')
             rolePicks[role] += picks;
         });
         
-        // Criar o container do painel de picks por role - ESTILO PADRONIZADO
+        // Criar o container do painel de picks por role
         const rolePicksInfo = document.createElement("div");
         rolePicksInfo.id = "rolePicksInfo";
         rolePicksInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
         
         const picksTitle = document.createElement("h3");
-        picksTitle.className = "text-lg font-semibold text-white mb-2 text-center";
+        picksTitle.className = "text-lg font-semibold text-white mb-1 text-center";
         picksTitle.textContent = "Total de Picks por Role";
         rolePicksInfo.appendChild(picksTitle);
         
@@ -445,11 +445,9 @@ fetch('./results.json')
         const sortedRolePicks = Object.entries(rolePicks)
             .sort(([,a], [,b]) => b - a);
         
-        const maxPicks = Math.max(...Object.values(rolePicks));
-        
         sortedRolePicks.forEach(([role, totalPicks]) => {
             const pickItem = document.createElement("div");
-            pickItem.className = "role-item"; // CLASSE PADRONIZADA
+            pickItem.className = "flex justify-between items-center p-2";
             
             const roleLabel = document.createElement("span");
             roleLabel.className = "text-white font-medium text-sm";
@@ -469,29 +467,20 @@ fetch('./results.json')
             picksSpan.className = "text-white font-bold text-sm";
             picksSpan.textContent = totalPicks.toString();
             
-            // Adicionar indicador de performance baseado na quantidade
-            const performanceIndicator = document.createElement("span");
-            performanceIndicator.className = "performance-indicator";
+            // Adicionar cor baseada na quantidade de picks (opcional)
+            const maxPicks = Math.max(...Object.values(rolePicks));
             const pickPercentage = (totalPicks / maxPicks) * 100;
             
             if (pickPercentage >= 80) {
-                picksSpan.style.color = '#22c55e';
-                performanceIndicator.classList.add('performance-high');
+                picksSpan.style.color = '#22c55e'; // Verde para mais picks
             } else if (pickPercentage >= 50) {
-                picksSpan.style.color = '#eab308';
-                performanceIndicator.classList.add('performance-medium');
+                picksSpan.style.color = '#eab308'; // Amarelo para picks médios
             } else {
-                picksSpan.style.color = '#ef4444';
-                performanceIndicator.classList.add('performance-low');
+                picksSpan.style.color = '#ef4444'; // Vermelho para menos picks
             }
             
-            const valueContainer = document.createElement("div");
-            valueContainer.className = "flex items-center";
-            valueContainer.appendChild(picksSpan);
-            valueContainer.appendChild(performanceIndicator);
-            
             pickItem.appendChild(roleLabel);
-            pickItem.appendChild(valueContainer);
+            pickItem.appendChild(picksSpan);
             picksContainer.appendChild(pickItem);
         });
         
@@ -513,7 +502,7 @@ fetch('./results.json')
     const parentContainer = statisticsInfo.parentNode;
     parentContainer.insertBefore(rolePanelsContainer, statisticsInfo.nextSibling);
 
-const displayPlayerRecords = () => {
+    const displayPlayerRecords = () => {
     // Calcular recordes do jogador
     const playerRecords = {
         kills: { max: 0, pokemon: '', match: null },
@@ -565,7 +554,7 @@ const displayPlayerRecords = () => {
         playerRecords.damageTaken.minPokemon = '';
     }
     
-    // Criar o container do painel de recordes - ESTILO PADRONIZADO
+    // Criar o container do painel de recordes
     const playerRecordsInfo = document.createElement("div");
     playerRecordsInfo.id = "playerRecordsInfo";
     playerRecordsInfo.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
@@ -607,7 +596,7 @@ const displayPlayerRecords = () => {
         if (data.max > 0) {
             // Recorde máximo
             const recordItem = document.createElement("div");
-            recordItem.className = "flex items-center justify-between p-3 bg-black bg-opacity-15 rounded border border-white border-opacity-10"; // CLASSE PADRONIZADA
+            recordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
             
             const leftContent = document.createElement("div");
             leftContent.className = "flex items-center gap-2";
@@ -622,7 +611,7 @@ const displayPlayerRecords = () => {
                 pokemonImg.alt = data.pokemon;
                 pokemonImg.style.width = '35px';
                 pokemonImg.style.height = '35px';
-                pokemonImg.className = "rounded border border-white border-opacity-20"; // CLASSE PADRONIZADA
+                pokemonImg.className = "rounded";
                 leftContent.appendChild(pokemonImg);
             }
             
@@ -639,7 +628,7 @@ const displayPlayerRecords = () => {
             // Para dano recebido, adicionar também o recorde mínimo
             if (metric === 'damageTaken' && data.min > 0 && data.min !== data.max) {
                 const minRecordItem = document.createElement("div");
-                minRecordItem.className = "flex items-center justify-between p-3 bg-black bg-opacity-15 rounded border border-white border-opacity-10"; // CLASSE PADRONIZADA
+                minRecordItem.className = "flex items-center justify-between p-2 bg-black bg-opacity-20 rounded";
                 
                 const minLeftContent = document.createElement("div");
                 minLeftContent.className = "flex items-center gap-2";
@@ -650,7 +639,7 @@ const displayPlayerRecords = () => {
                     minPokemonImg.alt = data.minPokemon;
                     minPokemonImg.style.width = '35px';
                     minPokemonImg.style.height = '35px';
-                    minPokemonImg.className = "rounded border border-white border-opacity-20"; // CLASSE PADRONIZADA
+                    minPokemonImg.className = "rounded";
                     minLeftContent.appendChild(minPokemonImg);
                 }
                 
@@ -672,7 +661,8 @@ const displayPlayerRecords = () => {
     
     playerRecordsInfo.appendChild(recordsContainer);
     
-    return playerRecordsInfo;
+    // Adicionar o painel de recordes ao container de painéis de role
+    rolePanelsContainer.appendChild(playerRecordsInfo);
 };
 
 if (infoType !== "allyTeam" && infoType !== "enemyTeam") {
