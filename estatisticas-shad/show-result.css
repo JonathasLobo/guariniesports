@@ -246,18 +246,19 @@
 
 /* Large desktop styles */
 @media (min-width: 1024px) {
-    /* NOVO: Container principal melhorado */
+    /* NOVO: Container principal melhorado - agora em grid 2x2 */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        flex-direction: row;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
         gap: 24px;
         max-width: 1600px;
         margin: 0 auto;
         padding: 50px 20px;
     }
     
-    /* NOVO: Estilização padronizada para os quadros principais */
-    #filterInfo, #statisticsInfo {
+    /* NOVO: Estilização padronizada para todos os quadros */
+    #filterInfo, #statisticsInfo, #roleWinrateInfo, #rolePicksInfo {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -265,26 +266,38 @@
         border-radius: 16px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
         transition: all 0.3s ease;
+        padding: 20px;
+        min-height: 280px;
     }
     
-    #filterInfo:hover, #statisticsInfo:hover {
+    #filterInfo:hover, #statisticsInfo:hover, #roleWinrateInfo:hover, #rolePicksInfo:hover {
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
         transform: translateY(-2px);
     }
     
-    /* NOVO: Filtros com tamanho otimizado */
+    /* NOVO: Posicionamento dos quadros no grid */
     #filterInfo {
-        width: 300px; /* Largura fixa otimizada */
-        min-width: 300px;
-        padding: 20px;
-        background: rgba(59, 130, 246, 0.1); /* Azul suave para diferenciação */
+        grid-column: 1;
+        grid-row: 1;
+        background: rgba(59, 130, 246, 0.1);
     }
     
-    /* NOVO: Estatísticas ocupam o restante do espaço */
     #statisticsInfo {
-        flex: 1;
-        padding: 20px;
-        background: rgba(34, 197, 94, 0.1); /* Verde suave para diferenciação */
+        grid-column: 2;
+        grid-row: 1;
+        background: rgba(34, 197, 94, 0.1);
+    }
+    
+    #roleWinrateInfo {
+        grid-column: 1;
+        grid-row: 2;
+        background: rgba(168, 85, 247, 0.1);
+    }
+    
+    #rolePicksInfo {
+        grid-column: 2;
+        grid-row: 2;
+        background: rgba(245, 158, 11, 0.1);
     }
     
     /* NOVO: Container de filtros com grid melhorado */
@@ -337,35 +350,23 @@
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     
-    /* Role panels container melhorado */
+    /* NOVO: Role panels container removido - agora são quadros independentes */
     .role-panels-container {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-        width: 100%;
+        display: contents; /* Permite que os filhos sejam tratados como se estivessem no grid pai */
     }
 
-    #roleWinrateInfo,
-    #rolePicksInfo {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        padding: 16px;
-        min-height: 200px;
-    }
-
+    /* NOVO: Painel de recordes do player - se existir, fica abaixo ocupando toda a largura */
     #playerRecordsInfo {
-        width: 100%;
-        margin-top: 20px;
+        grid-column: 1 / -1; /* Ocupa toda a largura */
+        grid-row: 3;
         background: rgba(245, 158, 11, 0.08);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         border: 1px solid rgba(245, 158, 11, 0.2);
         border-radius: 12px;
         padding: 16px;
+        margin-top: 24px;
+        min-height: 200px;
     }
 }
 
