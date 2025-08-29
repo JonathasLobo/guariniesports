@@ -1,3 +1,61 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100vh;
+    margin: 0;
+    background-image: url(./images/backgrounds/index-background.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Estilos para a caixa de legenda */
+.legend-container {
+    position: relative;
+}
+
+.legend-box {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 280px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    transform: translateY(8px);
+}
+
+.legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.legend-item:last-child {
+    border-bottom: none;
+}
+
+.legend-abbreviation {
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 14px;
+    min-width: 30px;
+}
+
+.legend-description {
+    color: #374151;
+    font-size: 14px;
+    text-align: right;
+}
+
 /* ==================== RESPONSIVIDADE GERAL ==================== */
 
 /* Mobile First - Base styles for mobile */
@@ -65,11 +123,13 @@
     #filter-container {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
+        display: grid !important;
     }
 
     #filter-container label {
         font-size: 12px;
         padding: 6px 8px;
+        display: block !important;
     }
 
     /* Statistics content */
@@ -119,8 +179,9 @@
         background: rgba(255, 255, 255, 0.1);
     }
 
-    #tables-container th {
-        display: none; /* Hide headers on mobile */
+    /* CORREÇÃO: Apenas cabeçalhos da tabela */
+    #tables-container thead th {
+        display: none;
     }
 
     #tables-container td {
@@ -215,7 +276,7 @@
     }
 
     #playerRecordsInfo {
-        grid-column: 1 / -1; /* Ocupa toda a largura */
+        grid-column: 1 / -1;
         grid-row: 3;
     }
 
@@ -611,10 +672,10 @@ input[type="checkbox"] {
 }
 
 @keyframes loading {
-    0% {
+    from {
         background-position: -200% 0;
     }
-    100% {
+    to {
         background-position: 200% 0;
     }
 }
