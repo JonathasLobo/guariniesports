@@ -66,7 +66,7 @@
             }
         </style>
     </head>
-<body> 
+    <body> 
         <div class="flex flex-col items-center w-full h-auto top-0 left-0 right-0 z-10">
             <div class="flex justify-between w-full pt-4 pl-6 pr-12">
                 <div id="mainLogo" style="cursor: pointer;">
@@ -119,12 +119,12 @@
 
         <div class="flex items-start justify-start w-full gap-x-4 pt-[50px] px-4">
             <!-- Filtro (à esquerda) -->
-            <div id="filterInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3">
-                <div class="flex flex-col items-start text-black gap-y-2 w-full">
+            <div id="filterInfo">
+                <div class="flex flex-col items-start gap-y-2 w-full">
                     <span id="filter-text" class="text-lg font-semibold text-white text-center w-full"></span>
                     
                     <!-- Container dos filtros com duas colunas -->
-                    <div id="filter-container" class="grid grid-cols-2 gap-y-6 gap-x-4 text-base w-full">
+                    <div id="filter-container" class="grid gap-y-6 gap-x-4 text-base w-full">
                         <input type="checkbox" id="todos" class="class-filter" value="Todos" checked>
                         <label for="todos">Todos</label>
 
@@ -147,7 +147,7 @@
             </div>
 
             <!-- Estatísticas -->
-            <div id="statisticsInfo" class="shadow-md rounded-lg min-h-[40px] flex flex-col justify-start border border-gray-300 bg-transparent p-3 gap-y-2">
+            <div id="statisticsInfo">
                 <!-- Conteúdo gerado via JS -->
             </div>
         </div>
@@ -188,6 +188,5 @@
         
         <script src="./util.js"></script>
         <script src="./show-result.js"></script>
-        <!--<script src="./playerRanking-result.js"></script>-->
     </body>
 </html>
