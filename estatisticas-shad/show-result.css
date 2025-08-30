@@ -347,6 +347,10 @@ body {
 
 /* Desktop styles - GRID HORIZONTAL */
 @media (min-width: 1024px) {
+    #filter-text,
+    .info-panel-title {
+        font-size: 18px; /* exemplo: um pouco maior no desktop */
+    }
     /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
         display: flex;
