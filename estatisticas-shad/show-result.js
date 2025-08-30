@@ -214,7 +214,7 @@ fetch('./results.json')
 
         // Container principal para as estatísticas
         const statsContainer = document.createElement("div");
-        statsContainer.className = "flex flex-col gap-3";
+        statsContainer.className = "flex flex-col gap-1";
 
         // Função auxiliar para criar itens de estatística
         const createStatItem = (label, value, highlight = false) => {
@@ -234,6 +234,7 @@ fetch('./results.json')
             return statDiv;
         };
 
+        const fmtIntBR = v => Math.trunc(Number(v)).toLocaleString('pt-BR');
         // Adicionar estatísticas baseadas no tipo
         if (isPlayerProfile) {
             // Para jogadores individuais
@@ -245,10 +246,10 @@ fetch('./results.json')
             const playerAverages = calculatePlayerAverages(infoType);
             statsContainer.appendChild(createStatItem("Média Kills", playerAverages.kills.toFixed(1)));
             statsContainer.appendChild(createStatItem("Média Assists", playerAverages.assists.toFixed(1)));
-            statsContainer.appendChild(createStatItem("Média de Dano Causado", playerAverages.damageDone.toFixed(1)));
-            statsContainer.appendChild(createStatItem("Média de Dano Recebido", playerAverages.damageTaken.toFixed(1)));
-            statsContainer.appendChild(createStatItem("Média de Cura", playerAverages.damageHealed.toFixed(1)));
-            statsContainer.appendChild(createStatItem("Média de Interrupções", playerAverages.interrupts.toFixed(1)));
+            statsContainer.appendChild(createStatItem("Média Dano Causado", fmtIntBR(playerAverages.damageDone)));
+            statsContainer.appendChild(createStatItem("Média Dano Recebido", fmtIntBR(playerAverages.damageTaken)));
+            statsContainer.appendChild(createStatItem("Média Cura", fmtIntBR(playerAverages.damageHealed)));
+            statsContainer.appendChild(createStatItem("Média Interrupções", playerAverages.interrupts.toFixed(1)));
             statsContainer.appendChild(createStatItem("Média Pontuação", playerAverages.playerScore.toFixed(0)));
         } else {
             // Para equipas
