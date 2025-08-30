@@ -61,7 +61,7 @@ const equipesData = {
     ]
   },
   yugioh: {
-    titulo: "Equipe YugiOh",
+    titulo: "Equipe Yu-Gi-Oh!",
     membros: [
       {
         nome: "Yago (Yagamy)",
