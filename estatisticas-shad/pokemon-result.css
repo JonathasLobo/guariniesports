@@ -1,0 +1,518 @@
+/* Base styles - Desktop first */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Barra de rolagem customizada para todas as telas */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile responsivo - Media queries */
+@media (max-width: 768px) {
+  /* Ajustes gerais para mobile */
+  body {
+    font-size: 14px;
+    overflow-x: hidden; /* Evita scroll horizontal */
+  }
+
+  /* Configuração de scroll para mobile */
+  html, body {
+    height: 100%;
+    max-width: 100vw;
+  }
+
+  /* Container principal com scroll */
+  .h-screen {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 1rem !important;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling no iOS */
+  }
+
+  /* Header - Seção do topo */
+  #mainInfo {
+    height: auto !important;
+    min-height: 200px;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    position: relative !important; /* Remove qualquer fixed positioning */
+  }
+
+  /* Container principal do topo */
+  .bg-black {
+    position: relative !important; /* Remove fixed positioning */
+    width: 100% !important;
+    z-index: auto !important;
+  }
+
+  #mainInfo img {
+    width: 100px !important;
+    height: 100px !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  #mainInfoDrop {
+    position: relative !important;
+    height: auto !important;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  /* Container de informações do Pokémon no header */
+  #mainInfoDrop > div {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    padding-left: 0 !important;
+    align-items: center;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Elementos do header em mobile */
+  #mainInfoDrop img {
+    width: 24px !important;
+    height: 24px !important;
+    margin-left: 0 !important;
+  }
+
+  #mainInfoDrop span,
+  #mainInfo span {
+    display: block !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  #mainInfoDrop .relative {
+    width: 100% !important;
+    max-width: 280px;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: -20px !important; /* Ajusta para a esquerda */
+  }
+
+  #mainInfoDrop button {
+    width: 100% !important;
+    max-width: 200px !important;
+  }
+
+  /* Botão OK abaixo do dropdown em mobile */
+  #mainInfoDrop .relative .bg-blue-500 {
+    margin-top: 0.5rem !important;
+    align-self: center !important;
+  }
+
+  /* Seções principais */
+  .h-screen {
+    height: auto !important;
+    padding: 1rem !important;
+  }
+
+  /* Grid de seções - uma coluna em mobile */
+  .h-screen > div:not(.flex.w-full.h-full) {
+    width: 100% !important;
+    margin-bottom: 2rem;
+  }
+
+  .gap-x-56 {
+    gap: 0 !important;
+  }
+
+  .gap-y-8 {
+    gap: 2rem !important;
+  }
+
+  /* Títulos das seções */
+  .text-3xl {
+    font-size: 1.5rem !important;
+    text-align: center !important;
+    margin-bottom: 0.5rem;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  /* Containers das seções */
+  .h-\[200px\], .h-\[300px\] {
+    height: auto !important;
+    min-height: 150px;
+    padding: 1rem;
+  }
+
+  /* Seção de Builds (infoFirst) */
+  #infoFirst > div {
+    justify-content: center !important;
+    gap: 1rem !important;
+    flex-wrap: wrap;
+  }
+
+  #infoFirst .circle {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* Seção de Skills (infoSecond) */
+  #infoSecond .flex {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: center;
+  }
+
+  #infoSecond .gap-x-6 {
+    gap: 1rem !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+  }
+
+  #infoSecond .w-\[100px\] {
+    width: 120px !important;
+    justify-self: center !important;
+  }
+
+  #infoSecond img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Seção de Matchups (infoThird) */
+  #infoThird #countersWrapper {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  #infoThird #labelWrapper {
+    display: none !important; /* Remove completamente os spans de melhor/pior contra */
+  }
+
+  #infoThird #labelWrapper img {
+    display: none !important;
+  }
+
+  #infoThird #labelWrapper > div {
+    display: none !important;
+  }
+
+  /* Novo layout corrigido */
+  #infoThird #countersWrapper::before {
+    content: "Pior contra";
+    display: block;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+    order: 1;
+  }
+
+  #infoThird #infoBest {
+    order: 2 !important; /* verdes */
+    margin-bottom: 1rem !important;
+  }
+
+  #infoThird #countersWrapper::after {
+    content: "Melhor contra";
+    display: block;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    order: 3;
+    margin-top: 0.5rem;
+  }
+
+  #infoThird #countersWrapper > div:first-child {
+    order: 4 !important; /* vermelhos */
+    margin-bottom: 1rem !important;
+  }
+
+  #infoThird img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Seção de Battle Items (infoFourth) */
+  #infoFourth > div {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Seção de Médias Gerais (infoFifty) */
+  #infoFifty > div:first-child {
+    justify-content: center !important;
+    gap: 1rem !important;
+  }
+
+  #infoFifty .w-\[100px\] {
+    width: 80px !important;
+  }
+
+  #infoFifty img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  #infoFifty .gap-x-4 {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Gráfico de desempenho (infoSixty) */
+  #infoSixty canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    margin-left: 0 !important;
+  }
+
+  #infoSixty > div {
+    justify-content: center !important;
+    padding: 1rem !important;
+  }
+
+  /* Top 5 jogadores (infoSeventh) */
+  #infoSeventh .gap-x-6 {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: center;
+  }
+
+  #infoSeventh .w-\[100px\] {
+    width: 100% !important;
+    max-width: 200px;
+  }
+
+  /* Lanes (infoEighth) */
+  #infoEighth .gap-x-8 {
+    flex-direction: row !important; /* Mantém lado a lado */
+    gap: 1rem !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  #infoEighth .w-\[110px\] {
+    width: 100px !important;
+    flex: 0 0 auto !important; /* Evita que os itens encolham */
+  }
+
+  /* Sinergias (infoNinety) */
+  #infoNinety .gap-x-8 {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: center;
+  }
+
+  #infoNinety .w-\[80px\] {
+    width: 100px !important;
+  }
+
+  /* Roles (infoTenth) */
+  #infoTenth .gap-x-8 {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: center;
+  }
+
+  #infoTenth .w-\[100px\] {
+    width: 120px !important;
+  }
+
+  /* Modal de seleção de imagens */
+  #image-selection-modal .w-\[800px\] {
+    width: 90vw !important;
+    max-width: 400px;
+    margin: 1rem;
+  }
+
+  #image-selection-modal .grid-cols-5 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  #image-selection-modal img {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  /* Ajustes de texto */
+  .text-4xl {
+    font-size: 1.8rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.2rem !important;
+  }
+
+  .text-xl {
+    font-size: 1.1rem !important;
+  }
+
+  .text-lg {
+    font-size: 1rem !important;
+  }
+
+  .whitespace-nowrap {
+    white-space: normal !important;
+    text-align: center;
+  }
+
+  /* Botões */
+  button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Scrollbar customizada para mobile */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Firefox scrollbar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Ajustes específicos para telas muito pequenas (menos de 480px) */
+@media (max-width: 480px) {
+  body {
+    height: auto !important;
+    position: relative !important;
+  }
+  
+  .h-screen {
+    padding: 0.5rem !important;
+    height: auto !important;
+    position: relative !important;
+  }
+
+  .text-3xl {
+    font-size: 1.3rem !important;
+  }
+
+  #infoFirst .circle {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  #infoSecond img,
+  #infoThird img,
+  #infoFourth img {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  #infoFifty img {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  .text-sm {
+    font-size: 0.8rem !important;
+  }
+
+  /* Reduzir gaps gerais */
+  .gap-x-8 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-y-4 {
+    gap: 0.5rem !important;
+  }
+
+  /* Ajuste do modal */
+  #image-selection-modal .w-\[800px\] {
+    width: 95vw !important;
+  }
+
+  #image-selection-modal .grid-cols-5 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Ajustes para landscape em mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  #mainInfo {
+    flex-direction: row !important;
+    height: 150px !important;
+  }
+
+  .h-screen {
+    padding: 0.5rem !important;
+  }
+
+  /* Algumas seções podem voltar a ser horizontais em landscape */
+  #infoSecond .gap-x-6,
+  #infoFourth > div {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Utilitários para mobile */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+
+  .mobile-center {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .mobile-column {
+    flex-direction: column !important;
+  }
+
+  .mobile-wrap {
+    flex-wrap: wrap !important;
+  }
+}
