@@ -99,47 +99,61 @@ body {
         min-width: 260px;
     }
 
-    /* Main content container */
+    /* Main content container - EMPILHADO VERTICALMENTE NO MOBILE */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
+        display: flex;
         flex-direction: column;
         gap: 16px;
         padding: 20px 12px;
+        max-width: 100%;
     }
 
-    /* Filter section */
-    #filterInfo {
-        width: 100%;
-        order: 2;
+    /* Todos os quadros ocupam 100% da largura no mobile */
+    #filterInfo,
+    #statisticsInfo,
+    #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo,
+    #playerSynergiesInfo {
+        width: 100% !important;
+        min-height: 200px;
+        margin-bottom: 16px;
     }
 
+    /* Filter container no mobile */
     #filter-container {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
+        display: grid !important;
     }
 
     #filter-container label {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
         font-size: 12px;
-        padding: 6px 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        min-height: 36px;
     }
 
-    /* Statistics section */
-    #statisticsInfo {
-        width: 100%;
-        order: 1;
+    #filter-container label:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
     }
 
-    /* CORREÇÃO: Garantir que títulos dos painéis sejam sempre visíveis */
-    .info-panel-title,
-    h3.text-lg.font-semibold,
-    h3 {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        font-size: 1rem !important;
-        text-align: center !important;
-        margin-bottom: 8px !important;
-        color: white !important;
-        font-weight: 600 !important;
+    #filter-container input[type="checkbox"]:checked + label {
+        background: rgba(59, 130, 246, 0.8);
+        border-color: rgba(59, 130, 246, 1);
+        color: white;
+        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
     }
 
     /* Statistics content */
@@ -151,24 +165,12 @@ body {
         width: 100%;
     }
 
-    /* Role panels - Reorganizar para mobile */
-    #roleWinrateInfo,
-    #rolePicksInfo,
-    #playerRecordsInfo {
-        width: 100% !important;
-        margin-bottom: 16px;
-        display: block !important;
-    }
-
-    /* Garantir que os títulos dos painéis de role sejam visíveis */
-    #roleWinrateInfo h3,
-    #rolePicksInfo h3,
-    #playerRecordsInfo h3 {
-        display: block !important;
-        font-size: 1rem !important;
-        text-align: center;
-        color: white;
-        margin-bottom: 8px;
+    /* Role panels container */
+    .role-panels-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
     }
 
     .grid.grid-cols-2.gap-2 {
@@ -201,8 +203,9 @@ body {
         background: rgba(255, 255, 255, 0.1);
     }
 
-    #tables-container th {
-        display: none; /* Hide headers on mobile */
+    /* CORREÇÃO: Apenas cabeçalhos da tabela */
+    #tables-container thead th {
+        display: none;
     }
 
     #tables-container td {
@@ -264,64 +267,68 @@ body {
         font-size: 2rem;
     }
 
-    /* Main content container */
+    /* Main content container - GRID 2x2 PARA TABLET */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
         gap: 20px;
+        padding: 50px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    /* Filter section */
+    /* Posicionamento dos quadros no tablet */
     #filterInfo {
-        width: 100%;
-        order: 2;
+        grid-column: 1;
+        grid-row: 1;
     }
 
-    #filter-container {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 10px;
-    }
-
-    /* Statistics section */
     #statisticsInfo {
-        width: 100%;
-        order: 1;
+        grid-column: 2;
+        grid-row: 1;
     }
 
-    /* CORREÇÃO: Garantir títulos visíveis em tablet */
-    .info-panel-title,
-    h3.text-lg.font-semibold,
-    h3 {
-        display: block !important;
-        visibility: visible !important;
-        font-size: 1.125rem !important;
-        text-align: center !important;
-        margin-bottom: 12px !important;
-        color: white !important;
+    #roleWinrateInfo {
+        grid-column: 1;
+        grid-row: 2;
     }
 
-    /* Role panels */
-    #roleWinrateInfo,
     #rolePicksInfo {
-        width: 48%;
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 2%;
+        grid-column: 2;
+        grid-row: 2;
     }
 
     #playerRecordsInfo {
-        width: 100%;
-        margin-top: 16px;
+        grid-column: 1 / -1;
+        grid-row: 3;
     }
 
-    /* Garantir que os títulos dos painéis sejam visíveis em tablet */
-    #roleWinrateInfo h3,
-    #rolePicksInfo h3,
-    #playerRecordsInfo h3 {
-        display: block !important;
-        font-size: 1.125rem !important;
-        text-align: center;
-        color: white;
-        margin-bottom: 12px;
+    /* Role panels container para tablet */
+    .role-panels-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+    }
+
+    /* Filter container para tablet */
+    #filter-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    /* Todos os quadros têm altura e estilo padronizados */
+    #filterInfo,
+    #statisticsInfo,
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        min-height: 280px;
+    }
+
+    #playerRecordsInfo,
+    #playerSynergiesInfo {
+        min-height: 200px;
     }
 
     /* Table adjustments */
@@ -348,32 +355,157 @@ body {
     }
 }
 
-/* Large desktop styles */
+/* Desktop styles - GRID HORIZONTAL */
 @media (min-width: 1024px) {
-    /* Default styles already handle this, but we can add specific large screen optimizations */
-    
-    /* Role panels container */
-    .role-panels-container {
+    #filter-text,
+    .info-panel-title {
+        font-size: 14px; /* Tamanho menor para mobile */
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+    /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
+    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
         display: flex;
-        gap: 16px;
-        margin-top: 16px;
+        flex-direction: column;
+        gap: 24px;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 50px 20px;
     }
 
+    /* Container dos quadros principais - LINHA HORIZONTAL */
+    .info-panels-row {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px 280px;
+        gap: 24px;
+        width: 100%;
+    }
+
+    /* Container dos painéis de role - GRID 2x1 PARA DESKTOP */
+    .role-panels-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        width: 100%;
+        margin-top: 24px;
+    }
+
+    /* Estilização padronizada para TODOS os quadros */
+    #filterInfo,
+    #statisticsInfo,
     #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo,
+    #playerSynergiesInfo {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+        min-height: 200px !important;
+        padding: 16px !important;
+        width: 100%;
+    }
+
+    /* Efeito hover para todos os quadros */
+    #filterInfo:hover,
+    #statisticsInfo:hover,
+    #roleWinrateInfo:hover,
+    #rolePicksInfo:hover,
+    #playerRecordsInfo:hover,
+    #playerSynergiesInfo:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        transform: translateY(-2px);
+    }
+
+    /* Cores diferenciadas por tipo de quadro */
+    #filterInfo {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    #statisticsInfo {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    #roleWinrateInfo {
+        background: rgba(168, 85, 247, 0.1);
+        border-color: rgba(168, 85, 247, 0.3);
+    }
+
     #rolePicksInfo {
-        flex: 1;
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.3);
     }
 
     #playerRecordsInfo {
-        flex: 2;
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        flex: 1;
+        min-height: 280px;
     }
 
-    /* Garantir títulos visíveis em desktop */
-    .info-panel-title,
-    h3.text-lg.font-semibold,
-    h3 {
-        display: block !important;
-        visibility: visible !important;
+    /* Novo painel de sinergias */
+    #playerSynergiesInfo {
+        background: rgba(255, 158, 67, 0.1);
+        border-color: rgba(255, 158, 67, 0.3);
+        flex: 1;
+        min-height: 280px;
+    }
+
+    /* Container de filtros com grid otimizado */
+    #filter-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    /* Labels dos filtros com design consistente */
+    #filter-container label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-height: 48px;
+    }
+
+    #filter-container label:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    #filter-container input[type="checkbox"]:checked + label {
+        background: rgba(59, 130, 246, 0.8);
+        border-color: rgba(59, 130, 246, 1);
+        color: white;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Títulos padronizados */
+    #filter-text,
+    .info-panel-title {
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 12px;
+        color: white !important; /* !important para garantir que não seja sobrescrito */
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: block !important; /* Garantir que sempre seja exibido */
+        opacity: 1 !important; /* Garantir visibilidade */
     }
 }
 
@@ -384,70 +516,164 @@ body {
     }
     
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        max-width: 1600px;
-        margin: 0 auto;
+        max-width: 1800px;
+        padding: 50px 40px;
+    }
+    
+    /* Ajustar grid para telas muito grandes */
+    .info-panels-row {
+        grid-template-columns: 320px 1fr 320px 320px;
+        gap: 32px;
+    }
+
+    .role-panels-container {
+        gap: 32px;
     }
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+/* ==================== ESTILOS PARA ITENS INTERNOS DOS QUADROS ==================== */
 
-/* Hide elements on specific screen sizes */
+/* Itens de role padronizados */
+.role-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.role-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(2px);
+}
+
+.role-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Performance indicators */
+.performance-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.performance-high {
+    background-color: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+.performance-medium {
+    background-color: #eab308;
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+}
+
+.performance-low {
+    background-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+#filterInfo > div:first-child,
+#statisticsInfo > div:first-child,
+#roleWinrateInfo > div:first-child,
+#rolePicksInfo > div:first-child,
+#playerRecordsInfo > div:first-child,
+#playerSynergiesInfo > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+/* Corrigir possíveis conflitos com Tailwind CSS */
+.info-panel-title {
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+}
+
+#filter-text {
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+}
+
+/* Override específico para elementos que possam estar ocultos */
+#filterInfo h3,
+#statisticsInfo h3,
+#roleWinrateInfo h3,
+#rolePicksInfo h3,
+#playerRecordsInfo h3,
+#playerSynergiesInfo h3 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Garantir que o container de filtros não empurre o título */
 @media (max-width: 767px) {
-    .desktop-only {
-        display: none !important;
-    }
-    
-    /* Garantir que títulos não sejam escondidos acidentalmente */
-    .info-panel-title {
-        display: block !important;
+    #filter-container {
+        margin-top: 8px !important;
     }
 }
 
-@media (min-width: 768px) {
-    .mobile-only {
-        display: none !important;
-    }
-}
-
-/* Responsive text sizes */
-.text-responsive-sm {
-    font-size: 0.875rem;
-}
-
-.text-responsive-base {
-    font-size: 1rem;
-}
-
-.text-responsive-lg {
-    font-size: 1.125rem;
-}
-
-@media (min-width: 768px) {
-    .text-responsive-sm {
-        font-size: 1rem;
-    }
-    
-    .text-responsive-base {
-        font-size: 1.125rem;
-    }
-    
-    .text-responsive-lg {
-        font-size: 1.25rem;
+@media (min-width: 768px) and (max-width: 1023px) {
+    #filter-container {
+        margin-top: 10px !important;
     }
 }
 
 @media (min-width: 1024px) {
-    .text-responsive-sm {
-        font-size: 1.125rem;
+    #filter-container {
+        margin-top: 16px !important;
     }
-    
-    .text-responsive-base {
-        font-size: 1.25rem;
-    }
-    
-    .text-responsive-lg {
-        font-size: 1.5rem;
-    }
+}
+/* ==================== ESTILOS PARA LEGENDAS E DROPDOWNS ==================== */
+
+.legend-container {
+    position: relative;
+}
+
+.legend-box {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 280px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    transform: translateY(8px);
+}
+
+.legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.legend-item:last-child {
+    border-bottom: none;
+}
+
+.legend-abbreviation {
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 14px;
+    min-width: 30px;
+}
+
+.legend-description {
+    color: #374151;
+    font-size: 14px;
+    text-align: right;
 }
 
 /* ==================== DROPDOWN MENU RESPONSIVE ==================== */
@@ -463,7 +689,7 @@ body {
     }
 }
 
-/* ==================== SCROLLBAR STYLING ==================== */
+/* ==================== SCROLLBAR E ACESSIBILIDADE ==================== */
 
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
@@ -484,30 +710,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
 }
-
-/* ==================== LOADING STATES ==================== */
-
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.skeleton {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-/* ==================== ACCESSIBILITY ==================== */
 
 /* Focus states for keyboard navigation */
 button:focus,
@@ -538,50 +740,43 @@ input:focus,
     }
 }
 
-/* ==================== CORREÇÕES ESPECÍFICAS PARA TÍTULOS ==================== */
+/* ==================== UTILITY CLASSES ==================== */
 
-/* Garantir que todos os títulos dos painéis sejam sempre visíveis */
-.info-panel-title,
-[class*="text-lg"][class*="font-semibold"],
-h3[class*="text-lg"],
-h3[class*="font-semibold"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: white !important;
-    text-align: center !important;
-}
-
-/* Correção específica para painéis de estatísticas */
-#roleWinrateInfo > h3,
-#rolePicksInfo > h3,
-#playerRecordsInfo > h3,
-#statisticsInfo h3 {
-    display: block !important;
-    visibility: visible !important;
-    font-weight: 600 !important;
-    color: white !important;
-    margin-bottom: 8px !important;
-}
-
-/* Mobile specific title corrections */
+/* Hide elements on specific screen sizes */
 @media (max-width: 767px) {
-    #roleWinrateInfo > h3,
-    #rolePicksInfo > h3,
-    #playerRecordsInfo > h3 {
-        font-size: 1rem !important;
-        line-height: 1.2 !important;
-        padding: 0 !important;
-        margin: 0 0 8px 0 !important;
+    .desktop-only {
+        display: none !important;
     }
 }
 
-/* Tablet specific title corrections */
-@media (min-width: 768px) and (max-width: 1023px) {
-    #roleWinrateInfo > h3,
-    #rolePicksInfo > h3,
-    #playerRecordsInfo > h3 {
-        font-size: 1.125rem !important;
-        line-height: 1.3 !important;
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Estilos para checkboxes */
+input[type="checkbox"] {
+    display: none;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    from {
+        background-position: -200% 0;
+    }
+    to {
+        background-position: 200% 0;
     }
 }
