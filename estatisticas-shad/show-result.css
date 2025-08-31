@@ -603,7 +603,10 @@ body {
 #statisticsInfo h3,
 #roleWinrateInfo h3,
 #rolePicksInfo h3,
-#playerRecordsInfo h3,
+#playerRecordsInfo h3 {
+    color: white !important;
+    display: block !important;
+}
 #playerSynergiesInfo h3 {
     display: block !important;
     visibility: visible !important;
