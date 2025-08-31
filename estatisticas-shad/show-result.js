@@ -668,6 +668,175 @@ fetch('./results.json')
         playerRecordsContent.appendChild(recordsContainer);
     };
 
+    const displayBestSynergies = () => {
+    if (!isPlayerProfile) return;
+    
+    // Criar o painel de melhores sinergias
+    const synergiesPanel = document.createElement("div");
+    synergiesPanel.id = "playerSynergiesInfo";
+    synergiesPanel.className = "shadow-md rounded-lg flex flex-col justify-start border border-gray-300 bg-transparent p-3";
+    synergiesPanel.style.display = 'flex';
+    
+    // Adicionar título
+    const title = document.createElement("h3");
+    title.className = "info-panel-title";
+    title.textContent = "Melhores Sinergias";
+    synergiesPanel.appendChild(title);
+    
+    // Container do conteúdo
+    const synergiesContent = document.createElement("div");
+    synergiesContent.id = "playerSynergiesContent";
+    synergiesPanel.appendChild(synergiesContent);
+    
+    // Inserir o painel após o painel de recordes
+    const roleContainer = document.querySelector('.role-panels-container');
+    if (roleContainer) {
+        roleContainer.appendChild(synergiesPanel);
+    }
+    
+    // Calcular sinergias do jogador
+    const playerSynergies = {};
+    
+    // Percorrer todos os Pokémon do jogador para coletar sinergias
+    ["allyTeam", "enemyTeam"].forEach(teamType => {
+        if (results[teamType] && results[teamType][infoType]) {
+            Object.entries(results[teamType][infoType]).forEach(([pokemonName, pokemonData]) => {
+                if (pokemonData.alliedPokemons) {
+                    Object.entries(pokemonData.alliedPokemons).forEach(([allyPokemon, allyData]) => {
+                        // Filtrar sinergias com pickRate >= 3 (como no synergies-result.js)
+                        if (allyData.pickRate >= 3) {
+                            const synergyKey = `${pokemonName}-${allyPokemon}`;
+                            
+                            if (!playerSynergies[synergyKey]) {
+                                playerSynergies[synergyKey] = {
+                                    pokemon: pokemonName,
+                                    ally: allyPokemon,
+                                    totalPickRate: 0,
+                                    totalWins: 0,
+                                    winRate: 0
+                                };
+                            }
+                            
+                            playerSynergies[synergyKey].totalPickRate += allyData.pickRate;
+                            playerSynergies[synergyKey].totalWins += (allyData.pickRate * allyData.winRate) / 100;
+                        }
+                    });
+                }
+            });
+        }
+    });
+    
+    // Calcular winrate final para cada sinergia
+    Object.values(playerSynergies).forEach(synergy => {
+        if (synergy.totalPickRate > 0) {
+            synergy.winRate = (synergy.totalWins / synergy.totalPickRate) * 100;
+        }
+    });
+    
+    // Ordenar sinergias por pickRate (como critério principal) e depois por winRate
+    const sortedSynergies = Object.values(playerSynergies)
+        .sort((a, b) => {
+            if (b.totalPickRate !== a.totalPickRate) {
+                return b.totalPickRate - a.totalPickRate;
+            }
+            return b.winRate - a.winRate;
+        })
+        .slice(0, 8); // Pegar apenas as top 8 sinergias
+    
+    // Limpar conteúdo existente
+    synergiesContent.innerHTML = '';
+    
+    if (sortedSynergies.length === 0) {
+        const noDataDiv = document.createElement("div");
+        noDataDiv.className = "text-white text-center text-sm";
+        noDataDiv.textContent = "Dados insuficientes para sinergias";
+        synergiesContent.appendChild(noDataDiv);
+        return;
+    }
+    
+    const synergiesContainer = document.createElement("div");
+    synergiesContainer.className = "grid grid-cols-1 gap-2 auto-rows-fr";
+    
+    // Função para capitalizar nomes
+    const capitalize = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
+    
+    sortedSynergies.forEach(synergy => {
+        const synergyItem = document.createElement("div");
+        synergyItem.className = "role-item cursor-pointer";
+        
+        // Adicionar evento de click para navegar para página de sinergias
+        synergyItem.addEventListener('click', () => {
+            window.location.href = `synergies-result.html?id=${infoType}&pokemon=${synergy.pokemon}`;
+        });
+        
+        const leftContent = document.createElement("div");
+        leftContent.className = "flex items-center gap-2";
+        
+        // Imagem do Pokémon principal
+        const pokemonImg = document.createElement("img");
+        pokemonImg.src = `./images/sprites/${synergy.pokemon}.png`;
+        pokemonImg.alt = synergy.pokemon;
+        pokemonImg.style.width = '25px';
+        pokemonImg.style.height = '25px';
+        pokemonImg.className = "rounded";
+        leftContent.appendChild(pokemonImg);
+        
+        // Sinal de +
+        const plusSpan = document.createElement("span");
+        plusSpan.className = "text-white font-bold text-xs";
+        plusSpan.textContent = "+";
+        leftContent.appendChild(plusSpan);
+        
+        // Imagem do aliado
+        const allyImg = document.createElement("img");
+        allyImg.src = `./images/sprites/${synergy.ally}.png`;
+        allyImg.alt = synergy.ally;
+        allyImg.style.width = '25px';
+        allyImg.style.height = '25px';
+        allyImg.className = "rounded";
+        leftContent.appendChild(allyImg);
+        
+        // Nomes dos Pokémon
+        const namesSpan = document.createElement("span");
+        namesSpan.className = "text-white font-medium text-xs truncate";
+        namesSpan.textContent = `${capitalize(synergy.pokemon)}+${capitalize(synergy.ally)}`;
+        leftContent.appendChild(namesSpan);
+        
+        const rightContent = document.createElement("div");
+        rightContent.className = "flex flex-col items-end";
+        
+        // PickRate
+        const pickRateSpan = document.createElement("span");
+        pickRateSpan.className = "text-white font-bold text-xs";
+        pickRateSpan.textContent = `${Math.round(synergy.totalPickRate)}p`;
+        rightContent.appendChild(pickRateSpan);
+        
+        // WinRate
+        const winRateSpan = document.createElement("span");
+        winRateSpan.className = "text-white font-medium text-xs";
+        winRateSpan.textContent = `${synergy.winRate.toFixed(1)}%`;
+        
+        // Colorir winrate baseado na performance
+        if (synergy.winRate >= 60) {
+            winRateSpan.style.color = '#22c55e';
+        } else if (synergy.winRate >= 40) {
+            winRateSpan.style.color = '#eab308';
+        } else {
+            winRateSpan.style.color = '#ef4444';
+        }
+        
+        rightContent.appendChild(winRateSpan);
+        
+        synergyItem.appendChild(leftContent);
+        synergyItem.appendChild(rightContent);
+        synergiesContainer.appendChild(synergyItem);
+    });
+    
+    synergiesContent.appendChild(synergiesContainer);
+};
+
     const capitalize = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
@@ -737,6 +906,7 @@ fetch('./results.json')
     displayRoleWinrates();
     displayRolePicks();
     displayPlayerRecords();
+    displayBestSynergies();
 
     function applyFilters() {
         const selectedClasses = Array.from(document.querySelectorAll('.class-filter:checked'))
