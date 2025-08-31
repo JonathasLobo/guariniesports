@@ -359,9 +359,9 @@ body {
 @media (min-width: 1024px) {
     #filter-text,
     .info-panel-title {
-        font-size: 16px;
-        margin-bottom: 16px;
-        color: white; /* exemplo: um pouco maior no desktop */
+        font-size: 14px; /* Tamanho menor para mobile */
+        margin-bottom: 8px;
+        line-height: 1.2;
     }
     /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
@@ -404,8 +404,8 @@ body {
         border-radius: 16px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
         transition: all 0.3s ease;
-        padding: 20px;
-        min-height: 300px;
+        min-height: 200px !important;
+        padding: 16px !important;
         width: 100%;
     }
 
@@ -499,12 +499,13 @@ body {
     /* Títulos padronizados */
     #filter-text,
     .info-panel-title {
-        font-size: 14px;       /* base menor para mobile */
         font-weight: 700;
         text-align: center;
         margin-bottom: 12px;
-        color: white;
+        color: white !important; /* !important para garantir que não seja sobrescrito */
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: block !important; /* Garantir que sempre seja exibido */
+        opacity: 1 !important; /* Garantir visibilidade */
     }
 }
 
