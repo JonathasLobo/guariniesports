@@ -99,61 +99,33 @@ body {
         min-width: 260px;
     }
 
-    /* Main content container - EMPILHADO VERTICALMENTE NO MOBILE */
+    /* Main content container */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        display: flex;
         flex-direction: column;
         gap: 16px;
         padding: 20px 12px;
-        max-width: 100%;
     }
 
-    /* Todos os quadros ocupam 100% da largura no mobile */
-    #filterInfo,
-    #statisticsInfo,
-    #roleWinrateInfo,
-    #rolePicksInfo,
-    #playerRecordsInfo,
-    #playerSynergiesInfo {
-        width: 100% !important;
-        min-height: 200px;
-        margin-bottom: 16px;
+    /* Filter section */
+    #filterInfo {
+        width: 100%;
+        order: 2;
     }
 
-    /* Filter container no mobile */
     #filter-container {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
-        display: grid !important;
     }
 
     #filter-container label {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 10px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        color: white;
-        font-weight: 600;
         font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-align: center;
-        min-height: 36px;
+        padding: 6px 8px;
     }
 
-    #filter-container label:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    #filter-container input[type="checkbox"]:checked + label {
-        background: rgba(59, 130, 246, 0.8);
-        border-color: rgba(59, 130, 246, 1);
-        color: white;
-        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+    /* Statistics section */
+    #statisticsInfo {
+        width: 100%;
+        order: 1;
     }
 
     /* Statistics content */
@@ -165,17 +137,82 @@ body {
         width: 100%;
     }
 
-    /* Role panels container */
-    .role-panels-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+    /* Role panels */
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    #playerRecordsInfo {
         width: 100%;
     }
 
     .grid.grid-cols-2.gap-2 {
         grid-template-columns: 1fr;
         gap: 8px;
+    }
+
+    /* CORREÇÃO ESPECÍFICA PARA TÍTULOS DOS PAINÉIS - MOBILE */
+    h3.text-lg.font-semibold.text-white {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+    }
+
+    /* Seletor alternativo mais específico para títulos */
+    div[class*="shadow-md"][class*="rounded-lg"] h3 {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+    }
+
+    /* Seletor super específico para IDs */
+    #roleWinrateInfo h3,
+    #rolePicksInfo h3,
+    #playerRecordsInfo h3 {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+        position: relative !important;
+        z-index: 10 !important;
+        background: rgba(0,0,0,0.5) !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+    }
+
+    /* Garantir que os containers dos painéis estejam visíveis */
+    #roleWinrateInfo,
+    #rolePicksInfo,
+    #playerRecordsInfo {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 120px !important;
+        background: rgba(0,0,0,0.4) !important;
+        border: 1px solid rgba(255,255,255,0.3) !important;
     }
 
     /* Table container */
@@ -203,9 +240,8 @@ body {
         background: rgba(255, 255, 255, 0.1);
     }
 
-    /* CORREÇÃO: Apenas cabeçalhos da tabela */
-    #tables-container thead th {
-        display: none;
+    #tables-container th {
+        display: none; /* Hide headers on mobile */
     }
 
     #tables-container td {
@@ -267,68 +303,54 @@ body {
         font-size: 2rem;
     }
 
-    /* Main content container - GRID 2x2 PARA TABLET */
+    /* Main content container */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 20px;
-        padding: 50px 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* Posicionamento dos quadros no tablet */
-    #filterInfo {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    #statisticsInfo {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    #roleWinrateInfo {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    #rolePicksInfo {
-        grid-column: 2;
-        grid-row: 2;
-    }
-
-    #playerRecordsInfo {
-        grid-column: 1 / -1;
-        grid-row: 3;
-    }
-
-    /* Role panels container para tablet */
-    .role-panels-container {
-        display: flex;
         flex-direction: column;
-        gap: 16px;
-        width: 100%;
+        gap: 20px;
     }
 
-    /* Filter container para tablet */
+    /* Filter section */
+    #filterInfo {
+        width: 100%;
+        order: 2;
+    }
+
     #filter-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 10px;
     }
 
-    /* Todos os quadros têm altura e estilo padronizados */
-    #filterInfo,
-    #statisticsInfo,
-    #roleWinrateInfo,
-    #rolePicksInfo {
-        min-height: 280px;
+    /* Statistics section */
+    #statisticsInfo {
+        width: 100%;
+        order: 1;
     }
 
-    #playerRecordsInfo,
-    #playerSynergiesInfo {
-        min-height: 200px;
+    /* Role panels */
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 2%;
+    }
+
+    #playerRecordsInfo {
+        width: 100%;
+        margin-top: 16px;
+    }
+
+    /* CORREÇÃO PARA TÍTULOS NO TABLET */
+    #roleWinrateInfo h3,
+    #rolePicksInfo h3,
+    #playerRecordsInfo h3 {
+        display: block !important;
+        visibility: visible !important;
+        color: #ffffff !important;
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
     }
 
     /* Table adjustments */
@@ -355,155 +377,37 @@ body {
     }
 }
 
-/* Desktop styles - GRID HORIZONTAL */
+/* Large desktop styles */
 @media (min-width: 1024px) {
-    #filter-text,
-    .info-panel-title {
-        font-size: 16px;
-        margin-bottom: 16px; /* exemplo: um pouco maior no desktop */
-    }
-    /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
-    .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 50px 20px;
-    }
-
-    /* Container dos quadros principais - LINHA HORIZONTAL */
-    .info-panels-row {
-        display: grid;
-        grid-template-columns: 280px 1fr 280px 280px;
-        gap: 24px;
-        width: 100%;
-    }
-
-    /* Container dos painéis de role - GRID 2x1 PARA DESKTOP */
+    /* Default styles already handle this, but we can add specific large screen optimizations */
+    
+    /* Role panels container */
     .role-panels-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        width: 100%;
-        margin-top: 24px;
-    }
-
-    /* Estilização padronizada para TODOS os quadros */
-    #filterInfo,
-    #statisticsInfo,
-    #roleWinrateInfo,
-    #rolePicksInfo,
-    #playerRecordsInfo,
-    #playerSynergiesInfo {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-        transition: all 0.3s ease;
-        padding: 20px;
-        min-height: 300px;
-        width: 100%;
-    }
-
-    /* Efeito hover para todos os quadros */
-    #filterInfo:hover,
-    #statisticsInfo:hover,
-    #roleWinrateInfo:hover,
-    #rolePicksInfo:hover,
-    #playerRecordsInfo:hover,
-    #playerSynergiesInfo:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-        transform: translateY(-2px);
-    }
-
-    /* Cores diferenciadas por tipo de quadro */
-    #filterInfo {
-        background: rgba(59, 130, 246, 0.1);
-        border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    #statisticsInfo {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    #roleWinrateInfo {
-        background: rgba(168, 85, 247, 0.1);
-        border-color: rgba(168, 85, 247, 0.3);
-    }
-
-    #rolePicksInfo {
-        background: rgba(245, 158, 11, 0.1);
-        border-color: rgba(245, 158, 11, 0.3);
-    }
-
-    #playerRecordsInfo {
-        background: rgba(239, 68, 68, 0.1);
-        border-color: rgba(239, 68, 68, 0.3);
-        flex: 1;
-        min-height: 280px;
-    }
-
-    /* Novo painel de sinergias */
-    #playerSynergiesInfo {
-        background: rgba(255, 158, 67, 0.1);
-        border-color: rgba(255, 158, 67, 0.3);
-        flex: 1;
-        min-height: 280px;
-    }
-
-    /* Container de filtros com grid otimizado */
-    #filter-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        display: flex;
+        gap: 16px;
         margin-top: 16px;
     }
 
-    /* Labels dos filtros com design consistente */
-    #filter-container label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px 16px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: white;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        min-height: 48px;
+    #roleWinrateInfo,
+    #rolePicksInfo {
+        flex: 1;
     }
 
-    #filter-container label:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.4);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    #playerRecordsInfo {
+        flex: 2;
     }
 
-    #filter-container input[type="checkbox"]:checked + label {
-        background: rgba(59, 130, 246, 0.8);
-        border-color: rgba(59, 130, 246, 1);
-        color: white;
-        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
-    }
-
-    /* Títulos padronizados */
-    #filter-text,
-    .info-panel-title {
-        font-size: 14px;       /* base menor para mobile */
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 12px;
-        color: white;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* CORREÇÃO PARA TÍTULOS NO DESKTOP */
+    #roleWinrateInfo h3,
+    #rolePicksInfo h3,
+    #playerRecordsInfo h3 {
+        display: block !important;
+        visibility: visible !important;
+        color: #ffffff !important;
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        margin-bottom: 16px !important;
     }
 }
 
@@ -514,112 +418,65 @@ body {
     }
     
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
-        max-width: 1800px;
-        padding: 50px 40px;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+/* Hide elements on specific screen sizes */
+@media (max-width: 767px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Responsive text sizes */
+.text-responsive-sm {
+    font-size: 0.875rem;
+}
+
+.text-responsive-base {
+    font-size: 1rem;
+}
+
+.text-responsive-lg {
+    font-size: 1.125rem;
+}
+
+@media (min-width: 768px) {
+    .text-responsive-sm {
+        font-size: 1rem;
     }
     
-    /* Ajustar grid para telas muito grandes */
-    .info-panels-row {
-        grid-template-columns: 320px 1fr 320px 320px;
-        gap: 32px;
+    .text-responsive-base {
+        font-size: 1.125rem;
     }
-
-    .role-panels-container {
-        gap: 32px;
+    
+    .text-responsive-lg {
+        font-size: 1.25rem;
     }
 }
 
-/* ==================== ESTILOS PARA ITENS INTERNOS DOS QUADROS ==================== */
-
-/* Itens de role padronizados */
-.role-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.role-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateX(2px);
-}
-
-.role-item:last-child {
-    margin-bottom: 0;
-}
-
-/* Performance indicators */
-.performance-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-left: 10px;
-}
-
-.performance-high {
-    background-color: #22c55e;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
-}
-
-.performance-medium {
-    background-color: #eab308;
-    box-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
-}
-
-.performance-low {
-    background-color: #ef4444;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-}
-
-/* ==================== ESTILOS PARA LEGENDAS E DROPDOWNS ==================== */
-
-.legend-container {
-    position: relative;
-}
-
-.legend-box {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 50;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #3b82f6;
-    border-radius: 12px;
-    padding: 16px;
-    min-width: 280px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(10px);
-    transform: translateY(8px);
-}
-
-.legend-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.legend-item:last-child {
-    border-bottom: none;
-}
-
-.legend-abbreviation {
-    font-weight: bold;
-    color: #3b82f6;
-    font-size: 14px;
-    min-width: 30px;
-}
-
-.legend-description {
-    color: #374151;
-    font-size: 14px;
-    text-align: right;
+@media (min-width: 1024px) {
+    .text-responsive-sm {
+        font-size: 1.125rem;
+    }
+    
+    .text-responsive-base {
+        font-size: 1.25rem;
+    }
+    
+    .text-responsive-lg {
+        font-size: 1.5rem;
+    }
 }
 
 /* ==================== DROPDOWN MENU RESPONSIVE ==================== */
@@ -635,7 +492,7 @@ body {
     }
 }
 
-/* ==================== SCROLLBAR E ACESSIBILIDADE ==================== */
+/* ==================== SCROLLBAR STYLING ==================== */
 
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
@@ -656,6 +513,30 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
 }
+
+/* ==================== LOADING STATES ==================== */
+
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
 
 /* Focus states for keyboard navigation */
 button:focus,
@@ -686,43 +567,56 @@ input:focus,
     }
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+/* ==================== REGRA GLOBAL PARA TÍTULOS - FORÇAR SEMPRE ==================== */
 
-/* Hide elements on specific screen sizes */
+/* Regra global que sobrescreve tudo para garantir visibilidade dos títulos */
+h3 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Específico para elementos com classes do Tailwind */
+.text-lg.font-semibold.text-white {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #ffffff !important;
+}
+
+/* Regra ultra-específica que não pode ser sobrescrita */
+body h3.text-lg.font-semibold.text-white.mb-1.text-center,
+body h3.text-lg.font-semibold.text-white.mb-2.text-center {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #ffffff !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    margin-bottom: 12px !important;
+    line-height: 1.4 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+    background: rgba(0,0,0,0.3) !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+/* Regra para mobile com máxima especificidade */
 @media (max-width: 767px) {
-    .desktop-only {
-        display: none !important;
-    }
-}
-
-@media (min-width: 768px) {
-    .mobile-only {
-        display: none !important;
-    }
-}
-
-/* Estilos para checkboxes */
-input[type="checkbox"] {
-    display: none;
-}
-
-/* Loading states */
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.skeleton {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    from {
-        background-position: -200% 0;
-    }
-    to {
-        background-position: 200% 0;
+    html body div h3 {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #ffffff !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        margin: 8px 0 12px 0 !important;
+        padding: 8px !important;
+        background: rgba(0,0,0,0.6) !important;
+        border-radius: 4px !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
     }
 }
