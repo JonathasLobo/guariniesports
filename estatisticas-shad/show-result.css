@@ -359,7 +359,8 @@ body {
 @media (min-width: 1024px) {
     #filter-text,
     .info-panel-title {
-        font-size: 18px; /* exemplo: um pouco maior no desktop */
+        font-size: 16px;
+        margin-bottom: 16px; /* exemplo: um pouco maior no desktop */
     }
     /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
@@ -497,10 +498,10 @@ body {
     /* Títulos padronizados */
     #filter-text,
     .info-panel-title {
-        font-size: 16px;
+        font-size: 14px;       /* base menor para mobile */
         font-weight: 700;
         text-align: center;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
         color: white;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
