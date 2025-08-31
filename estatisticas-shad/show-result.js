@@ -778,8 +778,8 @@ fetch('./results.json')
         const pokemonImg = document.createElement("img");
         pokemonImg.src = `./images/backgrounds/${synergy.pokemon}-left-bg.png`;
         pokemonImg.alt = synergy.pokemon;
-        pokemonImg.style.width = '25px';
-        pokemonImg.style.height = '25px';
+        pokemonImg.style.width = '30px';
+        pokemonImg.style.height = '30px';
         pokemonImg.className = "rounded";
         leftContent.appendChild(pokemonImg);
         
@@ -793,8 +793,8 @@ fetch('./results.json')
         const allyImg = document.createElement("img");
         allyImg.src = `./images/backgrounds/${synergy.ally}-left-bg.png`;
         allyImg.alt = synergy.ally;
-        allyImg.style.width = '25px';
-        allyImg.style.height = '25px';
+        allyImg.style.width = '30px';
+        allyImg.style.height = '30px';
         allyImg.className = "rounded";
         leftContent.appendChild(allyImg);
         
