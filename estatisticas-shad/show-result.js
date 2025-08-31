@@ -776,7 +776,7 @@ fetch('./results.json')
         
         // Imagem do Pokémon principal
         const pokemonImg = document.createElement("img");
-        pokemonImg.src = `./images/sprites/${synergy.pokemon}.png`;
+        pokemonImg.src = `./images/backgrounds/${synergy.pokemon}-left-bg.png`;
         pokemonImg.alt = synergy.pokemon;
         pokemonImg.style.width = '25px';
         pokemonImg.style.height = '25px';
@@ -791,7 +791,7 @@ fetch('./results.json')
         
         // Imagem do aliado
         const allyImg = document.createElement("img");
-        allyImg.src = `./images/sprites/${synergy.ally}.png`;
+        allyImg.src = `./images/backgrounds/${synergy.ally}-left-bg.png`;
         allyImg.alt = synergy.ally;
         allyImg.style.width = '25px';
         allyImg.style.height = '25px';
