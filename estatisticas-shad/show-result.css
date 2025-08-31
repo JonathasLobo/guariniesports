@@ -578,6 +578,58 @@ body {
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
+#filterInfo > div:first-child,
+#statisticsInfo > div:first-child,
+#roleWinrateInfo > div:first-child,
+#rolePicksInfo > div:first-child,
+#playerRecordsInfo > div:first-child,
+#playerSynergiesInfo > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+/* Corrigir possíveis conflitos com Tailwind CSS */
+.info-panel-title {
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+}
+
+#filter-text {
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+}
+
+/* Override específico para elementos que possam estar ocultos */
+#filterInfo h3,
+#statisticsInfo h3,
+#roleWinrateInfo h3,
+#rolePicksInfo h3,
+#playerRecordsInfo h3,
+#playerSynergiesInfo h3 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Garantir que o container de filtros não empurre o título */
+@media (max-width: 767px) {
+    #filter-container {
+        margin-top: 8px !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    #filter-container {
+        margin-top: 10px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #filter-container {
+        margin-top: 16px !important;
+    }
+}
 /* ==================== ESTILOS PARA LEGENDAS E DROPDOWNS ==================== */
 
 .legend-container {
