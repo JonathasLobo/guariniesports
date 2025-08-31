@@ -763,14 +763,6 @@ fetch('./results.json')
     };
     
     sortedSynergies.forEach(synergy => {
-        const synergyItem = document.createElement("div");
-        synergyItem.className = "role-item cursor-pointer";
-        
-        // Adicionar evento de click para navegar para página de sinergias
-        synergyItem.addEventListener('click', () => {
-            window.location.href = `synergies-result.html?id=${infoType}&pokemon=${synergy.pokemon}`;
-        });
-        
         const leftContent = document.createElement("div");
         leftContent.className = "flex items-center gap-2";
         
