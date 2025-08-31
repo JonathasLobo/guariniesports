@@ -360,7 +360,8 @@ body {
     #filter-text,
     .info-panel-title {
         font-size: 16px;
-        margin-bottom: 16px; /* exemplo: um pouco maior no desktop */
+        margin-bottom: 16px;
+        color: white; /* exemplo: um pouco maior no desktop */
     }
     /* Container principal - LAYOUT HORIZONTAL PADRONIZADO */
     .flex.items-start.justify-start.w-full.gap-x-4.pt-\[50px\].px-4 {
