@@ -613,6 +613,7 @@ body {
     opacity: 1 !important;
     height: auto !important;
     overflow: visible !important;
+    color: white !important;
 }
 
 /* Garantir que o container de filtros não empurre o título */
