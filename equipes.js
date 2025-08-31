@@ -1,82 +1,72 @@
 // Dados das equipes
 const equipesData = {
   staff: {
-    titulo: "Corpo Técnico",
+    titulo: "Corpo Administrativo",
     membros: [
       {
-        nome: "João Silva",
+        nome: "Jonathas (Lobo)",
         cargo: "CEO & Fundador",
         descricao: "Responsável pela gestão geral da organização e desenvolvimento estratégico"
       },
       {
-        nome: "Maria Santos",
-        cargo: "Gerente de Equipes",
-        descricao: "Coordena todas as equipes competitivas e gerencia os cronogramas de treinamento"
-      },
-      {
-        nome: "Pedro Costa",
-        cargo: "Analista de Performance",
-        descricao: "Analisa dados de performance dos jogadores e desenvolve estratégias de melhoria"
-      },
-      {
-        nome: "Ana Oliveira",
+        nome: "Nathália (Nathy)",
         cargo: "Marketing & Comunicação",
         descricao: "Responsável pela comunicação externa, marketing digital e redes sociais"
       }
     ]
   },
   pokemon: {
-    titulo: "Equipe Pokemon Unite",
+    titulo: "Equipe Pokémon Unite",
     membros: [
       {
-        nome: "Carlos Mendes",
-        cargo: "Capitão da Equipe",
-        descricao: "Main Jungle - Especialista em Garchomp e Absol"
+        nome: "George (Shad)",
+        cargo: "Coach",
+        descricao: "Orientar e desenvolver a equipe, analisando desempenhos, criando estratégias e fornecendo feedback, sendo essencial para melhorar habilidades individuais e o desempenho coletivo."
       },
       {
-        nome: "Rafael Torres",
-        cargo: "Atacante Principal",
-        descricao: "Main Attacker - Expert em Cinderace e Pikachu"
+        nome: "Pedro (Almeida)",
+        cargo: "Analista",
+        descricao: "Estudar jogos, estatísticas e adversários, fornecendo informações estratégicas que ajudam a equipe a tomar decisões mais precisas e otimizar o desempenho coletivo."
       },
       {
-        nome: "Bruno Lima",
-        cargo: "Suporte",
-        descricao: "Main Support - Especialista em Blissey e Eldegoss"
+        nome: "José Matheus (Leone)",
+        cargo: "Manager",
+        descricao: "Coordenar a equipe, organizar treinos, estratégias e comunicações, garantindo foco, disciplina e desempenho coletivo durante competições e atividades do time."
+      },                  
+      {
+        nome: "Israel (Deivid)",
+        cargo: "Speedster",
+        descricao: "Jungler - Controlar o mapa, garantindo objetivos e criando vantagens, exigindo estratégia, decisões rápidas e boa coordenação com a equipe."
       },
       {
-        nome: "Diego Ferreira",
-        cargo: "Defensor",
-        descricao: "Main Defender - Expert em Slowbro e Crustle"
+        nome: "N/A",
+        cargo: "Attacker",
+        descricao: "Attack Damage Carry - Responsável por causar dano constante à distância, mantendo pressão ofensiva e convertendo vantagens em vitórias, exigindo bom posicionamento para sobreviver e ser eficaz."
       },
       {
-        nome: "Lucas Rocha",
+        nome: "Matheus (Navim)",
+        cargo: "Support",
+        descricao: "Support - Proteger e auxiliar a equipe, garantindo segurança, controle de visão e oportunidades estratégicas, sendo essencial para manter aliados vivos e fortalecer a presença do time no mapa."
+      },
+      {
+        nome: "Lucas (Meendes)",
+        cargo: "Defender",
+        descricao: "Tank - Protege áreas-chave e aliados, absorvendo dano e controlando o espaço, sendo fundamental para manter a segurança e a estabilidade do time durante as partidas."
+      },
+      {
+        nome: "Lucas (Anúbis)",
         cargo: "All-rounder",
-        descricao: "Flexível - Especialista em Lucario e Machamp"
+        descricao: "Top Laner - Adaptar às necessidades do time, desempenhando múltiplos papéis como dano, controle ou suporte, sendo essencial para flexibilidade e equilíbrio durante as partidas."
       }
     ]
   },
   yugioh: {
-    titulo: "Equipe YugiOh",
+    titulo: "Equipe Yu-Gi-Oh!",
     membros: [
       {
-        nome: "Gabriel Alves",
+        nome: "Yago (Yagamy)",
         cargo: "Duelista Principal",
         descricao: "Especialista em decks meta - Foco em Salamangreat e Sky Striker"
-      },
-      {
-        nome: "Mateus Souza",
-        cargo: "Estrategista",
-        descricao: "Analista de meta e desenvolvedor de side decks"
-      },
-      {
-        nome: "Felipe Ramos",
-        cargo: "Duelista Competitivo",
-        descricao: "Expert em formatos alternativos e torneios regionais"
-      },
-      {
-        nome: "Thiago Barbosa",
-        cargo: "Coach",
-        descricao: "Treinador da equipe e analista de matchups"
       }
     ]
   }
