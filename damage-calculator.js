@@ -256,10 +256,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   battleRadios.forEach(r => r.addEventListener("change", calcular));
 
+  pokemonSelect.addEventListener("change", calcular);
+
+  // Botão vira opcional, mas ainda funciona
   btnCalcular.addEventListener("click", (e) => {
     e.preventDefault();
     calcular();
   });
+
+  // Já dispara cálculo inicial (opcional)
+  calcular();
 
   btnResetar.addEventListener("click", () => {
     pokemonSelect.value = "";
