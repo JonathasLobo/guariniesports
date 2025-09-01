@@ -741,7 +741,7 @@ fetch('./results.json')
             }
             return b.winRate - a.winRate;
         })
-        .slice(0, 4); // Pegar apenas as top 8 sinergias
+        .slice(0, 4); // Pegar apenas as top 4 sinergias
     
     // Limpar conteúdo existente
     synergiesContent.innerHTML = '';
