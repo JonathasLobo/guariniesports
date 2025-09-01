@@ -21,6 +21,10 @@
   cursor: default;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 300px;
 }
 
 .ferramenta:hover,
@@ -31,11 +35,11 @@
 }
 
 .ferramenta img {
-  width: auto; /* Largura automática baseada na altura */
-  max-width: 100%; /* Nunca ultrapassar a largura do container */
+  width: auto;
+  max-width: 100%;
   border-radius: 10px;
-  object-fit: contain; /* Alterado de 'cover' para 'contain' para mostrar imagem inteira */
-  height: 60px; /* Aumentei um pouco para melhor visualização */
+  object-fit: contain;
+  height: 60px;
   margin-bottom: 10px;
   filter: grayscale(20%);
   transition: all 0.3s ease;
@@ -45,8 +49,9 @@
 
 .ferramenta:hover img {
   filter: grayscale(0%);
-  transform: scale(1.05); /* Efeito de zoom suave no hover */
+  transform: scale(1.05);
 }
+
 .ferramenta h3 {
   margin: 15px 0 10px;
   color: #ffad00;
@@ -62,6 +67,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-grow: 1;
+}
+
+/* Centralizar botão */
+.ferramenta .btn-comprar {
+  margin: 0 auto;
+  display: block;
 }
 
 /* Botão desabilitado */
@@ -71,6 +83,8 @@
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+  margin: 0 auto;
+  display: block;
 }
 
 .btn-comprar:disabled:hover {
@@ -79,7 +93,6 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-
   .ferramentas {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -89,6 +102,7 @@
     padding: 20px;
     max-width: 350px;
     margin: 0 auto;
+    min-height: 280px;
   }
   
   .ferramenta img {
@@ -103,12 +117,13 @@
 
 @media (max-width: 480px) {
   .menu-toggle {
-    right: 15px;     /* ajustado para telas bem pequenas */
+    right: 15px;
     padding: 10px;
   }
 
   .ferramenta {
     padding: 15px;
+    min-height: 260px;
   }
   
   .ferramenta h3 {
@@ -120,4 +135,3 @@
     margin: 10px 0 20px;
   }
 }
-
