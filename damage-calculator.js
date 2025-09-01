@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (chosenItems.length > 0) {
       const itensHtml = chosenItems.map(it => `
-        <img src="./held-itens/${it}.png" 
+        <img src=".estatisticas-shad/images/held-itens/${it}.png" 
              alt="${gameHeldItens[it]}" 
              title="${gameHeldItens[it]}" 
              style="width:40px; height:40px; margin:0 5px;">
