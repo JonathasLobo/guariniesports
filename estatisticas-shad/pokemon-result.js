@@ -144,37 +144,62 @@ if (id) {
             });
         }
 
-        // Criar container para o dropdown personalizado
-        const pokemonDropdownContainer = document.createElement("div");
-        pokemonDropdownContainer.classList.add('flex', 'items-center', 'gap-x-2', 'ml-12', 'relative');
-        pokemonOverallInfoContainer.appendChild(pokemonDropdownContainer);
+    // Criar container para o dropdown personalizado
+    const pokemonDropdownContainer = document.createElement("div");
+    pokemonDropdownContainer.classList.add('flex', 'items-center', 'gap-x-2', 'ml-12', 'relative');
+    pokemonOverallInfoContainer.appendChild(pokemonDropdownContainer);
 
-        // Botão que ativa o dropdown - agora com largura fixa
-        const dropdownButton = document.createElement("button");
-        dropdownButton.classList.add('flex', 'items-center', 'justify-between', 'bg-gray-700', 'text-white', 'rounded', 'px-3', 'py-1', 'text-sm', 'hover:bg-gray-600', 'transition', 'duration-200', 'w-48');
-        dropdownButton.innerHTML = `
-            <span class="truncate">Selecione um Pokémon</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-        `;
-        pokemonDropdownContainer.appendChild(dropdownButton);
+    // Botão que ativa o dropdown - agora com largura fixa
+    const dropdownButton = document.createElement("button");
+    dropdownButton.classList.add('flex', 'items-center', 'justify-between', 'bg-gray-700', 'text-white', 'rounded', 'px-3', 'py-1', 'text-sm', 'hover:bg-gray-600', 'transition', 'duration-200', 'w-48');
+    dropdownButton.innerHTML = `
+        <span class="truncate">Selecione um Pokémon</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+    `;
+    pokemonDropdownContainer.appendChild(dropdownButton);
 
-        // Container do dropdown (inicialmente escondido)
-        const dropdownMenu = document.createElement("div");
-        dropdownMenu.classList.add('absolute', 'top-full', 'left-0', 'mt-1', 'w-64', 'max-h-96', 'overflow-y-auto', 'bg-gray-800', 'rounded-md', 'shadow-lg', 'z-50', 'hidden');
-        dropdownMenu.style.zIndex = '1000';
+    // Container do dropdown (inicialmente escondido)
+    const dropdownMenu = document.createElement("div");
+    dropdownMenu.classList.add('absolute', 'top-full', 'left-0', 'mt-1', 'w-64', 'max-h-96', 'overflow-y-auto', 'bg-gray-800', 'rounded-md', 'shadow-lg', 'z-50', 'hidden');
+    dropdownMenu.style.zIndex = '1000';
 
-        // Lista de Pokémon
-        const pokemonList = document.createElement("div");
-        pokemonList.classList.add('py-1');
-        dropdownMenu.appendChild(pokemonList);
+    // Lista de Pokémon
+    const pokemonList = document.createElement("div");
+    pokemonList.classList.add('py-1');
+    dropdownMenu.appendChild(pokemonList);
 
-        // Obter lista de Pokémon em ordem alfabética
-        const allPokemonNames = Object.keys(pokemonRoles).sort((a, b) => a.localeCompare(b));
+    // MUDANÇA PRINCIPAL: Obter lista de Pokémon APENAS dos dados do jogador
+    const getAvailablePokemonNames = () => {
+        const isPlayerName = id !== 'allyTeam' && id !== 'enemyTeam';
+        const objAttribute = isPlayerName
+            ? results.allyTeam[id]
+            : results[id].overall;
+        
+        // Obter apenas os Pokémon que existem nos dados do jogador/time
+        const availablePokemon = Object.keys(objAttribute).filter(key => {
+            // Filtrar apenas chaves que são nomes de Pokémon (não 'overall' ou outras propriedades)
+            return key !== 'overall' && objAttribute[key] && 
+                typeof objAttribute[key] === 'object' && 
+                objAttribute[key].pickRate !== undefined;
+        });
+        
+        // Ordenar alfabeticamente
+        return availablePokemon.sort((a, b) => a.localeCompare(b));
+    };
 
+    const availablePokemonNames = getAvailablePokemonNames();
+
+    // Verificar se há Pokémon disponíveis
+    if (availablePokemonNames.length === 0) {
+        const noPokemonItem = document.createElement("div");
+        noPokemonItem.classList.add('px-4', 'py-2', 'text-gray-400', 'text-center');
+        noPokemonItem.innerText = 'Nenhum Pokémon disponível';
+        pokemonList.appendChild(noPokemonItem);
+    } else {
         // Adicionar cada Pokémon como um item na lista
-        allPokemonNames.forEach(pokemon => {
+        availablePokemonNames.forEach(pokemon => {
             const pokemonItem = document.createElement("div");
             pokemonItem.classList.add('flex', 'items-center', 'px-4', 'py-2', 'hover:bg-gray-700', 'cursor-pointer', 'transition', 'duration-150');
             pokemonItem.dataset.value = pokemon;
@@ -200,38 +225,39 @@ if (id) {
             
             pokemonList.appendChild(pokemonItem);
         });
+    }
 
-        pokemonDropdownContainer.appendChild(dropdownMenu);
+    pokemonDropdownContainer.appendChild(dropdownMenu);
 
-        // Botão OK
-        const okButton = document.createElement("button");
-        okButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white', 'font-bold', 'py-1', 'px-3', 'rounded', 'text-sm', 'transition', 'duration-200', 'flex-shrink-0');
-        okButton.textContent = "OK";
+    // Botão OK
+    const okButton = document.createElement("button");
+    okButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white', 'font-bold', 'py-1', 'px-3', 'rounded', 'text-sm', 'transition', 'duration-200', 'flex-shrink-0');
+    okButton.textContent = "OK";
 
-        // Variável para armazenar o Pokémon selecionado
-        let selectedPokemon = '';
+    // Variável para armazenar o Pokémon selecionado
+    let selectedPokemon = '';
 
-        // Adicionar evento de clique ao botão
-        okButton.addEventListener("click", () => {
-            if (selectedPokemon) {
-                window.location.href = `pokemon-result.html?id=${id}&pokemon=${selectedPokemon}`;
-            } else {
-                alert('Por favor, selecione um Pokémon');
-            }
-        });
+    // Adicionar evento de clique ao botão
+    okButton.addEventListener("click", () => {
+        if (selectedPokemon) {
+            window.location.href = `pokemon-result.html?id=${id}&pokemon=${selectedPokemon}`;
+        } else {
+            alert('Por favor, selecione um Pokémon');
+        }
+    });
 
-        pokemonDropdownContainer.appendChild(okButton);
+    pokemonDropdownContainer.appendChild(okButton);
 
-        // Mostrar/esconder dropdown
-        dropdownButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('hidden');
-        });
+    // Mostrar/esconder dropdown
+    dropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+    });
 
-        // Fechar dropdown ao clicar fora
-        document.addEventListener('click', () => {
-            dropdownMenu.classList.add('hidden');
-        });
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', () => {
+        dropdownMenu.classList.add('hidden');
+    });
 
         const firstMainSquare = document.getElementById("infoFirst");
 
@@ -1093,7 +1119,7 @@ if (id) {
             laneBox.classList.add("flex", "flex-col", "items-center", "w-[110px]");
 
             const img = document.createElement("img");
-            img.src = `./images/lanes/${lane.toLowerCase()}.png`; // força minúsculo
+            img.src = `./images/lanes/${lane}.png`;
             img.width = 56;
             laneBox.appendChild(img);
 
