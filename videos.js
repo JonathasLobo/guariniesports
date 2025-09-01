@@ -2,9 +2,9 @@
 
 // Array com os títulos das jogadas (personalize com os nomes dos seus jogadores)
 const jogadas = [
-  "Pressão no time adversário com direito a QuadraKill do <span class='jogador'>DEIVID</span>",
-  "Tem que ter calma na hora do rayquaza, aulas com <span class='jogador'>DEIVID</span>", 
-  "Excelente play do nosso coach <span class='jogador'>SHAD</span>"
+  "Penta de pocotó do <span class='jogador'>DEIVID</span>",
+  "Pressão no time adversário com direito a QuadraKill do <span class='jogador'>DEIVID</span>", 
+  "Tem que ter calma na hora do rayquaza, aulas com <span class='jogador'>DEIVID</span>"
 ];
 
 let currentVideo = 1;
@@ -34,7 +34,7 @@ function setup30SecondLimit(video) {
         
         console.log('Vídeo completou 30 segundos, passando para o próximo');
       }
-    }, 30000);
+    }, 35000);
     
     videoTimers.set(this, timer);
   });
