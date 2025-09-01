@@ -3,14 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const levelSelect = document.getElementById("nivel");
   const levelValor = document.getElementById("nivel-valor");
   const itemSlots = document.querySelectorAll(".item-slot");
-  const btnCalcular = document.getElementById("calcular");
   const btnResetar = document.getElementById("resetar");
   const baseDiv = document.getElementById("status-base");
   const finalDiv = document.getElementById("status-final");
   const resultado = document.getElementById("resultado");
   const battleRadios = document.querySelectorAll("input[name='battle']");
 
-  if (btnCalcular) btnCalcular.type = "button";
   if (btnResetar) btnResetar.type = "button";
 
   // ---- Configuração de atributos ----
@@ -57,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true }
   };
 
-  // ---- Função de cálculo (definida primeiro para não dar erro) ----
+  // ---- Função de cálculo ----
   const calcular = () => {
     const poke = pokemonSelect.value;
     const targetLevel = parseInt(levelSelect.value, 10) || 1;
@@ -258,13 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pokemonSelect.addEventListener("change", calcular);
 
-  // Botão vira opcional, mas ainda funciona
-  btnCalcular.addEventListener("click", (e) => {
-    e.preventDefault();
-    calcular();
-  });
-
-  // Já dispara cálculo inicial (opcional)
+  // Já dispara cálculo inicial
   calcular();
 
   btnResetar.addEventListener("click", () => {
@@ -282,6 +274,4 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
   });
-
-  pokemonSelect.addEventListener("change", calcular);
 });
