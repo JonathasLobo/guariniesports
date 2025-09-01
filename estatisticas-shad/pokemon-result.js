@@ -1119,7 +1119,7 @@ if (id) {
             laneBox.classList.add("flex", "flex-col", "items-center", "w-[110px]");
 
             const img = document.createElement("img");
-            img.src = `./images/lanes/${lane}.png`;
+            img.src = `./images/lanes/${lane.toLowerCase()}.png`; // força minúsculo
             img.width = 56;
             laneBox.appendChild(img);
 
