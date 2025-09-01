@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (prevImg) prevImg.remove();
     resultado.insertAdjacentHTML("afterbegin", `
       <div class="resultado-image">
-        <img src="./backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}">
+        <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}">
         <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel})</div>
       </div>
     `);
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Mostrar Battle Item
     if (selectedBattle) {
-      const battleImg = `<img src="./images/battle-items/${selectedBattle}.png" 
+      const battleImg = `<img src="./estatisticas-shad/images/battle-items/${selectedBattle}.png" 
                           alt="${selectedBattle}" 
                           title="${selectedBattle}" 
                           style="width:40px; height:40px;">`;
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const opt = document.createElement("option");
     opt.value = poke;
     opt.textContent = safeCap(poke);
-    opt.style.backgroundImage = `url('./backgrounds/${poke}-left-bg.png')`;
+    opt.style.backgroundImage = `url('./estatisticas-shad/images/backgrounds/${poke}-left-bg.png')`;
     opt.style.backgroundRepeat = "no-repeat";
     opt.style.backgroundSize = "20px 20px";
     opt.style.paddingLeft = "28px";
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const opt = document.createElement("option");
       opt.value = item;
       opt.textContent = gameHeldItens[item];
-      opt.style.backgroundImage = `url('./held-itens/${item}.png')`;
+      opt.style.backgroundImage = `url('./estatisticas-shad/images/held-itens/${item}.png')`;
       opt.style.backgroundRepeat = "no-repeat";
       opt.style.backgroundSize = "20px 20px";
       opt.style.paddingLeft = "28px";
