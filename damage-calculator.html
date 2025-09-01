@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Builds - Pokémon Unite</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="calculadora.css">
+  <script src="util.js"></script>
+</head>
+<body>
+  <main class="calculadora-container">
+    <h2>Calculadora de Status</h2>
+
+    <!-- Seleção de Pokémon -->
+    <label for="pokemon">Selecione o Pokémon:</label>
+    <select id="pokemon" class="form-control"></select>
+
+    <!-- Seletor de Nível com Slider -->
+    <label for="nivel">Nível:</label>
+    <div class="nivel-container">
+    <input type="range" id="nivel" min="1" max="15" value="1" step="1" class="slider">
+    <span id="nivel-valor">1</span>
+    </div>
+
+    <!-- Battle Items -->
+    <label>Battle Item:</label>
+    <div class="battle-container">
+    <label>
+        <input type="radio" name="battle" value="xattack">
+        <img src="./images/battle-items/xattack.png" alt="X Attack" title="X Attack" class="battle-icon">
+    </label>
+    <label>
+        <input type="radio" name="battle" value="xspeed">
+        <img src="./images/battle-items/xspeed.png" alt="X Speed" title="X Speed" class="battle-icon">
+    </label>
+    <label>
+        <input type="radio" name="battle" value="" checked>
+        Nenhum
+    </label>
+    </div>
+
+
+    <!-- Seleção de Itens -->
+    <label>Itens Segurados:</label>
+    <div id="itens-container" class="campos-linha">
+      <div class="item-slot">
+        <select class="form-control held-item"></select>
+        <div class="stack-container"></div>
+      </div>
+      <div class="item-slot">
+        <select class="form-control held-item"></select>
+        <div class="stack-container"></div>
+      </div>
+      <div class="item-slot">
+        <select class="form-control held-item"></select>
+        <div class="stack-container"></div>
+      </div>
+    </div>
+
+    <!-- Botões -->
+    <div class="botoes-calculadora">
+      <button id="calcular" class="btn">Calcular</button>
+      <button id="resetar" class="btn">Resetar</button>
+    </div>
+
+    <!-- Resultados -->
+    <div id="resultado" class="resultado-container">
+      <div class="resultado-dados">
+        <div class="coluna-temporada">
+          <h3>Status Base</h3>
+          <div id="status-base"></div>
+        </div>
+        <div class="coluna-total">
+          <h3>Status com Itens</h3>
+          <div id="status-final"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="damage-calculator.js"></script>
+</body>
+</html>

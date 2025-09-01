@@ -324,3 +324,37 @@ textarea.form-control {
       text-decoration: underline;
       color: #ffad00;
     }
+
+    /* Slider genérico (nível e stacks) */
+    .nivel-container,
+    .stack-slider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .slider {
+      width: 200px;
+      cursor: pointer;
+}
+/* Battle Items */
+.battle-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.battle-container label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.battle-icon {
+  width: 28px;
+  height: 28px;
+}
+

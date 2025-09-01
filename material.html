@@ -8,6 +8,43 @@
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="materiais.css" />
+  <style>
+    .ferramentas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .ferramenta {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .ferramenta .descricao {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .ferramentas {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .ferramentas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
 <body>
   <a id="topo"></a>
@@ -67,7 +104,7 @@
 
   <main>
     <h2>Ferramentas</h2>
-    <section class="ferramentas" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
+    <section class="ferramentas">
       
       <!-- Calculadora de Performance -->
       <article class="ferramenta">
@@ -103,6 +140,23 @@
         <p class="descricao">Organize e analise os pontos fortes e fracos da sua equipe</p>
         <button type="button" class="btn-comprar" id="analiseBtn">Acessar</button>
         <div id="analiseAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>
+
+      <!-- Build Maker -->
+      <article class="ferramenta">
+        <img src="./img-site/buildmaker.png" alt="Build Maker" />
+        <h3>Build Maker</h3>
+        <p class="descricao">Crie e otimize suas builds com calculadora de dano integrada</p>
+        <button type="button" class="btn-comprar" id="buildBtn">Acessar</button>
+        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>
+
+      <!-- Slot vazio para futura ferramenta -->
+      <article class="ferramenta" style="opacity: 0.3;">
+        <img src="./img-site/embreve.png" alt="Em Breve" />
+        <h3>Em Breve</h3>
+        <p class="descricao">Nova ferramenta será adicionada aqui</p>
+        <button type="button" class="btn-comprar" disabled>Em Breve</button>
       </article>
 
     </section>
@@ -153,10 +207,12 @@
     const statBtn = document.getElementById("statBtn");
     const winrateBtn = document.getElementById("winrateBtn");
     const analiseBtn = document.getElementById("analiseBtn");
+    const buildBtn = document.getElementById("buildBtn");
     const calcAccessMessage = document.getElementById("calcAccessMessage");
     const statAccessMessage = document.getElementById("statAccessMessage");
     const calcWinrateMessage = document.getElementById("calcWinrateMessage");
     const analiseAccessMessage = document.getElementById("analiseAccessMessage");
+    const buildAccessMessage = document.getElementById("buildAccessMessage");
 
     // Função para lidar com login
     async function handleLogin() {
@@ -213,6 +269,12 @@
       analiseAccessMessage.style.display = 'none';
     }
 
+    // Configura acesso ao Build Maker (sempre liberado)
+    function setupBuildAccess() {
+      buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
+      buildAccessMessage.style.display = 'none';
+    }
+
     // Verifica permissões do usuário para estatísticas
     async function checkStatsPermissions(user) {
       if (!user) {
@@ -264,6 +326,7 @@
       setupCalculatorAccess();
       setupWinrateAccess();
       setupAnaliseAccess();
+      setupBuildAccess();
       
       await checkStatsPermissions(user);
     });
