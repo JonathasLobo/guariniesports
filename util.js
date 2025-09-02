@@ -4885,6 +4885,396 @@ const skillDamage = {
 	}
   },
   
+    "charizard": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic (4x)",
+          formula: (ATK, Level) => 0.308 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Additional to Charizard burned targets (4x)",
+          formula: (ATK, Level) => 0.32 * ATK + 2 * (Level - 1) + 10,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Flamethrower",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.45 * ATK + 7 * (Level - 1) + 160,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (5 Ticks)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.7 * ATK + 8 * (Level - 1) + 190,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (5 Ticks) Skill Plus",
+          formula: (ATK, Level) => 0.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Fire Punch",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.46 * ATK + 11 * (Level - 1) + 264,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (5 Ticks)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Fire Blast",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.5 * ATK + 4 * (Level - 1) + 180,
+          type: "physical"
+        },
+		{
+          label: "Damage - Area (10 Ticks)",
+          formula: (ATK, Level) => 0.375 * ATK + 1 * (Level - 1) + 45,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.61 * ATK + 5 * (Level - 1) + 210,
+          type: "physical"
+        },
+		{
+          label: "Damage - Area (10 Ticks) Skill Plus",
+          formula: (ATK, Level) => 0.4025 * ATK + 1 * (Level - 1) + 53,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Flare Blitz",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.0 * ATK + 6 * (Level - 1) + 242,
+          type: "physical"
+        },
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 2.4 * ATK + 0 * (Level - 1) + 720,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Seismic Slam",
+		formulas: [
+        {
+          label: "Damage - Burning (2x)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 3.07 * ATK + 8 * (Level - 1) + 380,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "cinderace": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Pyro Ball",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 3.45 * ATK + 32 * (Level - 1) + 820,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (3x)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Blaze Kick",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.48 * ATK + 4 * (Level - 1) + 120,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (3x)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Flame Charge",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.47 * ATK + 3 * (Level - 1) + 130,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Feint",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Blazing Bicycle Kick",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.47 * ATK + 14 * (Level - 1) + 670,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "clefable": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.69 * SPATK + 17 * (Level - 1) + 320,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Moonlight",
+      formulas: [
+        {
+          label: "Heal - per Tick (per half second)",
+          formula: (SPATK, Level) => 0.64 * SPATK + 0 * (Level - 1) + 58,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Draining Kiss",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.4 * SPATK + 20 * (Level - 1) + 350,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Gravity",
+      formulas: [
+        {
+          label: "Damage - Auto Attacks",
+          formula: (SPATK, Level) => 0.98 * SPATK + 10 * (Level - 1) + 410,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Follow Me",
+      formulas: [
+		{
+		  label: "Shield",
+          formula: (SPATK, Level) => 2.6 * SPATK + 0 * (Level - 1) + 900,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Wonder Wish",
+		formulas: [
+        {
+          label: "Explosion",
+          formula: (SPATK, Level) => 4.86 * SPATK + 34 * (Level - 1) + 1640,
+          type: "special"
+        },
+		{
+          label: "Hydro Pump - Damage - per Hit (3 Hits)",
+          formula: (SPATK, Level) => 1.215 * SPATK + 9 * (Level - 1) + 410,
+          type: "special"
+        },
+		{
+          label: "Hyper Beam",
+          formula: (SPATK, Level) => 2.43 * SPATK + 17 * (Level - 1) + 820,
+          type: "special"
+        },
+		{
+          label: "Close Combat - Damage - per Hit (7 Hits)",
+          formula: (SPATK, Level) => 0.5207 * SPATK + 4 * (Level - 1) + 176,
+          type: "special"
+        },
+		{
+          label: "Close Combat - Heal - per Hit, per Target",
+          formula: (SPATK, Level) => 0.104 * SPATK + 1 * (Level - 1) + 35,
+          type: "special"
+        },
+		{
+          label: "Fly",
+          formula: (SPATK, Level) => 3.159 * SPATK + 22 * (Level - 1) + 1066,
+          type: "special"
+        }
+	]
+	}
+  },
+
+    "comfey": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.45 * SPATK + 11 * (Level - 1) + 210,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Floral Healing",
+      formulas: [
+        {
+          label: "Healing",
+          formula: (SPATK, Level) => 0.97 * SPATK + 0 * (Level - 1) + 300,
+          type: "special"
+        },
+		{
+          label: "Healing - Additional Per Flower",
+          formula: (SPATK, Level) => 0.15 * SPATK + 0 * (Level - 1) + 45,
+          type: "special"
+        },
+		{
+          label: "Overheal Shield",
+          formula: (SPATK, Level) => 0.485 * SPATK + 0 * (Level - 1) + 150,
+          type: "special"
+        },
+		{
+          label: "Overheal Shield - Additional per Flower",
+          formula: (SPATK, Level) => 0.075 * SPATK + 0 * (Level - 1) + 23,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Sweet Kiss",
+      formulas: [
+        {
+          label: "Additional Shield",
+          formula: (SPATK, Level) => 0.85 * SPATK + 0 * (Level - 1) + 288,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Magical Leaf",
+      formulas: [
+        {
+          label: "Damage - per leaf",
+          formula: (SPATK, Level) => 0.16 * SPATK + 1 * (Level - 1) + 60,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Grass Knot",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 0.78 * SPATK + 10 * (Level - 1) + 410,
+          type: "special"
+		},
+		{
+		  label: "Damage - Additional",
+          formula: (SPATK, Level) => 0.78 * SPATK + 10 * (Level - 1) + 410,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Flowery Fields Forever",
+		formulas: [
+        {
+          label: "Heal - per tick",
+          formula: (SPATK, Level) => 0.225 * SPATK + 0 * (Level - 1) + 120,
+          type: "special"
+        },
+		{
+          label: "Empowered Floral Healing Healing - Additional Per Flower",
+          formula: (SPATK, Level) => 0.195 * SPATK + 0 * (Level - 1) + 59,
+          type: "special"
+        },
+		{
+          label: "Empowered Floral Healing Overheal Shield - Additional Per Flower",
+          formula: (SPATK, Level) => 0.0975 * SPATK + 0 * (Level - 1) + 30,
+          type: "special"
+        },
+		{
+          label: "Empowered Floral Healing Healing",
+          formula: (SPATK, Level) => 1.261 * SPATK + 0 * (Level - 1) + 390,
+          type: "special"
+        },
+		{
+          label: "Empowered Floral Healing Overheal Shield",
+          formula: (SPATK, Level) => 0.6305 * SPATK + 0 * (Level - 1) + 195,
+          type: "special"
+        }
+	]
+	}
+  },
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
