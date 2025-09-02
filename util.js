@@ -4210,49 +4210,475 @@ const skillDamage = {
       ]
     },
     "s12": {
-      name: "Shadow Claw",
+      name: "Water Pulse",
       formulas: [
         {
-          label: "Damage - First 2 Hits Damage",
-          formula: (ATK, Level) => 0.68 * ATK + 3 * (Level - 1) + 70,
-          type: "physical"
-        },
-        {
-          label: "Damage - Third Hit",
-          formula: (ATK, Level) => 1.36 * ATK + 6 * (Level - 1) + 140,
+          label: "Damage",
+          formula: (ATK, Level) => 0.87 * ATK + 7 * (Level - 1) + 120,
           type: "physical"
         }
       ]
     },
     "s21": {
-      name: "Wide Guard",
+      name: "Whirlpool",
       formulas: [
         {
-          label: "Shield",
-          formula: (ATK, Level) => 1.7 * ATK + 0 * (Level - 1) + 340,
+          label: "Damage - per Hit",
+          formula: (ATK, Level) => 0.34 * ATK + 2 * (Level - 1) + 60,
+          type: "physical"
+        },
+		{
+          label: "Healing - per Hit (Against Wilds)",
+          formula: (ATK, Level) => 0.06 * ATK + 0 * (Level - 1) + 10,
+          type: "physical"
+        },
+		{
+          label: "Healing - per Hit (Against Players)",
+          formula: (ATK, Level) => 0.18 * ATK + 0 * (Level - 1) + 30,
+          type: "physical"
+        },
+		{
+          label: "Healing - per Hit (Against Wilds) Skill Plus",
+          formula: (ATK, Level) => 0.08 * ATK + 0 * (Level - 1) + 15,
+          type: "physical"
+        },
+		{
+          label: "Healing -per Hit (Against Players) Skill Plus",
+          formula: (ATK, Level) => 0.24 * ATK + 0 * (Level - 1) + 45,
           type: "physical"
         }
       ]
     },
     "s22": {
-      name: "Iron Head",
+      name: "Aqua Tail",
+      formulas: [
+        {
+          label: "Damage - Basic (Close Range)",
+          formula: (ATK, Level) => 0.68 * ATK + 2 * (Level - 1) + 50,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic (Long Range)",
+          formula: (ATK, Level) => 1.224 * ATK + 3 * (Level - 1) + 90,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (Close Range)",
+          formula: (ATK, Level) => 1.36 * ATK + 4 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (Long Range)",
+          formula: (ATK, Level) => 2.448 * ATK + 6 * (Level - 1) + 180,
+          type: "physical"
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 1.10 * ATK + 0 * (Level - 1) + 220,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Belly Bash",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.08 * ATK + 9 * (Level - 1) + 260,
+          type: "physical"
+        },
+		{
+          label: "Attack - Increase",
+          formula: (ATK, Level) => 0 * ATK + 5 * (Level - 1) + 60,
+          type: "physical"
+        },
+	]
+	}
+  },
+
+    "blastoise": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic (2x)",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (3x)",
+          formula: (SPATK, Level) => 0.24 * SPATK + 6 * (Level - 1) + 110,
+          type: "special"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Water Spout",
+      formulas: [
+        {
+          label: "Damage - Area (6 Hits)",
+          formula: (SPATK, Level) => 0.31 * SPATK + 4 * (Level - 1) + 107,
+          type: "special"
+        },
+        {
+          label: "Damage - Area (17 Hits) During Rapid Spin",
+          formula: (SPATK, Level) => 0.31 * SPATK + 4 * (Level - 1) + 107,
+          type: "special"
+        },
+		{
+          label: "Damage - Area (6 Hits) Skill Plus",
+          formula: (SPATK, Level) => 0.36 * SPATK + 4 * (Level - 1) + 125,
+          type: "special"
+        },
+		{
+          label: "Damage - Area (17 Hits) During Rapid Spin Skill Plus",
+          formula: (SPATK, Level) => 0.36 * SPATK + 4 * (Level - 1) + 125,
+          type: "special"
+        },
+      ]
+    },
+    "s12": {
+      name: "Hydro Pump",
+      formulas: [
+        {
+          label: "Damage (3 Hits)",
+          formula: (SPATK, Level) => 0.39 * SPATK + 8 * (Level - 1) + 280,
+          type: "special"
+        },
+        {
+          label: "Damage - During Rapid Spin",
+          formula: (SPATK, Level) => 0.78 * SPATK + 16 * (Level - 1) + 560,
+          type: "special"
+        },
+		{
+          label: "Damage (3 Hits) Skill Plus",
+          formula: (SPATK, Level) => 0.49 * SPATK + 9 * (Level - 1) + 330,
+          type: "special"
+        },
+		{
+          label: "Damage - During Rapid Spin Skill Plus",
+          formula: (SPATK, Level) => 1 * SPATK + 17 * (Level - 1) + 665,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Surf",
       formulas: [
         {
           label: "Damage",
-          formula: (ATK, Level) => 1.18 * ATK + 5 * (Level - 1) + 130,
-          type: "physical"
+          formula: (SPATK, Level) => 1.25 * SPATK + 18 * (Level - 1) + 800,
+          type: "special"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (SPATK, Level) => 2.43 * SPATK + 14 * (Level - 1) + 243,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Rapid Spin",
+      formulas: [
+        {
+          label: "Damage (10 hits)",
+          formula: (SPATK, Level) => 0.21 * SPATK + 3 * (Level - 1) + 140,
+          type: "special"
+        },
+		{
+          label: "Defense & Sp. Defense Skill Plus",
+          formula: (SPATK, Level) => 0 * SPATK + 17 * (Level - 1) + 500,
+          type: "special"
         }
       ]
     },
 	"ult": {
-		name: "Coup de Grace",
+		name: "Hydro Typhoon",
 		formulas: [
         {
           label: "Damage",
-          formula: (ATK, Level) => 2.82 * ATK + 13 * (Level - 1) + 640,
+          formula: (SPATK, Level) => 1.64 * SPATK + 22 * (Level - 1) + 1040,
+          type: "special"
+        },
+		{
+          label: "Shield",
+          formula: (SPATK, Level) => 3.60 * SPATK + 0 * (Level - 1) + 180,
+          type: "special"
+        }
+	]
+	}
+  },
+
+    "blaziken": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Punch Style",
+          formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
+        {
+          label: "Damage - Kick Style",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Fire Punch",
+      formulas: [
+        {
+          label: "Damage - Per Punch (2x)",
+          formula: (ATK, Level) => 0.63 * ATK + 4 * (Level - 1) + 114,
+          type: "physical"
+        },
+		{
+          label: "Damage - Per Punch (2x) Skill Plus",
+          formula: (ATK, Level) => 0.74 * ATK + 5 * (Level - 1) + 138,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Overheat",
+      formulas: [
+        {
+          label: "Damage - Low Charge",
+          formula: (ATK, Level) => 0.988 * ATK + 5 * (Level - 1) + 186,
+          type: "physical"
+        },
+		{
+          label: "Damage - Mid Charge",
+          formula: (ATK, Level) => 2.01 * ATK + 9 * (Level - 1) + 371,
+          type: "physical"
+        },
+		{
+          label: "Damage - High Charge",
+          formula: (ATK, Level) => 3.995 * ATK + 18 * (Level - 1) + 742,
+          type: "physical"
+        },
+		{
+          label: "Damage - High Charge Skill Plus",
+          formula: (ATK, Level) => 1.085 * ATK + 6 * (Level - 1) + 215,
+          type: "physical"
+        },
+		{
+          label: "Damage - Mid Charge Skill Plus",
+          formula: (ATK, Level) => 2.21 * ATK + 10 * (Level - 1) + 409,
+          type: "physical"
+        },
+		{
+          label: "Damage - High Charge Skill Plus",
+          formula: (ATK, Level) => 4.385 * ATK + 20 * (Level - 1) + 818,
+          type: "physical"
+        },
+      ]
+    },
+    "s21": {
+      name: "Focus Blast",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.94 * ATK + 10 * (Level - 1) + 440,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Blaze Kick",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.44 * ATK + 7 * (Level - 1) + 330,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Spinning Flame Fist",
+		formulas: [
+        {
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 0.5 * ATK + 4 * (Level - 1) + 100,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "blissey": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.38 * SPATK + 22 * (Level - 1) + 420,
+          type: "special"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Egg Bomb",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.41 * SPATK + 21 * (Level - 1) + 460,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Helping Hand",
+	  formulas: [
+      ]
+    },
+    "s21": {
+      name: "Soft-Boiled",
+      formulas: [
+        {
+          label: "Healing",
+          formula: (SPATK, Level) => 1.70 * SPATK + 0 * (Level - 1) + 220,
+          type: "special"
+        },
+		{
+          label: "Healing - HoT (2x)",
+          formula: (SPATK, Level) => 0.70 * SPATK + 0 * (Level - 1) + 85,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Safeguard",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (SPATK, Level) => 1.85 * SPATK + 13 * (Level - 1) + 620,
+          type: "special"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (SPATK, Level) => 2.05 * SPATK + 14 * (Level - 1) + 690,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Bliss Assistance",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.944 * SPATK + 25 * (Level - 1) + 1190,
+          type: "special"
+        },
+		{
+          label: "Shield",
+          formula: (SPATK, Level) => 2.4 * SPATK + 0 * (Level - 1) + 1200,
+          type: "special"
+        }
 	]
+	}
+  },
+
+    "buzzwole": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (per Hit - 2 Hits)",
+          formula: (ATK, Level) => 0.8 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Healing - Boosted (per Hit - 2 Hits)",
+          formula: (ATK, Level) => 0.78 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Lunge",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.89 * ATK + 6 * (Level - 1) + 150,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Smack Down",
+      formulas: [
+        {
+          label: "Damage - Initial Hit",
+          formula: (ATK, Level) => 0.74 * ATK + 3 * (Level - 1) + 140,
+          type: "physical"
+        },
+		{
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 1.782 * ATK + 7 * (Level - 1) + 336,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Leech Life",
+      formulas: [
+        {
+          label: "Damage - per Tick",
+          formula: (ATK, Level) => 0.76 * ATK + 3 * (Level - 1) + 120,
+          type: "physical"
+        },
+		{
+          label: "Damage - Unstoppable Target",
+          formula: (ATK, Level) => 3.8 * ATK + 15 * (Level - 1) + 600,
+          type: "physical"
+        },
+		{
+          label: "Healing - Percentage of Damage Dealt (per hit)",
+          formula: (ATK, Level) => 0 * ATK + 5 * (Level - 1) + 40,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Blaze Kick",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.44 * ATK + 7 * (Level - 1) + 330,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Spinning Flame Fist",
+		formulas: [
+        {
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 0.5 * ATK + 4 * (Level - 1) + 100,
+          type: "physical"
+        }
+	 ]
 	}
   },
   
