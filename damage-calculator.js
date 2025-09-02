@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const levelValor = document.getElementById("nivel-valor");
   const itemSlots = document.querySelectorAll(".item-slot");
   const btnResetar = document.getElementById("resetar");
-  const baseDiv = document.getElementById("status-base");
-  const finalDiv = document.getElementById("status-final");
+  const statusFinalDiv = document.getElementById("status-final");
+  const skillsDiv = document.getElementById("skills-column");
   const resultado = document.getElementById("resultado");
   const battleRadios = document.querySelectorAll("input[name='battle']");
 
@@ -52,7 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "Sp. Atk Specs": { stat: "SpATK", perStack: 16, max: 6, percent: false },
     "Aeos Cookie": { stat: "HP", perStack: 200, max: 6, percent: false },
     "Accel Bracer": { stat: "ATK", perStack: 0.6, max: 20, percent: true },
-    "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true }
+    "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true },
+    "Weakness Police": { stat: "ATK", perStack: 2.5, max: 4, percent: true },
+    "Charging Charm": { stat: "ATK", perStack: 70, max: 1, percent: true, fixedBonus: 40 }
   };
 
   // ---- Função de cálculo ----
@@ -103,13 +105,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const config = STACKABLE_ITEMS[itemName];
         const range = slot.querySelector(".stack-range");
         const stacks = range ? parseInt(range.value, 10) || 1 : 1;
-        if (config.percent) {
-          const bonus = (base[config.stat] * (config.perStack / 100)) * stacks;
-          modified[config.stat] += bonus;
-        } else {
-          modified[config.stat] += config.perStack * stacks;
+
+        // Caso especial para "Charging Charm" (valor fixo + percentual)
+        if (itemName === "Charging Charm") {
+            const bonusPercent = (base[config.stat] * (config.perStack / 100)) * stacks;
+            modified[config.stat] += config.fixedBonus + bonusPercent; // 40 fixo + 70% do ATK base
         }
-      }
+        else if (config.percent) {
+            const bonus = (base[config.stat] * (config.perStack / 100)) * stacks;
+            modified[config.stat] += bonus;
+        } else {
+            modified[config.stat] += config.perStack * stacks;
+        }
+    }
     });
 
     // Aplicar efeito do Battle Item
@@ -137,12 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `);
 
-    // Base
-    baseDiv.innerHTML = STAT_KEYS
-      .map(k => statLine(STAT_LABELS[k], formatValue(k, base[k]))).join("");
-
-    // Final
-    finalDiv.innerHTML = STAT_KEYS
+    // Status Final (com comparação base → final)
+    statusFinalDiv.innerHTML = STAT_KEYS
       .map(k => {
         const b = Number(base[k]) || 0;
         const m = Number(modified[k]) || 0;
@@ -166,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
              title="${gameHeldItens[it]}" 
              style="width:40px; height:40px; margin:0 5px;">
       `).join("");
-      finalDiv.insertAdjacentHTML("beforeend", `
+      statusFinalDiv.insertAdjacentHTML("beforeend", `
         <div class="stat-line">
           <span class="stat-label">Itens</span>
           <span class="stat-value">${itensHtml}</span>
@@ -180,12 +184,52 @@ document.addEventListener("DOMContentLoaded", () => {
                           alt="${selectedBattle}" 
                           title="${selectedBattle}" 
                           style="width:40px; height:40px;">`;
-      finalDiv.insertAdjacentHTML("beforeend", `
+      statusFinalDiv.insertAdjacentHTML("beforeend", `
         <div class="stat-line">
           <span class="stat-label">Battle Item</span>
           <span class="stat-value">${battleImg}</span>
         </div>
       `);
+    }
+
+    // ---- Mostrar Skills na coluna separada ----
+    skillsDiv.innerHTML = "";
+    
+    if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
+      const skills = skillDamage[poke];
+
+      Object.keys(skills).forEach(key => {
+        const s = skills[key];
+        const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
+        const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
+
+        
+        const skillHtml = `
+          <div class="skill-box" style="margin-bottom: 15px;">
+            <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+            onerror="this.onerror=null;this.src='${fallbackImg}'">
+            <div class="skill-info">
+              <h4>${s.name}</h4>
+              <ul>
+                ${s.formulas.map(f => {
+                  const baseVal = f.formula(base.ATK, targetLevel);
+                  const modifiedVal = f.formula(modified.ATK, targetLevel);
+                  
+                  if (Math.round(modifiedVal) > Math.round(baseVal)) {
+                    return `<li><strong>${f.label}:</strong> ${Math.round(baseVal)} → <span style="color:limegreen;">▲ ${Math.round(modifiedVal)}</span></li>`;
+                  } else {
+                    return `<li><strong>${f.label}:</strong> ${Math.round(modifiedVal)}</li>`;
+                  }
+                }).join("")}
+              </ul>
+            </div>
+          </div>
+        `;
+        
+        skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
+      });
+    } else {
+      skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
     }
 
     resultado.style.display = "flex";
@@ -269,8 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     battleRadios.forEach(r => { r.checked = false; });
     resultado.style.display = "none";
-    baseDiv.innerHTML = "";
-    finalDiv.innerHTML = "";
+    statusFinalDiv.innerHTML = "";
+    skillsDiv.innerHTML = "";
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
   });
