@@ -4661,21 +4661,115 @@ const skillDamage = {
       ]
     },
     "s22": {
-      name: "Blaze Kick",
+      name: "Superpower",
       formulas: [
         {
-          label: "Damage",
-          formula: (ATK, Level) => 1.44 * ATK + 7 * (Level - 1) + 330,
+          label: "Damage - Initial",
+          formula: (ATK, Level) => 0.69 * ATK + 2 * (Level - 1) + 105,
+          type: "physical"
+        },
+		{
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 2.3 * ATK + 8 * (Level - 1) + 350,
           type: "physical"
         },
       ]
     },
 	"ult": {
-		name: "Spinning Flame Fist",
+		name: "Ultra Swole Slam",
 		formulas: [
         {
-          label: "Damage (2x)",
-          formula: (ATK, Level) => 0.5 * ATK + 4 * (Level - 1) + 100,
+          label: "Damage - Sweep",
+          formula: (ATK, Level) => 2.13 * ATK + 4 * (Level - 1) + 210,
+          type: "physical"
+        },
+		{
+          label: "Damage - Seek",
+          formula: (ATK, Level) => 2.13 * ATK + 4 * (Level - 1) + 210,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "ceruledge": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Charcadet)",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (x2) (Ceruledge)",
+          formula: (ATK, Level) => 0.75 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Bitter Blade",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.42 * ATK + 33 * (Level - 1) + 330,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Pyscho Cut",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.6 * ATK + 18 * (Level - 1) + 550,
+          type: "physical"
+        },
+		{
+          label: "Defense Reduction (Flat)",
+          formula: (ATK, Level) => 0 * ATK + 2 * (Level - 1) + 20,
+          type: "physical"
+        },
+		{
+          label: "Defense Reduction Skill Plus",
+          formula: (ATK, Level) => 0 * ATK + 3 * (Level - 1) + 30,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Phantom Force",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.25 * ATK + 8 * (Level - 1) + 312,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Flame Charge",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.65 * ATK + 5 * (Level - 1) + 250,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Revenant Rend",
+		formulas: [
+        {
+          label: "Damage (x3)",
+          formula: (ATK, Level) => 1.2 * ATK + 8 * (Level - 1) + 500,
           type: "physical"
         }
 	 ]
