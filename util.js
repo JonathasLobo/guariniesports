@@ -4775,6 +4775,115 @@ const skillDamage = {
 	 ]
 	}
   },
+
+    "chandelure": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.33 * SPATK + 13 * (Level - 1) + 140,
+          type: "special"
+        },
+		{
+          label: "Damage - Burn (5 Ticks)",
+          formula: (SPATK, Level) => 0.06 * SPATK + 2 * (Level - 1) + 20,
+          type: "special"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Flamethrower",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.12 * SPATK + 7 * (Level - 1) + 535,
+          type: "special"
+        },
+        {
+          label: "Damage - Burn (5 Ticks)",
+          formula: (SPATK, Level) => 0.06 * SPATK + 2 * (Level - 1) + 20,
+          type: "special"
+        },
+		{
+          label: "Damage (Explosion)",
+          formula: (SPATK, Level) => 1.49 * SPATK + 24 * (Level - 1) + 700,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Overheat",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.67 * SPATK + 29 * (Level - 1) + 280,
+          type: "special"
+        },
+        {
+          label: "Damage - Burn (5 Ticks)",
+          formula: (SPATK, Level) => 0.06 * SPATK + 2 * (Level - 1) + 20,
+          type: "special"
+        },
+		{
+          label: "Exploding Flame level 0",
+          formula: (SPATK, Level) => 0.33 * SPATK + 13 * (Level - 1) + 140,
+          type: "special"
+        },
+		{
+          label: "Exploding Flame level 1",
+          formula: (SPATK, Level) => 0.66 * SPATK + 0 * (Level - 1) + 280,
+          type: "special"
+        },
+		{
+          label: "Exploding Flame level 2",
+          formula: (SPATK, Level) => 0.99 * SPATK + 0 * (Level - 1) + 420,
+          type: "special"
+        },
+		{
+          label: "Exploding Flame level 3",
+          formula: (SPATK, Level) => 1.32 * SPATK + 0 * (Level - 1) + 560,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Poltergeist",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.39 * SPATK + 6 * (Level - 1) + 180,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Imprison",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Ignite Midnight",
+		formulas: [
+        {
+          label: "Damage (6x)",
+          formula: (SPATK, Level) => 0.56 * SPATK + 29 * (Level - 1) + 270,
+          type: "special"
+        },
+		{
+          label: "Final Blast Damage",
+          formula: (SPATK, Level) => 0.84 * SPATK + 29 * (Level - 1) + 405,
+          type: "special"
+        }
+	]
+	}
+  },
   
   /*"pikachu": {
     "s11": {

@@ -205,26 +205,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         
         const skillHtml = `
-          <div class="skill-box" style="margin-bottom: 15px;">
-            <img src="${imgPath}" alt="${s.name}" class="skill-icon"
-            onerror="this.onerror=null;this.src='${fallbackImg}'">
-            <div class="skill-info">
-              <h4>${s.name}</h4>
-              <ul>
-                ${s.formulas.map(f => {
-                  const baseVal = f.formula(base.ATK, targetLevel);
-                  const modifiedVal = f.formula(modified.ATK, targetLevel);
-                  
-                  if (Math.round(modifiedVal) > Math.round(baseVal)) {
-                    return `<li><strong>${f.label}:</strong> ${Math.round(baseVal)} → <span style="color:limegreen;">▲ ${Math.round(modifiedVal)}</span></li>`;
-                  } else {
-                    return `<li><strong>${f.label}:</strong> ${Math.round(modifiedVal)}</li>`;
-                  }
-                }).join("")}
-              </ul>
-            </div>
+        <div class="skill-box" style="margin-bottom: 15px;">
+          <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+          onerror="this.onerror=null;this.src='${fallbackImg}'">
+          <div class="skill-info">
+            <h4>${s.name}</h4>
+            <ul>
+              ${s.formulas.map(f => {
+                // Determinar qual atributo usar baseado no tipo
+                const baseAttribute = f.type === "special" ? base.SpATK : base.ATK;
+                const modifiedAttribute = f.type === "special" ? modified.SpATK : modified.ATK;
+                
+                const baseVal = f.formula(baseAttribute, targetLevel);
+                const modifiedVal = f.formula(modifiedAttribute, targetLevel);
+                
+                if (Math.round(modifiedVal) > Math.round(baseVal)) {
+                  return `<li><strong>${f.label}:</strong> ${Math.round(baseVal)} → <span style="color:limegreen;">▲ ${Math.round(modifiedVal)}</span></li>`;
+                } else {
+                  return `<li><strong>${f.label}:</strong> ${Math.round(modifiedVal)}</li>`;
+                }
+              }).join("")}
+            </ul>
           </div>
-        `;
+        </div>
+      `;
         
         skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
       });
