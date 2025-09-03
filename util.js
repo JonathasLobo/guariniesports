@@ -6703,6 +6703,449 @@ const skillDamage = {
 	}
   },
 
+  	"gengar": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 0.40 * ATK + 0 * (Level - 1) + 1000,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.84 * SPATK + 8 * (Level - 1) + 160,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dream Eater",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 2.6 * SPATK + 12 * (Level - 1) + 550,
+          type: "special"
+        },
+		{
+          label: "Healing",
+          formula: (SPATK, Level) => 0.5 * SPATK + 8 * (Level - 1) + 300,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SPATK, Level) => 2.93 * SPATK + 14 * (Level - 1) + 620,
+          type: "special"
+        },
+		{
+          label: "Healing Skill Plus",
+          formula: (SPATK, Level) => 0.6 * SPATK + 10 * (Level - 1) + 360,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Sludge Bomb",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.06 * SPATK + 6 * (Level - 1) + 230,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Shadow Ball",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.152 * SPATK + 32 * (Level - 1) + 756,
+          type: "special"
+        },
+		{
+          label: "Sp. Defense Reduction",
+          formula: (SPATK, Level) => 0 * SPATK + 5 * (Level - 1) + 80,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SPATK, Level) => 1.28 * SPATK + 36 * (Level - 1) + 840,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Hex",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.05 * SPATK + 3 * (Level - 1) + 150,
+          type: "special"
+		},
+		{
+		  label: "Damage Skill Plus",
+          formula: (SPATK, Level) => 1.25 * SPATK + 4 * (Level - 1) + 200,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Phantom Ambush",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 2.63 * SPATK + 12 * (Level - 1) + 560,
+          type: "special"
+        }
+	]
+	}
+  },
+
+    "glaceon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 0.39 * ATK + 4 * (Level - 1) + 70,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (Eevee)",
+          formula: (SPATK, Level) => 0.4485 * SPATK + 5 * (Level - 1) + 81,
+          type: "special"
+        },
+		{
+          label: "Damage - Boosted (Glaceon)",
+          formula: (SPATK, Level) => 0.47 * SPATK + 5 * (Level - 1) + 90,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Icicle Spear",
+      formulas: [
+        {
+          label: "Damage - per Ice Crystal",
+          formula: (SPATK, Level) => 0.37 * SPATK + 4 * (Level - 1) + 97,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Icy Wind",
+      formulas: [
+        {
+          label: "Damage - per Ice Crystal",
+          formula: (SPATK, Level) => 0.20 * SPATK + 2 * (Level - 1) + 35,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Ice Shard",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.52 * SPATK + 6 * (Level - 1) + 100,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Freeze Dry",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 0.71 * SPATK + 5 * (Level - 1) + 226,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Glacial Stage",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1 * SPATK + 7 * (Level - 1) + 320,
+          type: "special"
+        }
+	]
+	}
+  },
+
+    "goodra": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.57 * SPATK + 6 * (Level - 1) + 190,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Muddy Water",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.32 * SPATK + 10 * (Level - 1) + 250,
+          type: "special"
+        },
+		{
+          label: "Defense & Sp. Defense per Stack",
+          formula: (SPATK, Level) => 0 * SPATK + 6 * (Level - 1) + 72,
+          type: "special"
+        },
+		{
+          label: "Defense & Sp. Defense per Stack Skill Plus",
+          formula: (SPATK, Level) => 0 * SPATK + 10 * (Level - 1) + 108,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dragon Pulse",
+      formulas: [
+        {
+          label: "Damage (Center - per hit up to 4 hits)",
+          formula: (SPATK, Level) => 0.68 * SPATK + 5 * (Level - 1) + 230,
+          type: "special"
+        },
+		{
+          label: "Damage (Side - per hit up to 4 hits)",
+          formula: (SPATK, Level) => 0.408 * SPATK + 3 * (Level - 1) + 138,
+          type: "special"
+        },
+		{
+          label: "Healing (Per hit up to 4x based on number of Center hits)",
+          formula: (SPATK, Level) => 0 * SPATK + 8 * (Level - 1) + 30,
+          type: "special",
+		  additionalText: "10% Missing HP"
+        },
+		{
+          label: "Healing (Gooey Center- Per hit up to 4x based on number of Center hits)",
+          formula: (SPATK, Level) => 0 * SPATK + 8 * (Level - 1) + 30,
+          type: "special",
+		  additionalText: "11% Missing HP"
+        },
+		{
+          label: "Healing (Per hit up to 4x based on number of Center hits) Skill Plus",
+          formula: (SPATK, Level) => 0 * SPATK + 8 * (Level - 1) + 30,
+          type: "special",
+		  additionalText: "12% Missing HP"
+        },
+		{
+          label: "Healing (Gooey Center- Per hit up to 4x based on number of Center hits) Skill Plus",
+          formula: (SPATK, Level) => 0 * SPATK + 8 * (Level - 1) + 30,
+          type: "special",
+		  additionalText: "13% Missing HP"
+        }
+      ]
+    },
+    "s21": {
+      name: "Power Whip",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.11 * SPATK + 9 * (Level - 1) + 370,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Acid Spray",
+      formulas: [
+		{
+		  label: "Damage (Initial)",
+          formula: (SPATK, Level) => 0.46 * SPATK + 4 * (Level - 1) + 150,
+          type: "special"
+		},
+		{
+		  label: "Damage (Dash 2x hits)",
+          formula: (SPATK, Level) => 0.46 * SPATK + 4 * (Level - 1) + 150,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Right as Rain",
+		formulas: [
+	]
+	}
+  },
+
+  	"greedent": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 0.75 * ATK + 4 * (Level - 1) + 80,
+          type: "physical"
+        }
+      ]
+	},
+
+    "1a": {
+      name: "Bullet Seed",
+      formulas: [
+		{
+          label: "Damage - per Seed",
+          formula: (ATK, Level) => 0.33 * ATK + 4 * (Level - 1) + 80,
+          type: "physical"
+        },
+		{
+          label: "Damage - per Seed Skill Plus",
+          formula: (ATK, Level) => 0.35 * ATK + 4 * (Level - 1) + 90,
+          type: "physical"
+        }
+      ]
+    },
+    "1b": {
+      name: "Belch",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.7 * ATK + 30 * (Level - 1) + 650,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.8 * ATK + 32 * (Level - 1) + 695,
+          type: "physical"
+        }
+      ]
+    },
+    "2a": {
+      name: "Stuff Cheeks",
+      formulas: [
+      ]
+    },
+    "2b": {
+      name: "Covet",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.55 * ATK + 4 * (Level - 1) + 180,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 0.59 * ATK + 5 * (Level - 1) + 200,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Berry Belly Flop",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.41 * ATK + 22 * (Level - 1) + 1050,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "greninja": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Water Shuriken",
+      formulas: [
+		{
+          label: "Damage - per Shuriken",
+          formula: (ATK, Level) => 1.35 * ATK + 8 * (Level - 1) + 210,
+          type: "physical"
+        },
+		{
+          label: "Healing (per Unique Enemy)",
+          formula: (ATK, Level) => 0.15 * ATK + 2 * (Level - 1) + 25,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Surf",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 2 * ATK + 8 * (Level - 1) + 370,
+          type: "physical"
+        },
+		{
+          label: "Damage - Bonus",
+          formula: (ATK, Level) => 1 * ATK + 4 * (Level - 1) + 185,
+          type: "physical"
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 0.452 * ATK + 5 * (Level - 1) + 82,
+          type: "physical"
+        },
+		{
+          label: "Healing Skill Plus",
+          formula: (ATK, Level) => 0.5424 * ATK + 6 * (Level - 1) + 150,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Double Team",
+      formulas: [
+      ]
+    },
+    "s22": {
+      name: "Smokescreen",
+      formulas: [
+		{
+          label: "Damage - Boosted (Replacement)",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Waterburst Shuriken",
+		formulas: [
+        {
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 2.2 * ATK + 11 * (Level - 1) + 420,
+          type: "physical"
+        }
+	 ]
+	}
+  },
 
   /*"pikachu": {
     "s11": {
