@@ -192,50 +192,113 @@ document.addEventListener("DOMContentLoaded", () => {
       `);
     }
 
-    // ---- Mostrar Skills na coluna separada ----
-    skillsDiv.innerHTML = "";
+// Substitua a parte do código que calcula as skills (aproximadamente linha 180-220) por esta versão:
+
+skillsDiv.innerHTML = "";
+
+if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
+  const skills = skillDamage[poke];
+
+  Object.keys(skills).forEach(key => {
+    const s = skills[key];
+    const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
+    const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
+
+    // Determinar se é ultimate para aplicar classe CSS especial
+    const isUltimate = key === "ult";
+    const ultimateClass = isUltimate ? " ultimate" : "";
+
+    // Array para armazenar valores calculados desta skill
+    const calculatedValues = [];
     
-    if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
-      const skills = skillDamage[poke];
-
-      Object.keys(skills).forEach(key => {
-        const s = skills[key];
-        const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
-        const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
-
+    // Primeiro passe: calcular valores não dependentes
+    s.formulas.forEach((f, index) => {
+      if (f.type !== "dependent") {
+        let baseVal, modifiedVal;
         
-        const skillHtml = `
-        <div class="skill-box" style="margin-bottom: 15px;">
-          <img src="${imgPath}" alt="${s.name}" class="skill-icon"
-          onerror="this.onerror=null;this.src='${fallbackImg}'">
-          <div class="skill-info">
-            <h4>${s.name}</h4>
-            <ul>
-              ${s.formulas.map(f => {
-                // Determinar qual atributo usar baseado no tipo
-                const baseAttribute = f.type === "special" ? base.SpATK : base.ATK;
-                const modifiedAttribute = f.type === "special" ? modified.SpATK : modified.ATK;
-                
-                const baseVal = f.formula(baseAttribute, targetLevel);
-                const modifiedVal = f.formula(modifiedAttribute, targetLevel);
-                
-                if (Math.round(modifiedVal) > Math.round(baseVal)) {
-                  return `<li><strong>${f.label}:</strong> ${Math.round(baseVal)} → <span style="color:limegreen;">▲ ${Math.round(modifiedVal)}</span></li>`;
-                } else {
-                  return `<li><strong>${f.label}:</strong> ${Math.round(modifiedVal)}</li>`;
-                }
-              }).join("")}
-            </ul>
-          </div>
-        </div>
-      `;
+        if (f.type === "multi" || f.useAllStats) {
+          baseVal = f.formula(base, targetLevel);
+          modifiedVal = f.formula(modified, targetLevel);
+        } else {
+          let baseAttribute, modifiedAttribute;
+          
+          switch(f.type) {
+            case "special":
+              baseAttribute = base.SpATK;
+              modifiedAttribute = modified.SpATK;
+              break;
+            case "hp":
+              baseAttribute = base.HP;
+              modifiedAttribute = modified.HP;
+              break;
+            case "physical":
+            default:
+              baseAttribute = base.ATK;
+              modifiedAttribute = modified.ATK;
+              break;
+          }
+          
+          baseVal = f.formula(baseAttribute, targetLevel, base.HP);
+          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+        }
         
-        skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
-      });
-    } else {
-      skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
-    }
+        calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+      }
+    });
+    
+    // Segundo passe: calcular valores dependentes
+    s.formulas.forEach((f, index) => {
+      if (f.type === "dependent") {
+        const dependsOnIndex = f.dependsOn;
+        if (calculatedValues[dependsOnIndex]) {
+          // Usa a fórmula definida na skill, passando o valor da dependência
+          const baseVal = f.formula(calculatedValues[dependsOnIndex].base, targetLevel);
+          const modifiedVal = f.formula(calculatedValues[dependsOnIndex].modified, targetLevel);
+          calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+        } else {
+          // Fallback se a dependência não foi encontrada
+          calculatedValues[index] = { base: 0, modified: 0 };
+        }
+      }
+    });
 
+    const skillHtml = `
+    <div class="skill-box${ultimateClass}" style="margin-bottom: 15px;">
+      <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+      onerror="this.onerror=null;this.src='${fallbackImg}'">
+      <div class="skill-info">
+        <h4>${s.name}</h4>
+        <ul>
+          ${s.formulas.map((f, index) => {
+            const values = calculatedValues[index];
+            
+            // Formatação do resultado com possível texto adicional
+            let displayText = "";
+            let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
+            
+            if (Math.round(values.modified) > Math.round(values.base)) {
+              displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+            } else {
+              displayText = `${Math.round(values.modified)}`;
+            }
+            
+            // Adicionar texto explicativo se existir
+            if (hasAdditionalText) {
+              displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
+            }
+            
+            return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
+          }).join("")}
+        </ul>
+      </div>
+    </div>
+  `;
+    
+    skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
+  });
+} else {
+  skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
+}
     resultado.style.display = "flex";
   };
 

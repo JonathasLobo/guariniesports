@@ -431,3 +431,23 @@ textarea.form-control {
     font-size: 11px;
   }
 }
+
+/* Adicione esta regra ao seu calculadora.css existente */
+
+/* Estilo especial para Ultimate skills */
+.skill-box.ultimate {
+  border: 2px solid #ff8c42; /* Borda alaranjada para ultimate */
+  background: rgba(255, 140, 66, 0.1); /* Background levemente alaranjado */
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3); /* Sombra alaranjada sutil */
+}
+
+.skill-box.ultimate .skill-info h4 {
+  color: #ff6b00; /* Título da ultimate em laranja mais forte */
+}
+
+/* Estilo para texto adicional nas fórmulas */
+.skill-info li span[style*="color:#888"] {
+  font-size: 11px;
+  margin-left: 4px;
+  display: inline-block;
+}

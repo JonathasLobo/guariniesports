@@ -5979,6 +5979,297 @@ const skillDamage = {
 	}
   },
 
+    "dragonite": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dragon Dance",
+      formulas: [
+      ]
+    },
+    "s12": {
+      name: "Extreme Speed",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.82 * ATK + 4 * (Level - 1) + 150,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Hyper Beam",
+      formulas: [
+        {
+          label: "Damage - Stage 0",
+          formula: (ATK, Level) => 1.87 * ATK + 8 * (Level - 1) + 350,
+          type: "physical"
+        },
+		{
+          label: "Damage - Stage 1",
+          formula: (ATK, Level) => 2.244 * ATK + 10 * (Level - 1) + 420,
+          type: "physical"
+        },
+		{
+          label: "Damage - Stage 2",
+          formula: (ATK, Level) => 2.618 * ATK + 11 * (Level - 1) + 490,
+          type: "physical"
+        },
+		{
+          label: "Damage - Stage 2",
+          formula: (ATK, Level) => 2.992 * ATK + 13 * (Level - 1) + 560,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Outrage",
+      formulas: [
+		{
+          label: "Damage - Stomp",
+          formula: (ATK, Level) => 1.76 * ATK + 7 * (Level - 1) + 330,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosteds",
+          formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Draco Impact",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.03 * ATK + 18 * (Level - 1) + 860,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "duraludon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Flash Cannon",
+      formulas: [
+		{
+          label: "Damage - Rupture",
+          formula: (ATK, Level) => 0.525 * ATK + 2 * (Level - 1) + 60,
+          type: "physical"
+        },
+		{
+          label: "Damage - Cannon Basic",
+          formula: (ATK, Level) => 1.05 * ATK + 3 * (Level - 1) + 120,
+          type: "physical"
+        },
+      ]
+    },
+    "s12": {
+      name: "Dragon Pulse",
+      formulas: [
+		{
+          label: "Damage - No Charge",
+          formula: (ATK, Level) => 0.32 * ATK + 1 * (Level - 1) + 38,
+          type: "physical"
+        },
+		{
+          label: "Damage - No Charge (per Mark): (all charge levels cap at 400 dmg)",
+          formula: (ATK, Level) => 0.45 * ATK + 1 * (Level - 1) + 54,
+          type: "physical",
+		  additionalText: "0.8% target missing HP"
+        },
+		{
+          label: "Damage - No Charge (Final Ring): (all charge levels cap at 600 dmg)",
+          formula: (ATK, Level) => 0.59 * ATK + 1 * (Level - 1) + 70,
+          type: "physical",
+		  additionalText: "1.6% target missing HP"
+        },
+		{
+          label: "Damage - Bonus (After KO)",
+          formula: (ATK, Level) => 0.15 * ATK + 1 * (Level - 1) + 27,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dragon Tail",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.79 * ATK + 5 * (Level - 1) + 220,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Stealth Rock",
+      formulas: [
+		{
+          label: "Damage - per Tick (4 Ticks)",
+          formula: (ATK, Level) => 0.28 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        },
+		{
+          label: "Shield - per Stealth Rock",
+          formula: (ATK, Level) => 0.60 * ATK + 0 * (Level - 1) + 250,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Revolving Ruin",
+		formulas: [
+        {
+          label: "Damage - per Hit",
+          formula: (ATK, Level) => 1.63 * ATK + 6 * (Level - 1) + 350,
+          type: "physical"
+        },
+		{
+          label: "Damage - per Enemy",
+          formula: (ATK, Level) => 0.68 * ATK + 0 * (Level - 1) + 68,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burning Ring (per Tick)",
+          formula: (ATK, Level) => 0.35 * ATK + 0 * (Level - 1) + 63,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  	"eldegoss": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.73 * SPATK + 6 * (Level - 1) + 120,
+          type: "special"
+        },
+		{
+          label: "Damage - Bonus",
+          formula: (SPATK, Level) => 0.1825 * SPATK + 2 * (Level - 1) + 30,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Pollen Puff",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.80 * SPATK + 5 * (Level - 1) + 155,
+          type: "special"
+        },
+		{
+          label: "Healing",
+          formula: (SPATK, Level) => 1.5 * SPATK + 13 * (Level - 1) + 300,
+          type: "special"
+        },
+		{
+          label: "Damage - DoT (every 0.5s, up to 4 times) Skill Plus",
+          formula: (SPATK, Level) => 0.09 * SPATK + 1 * (Level - 1) + 18,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Leaf Tornado",
+      formulas: [
+        {
+          label: "Damage - First Hit",
+          formula: (SPATK, Level) => 1.06 * SPATK + 6 * (Level - 1) + 240,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (firstHitDamage, Level) => 0.25 * firstHitDamage, // 25% do primeiro hit
+		  type: "dependent",
+		  dependsOn: 0
+        },
+      ]
+    },
+    "s21": {
+      name: "Cotton Guard",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (SPATK, Level) => 1.725 * SPATK + 23 * (Level - 1) + 290,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Cotton Spore",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.48 * SPATK + 14 * (Level - 1) + 350,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Cotton Cloud Crash",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 2 * SPATK + 8 * (Level - 1) + 530,
+          type: "special"
+        },
+		{
+          label: "Damage",
+          formula: (SPATK, Level) => 3.06 * SPATK + 13 * (Level - 1) + 636,
+          type: "special"
+        }
+	]
+	}
+  },
+
+
 
   /*"pikachu": {
     "s11": {
