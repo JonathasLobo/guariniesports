@@ -5275,6 +5275,711 @@ const skillDamage = {
 	]
 	}
   },
+
+    "cramorant": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.76 * SPATK + 16 * (Level - 1) + 290,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Surf",
+      formulas: [
+        {
+          label: "First Hit",
+          formula: (SPATK, Level) => 0.75 * SPATK + 9 * (Level - 1) + 390,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (SPATK, Level) => 1.125 * SPATK + 14 * (Level - 1) + 585,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dive",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.45 * SPATK + 9 * (Level - 1) + 180,
+          type: "special"
+        },
+		{
+          label: "Damage - Additional (Next Boosted)",
+          formula: (SPATK, Level) => 0.38 * SPATK + 8 * (Level - 1) + 145,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SPATK, Level) => 0.50 * SPATK + 10 * (Level - 1) + 210,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Hurricane",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.2 * SPATK + 11 * (Level - 1) + 620,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Air Slash",
+      formulas: [
+		{
+		  label: "Damage - per Blade (5 blades)",
+          formula: (SPATK, Level) => 0.35 * SPATK + 6 * (Level - 1) + 150,
+          type: "special"
+		},
+		{
+		  label: "Healing - per Blade (5 blades) Skill Plus",
+          formula: (SPATK, Level) => 0.30 * SPATK + 0 * (Level - 1) + 40,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Gatling Gulp Missile",
+		formulas: [
+        {
+          label: "Damage (10x)",
+          formula: (SPATK, Level) => 0.85 * SPATK + 8 * (Level - 1) + 330,
+          type: "special"
+        }
+	]
+	}
+  },
+
+  	"crustle": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 0.96 * ATK + 7 * (Level - 1) + 130,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Rock Tomb",
+      formulas: [
+        {
+          label: "Damage - Projectile",
+          formula: (ATK, Level) => 0.81 * ATK + 7 * (Level - 1) + 260,
+          type: "physical"
+        },
+		{
+          label: "Damage - Barrier Spawn",
+          formula: (ATK, Level) => 0.405 * ATK + 4 * (Level - 1) + 130,
+          type: "physical"
+        },
+		{
+          label: "Damage - Barrier De-Spawn",
+          formula: (ATK, Level) => 0.405 * ATK + 4 * (Level - 1) + 130,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Shell Smash",
+      formulas: [
+      ]
+    },
+    "s21": {
+      name: "Stealth Rock",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.207 * ATK + 7 * (Level - 1) + 175,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "X-Scissor",
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (ATK, Level) => 1.14 * ATK + 3 * (Level - 1) + 108,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 1.41 * ATK + 3 * (Level - 1) + 117,
+          type: "physical"
+        },
+		{
+          label: "Damage - Third Hit",
+          formula: (ATK, Level) => 1.68 * ATK + 3 * (Level - 1) + 126,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Rubble Rouser",
+		formulas: [
+        {
+          label: "Damage - Revenge",
+          formula: (ATK, Level) => 1.6 * ATK + 12 * (Level - 1) + 360,
+          type: "physical"
+        },
+		{
+          label: "Damage - Aura",
+          formula: (ATK, Level) => 0.4 * ATK + 3 * (Level - 1) + 90,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
+  	"darkrai": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 1.6 * SPATK + 0 * (Level - 1) + 336,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dark Void",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1 * SPATK + 11 * (Level - 1) + 300,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Nasty Plot",
+      formulas: [
+        {
+          label: "Damage - Additional (Per Counter)",
+          formula: (SPATK, Level) => 1.1 * SPATK + 8 * (Level - 1) + 290,
+          type: "special"
+        },
+		{
+          label: "Damage - Boosted & Additional (Per Counter)",
+          formula: (SPATK, Level) => 0.96 * SPATK + 6 * (Level - 1) + 250,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Shadow Claw",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.62 * SPATK + 12 * (Level - 1) + 432,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw",
+          formula: (SPATK, Level) => 2.106 * SPATK + 16 * (Level - 1) + 562,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw (A Pokémon has Bad Dreams)",
+          formula: (SPATK, Level) => 2.5272 * SPATK + 19 * (Level - 1) + 675,
+          type: "special"
+        },
+		{
+          label: "Damage - In Dark Pulse",
+          formula: (SPATK, Level) => 1.134 * SPATK + 11 * (Level - 1) + 303,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw In Dark Pulse",
+          formula: (SPATK, Level) => 1.474 * SPATK + 11 * (Level - 1) + 394,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw In Dark Pulse (A Pokémon has Bad Dreams)",
+          formula: (SPATK, Level) => 1.769 * SPATK + 13 * (Level - 1) + 473,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SPATK, Level) => 1.782 * SPATK + 13 * (Level - 1) + 476,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw Skill Plus",
+          formula: (SPATK, Level) => 2.3166 * SPATK + 17 * (Level - 1) + 618,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw (A Pokémon has Bad Dreams) Skill Plus",
+          formula: (SPATK, Level) => 2.78 * SPATK + 20 * (Level - 1) + 742,
+          type: "special"
+        },
+		{
+          label: "Damage - In Dark Pulse Skill Plus",
+          formula: (SPATK, Level) => 1.2474 * SPATK + 10 * (Level - 1) + 333,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw In Dark Pulse Skill Plus",
+          formula: (SPATK, Level) => 1.6216 * SPATK + 12 * (Level - 1) + 434,
+          type: "special"
+        },
+		{
+          label: "Damage - Huge Claw In Dark Pulse (A Pokémon has Bad Dreams) Skill Plus",
+          formula: (SPATK, Level) => 1.946 * SPATK + 14 * (Level - 1) + 520,
+          type: "special"
+        },
+      ]
+    },
+    "s22": {
+      name: "Dark Pulse",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.5 * SPATK + 3 * (Level - 1) + 345,
+          type: "special"
+		},
+		{
+		  label: "Shield Skill Plus",
+          formula: (SPATK, Level) => 0.5 * SPATK + 0 * (Level - 1) + 300,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Worst Nightmare",
+		formulas: [
+	]
+	}
+  },
+
+  "decidueye": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted(3x)",
+          formula: (ATK, Level) => 0.38 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Razor leaf",
+      formulas: [
+        {
+          label: "Damage - Basic [Main Target]",
+          formula: (ATK, Level) => 0.8 * ATK + 3 * (Level - 1) + 120,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted [Main Target] (3 Hits)",
+          formula: (ATK, Level) => 0.304 * ATK + 1 * (Level - 1) + 46,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic [Secondary Target]",
+          formula: (ATK, Level) => 0.36 * ATK + 1 * (Level - 1) + 54,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted [Secondary Target] (3 Hits)",
+          formula: (ATK, Level) => 0.1368 * ATK + 1 * (Level - 1) + 21,
+          type: "physical"
+        },
+		{
+          label: "Attack Speed - % Increase",
+          formula: (ATK, Level) => 0 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Spirit Shackle",
+      formulas: [
+		{
+          label: "Damage - Min Charge",
+          formula: (ATK, Level) => 2.48 * ATK + 5 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Damage - Max Charge",
+          formula: (ATK, Level) => 4.464 * ATK + 9 * (Level - 1) + 360,
+          type: "physical"
+        },
+        {
+          label: "Damage - Exiting Stitch Area",
+          formula: (ATK, Level) => 0.496 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Leaf Tornado",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.48 * ATK + 6 * (Level - 1) + 215,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Shadow Sneak",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.56 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Nock Nock",
+		formulas: [
+        {
+          label: "Damage - per Quill (30 Quills)",
+          formula: (ATK, Level) => 0.7 * ATK + 2 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Large Arrow",
+          formula: (ATK, Level) => 2.8 * ATK + 8 * (Level - 1) + 400,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
+    "delphox": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.34 * SPATK + 8 * (Level - 1) + 140,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Fire Blast",
+      formulas: [
+        {
+          label: "Damage - Initial",
+          formula: (SPATK, Level) => 0.853 * SPATK + 17 * (Level - 1) + 438,
+          type: "special"
+        },
+		{
+          label: "Damage - Explosion",
+          formula: (SPATK, Level) => 0.853 * SPATK + 17 * (Level - 1) + 438,
+          type: "special"
+        },
+		{
+          label: "Damage - Initial Skill Plus",
+          formula: (SPATK, Level) => 0.948 * SPATK + 19 * (Level - 1) + 486,
+          type: "special"
+        },
+		{
+          label: "Damage - Explosion Skill Plus",
+          formula: (SPATK, Level) => 0.948 * SPATK + 19 * (Level - 1) + 486,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Mystical Fire",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.1 * SPATK + 20 * (Level - 1) + 630,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Fire Spin",
+      formulas: [
+        {
+          label: "Damage - per Tick",
+          formula: (SPATK, Level) => 0.16 * SPATK + 2 * (Level - 1) + 90,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Flame Charge",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 0.46 * SPATK + 10 * (Level - 1) + 240,
+          type: "special"
+		},
+		{
+		  label: "Healing - per Blade (5 blades) Skill Plus",
+          formula: (SPATK, Level) => 0.30 * SPATK + 0 * (Level - 1) + 40,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Fanciful Fireworks",
+		formulas: [
+        {
+          label: "Damage - per Tick",
+          formula: (SPATK, Level) => 0.25 * SPATK + 3 * (Level - 1) + 150,
+          type: "special"
+        }
+	]
+	}
+  },
+
+  "dodrio": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (No Gauge)",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Full Gauge)",
+          formula: (ATK, Level) => 1.89 * ATK + 6 * (Level - 1) + 110,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Tri Attack",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1 * ATK + 6 * (Level - 1) + 140,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (per Tick)",
+          formula: (ATK, Level) => 0.049 * ATK + 0 * (Level - 1) + 7,
+          type: "physical"
+        },
+		{
+          label: "Damage - per Projectile (Full Gauge)",
+          formula: (ATK, Level) => 0.9 * ATK + 3 * (Level - 1) + 110,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 0.636 * ATK + 2 * (Level - 1) + 39,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Drill Peck",
+      formulas: [
+		{
+          label: "Damage - 3x (No Gauge)",
+          formula: (ATK, Level) => 0.788 * ATK + 2 * (Level - 1) + 72,
+          type: "physical"
+        },
+        {
+          label: "Damage - 5x (Full Gauge)",
+          formula: (ATK, Level) => 0.74 * ATK + 2 * (Level - 1) + 68,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Agility",
+      formulas: [
+      ]
+    },
+    "s22": {
+      name: "Jump Kick",
+      formulas: [
+		{
+          label: "Damage - Initial",
+          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 170,
+          type: "physical"
+        },
+        {
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 170,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Triple Trample",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.73 * ATK + 8 * (Level - 1) + 390,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "dragapult": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dragon Breath",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.6 * ATK + 4 * (Level - 1) + 160,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (7x)",
+          formula: (ATK, Level) => 0.3 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 0.66 * ATK + 4 * (Level - 1) + 176,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (7x) Skill Plus",
+          formula: (ATK, Level) => 0.33 * ATK + 2 * (Level - 1) + 88,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Shadow Ball",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.1 * ATK + 5 * (Level - 1) + 265,
+          type: "physical"
+        },
+        {
+          label: "Damage - Mark Proc",
+          formula: (ATK, Level) => 0.22 * ATK + 1 * (Level - 1) + 53,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final Mark Proc Additional Damage",
+          formula: (ATK, Level) => 1.1 * ATK + 5 * (Level - 1) + 265,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.19 * ATK + 6 * (Level - 1) + 300,
+          type: "physical"
+        },
+		{
+          label: "Damage - Mark Proc Skill Plus",
+          formula: (ATK, Level) => 0.238 * ATK + 1 * (Level - 1) + 60,
+          type: "physical"
+        },
+		{
+          label: "Damage - Final Mark Proc Additional Damage Skill Plus",
+          formula: (ATK, Level) => 1.19 * ATK + 6 * (Level - 1) + 300,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dragon Dance",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.90 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage (Boosted)",
+          formula: (ATK, Level) => 1.035 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Phantom Force",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Dreep and Destroy",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.01 * ATK + 4 * (Level - 1) + 180,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
