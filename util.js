@@ -7147,6 +7147,585 @@ const skillDamage = {
 	}
   },
 
+  	"gyarados": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dragon Breath",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.93 * ATK + 22 * (Level - 1) + 325,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.6 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+				{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 2.32 * ATK + 26 * (Level - 1) + 390,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic Skill Plus",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted Skill Plus",
+          formula: (ATK, Level) => 1.7 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Aqua Tail",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 2 * ATK + 16 * (Level - 1) + 405,
+          type: "physical"
+        },
+		{
+          label: "Damage - Bonus",
+          formula: (ATK, Level) => 3.38 * ATK + 28 * (Level - 1) + 680,
+          type: "physical"
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 3.887 * ATK + 32 * (Level - 1) + 782,
+          type: "physical"
+        },
+		{
+          label: "Healing Skill Plus",
+          formula: (ATK, Level) => 0.5424 * ATK + 6 * (Level - 1) + 150,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Waterfall",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.29 * ATK + 6 * (Level - 1) + 225,
+          type: "physical",
+		  additionalText: "Shield: 10% Max HP + 200"
+        }
+      ]
+    },
+    "s22": {
+      name: "Bounce",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.78 * ATK + 14 * (Level - 1) + 350,
+          type: "physical"
+        },
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 2.34 * ATK + 0 * (Level - 1) + 520,
+          type: "physical"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 3.042 * ATK + 0 * (Level - 1) + 676,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Dragon Current",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.62 * ATK + 12 * (Level - 1) + 325,
+          type: "physical"
+        },
+		{
+          label: "Damage - Whirlpool level",
+          formula: (ATK, Level) => 2.43 * ATK + 17 * (Level - 1) + 488,
+          type: "physical"
+        },
+		{
+          label: "Damage - Whirlpool (5 Ticks)",
+          formula: (ATK, Level) => 0.162 * ATK + 1 * (Level - 1) + 33,
+          type: "physical"
+        },
+		{
+          label: "Damage - Water Spout level",
+          formula: (ATK, Level) => 3.24 * ATK + 23 * (Level - 1) + 650,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "hooh": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+		  additionalText: "Heal: 4% Max HP"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Sacred Fire",
+      formulas: [
+		{
+          label: "Damage - Fireball",
+          formula: (ATK, Level) => 0.56 * ATK + 3 * (Level - 1) + 135,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Fire Spin",
+      formulas: [
+		{
+          label: "Damage (Vortex)",
+          formula: (ATK, Level) => 0.41 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+        },
+		{
+          label: "Damage (Heatwave)",
+          formula: (ATK, Level) => 2.05 * ATK + 4 * (Level - 1) + 208,
+          type: "physical",
+		  additionalText: "Shield: 30% Max HP"
+        }
+      ]
+    },
+    "s21": {
+      name: "Flamethrower",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.45 * ATK + 2 * (Level - 1) + 60,
+          type: "physical",
+        },
+		{
+          label: "Healing (per tick of flamethrower)",
+          formula: (ATK, Level) => 0.24 * ATK + 0 * (Level - 1) + 24,
+          type: "physical",
+        },
+		{
+          label: "Burn Damage",
+          formula: (ATK, Level) => 0.20 * ATK + 0 * (Level - 1) + 20,
+          type: "physical",
+        }
+      ]
+    },
+    "s22": {
+      name: "Sky Attack",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.5 * ATK + 19 * (Level - 1) + 500,
+          type: "physical"
+        },
+		{
+          label: "Damage (Ground)",
+          formula: (ATK, Level) => 0.20 * ATK + 0 * (Level - 1) + 30,
+          type: "physical"
+        },
+		{
+          label: "Healing Skill Plus",
+          formula: (ATK, Level) => 0.7 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Rekindling Flame",
+		formulas: [
+	 ]
+	}
+  },
+
+  	"hoopa": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.53 * SPATK + 8 * (Level - 1) + 160,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Phantom Force",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.1 * SPATK + 14 * (Level - 1) + 320,
+          type: "special"
+        },
+		{
+          label: "Damage - per flame (2 flames)",
+          formula: (SPATK, Level) => 0.55 * SPATK + 7 * (Level - 1) + 160,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Shadow Ball",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.90 * SPATK + 0 * (Level - 1) + 270,
+          type: "special"
+        },
+		{
+          label: "Damage - Additional",
+          formula: (SPATK, Level) => 0.25 * SPATK + 0 * (Level - 1) + 75,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Hyperspace Hole",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.12 * SPATK + 9 * (Level - 1) + 370,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Trick",
+      formulas: [
+		{
+		  label: "Shield",
+          formula: (SPATK, Level) => 2 * SPATK + 30 * (Level - 1) + 600,
+          type: "special"
+		},
+		{
+		  label: "Damage - Shadow Ball Bonus",
+          formula: (SPATK, Level) => 0.09 * SPATK + 0 * (Level - 1) + 27,
+          type: "special",
+		  additionalText: "This can trigger multiple times."
+		}
+      ]
+    },
+	"ult": {
+		name: "Rings Unbound",
+		formulas: [
+		{
+          label: "Auto Attack Damage",
+          formula: (SPATK, Level) => 0.5 * SPATK + 5 * (Level - 1) + 150,
+          type: "special"
+        },
+		{
+          label: "Hyperspace Fury - Damage (7x)",
+          formula: (SPATK, Level) => 0.15 * SPATK + 2 * (Level - 1) + 40,
+          type: "special"
+        },
+		{
+          label: "Psybeam - Damage",
+          formula: (SPATK, Level) => 1.75 * SPATK + 12 * (Level - 1) + 590,
+          type: "special"
+        }
+	]
+	}
+  },
+
+  	"inteleon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.482 * SPATK + 4 * (Level - 1) + 90,
+          type: "special"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.548 * SPATK + 6 * (Level - 1) + 100,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Fell Stinger",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.63 * SPATK + 5 * (Level - 1) + 200,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Acrobatics",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.62 * SPATK + 8 * (Level - 1) + 172,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Snipe Shot",
+      formulas: [
+        {
+          label: "Damage (Close)",
+          formula: (SPATK, Level) => 0.58 * SPATK + 4 * (Level - 1) + 172,
+          type: "special"
+        },
+		{
+          label: "Damage (Mid)",
+          formula: (SPATK, Level) => 0.85 * SPATK + 8 * (Level - 1) + 256,
+          type: "special"
+        },
+		{
+          label: "Damage (Far)",
+          formula: (SPATK, Level) => 1.14 * SPATK + 10 * (Level - 1) + 344,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Liquidation",
+      formulas: [
+		{
+		  label: "Damage (per bullet)",
+          formula: (SPATK, Level) => 0.142 * SPATK + 1 * (Level - 1) + 4,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Azure Spy Vision",
+		formulas: [
+	]
+	}
+  },
+
+	"lapras": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted x3",
+          formula: (SPATK, Level) => 0.20 * SPATK + 3 * (Level - 1) + 60,
+          type: "special",
+		  additionalText: "Healing: 3.5% Max HP per tick"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Water Pulse",
+      formulas: [
+        {
+          label: "Damage (First Pulse)",
+          formula: (SPATK, Level) => 0.74 * SPATK + 11 * (Level - 1) + 230,
+          type: "special"
+        },
+		{
+          label: "Damage (Subsequent pulses)",
+          formula: (SPATK, Level) => 0.45 * SPATK + 6 * (Level - 1) + 130,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Perish Song",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.828 * SPATK + 9 * (Level - 1) + 282,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Bubble Beam",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (SPATK, Level) => 1.725 * SPATK + 0 * (Level - 1) + 575,
+          type: "special"
+        },
+		{
+          label: "Damage",
+          formula: (SPATK, Level) => 1.19 * SPATK + 9 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (SPATK, Level) => 2.07 * SPATK + 0 * (Level - 1) + 690,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Ice Beam",
+      formulas: [
+		{
+		  label: "Damage - Beam",
+          formula: (SPATK, Level) => 0.36 * SPATK + 3 * (Level - 1) + 120,
+          type: "special"
+		},
+		{
+		  label: "Damage - Frozen Ground",
+          formula: (SPATK, Level) => 0.27 * SPATK + 3 * (Level - 1) + 95,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Lapras Express",
+		formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.72 * SPATK + 12 * (Level - 1) + 580,
+          type: "special"
+		}
+	]
+	}
+  },
+
+  	"latias": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.25 * SPATK + 5 * (Level - 1) + 100,
+          type: "special",
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Mist Ball",
+      formulas: [
+        {
+          label: "Damage - Projectile",
+          formula: (SPATK, Level) => 0.60 * SPATK + 12 * (Level - 1) + 330,
+          type: "special"
+        },
+		{
+          label: "Damage - Mist Zone (x2 hits)",
+          formula: (SPATK, Level) => 0.20 * SPATK + 4 * (Level - 1) + 110,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dragon Cheer",
+      formulas: [
+        {
+          label: "Extra Damage",
+          formula: (SPATK, Level) => 0 * SPATK + 50 * (Level - 1) + 150,
+          type: "special"
+        },
+		{
+          label: "Shield",
+          formula: (SPATK, Level) => 1.5 * SPATK + 0 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (SPATK, Level) => 1.8 * SPATK + 0 * (Level - 1) + 480,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dragon Pulse",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 1.2 * SPATK + 0 * (Level - 1) + 420,
+          type: "special"
+        },
+		{
+          label: "Damage - Projectile (per Projectile)",
+          formula: (SPATK, Level) => 0.44 * SPATK + 6 * (Level - 1) + 130,
+          type: "special"
+        },
+		{
+          label: "Healing",
+          formula: (SPATK, Level) => 1.6 * SPATK + 18 * (Level - 1) + 250,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Dragon Breath",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.4 * SPATK + 20 * (Level - 1) + 400,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Mist Blast",
+		formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 2.5 * SPATK + 15 * (Level - 1) + 460,
+          type: "special"
+		},
+		{
+		  label: "Damage - Area (If Mist Blast hit last)",
+          formula: (SPATK, Level) => 1.25 * SPATK + 7 * (Level - 1) + 230,
+          type: "special"
+		}
+	]
+	}
+  },
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
