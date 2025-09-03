@@ -7726,6 +7726,493 @@ const skillDamage = {
 	}
   },
 
+    "latios": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.25 * SPATK + 5 * (Level - 1) + 100,
+          type: "special",
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Luster Purge",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.7 * SPATK + 15 * (Level - 1) + 400,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Telekinesis",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.98 * SPATK + 10 * (Level - 1) + 260,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dragon Pulse",
+      formulas: [
+        {
+          label: "Damage - Boosted Attack",
+          formula: (SPATK, Level) => 1.5 * SPATK + 5 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Damage - Projectile (per Projectile)",
+          formula: (SPATK, Level) => 0.42 * SPATK + 6 * (Level - 1) + 128,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Draco Meteor",
+      formulas: [
+		{
+		  label: "Damage - per Comet",
+          formula: (SPATK, Level) => 1.09 * SPATK + 24 * (Level - 1) + 364,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Eon Blast",
+		formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 2.5 * SPATK + 15 * (Level - 1) + 460,
+          type: "special"
+		},
+		{
+		  label: "Damage - Area (If Eon Blast hit last)",
+          formula: (SPATK, Level) => 1.25 * SPATK + 7 * (Level - 1) + 230,
+          type: "special"
+		}
+	]
+	}
+  },
+
+  	"leafeon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Additional Damage (Boosted by Chlorophyll)",
+          formula: (ATK, Level) => 0.40 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+		  additionalText: "This damage cannot crit."
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Razor Leaf",
+      formulas: [
+		{
+          label: "Damage (Outgoing - First Leaf)",
+          formula: (ATK, Level) => 0.8 * ATK + 8 * (Level - 1) + 190,
+          type: "physical"
+        },
+		{
+          label: "Damage (Manual return first Leaf if <1s)",
+          formula: (ATK, Level) => 0.8 * ATK + 8 * (Level - 1) + 190,
+          type: "physical"
+        },
+		{
+          label: "Damage (Automatic return first Leaf or Manual return first Leaf if after 1s)",
+          formula: (ATK, Level) => 1.32 * ATK + 13 * (Level - 1) + 315,
+          type: "physical"
+        },
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 300,
+          type: "physical"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 450,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Solar Blade",
+      formulas: [
+		{
+          label: "Damage (1st Level Charge)",
+          formula: (ATK, Level) => 2.2 * ATK + 11 * (Level - 1) + 462,
+          type: "physical"
+        },
+		{
+          label: "Damage (2nd Level Charge)",
+          formula: (ATK, Level) => 2.54 * ATK + 12 * (Level - 1) + 540,
+          type: "physical"
+        },
+		{
+          label: "Damage (3rd Level Charge)",
+          formula: (ATK, Level) => 2.87 * ATK + 14 * (Level - 1) + 600,
+          type: "physical"
+        },
+		{
+          label: "Damage (Max Charge)",
+          formula: (ATK, Level) => 3.2 * ATK + 16 * (Level - 1) + 672,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Aerial Ace",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.32 * ATK + 9 * (Level - 1) + 360,
+          type: "physical",
+        }
+      ]
+    },
+    "s22": {
+      name: "Leaf Blade",
+      formulas: [
+		{
+          label: "Damage (Inner Ring x3)",
+          formula: (ATK, Level) => 0.185 * ATK + 2 * (Level - 1) + 125,
+          type: "physical"
+        },
+		{
+          label: "Damage (Outer Ring x3)",
+          formula: (ATK, Level) => 0.37 * ATK + 3 * (Level - 1) + 250,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Emerald Two-Step",
+		formulas: [
+		{
+          label: "Damage (Initial leap)",
+          formula: (ATK, Level) => 1.26 * ATK + 7 * (Level - 1) + 300,
+          type: "physical"
+        },
+		{
+          label: "Damage (Second Leap - Closest)",
+          formula: (ATK, Level) => 2.52 * ATK + 14 * (Level - 1) + 600,
+          type: "physical"
+        },
+		{
+          label: "Damage (Second Leap - Mid range)",
+          formula: (ATK, Level) => 1.92 * ATK + 11 * (Level - 1) + 420,
+          type: "physical"
+        },
+		{
+          label: "Damage (Second Leap - Furthest range)",
+          formula: (ATK, Level) => 1.26 * ATK + 7 * (Level - 1) + 300,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  	"lucario": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (2nd Hit)",
+          formula: (ATK, Level) => 0.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Power-Up Punch",
+      formulas: [
+		{
+          label: "Damage - Uncharged",
+          formula: (ATK, Level) => 2.0916 * ATK + 3 * (Level - 1) + 88,
+          type: "physical"
+        },
+		{
+          label: "Damage - Fully Charged",
+          formula: (ATK, Level) => 3.818 * ATK + 5 * (Level - 1) + 161,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Extreme Speed",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 2.08 * ATK + 6 * (Level - 1) + 280,
+          type: "physical"
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 0.3375 * ATK + 1 * (Level - 1) + 42,
+          type: "physical"
+        },
+		{
+          label: "Damage - Unique Attack",
+          formula: (ATK, Level) => 0.75 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Bone Rush",
+      formulas: [
+		{
+          label: "Damage - per Hit (4-7 Hits)",
+          formula: (ATK, Level) => 0.625 * ATK + 1 * (Level - 1) + 50,
+          type: "physical",
+        }
+      ]
+    },
+    "s22": {
+      name: "Close Combat",
+      formulas: [
+		{
+          label: "Damage - per Hit (11 Hits)",
+          formula: (ATK, Level) => 0.5 * ATK + 2 * (Level - 1) + 60,
+          type: "physical"
+        },
+		{
+          label: "Heal - per Hit",
+          formula: (ATK, Level) => 0.115 * ATK + 0 * (Level - 1) + 23,
+          type: "physical"
+        },
+		{
+          label: "Damage - per Hit (11 Hits) Skill Plus",
+          formula: (ATK, Level) => 0.56 * ATK + 2 * (Level - 1) + 69,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Aura Cannon",
+		formulas: [
+		{
+          label: "Damage - per Tick",
+          formula: (ATK, Level) => 1.74 * ATK + 4 * (Level - 1) + 210,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "machamp": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Close Combat",
+      formulas: [
+		{
+          label: "Damage - per Hit (4 hits)",
+          formula: (ATK, Level) => 0.65 * ATK + 2 * (Level - 1) + 55,
+          type: "physical"
+        },
+		{
+          label: "Damage - Final Hit",
+          formula: (ATK, Level) => 1.95 * ATK + 6 * (Level - 1) + 165,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Cross Chop",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.98 * ATK + 13 * (Level - 1) + 290,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dynamic Punch",
+      formulas: [
+		{
+          label: "Damage - per Tick (4 Ticks)",
+          formula: (ATK, Level) => 0.28 * ATK + 1 * (Level - 1) + 50,
+          type: "physical",
+        }
+      ]
+    },
+    "s22": {
+      name: "Submission",
+      formulas: [
+		{
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 1.15 * ATK + 4 * (Level - 1) + 210,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Barrage Blow",
+		formulas: [
+		{
+          label: "Damage (6x)",
+          formula: (ATK, Level) => 1 * ATK + 2 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Final Hit",
+          formula: (ATK, Level) => 2 * ATK + 4 * (Level - 1) + 200,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "mamoswine": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 0.57 * ATK + 8 * (Level - 1) + 150,
+          type: "physical"
+        },
+		{
+          label: "Damage - Frozen Bonus",
+          formula: (ATK, Level) => 0.19 * ATK + 3 * (Level - 1) + 50,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Icicle Crash",
+      formulas: [
+		{
+          label: "Damage - Small Icicles (3x)",
+          formula: (ATK, Level) => 0.35 * ATK + 3 * (Level - 1) + 110,
+          type: "physical"
+        },
+		{
+          label: "Damage - Large Icicle",
+          formula: (ATK, Level) => 0.60 * ATK + 5 * (Level - 1) + 180,
+          type: "physical"
+        },
+		{
+          label: "Damage - Shatter",
+          formula: (ATK, Level) => 0.80 * ATK + 6 * (Level - 1) + 240,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Ice Fang",
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (ATK, Level) => 0.75 * ATK + 8 * (Level - 1) + 180,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 2.25 * ATK + 24 * (Level - 1) + 540,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "High Horsepower",
+      formulas: [
+		{
+          label: "Damage - Charge",
+          formula: (ATK, Level) => 0.61 * ATK + 4 * (Level - 1) + 170,
+          type: "physical",
+        },
+		{
+          label: "Damage - Stomp",
+          formula: (ATK, Level) => 1.22 * ATK + 8 * (Level - 1) + 340,
+          type: "physical",
+        },
+		{
+          label: "Damage - Frozen Stomp Bonus",
+          formula: (ATK, Level) => 0.915 * ATK + 6 * (Level - 1) + 255,
+          type: "physical",
+        }
+      ]
+    },
+    "s22": {
+      name: "Earthquake",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.89 * ATK + 13 * (Level - 1) + 530,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Mammoth Mash",
+		formulas: [
+		{
+          label: "Damage - First Stomp",
+          formula: (ATK, Level) => 1.53 * ATK + 9 * (Level - 1) + 420,
+          type: "physical"
+        },
+		{
+          label: "Damage - Mini Stomps (2 stomps)",
+          formula: (ATK, Level) => 1.02 * ATK + 6 * (Level - 1) + 280,
+          type: "physical"
+        },
+		{
+          label: "Damage - Final Stomp",
+          formula: (ATK, Level) => 2.04 * ATK + 12 * (Level - 1) + 560,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
