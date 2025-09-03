@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let base =
       (typeof levelStats !== "undefined" && levelStats?.[poke]?.[targetLevel])
         ? { ...levelStats[poke][targetLevel] }
-        : { ...baseStats[poke] };
+        : { ...pokemonRoles[poke] };
 
     base = ensureAllStats(base);
     let modified = { ...base };
@@ -303,7 +303,7 @@ if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
   };
 
   // ---- Preencher dropdown de Pokémons ----
-  Object.keys(baseStats).forEach(poke => {
+  Object.keys(pokemonRoles).forEach(poke => {
     const opt = document.createElement("option");
     opt.value = poke;
     opt.textContent = safeCap(poke);
