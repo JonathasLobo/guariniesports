@@ -8212,6 +8212,402 @@ const skillDamage = {
 	}
   },
 
+  	"meowscara": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted ",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Flowe Trick",
+      formulas: [
+        {
+          label: "Damage - Explosion Base",
+          formula: (ATK, Level) => 1.5 * ATK + 15 * (Level - 1) + 400,
+          type: "physical"
+        },
+		{
+          label: "Damage - Increased Explosion",
+          formula: (ATK, Level) => 2.4 * ATK + 24 * (Level - 1) + 640,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Night Slash",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.73 * ATK + 6 * (Level - 1) + 250,
+          type: "physical"
+        },
+        {
+          label: "Healing",
+          formula: (ATK, Level) => 0.37 * ATK + 2 * (Level - 1) + 110,
+          type: "physical"
+        },
+        {
+          label: "Healing(plus)",
+          formula: (ATK, Level) => 0.444 * ATK + 2 * (Level - 1) + 132,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Double Team",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.42 * ATK + 10 * (Level - 1) + 470,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Trailblaze",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 0.81 * ATK + 6 * (Level - 1) + 270,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (HP, Level) => (0.20 + 0.005 * (Level - 1)) * HP,
+          type: "hp"
+        }
+      ]
+    },
+	"ult": {
+		name: "Floral Flourish",
+		formulas: [
+        {
+          label: "Damage - per tick (max 13)",
+          formula: (ATK, Level) => 0.7 * ATK + 3 * (Level - 1) + 187,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  	"metagross": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted ",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Meteor Mash",
+      formulas: [
+        {
+          label: "Shield (per charge stack)",
+          formula: (ATK, Level) => 0.3 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        },
+		  {
+          label: "Charging Damage",
+          formula: (ATK, Level) => 0.55 * ATK + 2 * (Level - 1) + 100,
+          type: "physical"
+        },
+		  {
+          label: "Punch Damage (1-2 Charges)",
+          formula: (ATK, Level) => 1.5 * ATK + 2 * (Level - 1) + 400,
+          type: "physical"
+        },
+		  {
+          label: "Punch Damage (3-4 Charges)",
+          formula: (ATK, Level) => 1.75 * ATK + 2 * (Level - 1) + 430,
+          type: "physical"
+        },
+		  {
+          label: "Punch Damage (5-6 Charges)",
+          formula: (ATK, Level) => 2 * ATK + 2 * (Level - 1) + 460,
+          type: "physical"
+        },
+		  {
+          label: "Punch Damage (7-8 Charges)",
+          formula: (ATK, Level) => 2.25 * ATK + 2 * (Level - 1) + 500,
+          type: "physical"
+        },
+		  {
+          label: "Punch Healing (1-2 Charges) Skill Plus",
+          formula: (HP) => 0.09 * HP,
+          type: "hp"
+        },
+		  {
+          label: "Punch Healing (3-4 Charges) Skill Plus",
+          formula: (HP) => 0.1 * HP,
+          type: "hp"
+        },
+		  {
+          label: "Punch Healing (5-6 Charges) Skill Plus",
+          formula: (HP) => 0.11 * HP,
+          type: "hp"
+        },
+		  {
+          label: "Punch Healing (7-8 Charges) Skill Plus",
+          formula: (HP) => 0.12 * HP,
+          type: "hp"
+        }
+      ]
+    },
+    "s12": {
+      name: "Gyro Ball",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 2.37 * ATK + 11 * (Level - 1) + 615,
+          type: "physical"
+        },
+        {
+          label: "Shield - per stack(max 6)",
+          formula: (ATK, Level) => 0.78 * ATK + 2 * (Level - 1) + 120,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Zen Headbutt",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.72 * ATK + 6 * (Level - 1) + 225,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Magnet Rise",
+      formulas: [
+		  {
+          label: "Damage - Grounding",
+          formula: (ATK, Level) => 1.4 * ATK + 5 * (Level - 1) + 250,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Compute and Crush",
+		formulas: [
+        {
+          label: "Damage (2 punches)",
+          formula: (ATK, Level) => 1.34 * ATK + 2 * (Level - 1) + 400,
+          type: "physical"
+        },
+        {
+          label: "Damage - Wall Creation",
+          formula: (ATK, Level) => 2.28 * ATK + 7 * (Level - 1) + 460,
+          type: "physical"
+        },
+        {
+          label: "Shield - Per Enemy",
+          formula: (ATK, Level) => 0.6 * ATK + 0 * (Level - 1) + 150,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  	"mew": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted ",
+          formula: (SpATK, Level) => 1.6 * SpATK + 8 * (Level - 1) + 280,
+          type: "special"
+        }
+      ]
+	},
+
+    "s1a": {
+      name: "Electro Ball",
+      formulas: [
+        {
+          label: "Damage (No Light Screen Boost)",
+          formula: (SpATK, Level) => 1.14 * SpATK + 12 * (Level - 1) + 260,
+          type: "special"
+        },
+        {
+          label: "Damage (Light Screen Boost):",
+          formula: (SpATK, Level) => 1.49 * SpATK + 15 * (Level - 1) + 340,
+          type: "special"
+        }
+      ]
+    },
+    "s1b": {
+      name: "Solar Beam",
+      formulas: [
+	    	{
+          label: "Damage - per Tick (max 3)",
+          formula: (SpATK, Level) => 0.61 * SpATK + 3 * (Level - 1) + 126,
+          type: "special"
+        },
+        {
+          label: "Damage - per Tick (Light Screen Boost)(max 3)",
+          formula: (SpATK, Level) => 0.79 * SpATK + 4 * (Level - 1) + 164,
+          type: "special"
+        }
+      ]
+    },
+    "s1c": {
+      name: "Surf",
+      formulas: [
+	    	{
+          label: "Damage ",
+          formula: (SpATK, Level) => 1.95 * SpATK + 7 * (Level - 1) + 336,
+          type: "special"
+        },
+        {
+          label: "Shield",
+          formula: (SpATK, Level) => 0.7 * SpATK + 0 * (Level - 1) + 200,
+          type: "special"
+        },
+        {
+          label: "Shield Skill Plus",
+          formula: (SpATK, Level) => 0.1 * SpATK + 0 * (Level - 1) + 300,
+          type: "special"
+        }
+      ]
+    },
+    "s2a": {
+      name: "Coaching",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (SpATK, Level) => 0.1 * SpATK + 0 * (Level - 1) + 300,
+          type: "special"
+        }
+      ]
+    },
+    "s2b": {
+      name: "Light Screen",
+      formulas: [  
+      ]
+    },
+    "s2c": {
+      name: "Agility",
+      formulas: [	  
+      ]
+    },
+	"ult": {
+		name: "Mystical Mirage",
+		formulas: [
+        {
+          label: "Damage ",
+          formula: (SpATK, Level) => 1.2 * SpATK + 10 * (Level - 1) + 340,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+  	"mewtwox": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Basic(Mega)",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted(Mega)",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Future Sight",
+      formulas: [
+        {
+          label: "Damage - Pull and Explosion",
+          formula: (ATK, Level) => 0.6 * ATK + 5 * (Level - 1) + 120,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Psystrike",
+      formulas: [
+	    	{
+          label: "Damage (x5)",
+          formula: (ATK, Level) => 0.41 * ATK + 3 * (Level - 1) + 100,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final Hit",
+          formula: (ATK, Level) => 1.46 * ATK + 7 * (Level - 1) + 319,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Recover",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 500,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (HP, Level) => 0.1 * HP ,
+          type: "hp"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Teleport",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Infinite Psyburn",
+		formulas: [
+        {
+          label: "Damage ",
+          formula: (ATK, Level) => 1.9 * ATK + 11 * (Level - 1) + 500,
+          type: "physical"
+        }
+	 ]
+	}
+  },
 
   /*"pikachu": {
     "s11": {
