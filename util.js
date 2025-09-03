@@ -6269,6 +6269,439 @@ const skillDamage = {
 	}
   },
 
+    "espeon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.54 * SPATK + 12 * (Level - 1) + 230,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Psyshock",
+      formulas: [
+        {
+          label: "Damage - First Hit",
+          formula: (SPATK, Level) => 0.726 * SPATK + 14 * (Level - 1) + 374,
+          type: "special"
+        },
+		{
+          label: "Damage - Subsequent Hits",
+          formula: (SPATK, Level) => 0.22 * SPATK + 4 * (Level - 1) + 122,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Stored Power",
+      formulas: [
+        {
+          label: "Damage - First Hit",
+          formula: (SPATK, Level) => 0.6 * SPATK + 9 * (Level - 1) + 300,
+          type: "special"
+        },
+		{
+          label: "Damage - Subsequent Hits",
+          formula: (SPATK, Level) => 0.196 * SPATK + 2 * (Level - 1) + 90, // 25% do primeiro hit
+		  type: "special",
+        },
+		{
+          label: "Damage - Additional",
+          formula: (SPATK, Level) => 0.26 * SPATK + 5 * (Level - 1) + 135, // 25% do primeiro hit
+		  type: "special",
+        }
+      ]
+    },
+    "s21": {
+      name: "Psybeam",
+      formulas: [
+        {
+          label: "Damage - Initial",
+          formula: (SPATK, Level) => 0.91 * SPATK + 13 * (Level - 1) + 540,
+          type: "special",
+		  additionalText: "6% max HP of the first enemy hit as additional damage."
+        }
+      ]
+    },
+    "s22": {
+      name: "Future Sight",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 0.576 * SPATK + 9 * (Level - 1) + 338,
+          type: "special",
+		  additionalText: "10% of enemy missing HP."
+		}
+      ]
+    },
+	"ult": {
+		name: "Psychic Solare",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.87 * SPATK + 11 * (Level - 1) + 520,
+          type: "special"
+        }
+	]
+	}
+  },
+
+    "falinks": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Megahorn",
+      formulas: [
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 0.40 * ATK + 0 * (Level - 1) + 200,
+          type: "physical",
+		  additionalText: "Shield - Additional: 6% Max HP"
+        },
+		{
+          label: "Damage (Column group, x2)",
+          formula: (ATK, Level) => 1.7 * ATK + 10 * (Level - 1) + 200,
+          type: "physical",
+		  additionalText: "Damage (No Retreat Formation): Deals additional damage equal to 3% of the enemies' max HP. This additional damage is capped at 1000."
+        },
+		{
+          label: "Damage (Dispatch formation Trooper)",
+          formula: (ATK, Level) => 0.595 * ATK + 4 * (Level - 1) + 95,
+          type: "physical",
+		  additionalText: "Damage (Dispatch formation Trooper): Trooper damage becomes additional to Column formation hitting the same target."
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 0.8 * ATK + 0 * (Level - 1) + 400,
+          type: "physical",
+		  additionalText: "Shield - Additional: 12% Max HP"
+        },
+      ]
+    },
+    "s12": {
+      name: "Iron Head",
+      formulas: [
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 0.6 * ATK + 10 * (Level - 1) + 250,
+          type: "physical",
+		  additionalText: "Shield - Additional: 10% Max HP"
+        },
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.5 * ATK + 8 * (Level - 1) + 150,
+          type: "physical"
+        },
+		{
+          label: "Damage (Dispatch formation per Trooper)",
+          formula: (ATK, Level) => 0.9 * ATK + 2 * (Level - 1) + 100,
+          type: "physical",
+		  additionalText: "1.6% target missing HP"
+		}
+      ]
+    },
+    "s21": {
+      name: "No Retreat",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2 * ATK + 10 * (Level - 1) + 300,
+          type: "physical"
+        },
+		{
+          label: "Damage - Brass basic attacks under Iron Head Buffs in No Retreat formation",
+          formula: (ATK, Level) => 0.45 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Trooper basic attacks under Iron Head Buffs in No Retreat formation",
+          formula: (ATK, Level) => 0.32 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Trooper boosted attacks under Iron Head Buffs in No Retreat formation",
+          formula: (ATK, Level) => 0.40 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Beat Up",
+      formulas: [
+		{
+          label: "Damage - Charge (x2)",
+          formula: (ATK, Level) => 0.70 * ATK + 3 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Trooper attacks in Dispatch formation",
+          formula: (ATK, Level) => 0.60 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "HP - Trooper in Dispatch formation",
+          formula: (ATK, Level) => 0 * ATK + 150 * (Level - 1) + 900,
+          type: "physical"
+        },
+		{
+          label: "Healing Skill Plus",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Dust Devil Formation",
+		formulas: [
+        {
+          label: "Damage - per Hit",
+          formula: (ATK, Level) => 0.9 * ATK + 10 * (Level - 1) + 110,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+  
+    "garchomp": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Attack Speed - % Increase",
+          formula: (ATK, Level) => 0 * ATK + 3 * (Level - 1) + 28,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Earthquake",
+      formulas: [
+		{
+          label: "Damage - Initial",
+          formula: (ATK, Level) => 1.13 * ATK + 7 * (Level - 1) + 175,
+          type: "physical"
+        },
+		{
+          label: "Damage - Aftershock (2x)",
+          formula: (ATK, Level) => 0.58 * ATK + 6 * (Level - 1) + 88,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dragon Rush",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.21 * ATK + 8 * (Level - 1) + 200,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Dig",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.3 * ATK + 8 * (Level - 1) + 240,
+          type: "physical"
+        },
+		{
+          label: "Defenses - Increase",
+          formula: (ATK, Level) => 0 * ATK + 25 * (Level - 1) + 25,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Dragon Claw",
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (ATK, Level) => 0.8 * ATK + 5 * (Level - 1) + 140,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 0.98 * ATK + 6 * (Level - 1) + 170,
+          type: "physical"
+        },
+		{
+          label: "Damage - Initial Skill Plus",
+          formula: (ATK, Level) => 0.96 * ATK + 5 * (Level - 1) + 153,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Skill Plus",
+          formula: (ATK, Level) => 1.15 * ATK + 6 * (Level - 1) + 184,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Livid Outrage",
+		formulas: [
+        {
+          label: "Damage - First Hit",
+          formula: (ATK, Level) => 2.27 * ATK + 10 * (Level - 1) + 330,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 2.67 * ATK + 11 * (Level - 1) + 450,
+          type: "physical"
+        },
+		{
+          label: "Damage - Third Hit",
+          formula: (ATK, Level) => 3.07 * ATK + 12 * (Level - 1) + 570,
+          type: "physical"
+        },
+		{
+          label: "Damage - Fourth Hit",
+          formula: (ATK, Level) => 3.07 * ATK + 13 * (Level - 1) + 920,
+          type: "physical"
+        },
+		{
+          label: "Damage - Fifth Hit",
+          formula: (ATK, Level) => 3.07 * ATK + 14 * (Level - 1) + 1270,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  	"gardevoir": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.44 * SPATK + 10 * (Level - 1) + 180,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Psychic",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.85 * SPATK + 16 * (Level - 1) + 440,
+          type: "special"
+        },
+		{
+          label: "Damage - DoT (5 Ticks)",
+          formula: (SPATK, Level) => 0.085 * SPATK + 2 * (Level - 1) + 44,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Moonblast",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.66 * SPATK + 13 * (Level - 1) + 340,
+          type: "special"
+        },
+		{
+          label: "Shield",
+          formula: (SPATK, Level) => 0.69 * SPATK + 0 * (Level - 1) + 345, // 25% do primeiro hit
+		  type: "special",
+        }
+      ]
+    },
+    "s21": {
+      name: "Psyshock",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 0.90 * SPATK + 10 * (Level - 1) + 430,
+          type: "special"
+        },
+		{
+          label: "Damage - First Hit Skill Plus",
+          formula: (SPATK, Level) => 0.90 * SPATK + 10 * (Level - 1) + 430,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit Skill Plus",
+          formula: (SPATK, Level) => 0.95 * SPATK + 10 * (Level - 1) + 451,
+          type: "special"
+        },
+		{
+          label: "Damage - Third Hit Skill Plus",
+          formula: (SPATK, Level) => 1 * SPATK + 10 * (Level - 1) + 475,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Future Sight",
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 1.5645 * SPATK + 22 * (Level - 1) + 924,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Fairy Singularity",
+		formulas: [
+        {
+          label: "Damage - Final Tick",
+          formula: (SPATK, Level) => 0.66 * SPATK + 8 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Damage - 4 Ticks",
+          formula: (SPATK, Level) => 0.33 * SPATK + 4 * (Level - 1) + 200,
+          type: "special"
+        }
+	]
+	}
+  },
 
 
   /*"pikachu": {
