@@ -8609,6 +8609,86 @@ const skillDamage = {
 	}
   },
 
+  	"mewtwoy": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SpATK, Level) => 0.43 * SpATK + 4 * (Level - 1) + 80,
+          type: "special"
+        },
+        {
+          label: "Damage - Basic(Mega)",
+          formula: (SpATK, Level) => 0.49 * SpATK + 5 * (Level - 1) + 90,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Future Sight",
+      formulas: [
+        {
+          label: "Damage - Shove",
+          formula: (SpATK, Level) => 0.54 * SpATK + 7 * (Level - 1) + 150,
+          type: "special"
+        },
+        {
+          label: "Damage - Explosion",
+          formula: (SpATK, Level) => 0.54 * SpATK + 7 * (Level - 1) + 150,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Psystrike",
+      formulas: [
+	    	{
+          label: "Damage (x5)",
+          formula: (SpATK, Level) => 0.23 * SpATK + 2 * (Level - 1) + 74,
+          type: "special"
+        },
+        {
+          label: "Damage - Final Hit",
+          formula: (SpATK, Level) => 0.76 * SpATK + 7 * (Level - 1) + 247
+        }
+      ]
+    },
+    "s21": {
+      name: "Recover",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (SpATK, Level) => 0.7 * SpATK + 0 * (Level - 1) + 310,
+          type: "special"
+        },
+        {
+          label: "Shield",
+          formula: (HP, Level) => 0.7 * HP ,
+          type: "hp"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Teleport",
+      formulas: [
+		  
+      ]
+    },
+	"ult": {
+		name: "Infinite Psyburn",
+		formulas: [
+        {
+          label: "Damage ",
+          formula: (SpATK, Level) => 1.4 * SpATK + 12 * (Level - 1) + 470,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
