@@ -8689,6 +8689,101 @@ const skillDamage = {
 	}
   },
 
+    "mimikyu": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (2x)",
+          formula: (ATK, Level) => 0.7 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Play Rough",
+      formulas: [
+        {
+          label: "Damage - Pull and Explosion",
+          formula: (ATK, Level) => 2.1 * ATK + 20 * (Level - 1) + 320,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Shadow Claw",
+      formulas: [
+	    {
+          label: "Damage - Last Hit",
+          formula: (ATK, Level) => 1.453 * ATK + 16 * (Level - 1) + 248,
+          type: "physical"
+        },
+        {
+          label: "Healing - Per Hit",
+          formula: (ATK, Level) => 0.18 * ATK + 0 * (Level - 1) + 48,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Shadow Sneak",
+      formulas: [
+        {
+          label: "Damage - After Teleporting",
+          formula: (ATK, Level) => 1.73 * ATK + 13 * (Level - 1) + 350,
+          type: "physical"
+        },
+        {
+          label: "Damage - Additional to Marked Targets",
+          type: "text-only",
+		  additionalText: "4% Missing HP"
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 0.6 * ATK + 0 * (Level - 1) + 300,
+          type: "physical"
+        },
+		{
+          label: "Healing - Additional",
+          formula: (HP) => 0.1 * HP,
+          type: "physical"
+        },
+      ]
+    },
+    
+    "s22": {
+      name: "Trick Room",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Play With Me...",
+		formulas: [
+        {
+          label: "Damage - per hit",
+          formula: (ATK, Level) => 0.83 * ATK + 6 * (Level - 1) + 170,
+          type: "physical"
+        },
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 400,
+          type: "physical"
+        },
+		{
+          label: "Shield - Additional",
+          formula: (HP) => 0.15 * HP,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",

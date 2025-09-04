@@ -66,10 +66,39 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Verificação se o Pokémon tem dados no baseStats
+    if (!baseStats[poke]) {
+      // Se não houver dados no baseStats, mostrar mensagem informativa
+      resultado.style.display = "flex";
+      statusFinalDiv.innerHTML = `
+        <div class="stat-line">
+          <span class="stat-label" style="color: #ff6b00;">Pokémon em desenvolvimento</span>
+          <span class="stat-value">Dados de status não disponíveis ainda</span>
+        </div>
+      `;
+      skillsDiv.innerHTML = `
+        <div class="stat-line">
+          <span class="stat-label">Skills em breve...</span>
+        </div>
+      `;
+      
+      // Adicionar imagem mesmo sem dados
+      const prevImg = document.querySelector(".resultado-image");
+      if (prevImg) prevImg.remove();
+      resultado.insertAdjacentHTML("afterbegin", `
+        <div class="resultado-image">
+          <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}"
+               onerror="this.style.display='none'">
+          <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel}) - ${pokemonRoles[poke]}</div>
+        </div>
+      `);
+      return;
+    }
+
     let base =
       (typeof levelStats !== "undefined" && levelStats?.[poke]?.[targetLevel])
         ? { ...levelStats[poke][targetLevel] }
-        : { ...pokemonRoles[poke] };
+        : { ...baseStats[poke] };
 
     base = ensureAllStats(base);
     let modified = { ...base };
@@ -117,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             modified[config.stat] += config.perStack * stacks;
         }
-    }
+      }
     });
 
     // Aplicar efeito do Battle Item
@@ -192,117 +221,128 @@ document.addEventListener("DOMContentLoaded", () => {
       `);
     }
 
-// Substitua a parte do código que calcula as skills (aproximadamente linha 180-220) por esta versão:
+    // Cálculo e exibição das skills
+    skillsDiv.innerHTML = "";
 
-skillsDiv.innerHTML = "";
+    if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
+      const skills = skillDamage[poke];
 
-if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
-  const skills = skillDamage[poke];
+      Object.keys(skills).forEach(key => {
+        const s = skills[key];
+        const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
+        const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
-  Object.keys(skills).forEach(key => {
-    const s = skills[key];
-    const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
-    const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
+        // Determinar se é ultimate para aplicar classe CSS especial
+        const isUltimate = key === "ult";
+        const ultimateClass = isUltimate ? " ultimate" : "";
 
-    // Determinar se é ultimate para aplicar classe CSS especial
-    const isUltimate = key === "ult";
-    const ultimateClass = isUltimate ? " ultimate" : "";
-
-    // Array para armazenar valores calculados desta skill
-    const calculatedValues = [];
-    
-    // Primeiro passe: calcular valores não dependentes
-    s.formulas.forEach((f, index) => {
-      if (f.type !== "dependent") {
-        let baseVal, modifiedVal;
+        // Array para armazenar valores calculados desta skill
+        const calculatedValues = [];
         
-        if (f.type === "multi" || f.useAllStats) {
-          baseVal = f.formula(base, targetLevel);
-          modifiedVal = f.formula(modified, targetLevel);
-        } else {
-          let baseAttribute, modifiedAttribute;
-          
-          switch(f.type) {
-            case "special":
-              baseAttribute = base.SpATK;
-              modifiedAttribute = modified.SpATK;
-              break;
-            case "hp":
-              baseAttribute = base.HP;
-              modifiedAttribute = modified.HP;
-              break;
-            case "physical":
-            default:
-              baseAttribute = base.ATK;
-              modifiedAttribute = modified.ATK;
-              break;
+        // Primeiro passe: calcular valores não dependentes
+        s.formulas.forEach((f, index) => {
+          if (f.type === "text-only") {
+            // Pular cálculos para text-only
+            calculatedValues[index] = { base: 0, modified: 0 };
+            return;
           }
           
-          baseVal = f.formula(baseAttribute, targetLevel, base.HP);
-          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
-        }
-        
-        calculatedValues[index] = { base: baseVal, modified: modifiedVal };
-      }
-    });
-    
-    // Segundo passe: calcular valores dependentes
-    s.formulas.forEach((f, index) => {
-      if (f.type === "dependent") {
-        const dependsOnIndex = f.dependsOn;
-        if (calculatedValues[dependsOnIndex]) {
-          // Usa a fórmula definida na skill, passando o valor da dependência
-          const baseVal = f.formula(calculatedValues[dependsOnIndex].base, targetLevel);
-          const modifiedVal = f.formula(calculatedValues[dependsOnIndex].modified, targetLevel);
-          calculatedValues[index] = { base: baseVal, modified: modifiedVal };
-        } else {
-          // Fallback se a dependência não foi encontrada
-          calculatedValues[index] = { base: 0, modified: 0 };
-        }
-      }
-    });
-
-    const skillHtml = `
-    <div class="skill-box${ultimateClass}" style="margin-bottom: 15px;">
-      <img src="${imgPath}" alt="${s.name}" class="skill-icon"
-      onerror="this.onerror=null;this.src='${fallbackImg}'">
-      <div class="skill-info">
-        <h4>${s.name}</h4>
-        <ul>
-          ${s.formulas.map((f, index) => {
-            const values = calculatedValues[index];
+          if (f.type !== "dependent") {
+            let baseVal, modifiedVal;
             
-            // Formatação do resultado com possível texto adicional
-            let displayText = "";
-            let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
-            
-            if (Math.round(values.modified) > Math.round(values.base)) {
-              displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+            if (f.type === "multi" || f.useAllStats) {
+              baseVal = f.formula(base, targetLevel);
+              modifiedVal = f.formula(modified, targetLevel);
             } else {
-              displayText = `${Math.round(values.modified)}`;
+              let baseAttribute, modifiedAttribute;
+              
+              switch(f.type) {
+                case "special":
+                  baseAttribute = base.SpATK;
+                  modifiedAttribute = modified.SpATK;
+                  break;
+                case "hp":
+                  baseAttribute = base.HP;
+                  modifiedAttribute = modified.HP;
+                  break;
+                case "physical":
+                default:
+                  baseAttribute = base.ATK;
+                  modifiedAttribute = modified.ATK;
+                  break;
+              }
+              
+              baseVal = f.formula(baseAttribute, targetLevel, base.HP);
+              modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
             }
             
-            // Adicionar texto explicativo se existir
-            if (hasAdditionalText) {
-              displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
+            calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+          }
+        });
+        
+        // Segundo passe: calcular valores dependentes
+        s.formulas.forEach((f, index) => {
+          if (f.type === "dependent") {
+            const dependsOnIndex = f.dependsOn;
+            if (calculatedValues[dependsOnIndex]) {
+              // Usa a fórmula definida na skill, passando o valor da dependência
+              const baseVal = f.formula(calculatedValues[dependsOnIndex].base, targetLevel);
+              const modifiedVal = f.formula(calculatedValues[dependsOnIndex].modified, targetLevel);
+              calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+            } else {
+              // Fallback se a dependência não foi encontrada
+              calculatedValues[index] = { base: 0, modified: 0 };
             }
-            
-            return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
-          }).join("")}
-        </ul>
-      </div>
-    </div>
-  `;
-    
-    skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
-  });
-} else {
-  skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
-}
+          }
+        });
+
+        const skillHtml = `
+        <div class="skill-box${ultimateClass}" style="margin-bottom: 15px;">
+          <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+          onerror="this.onerror=null;this.src='${fallbackImg}'">
+          <div class="skill-info">
+            <h4>${s.name}</h4>
+            <ul>
+              ${s.formulas.map((f, index) => {
+                // Se for type "text-only", mostrar apenas o additionalText
+                if (f.type === "text-only") {
+                  return `<li><strong>${f.label}:</strong> <span style="color:#888; font-style:italic;">${f.additionalText}</span></li>`;
+                }
+                
+                const values = calculatedValues[index];
+                
+                // Formatação do resultado com possível texto adicional
+                let displayText = "";
+                let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
+                
+                if (Math.round(values.modified) > Math.round(values.base)) {
+                  displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+                } else {
+                  displayText = `${Math.round(values.modified)}`;
+                }
+                
+                // Adicionar texto explicativo se existir
+                if (hasAdditionalText) {
+                  displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
+                }
+                
+                return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
+              }).join("")}
+            </ul>
+          </div>
+        </div>
+      `;
+        
+        skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
+      });
+    } else {
+      skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
+    }
+
     resultado.style.display = "flex";
   };
 
-  // ---- Preencher dropdown de Pokémons ----
+  // ---- Preencher dropdown de Pokémons usando pokemonRoles ----
   Object.keys(pokemonRoles).forEach(poke => {
     const opt = document.createElement("option");
     opt.value = poke;
