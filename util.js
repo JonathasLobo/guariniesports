@@ -8784,6 +8784,101 @@ const skillDamage = {
 	}
   },
 
+    "miraidon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SpATK, Level) => 0.25 * SpATK + 0 * (Level - 1) + 100,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Charge Beam",
+      formulas: [
+        {
+          label: "Damage - Regular",
+          formula: (SpATK, Level) => 0.74 * SpATK + 7 * (Level - 1) + 378,
+          type: "special"
+        },
+        {
+          label: "Damage - Boosted (per tick, x15 ticks)",
+          formula: (SpATK, Level) => 0.20 * SpATK + 2 * (Level - 1) + 92,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Electro Drift",
+      formulas: [
+	    	{
+          label: "Damage - Regular",
+          formula: (SpATK, Level) => 1.13 * SpATK + 9 * (Level - 1) + 494,
+          type: "special"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (SpATK, Level) => 1.66 * SpATK + 16 * (Level - 1) + 630,
+		  type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Thunder",
+      formulas: [
+        {
+          label: "Damage (x5)",
+          formula: (SpATK, Level) => 0.18 * SpATK + 6 * (Level - 1) + 200,
+          type: "special"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Parabolic Charge",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.60 * SpATK + 12 * (Level - 1) + 350,
+          type: "special"
+        },
+		{
+          label: "Healing",
+          formula: (HP) => 0.06 * HP,
+          type: "hp"
+        },
+		{
+          label: "Healing - Additional past the first target",
+          formula: (HP) => 0.03 * HP,
+          type: "hp"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (SpATK, Level) => 0.75 * SpATK + 0 * (Level - 1) + 300,
+          type: "special"
+        },
+		{
+          label: "Shield - Additional Skill Plus",
+          formula: (HP) => 0.1 * HP,
+          type: "hp"
+        },
+      ]
+    },
+	"ult": {
+		name: "Bright Future Meteor Storm",
+		formulas: [
+        {
+          label: "Damage - Base per meteorite",
+          formula: (SpATK, Level) => 0.7 * SpATK + 5 * (Level - 1) + 500,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
