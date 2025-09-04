@@ -67,6 +67,7 @@ const pokemonBaseImages = {
 	rapidash: 'rapidash-left-bg',
     sableye: 'sableye-left-bg',
     scizor: 'scizor-left-bg',
+	scyther:'scyther-left-bg',
     slowbro: 'slowbro-left-bg',
     snorlax: 'snorlax-left-bg',
 	suicune: 'suicune-left-bg',
@@ -146,6 +147,7 @@ const pokemonRoles = {
 	rapidash: 'Speedster',
     sableye: 'Support',
     scizor: 'All Rounder',
+	scyther: 'Speedster',
     slowbro: 'Defender',
     snorlax: 'Defender',
 	suicune: 'All Rounder',
@@ -1701,6 +1703,20 @@ const baseStats = {
 		"CDR": 0,
 		"AtkSPD": 30,
 		"HPRegen": 15,
+		"EnergyRate": 0,
+		"Speed": 4250,
+		"CritDmg": 0,
+	},
+	"scyther": {
+		"HP": 6540,
+		"ATK": 630,
+		"DEF": 300,
+		"SpATK": 115,
+		"SpDEF": 200,
+		"CritRate": 10,
+		"CDR": 20,
+		"AtkSPD": 30,
+		"HPRegen": 0,
 		"EnergyRate": 0,
 		"Speed": 4250,
 		"CritDmg": 0,
@@ -3508,6 +3524,24 @@ const levelStats = {
     13: { HP: 6821, ATK: 383, DEF: 391, SpATK: 91, SpDEF: 315, CritRate: 20 , CDR: 0 , HPRegen: 15 , AtkSPD: 24.89 , Speed: 4250 },
     14: { HP: 7416, ATK: 419, DEF: 446, SpATK: 102, SpDEF: 359, CritRate: 20 , CDR: 0 , HPRegen: 15 , AtkSPD: 27.27 , Speed: 4250 },
     15: { HP: 8100, ATK: 460, DEF: 510, SpATK: 115, SpDEF: 410, CritRate: 20 , CDR: 0 , HPRegen: 15 , AtkSPD: 30.00 , Speed: 4250 },
+  },
+
+  	"scyther": {
+    1: { HP: 3100, ATK: 160, DEF: 45, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , HPRegen: 0 , AtkSPD: 10.00 , Speed: 3650 },
+    2: { HP: 3174, ATK: 170, DEF: 51, SpATK: 22, SpDEF: 44, CritRate: 0 , CDR: 0 , HPRegen: 0 , AtkSPD: 10.44 , Speed: 3650 },
+    3: { HP: 3259, ATK: 182, DEF: 58, SpATK: 24, SpDEF: 48, CritRate: 0 , CDR: 0 , HPRegen: 0 , AtkSPD: 10.95 , Speed: 3650 },
+    4: { HP: 3357, ATK: 196, DEF: 66, SpATK: 27, SpDEF: 53, CritRate: 0 , CDR: 0 , HPRegen: 0 , AtkSPD: 11.54 , Speed: 3650 },
+    5: { HP: 3805, ATK: 259, DEF: 100, SpATK: 40, SpDEF: 74, CritRate: 5 , CDR: 10 , HPRegen: 0 , AtkSPD: 14.22 , Speed: 3800 },
+    6: { HP: 3935, ATK: 277, DEF: 110, SpATK: 44, SpDEF: 80, CritRate: 5 , CDR: 10 , HPRegen: 0 , AtkSPD: 15.00 , Speed: 3800 },
+    7: { HP: 4084, ATK: 298, DEF: 121, SpATK: 48, SpDEF: 87, CritRate: 5 , CDR: 10 , HPRegen: 0 , AtkSPD: 15.89 , Speed: 3950 },
+    8: { HP: 4256, ATK: 322, DEF: 134, SpATK: 53, SpDEF: 95, CritRate: 5 , CDR: 10 , HPRegen: 0 , AtkSPD: 16.92 , Speed: 3950 },
+    9: { HP: 4454, ATK: 350, DEF: 149, SpATK: 59, SpDEF: 104, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 18.1 , Speed: 4100 },
+    10: { HP: 4682, ATK: 382, DEF: 166, SpATK: 65, SpDEF: 115, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 19.46 , Speed: 4100 },
+    11: { HP: 4944, ATK: 419, DEF: 186, SpATK: 72, SpDEF: 128, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 21.02 , Speed: 4250 },
+    12: { HP: 5246, ATK: 461, DEF: 209, SpATK: 81, SpDEF: 142, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 22.82 , Speed: 4250 },
+    13: { HP: 5593, ATK: 510, DEF: 235, SpATK: 91, SpDEF: 159, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 24.89 , Speed: 4250 },
+    14: { HP: 5992, ATK: 566, DEF: 265, SpATK: 102, SpDEF: 178, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 27.27 , Speed: 4250 },
+    15: { HP: 6450, ATK: 630, DEF: 300, SpATK: 115, SpDEF: 200, CritRate: 10 , CDR: 20 , HPRegen: 0 , AtkSPD: 30.00 , Speed: 4250 }
   },
 
     "slowbro": {
@@ -8874,6 +8908,798 @@ const skillDamage = {
           label: "Damage - Base per meteorite",
           formula: (SpATK, Level) => 0.7 * SpATK + 5 * (Level - 1) + 500,
           type: "special"
+        }
+	 ]
+	}
+  },
+
+  	"mrmime": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SpATK, Level) => 0.5 * SpATK + 16 * (Level - 1) + 290,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Barrier",
+      formulas: [
+      ]
+    },
+    "s12": {
+      name: "Psychic",
+      formulas: [
+	    	{
+          label: "Damage - per Pulse",
+          formula: (SpATK, Level) => 0.216 * SpATK + 2 * (Level - 1) + 51,
+          type: "special"
+        },
+        {
+          label: "Damage - Final Pulse",
+          formula: (SpATK, Level) => 0.72 * SpATK + 8 * (Level - 1) + 170,
+		  type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Confusion",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.4875 * SpATK + 14 * (Level - 1) + 340,
+          type: "special"
+        },
+		{
+          label: "Damage - Stunned (Wall Hit)",
+          formula: (SpATK, Level) => 2 * SpATK + 16 * (Level - 1) + 450,
+          type: "special"
+        },
+		{
+          label: "Damage - Stunned (Power Swap)",
+          formula: (SpATK, Level) => 0.8 * SpATK + 6 * (Level - 1) + 160,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SpATK, Level) => 1.63 * SpATK + 18 * (Level - 1) + 390,
+          type: "special"
+        },
+		{
+          label: "Damage - Stunned (Wall Hit) Skill Plus",
+          formula: (SpATK, Level) => 2.19 * SpATK + 21 * (Level - 1) + 500,
+          type: "special"
+        },
+		{
+          label: "Damage - Stunned (Power Swap) Skill Plus",
+          formula: (SpATK, Level) => 0.88 * SpATK + 7 * (Level - 1) + 200,
+          type: "special"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Power Swap",
+      formulas: [
+		{
+          label: "Damage - per Tick",
+          formula: (SpATK, Level) => 0.18 * SpATK + 1 * (Level - 1) + 30,
+          type: "special"
+        },
+		{
+          label: "Healing - per Tick",
+          formula: (SpATK, Level) => 0.21 * SpATK + 2 * (Level - 1) + 15,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Showtime",
+		formulas: [
+        {
+          label: "Damage - First 3 Hits",
+          formula: (SpATK, Level) => 0.79 * SpATK + 5 * (Level - 1) + 220,
+          type: "special"
+        },
+		{
+          label: "Damage - Final Hit",
+          formula: (SpATK, Level) => 1.58 * SpATK + 10 * (Level - 1) + 440,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+    "ninetales": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SpATK, Level) => 0.532 * SpATK + 13 * (Level - 1) + 250,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Avalanche",
+      formulas: [
+		{
+          label: "Damage - Wind or Wall",
+          formula: (SpATK, Level) => 0.36 * SpATK + 8 * (Level - 1) + 190,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dazzling Gleam",
+      formulas: [
+	    	{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.6 * SpATK + 10 * (Level - 1) + 320,
+          type: "special"
+        },
+        {
+          label: "Damage Skill Plus",
+          formula: (SpATK, Level) => 0.61 * SpATK + 10 * (Level - 1) + 380,
+		  type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Blizzard",
+      formulas: [
+        {
+          label: "Damage - Initial Blast",
+          formula: (SpATK, Level) => 0.39 * SpATK + 4 * (Level - 1) + 250,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (SpATK, Level) => 0.78 * SpATK + 8 * (Level - 1) + 500,
+          type: "special",
+		  additionalText: "Deals twice the damage of the first hit."
+        },
+		{
+          label: "Damage - Area (8 Ticks)",
+          formula: (SpATK, Level) => 0.17 * SpATK + 2 * (Level - 1) + 110,
+          type: "special"
+        },
+		{
+          label: "Damage - Initial Blast Skill Plus",
+          formula: (SpATK, Level) => 0.41 * SpATK + 6 * (Level - 1) + 270,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit Skill Plus",
+          formula: (SpATK, Level) => 0.82 * SpATK + 12 * (Level - 1) + 540,
+          type: "special",
+		  additionalText: "Deals twice the damage of the first hit."
+        },
+		{
+          label: "Damage - Area (8 Ticks) Skill Plus",
+          formula: (SpATK, Level) => 0.18 * SpATK + 3 * (Level - 1) + 115,
+          type: "special"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Aurora Veil",
+      formulas: [
+		{
+          label: "Heal - per Boosted Attack",
+          formula: (SpATK, Level) => 0.1 * SpATK + 2 * (Level - 1) + 40,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Snow Globe",
+		formulas: [
+        {
+          label: "Damage - Frozen Enemies",
+          formula: (SpATK, Level) => 2.24 * SpATK + 32 * (Level - 1) + 1520,
+          type: "special"
+        },
+		{
+          label: "Damage - Final Hit",
+          formula: (SpATK, Level) => 1.568 * SpATK + 30 * (Level - 1) + 1064,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+   	"pikachu": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SpATK, Level) => 0.38 * SpATK + 10 * (Level - 1) + 200,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Thunderbolt",
+      formulas: [
+		{
+          label: "Damage - per Bolt",
+          formula: (SpATK, Level) => 0.50 * SpATK + 12 * (Level - 1) + 500,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SpATK, Level) => 0.59 * SpATK + 14 * (Level - 1) + 600,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Electro Ball",
+      formulas: [
+	    {
+          label: "Damage - Area",
+          formula: (SpATK, Level) => 0.625 * SpATK + 24 * (Level - 1) + 503,
+          type: "special"
+        },
+        {
+          label: "Damage - Execute",
+		  type: "text-only",
+		  additionalText: "6% of enemy missing HP."
+        },
+		{
+          label: "Damage - Area Skill Plus",
+          formula: (SpATK, Level) => 0.727 * SpATK + 28 * (Level - 1) + 608,
+          type: "special"
+        },
+		{
+          label: "Damage - Execute Skill Plus",
+		  type: "text-only",
+		  additionalText: "8% of enemy missing HP."
+        },
+      ]
+    },
+    "s21": {
+      name: "Volt Tackle",
+      formulas: [
+        {
+          label: "Damage (5x)",
+          formula: (SpATK, Level) => 0.15 * SpATK + 3 * (Level - 1) + 150,
+          type: "special"
+        }
+      ]
+    },
+    
+    "u11": {
+      name: "Thunder",
+      formulas: [
+		{
+          label: "Damage - Area (5x)",
+          formula: (SpATK, Level) => 0.209 * SpATK + 5 * (Level - 1) + 218,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Thunderstorm",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.451 * SpATK + 9 * (Level - 1) + 450,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+    "psyduck": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Surf",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.65 * SpATK + 4 * (Level - 1) + 304,
+          type: "special"
+        },
+		{
+          label: "Damage - Mysterious Power (x2)",
+          formula: (SpATK, Level) => 0.45 * SpATK + 2 * (Level - 1) + 212,
+          type: "special"
+        }
+      ]
+    },
+	"s12": {
+      name: "Bubble Beam",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.8 * SpATK + 4 * (Level - 1) + 360,
+          type: "special"
+        },
+		{
+          label: "Damage - Bubbles (x3)",
+          formula: (SpATK, Level) => 0.4 * SpATK + 2 * (Level - 1) + 180,
+          type: "special"
+        },
+		{
+          label: "Damage - Mysterious Power",
+          formula: (SpATK, Level) => 0.96 * SpATK + 5 * (Level - 1) + 432,
+          type: "special"
+        },
+		{
+          label: "Damage - Bubbles (x3) - Mysterious Power",
+          formula: (SpATK, Level) => 0.48 * SpATK + 2 * (Level - 1) + 216,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Disable",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.544 * SpATK + 3 * (Level - 1) + 260,
+          type: "special"
+        }
+      ]
+    },
+    "s22": {
+      name: "Psychic",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.035 * SpATK + 9 * (Level - 1) + 495,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Full-Power Psy-ay-ay!",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.6 * SpATK + 6 * (Level - 1) + 300,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+  	"raichu": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.72 * SPATK + 0 * (Level - 1) + 80,
+          type: "special"
+		},
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.936 * SPATK + 0 * (Level - 1) + 104,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Stored Power",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.72 * SpATK + 4 * (Level - 1) + 80,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Electro Ball",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.93 * SpATK + 0 * (Level - 1) + 370,
+          type: "special"
+        },
+		{
+          label: "Damage - Activated by Thunderbolt",
+          formula: (SpATK, Level) => 2.13 * SpATK + 0 * (Level - 1) + 404,
+          type: "special"
+        },
+		{
+          label: "Damage - DoT (8 Ticks) Skill Plus",
+          formula: (SpATK, Level) => 0.085 * SpATK + 0 * (Level - 1) + 20,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Thunderbolt",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.6 * SpATK + 0 * (Level - 1) + 380,
+          type: "special"
+        }
+      ]
+    },
+	"s22": {
+      name: "Psychic",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.024 * SpATK + 0 * (Level - 1) + 240,
+          type: "special"
+        },
+		{
+          label: "Damage - Additional",
+          formula: (SpATK, Level) => 0.16 * SpATK + 0 * (Level - 1) + 40,
+          type: "special"
+        },
+		{
+          label: "Damage - DoT (5 Ticks) Skill Plus",
+          formula: (SpATK, Level) => 0.1024 * SpATK + 0 * (Level - 1) + 24,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Thunderstorm Aerial",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.68 * SpATK + 0 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Damage - DoT (5 Ticks)",
+          formula: (SpATK, Level) => 0.336 * SpATK + 0 * (Level - 1) + 80,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+  	"rapidash": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.675 * SPATK + 0 * (Level - 1) + 90,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Dazzling Gleam",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 1.37 * SpATK + 14 * (Level - 1) + 194,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Fairy Wind",
+      formulas: [
+	    {
+          label: "Damage - First 2 Hits (per Hit)",
+          formula: (SpATK, Level) => 1.04 * SpATK + 13 * (Level - 1) + 145,
+          type: "special"
+        },
+		{
+          label: "Damage - Third Hit",
+          formula: (SpATK, Level) => 1.7 * SpATK + 22 * (Level - 1) + 260,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Smart Strike",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.97 * SpATK + 8 * (Level - 1) + 155,
+          type: "special"
+        }
+      ]
+    },
+	"s22": {
+      name: "Agility",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Triad Blitz",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1 * SpATK + 8 * (Level - 1) + 200,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+    "sableye": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Knock Off",
+      formulas: [
+        {
+          label: "Damage (per Hit)",
+          formula: (ATK, Level) => 0.56 * ATK + 6 * (Level - 1) + 240,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Shadow Sneak",
+      formulas: [
+	    {
+          label: "Damage - Additional",
+          formula: (ATK, Level) => 1.13 * ATK + 12 * (Level - 1) + 480,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Feint Attack",
+      formulas: [
+        {
+          label: "Damage - per Tick (9 Ticks)",
+          formula: (ATK, Level) => 0.33 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        }
+      ]
+    },
+    
+    "s22": {
+		name: "Confuse Ray",
+      	formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.05 * ATK + 12 * (Level - 1) + 450,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Chaos Glower",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.84 * ATK + 16 * (Level - 1) + 790,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "scizor": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s12": {
+      name: "Bullet Punch",
+      formulas: [
+        {
+          label: "Damage - Initial Punch",
+          formula: (ATK, Level) => 1.14 * ATK + 9 * (Level - 1) + 220,
+          type: "physical"
+        },
+		{
+          label: "Damage - Subsequent Punches",
+          formula: (firstHitDamage, Level) => 0.3 * firstHitDamage, // 25% do primeiro hit
+		  type: "dependent",
+		  dependsOn: 0
+        },
+		{
+          label: "Healing - per Hit (3-5 hits)",
+          formula: (ATK, Level) => 0.235 * ATK + 2 * (Level - 1) + 48,
+          type: "physical"
+        },
+		{
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 300,
+          type: "physical"
+        },
+      ]
+    },
+    "s21": {
+      name: "Double Hit",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 1.3 * ATK + 12 * (Level - 1) + 375,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Swords Dance",
+      formulas: [
+        {
+          label: "Damage - Eighth Attack",
+          formula: (ATK, Level) => 1.22 * ATK + 9 * (Level - 1) + 420,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Red Illusion Dive",
+		formulas: [
+        {
+          label: "Damage - Initial Punch, Ground Punch, & Copy Contact",
+          formula: (ATK, Level) => 1.29 * ATK + 6 * (Level - 1) + 290,
+          type: "physical"
+        },
+		{
+          label: "Damage - Main Target (Copy Dash x5), Grab",
+          formula: (ATK, Level) => 0.387 * ATK + 2 * (Level - 1) + 87,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+    "scyther": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (First Hit)",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted (Second Hit)",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dual Wingbeat",
+      formulas: [
+        {
+          label: "Damage - Slash",
+          formula: (ATK, Level) => 0.97 * ATK + 12 * (Level - 1) + 280,
+          type: "physical"
+        },
+		{
+          label: "Damage - Dash",
+          formula: (ATK, Level) => 0.97 * ATK + 12 * (Level - 1) + 280,
+          type: "physical"
+        },
+		{
+          label: "Damage - Execute",
+      	  type: "text-only",
+          additionalText: "20% of enemy missing HP. Against Wild Pokemon: The total damage is capped at 1200."
+        },
+		{
+          label: "Healing",
+          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 345,
+          type: "physical"
+        },
+		{
+          label: "Damage - Slash Skill Plus",
+          formula: (ATK, Level) => 1.06 * ATK + 13 * (Level - 1) + 315,
+          type: "physical"
+        },
+		{
+          label: "Damage - Dash Skill Plus",
+          formula: (ATK, Level) => 1.06 * ATK + 13 * (Level - 1) + 315,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s21": {
+      name: "Double Hit",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 1.3 * ATK + 12 * (Level - 1) + 375,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Swords Dance",
+      formulas: [
+        {
+          label: "Damage - Eighth Attack",
+          formula: (ATK, Level) => 1.22 * ATK + 9 * (Level - 1) + 420,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Green Illusion Dive",
+		formulas: [
+        {
+          label: "Damage - Initial, Dash, & Copy Dash",
+          formula: (ATK, Level) => 0.93 * ATK + 5 * (Level - 1) + 260,
+          type: "physical"
+        },
+		{
+          label: "Heal - per Copy",
+          formula: (ATK, Level) => 0.465 * ATK + 3 * (Level - 1) + 130,
+          type: "physical"
         }
 	 ]
 	}
