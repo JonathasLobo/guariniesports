@@ -9705,6 +9705,421 @@ const skillDamage = {
 	}
   },
 
+  	"slowbro": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+		},
+        {
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 1.1 * SPATK + 9 * (Level - 1) + 180,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Scald",
+      formulas: [
+		{
+          label: "Damage - per Hit (3 Hits)",
+          formula: (SpATK, Level) => 1.1 * SpATK + 8 * (Level - 1) + 172,
+          type: "special"
+        },
+		{
+          label: "Damage - Burn (5 Ticks)",
+          formula: (SpATK, Level) => 0.2 * SpATK + 1 * (Level - 1) + 32,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Surf",
+      formulas: [
+	    {
+          label: "Damage - per Wave (3 Waves)",
+          formula: (SpATK, Level) => 1.03 * SpATK + 6 * (Level - 1) + 210,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Amnesia",
+      formulas: [
+      ]
+    },
+	"s22": {
+      name: "Telekinesis",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Slowbeam",
+		formulas: [
+        {
+          label: "Damage (x6)",
+          formula: (SpATK, Level) => 0.8 * SpATK + 3 * (Level - 1) + 170,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+    "snorlax": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) =>  0.86 * ATK + 9 * (Level - 1) + 170,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Flail",
+      formulas: [
+        {
+          label: "Basic Attack - Above 80% HP",
+          formula: (ATK, Level, HP) => 0.45 * ATK + 7 * (Level - 1) + 90 + 0.05 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 80% HP",
+          formula: (ATK, Level, HP) => 0.5 * ATK + 8 * (Level - 1) + 150 + 0.06 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 60% HP",
+          formula: (ATK, Level, HP) => 0.55 * ATK + 9 * (Level - 1) + 210 + 0.07 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 40% HP",
+          formula: (ATK, Level, HP) => 0.6 * ATK + 10 * (Level - 1) + 270 + 0.08 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 20% HP",
+          formula: (ATK, Level, HP) => 0.65 * ATK + 11 * (Level - 1) + 330 + 0.09 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Above 80% HP",
+          formula: (ATK, Level, HP) => 0.675 * ATK + 10 * (Level - 1) + 135 + 0.06 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 80% HP",
+          formula: (ATK, Level, HP) => 0.75 * ATK + 11 * (Level - 1) + 225 + 0.07 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 60% HP",
+          formula: (ATK, Level, HP) => 0.825 * ATK + 12 * (Level - 1) + 315 + 0.08 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 40% HP",
+          formula: (ATK, Level, HP) => 0.9 * ATK + 13 * (Level - 1) + 405 + 0.09 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 20% HP",
+          formula: (ATK, Level, HP) => 0.975 * ATK + 14 * (Level - 1) + 495 + 0.1 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Above 80% HP Skill Plus",
+          formula: (ATK, Level, HP) => 0.81 * ATK + 7 * (Level - 1) + 100 + 0.05 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 80% HP Skill Plus",
+          formula: (ATK, Level, HP) => 0.86 * ATK + 8 * (Level - 1) + 160 + 0.06 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 60% HP Skill Plus",
+          formula: (ATK, Level, HP) => 0.91 * ATK + 9 * (Level - 1) + 220 + 0.07 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 40% HP Skill Plus",
+          formula: (ATK, Level, HP) => 0.96 * ATK + 10 * (Level - 1) + 280 + 0.08 * HP,
+          type: "physical"
+        },
+		{
+          label: "Basic Attack - Less 20% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.01 * ATK + 11 * (Level - 1) + 340 + 0.09 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Above 80% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.215 * ATK + 10 * (Level - 1) + 150 + 0.06 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 80% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.29 * ATK + 11 * (Level - 1) + 240 + 0.07 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 60% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.365 * ATK + 12 * (Level - 1) + 330 + 0.08 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 40% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.44 * ATK + 13 * (Level - 1) + 420 + 0.09 * HP,
+          type: "physical"
+        },
+		{
+          label: "Boosted Attack - Less 20% HP Skill Plus",
+          formula: (ATK, Level, HP) => 1.515 * ATK + 14 * (Level - 1) + 510 + 0.1 * HP,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Heavy Slam",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 1.6 * ATK + 12 * (Level - 1) + 320,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 2.09 * ATK + 17 * (Level - 1) + 416,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Block",
+      formulas: [
+        {
+          label: "Shield",
+          formula: (HP) => 0.174 * HP + 1560,
+          type: "hp"
+        }
+      ]
+    },
+
+	"s2": {
+      name: "Yawn",
+      formulas: [
+      ]
+    },
+	
+	"ult": {
+		name: "Power Nap",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.32 * ATK + 8 * (Level - 1) + 360,
+          type: "physical"
+        },
+		{
+          label: "Damage - DoT (3 Ticks)",
+          formula: (ATK, Level) => 0.66 * ATK + 4 * (Level - 1) + 180,
+          type: "physical",
+		  additionalText: "Damage - DoT (3 Ticks): Deals 50% of the initial damage, 3 times."
+        }
+	 ]
+	}
+  },
+
+  	"suicune": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+		},
+        {
+          label: "Damage - per tick",
+          formula: (SPATK, Level) => 0.21 * SPATK + 0 * (Level - 1) + 94,
+          type: "special"
+		},
+		{
+          label: "Damage - Frozen Bonus",
+          formula: (SPATK, Level) => 0.1 * SPATK + 0 * (Level - 1) + 44,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Whirlpool",
+      formulas: [
+		{
+          label: "Damage - Per tick",
+          formula: (SpATK, Level) => 0.18 * SpATK + 3 * (Level - 1) + 93,
+          type: "special"
+        },
+		{
+          label: "Damage - Whirlpool reposition",
+          formula: (SpATK, Level) => 0.34 * SpATK + 4 * (Level - 1) + 180,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Surf",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.55 * SpATK + 4 * (Level - 1) + 270,
+          type: "special"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (SpATK, Level) => 0.66 * SpATK + 5 * (Level - 1) + 324,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Ice Beam",
+      formulas: [
+		{
+          label: "Damage Skill Plus",
+          formula: (SpATK, Level) => 0.75 * SpATK + 5 * (Level - 1) + 380,
+          type: "special"
+        }
+      ]
+    },
+	"s22": {
+      name: "Icy Wind",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.75 * SpATK + 3 * (Level - 1) + 360,
+          type: "special"
+        },
+		{
+          label: "Damage - Pillar break",
+          formula: (SpATK, Level) => 0.75 * SpATK + 3 * (Level - 1) + 360,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Endless Ice Spikes",
+		formulas: [
+        {
+          label: "Damage - Spike Creation",
+          formula: (SpATK, Level) => 1 * SpATK + 6 * (Level - 1) + 500,
+          type: "special"
+        },
+		{
+          label: "Damage - Spike detonation",
+          formula: (SpATK, Level) => 1 * SpATK + 6 * (Level - 1) + 500,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+    "sylveon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+		},
+        {
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.35 * SPATK + 10 * (Level - 1) + 180,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Mystical Fire",
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (SpATK, Level) => 0.74 * SpATK + 12 * (Level - 1) + 446,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Hyper Beam",
+      formulas: [
+	    {
+          label: "Damage - Near (6x)",
+          formula: (SpATK, Level) => 0.25 * SpATK + 6 * (Level - 1) + 105,
+          type: "special"
+        },
+		{
+          label: "Damage - Far (6x)",
+          formula: (SpATK, Level) => 0.42 * SpATK + 10 * (Level - 1) + 175,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Draining Kiss",
+      formulas: [
+		{
+          label: "Damage (3x)",
+          formula: (SpATK, Level) => 0.26 * SpATK + 4 * (Level - 1) + 160,
+          type: "special"
+        },
+		{
+          label: "Healing (3x)",
+          formula: (SpATK, Level) => 0.202 * SpATK + 0 * (Level - 1) + 166,
+          type: "special"
+        },
+		{
+          label: "Healing (3x) Skill Plus",
+          formula: (SpATK, Level) => 0.303 * SpATK + 0 * (Level - 1) + 249,
+          type: "special"
+        }
+      ]
+    },
+	"s22": {
+      name: "Calm Mind",
+      formulas: [
+		{
+          label: "Shield",
+          formula: (SpATK, Level) => 0.90 * SpATK + 0 * (Level - 1) + 100,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Fairy Frolic",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SpATK, Level) => 1.3 * SpATK + 13 * (Level - 1) + 750,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
   /*"pikachu": {
     "s11": {
       name: "Thunder Shock",
