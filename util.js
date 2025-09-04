@@ -9942,7 +9942,7 @@ const skillDamage = {
 	}
   },
 
-  	"suicune": {
+  "suicune": {
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10036,7 +10036,7 @@ const skillDamage = {
 	}
   },
 
-    "sylveon": {
+  "sylveon": {
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10116,6 +10116,349 @@ const skillDamage = {
           formula: (SpATK, Level) => 1.3 * SpATK + 13 * (Level - 1) + 750,
           type: "special"
         }
+	 ]
+	}
+  },
+
+    "talonflame": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.25 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Aerial Ace",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.1 * ATK + 14 * (Level - 1) + 400,
+          type: "physical"
+        },
+		{
+          label: "Heal",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 45,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.25 * ATK + 16 * (Level - 1) + 420,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Flame Charge",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 1.23 * ATK + 14 * (Level - 1) + 374,
+          type: "physical"
+        },
+        {
+          label: "Defense Pierce",
+          formula: (ATK, Level) => 0 * ATK + 3 * (Level - 1) + 60,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Fly",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.21 * ATK + 21 * (Level - 1) + 910,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Brave Bird",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.53 * ATK + 20 * (Level - 1) + 880,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Flame Sweep",
+		formulas: [
+        {
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 1.24 * ATK + 11 * (Level - 1) + 510,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
+    "tinkaton": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.8 * ATK + 60 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Healing",
+          type: "text-only",
+          additionalText: "20% Missing HP"
+        },
+
+      ]
+	},
+
+    "s11": {
+      name: "Gigaton Hammer",
+      formulas: [
+        {
+          label: "Damage - Low charge",
+          formula: (ATK, Level) => 1.68 * ATK + 12 * (Level - 1) + 260,
+          type: "physical",
+          additionalText: "Throw duration: 0.5s"
+        },
+		{
+          label: "Damage - Mid charge",
+          formula: (ATK, Level) => 2.94 * ATK + 21 * (Level - 1) + 454,
+          type: "physical",
+          additionalText: "Throw duration: 1s"
+        },
+		{
+          label: "Damage - Max Charge",
+          formula: (ATK, Level) => 4.20 * ATK + 30 * (Level - 1) + 650,
+          type: "physical",
+          additionalText: "Throw duration: 1.5s"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Smack Down",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 2.25 * ATK + 22 * (Level - 1) + 540,
+          type: "physical"
+        },
+        {
+          label: "Damage - Max Charge",
+          formula: (ATK, Level) => 3 * ATK + 30 * (Level - 1) + 720,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Ice Hammer",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1 * ATK + 13 * (Level - 1) + 200,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Thief",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.8 * ATK + 60 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Kiss Bliss Kaboom",
+		formulas: [
+        {
+          label: "Damage - Kiss Bliss",
+          formula: (ATK, Level) => 0.5 * ATK + 3 * (Level - 1) + 100,
+          type: "physical"
+        },
+        {
+          label: "Damage - Kaboom",
+          formula: (ATK, Level) => 2.5 * ATK + 22 * (Level - 1) + 700,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
+    "trevenant": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 60 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Wood Hammer",
+      formulas: [
+        {
+          label: "Damage - Both Hits",
+          formula: (ATK, Level) => 1 * ATK + 20 * (Level - 1) + 220,
+          type: "physical",
+          additionalText: "Throw duration: 0.5s"
+        },
+		{
+          label: "Stun Above 70% HP",
+          type: "text-only",
+          additionalText: "1.1s Stun"
+        },
+		{
+          label: "Stun Between 40%-70% HP",
+          type: "text-only",
+          additionalText: "1.3s Stun"
+        },
+        {
+          label: "Stun Below 40% HP",
+          type: "text-only",
+          additionalText: "1.5s Stun"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Curse",
+      formulas: [
+	    {
+          label: "Damage - per Tick",
+          formula: (ATK, Level) => 0.4 * ATK + 3 * (Level - 1) + 30,
+          type: "physical"
+        },
+        {
+          label: "Damage - Detonation",
+          formula: (ATK, Level) => 1.6 * ATK + 12 * (Level - 1) + 120,
+          type: "physical"
+        },
+        {
+          label: "Slow Above 70% HP",
+          type: "text-only",
+          additionalText: "10% Slow"
+        },
+		{
+          label: "Slow Between 40%-70% HP",
+          type: "text-only",
+          additionalText: "14% Slow"
+        },
+        {
+          label: "Slow Below 40% HP",
+          type: "text-only",
+          additionalText: "18% Slow"
+        }
+      ]
+    },
+    "s21": {
+      name: "Horn Leech",
+      formulas: [
+        {
+          label: "Damage - 2 Hits",
+          formula: (ATK, Level) => 0.43 * ATK + 4 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Basic - Bonus Damage",
+          formula: (ATK, Level) => 0.215 * ATK + 2 * (Level - 1) + 100,
+          type: "physical"
+        },
+        {
+          label: "Heal (Over 3s) Above 70% HP",
+          type: "text-only",
+          additionalText: "12% Max HP"
+        },
+		    {
+          label: "Heal (Over 3s) Between 40%-70% HP",
+          type: "text-only",
+          additionalText: "15% Max HP"
+        },
+        {
+          label: "Heal (Over 3s) Below 40% HP",
+          type: "text-only",
+          additionalText: "18% Max HP"
+        }
+      ]
+    },
+    "s22": {
+      name: "Pain Split",
+      formulas: [
+        {
+          label: "Damage - per conditional tick",
+          formula: (ATK, Level) => 0.29 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        },
+        {
+          label: "Damage - Redirected (per damage instance) Above 70% HP",
+          type: "text-only",
+          additionalText: "25% incoming"
+        },
+		    {
+          label: "Damage - Redirected (per damage instance) Between 40%-70% HP",
+          type: "text-only",
+          additionalText: "35% incoming"
+        },
+        {
+          label: "Damage - Redirected (per damage instance) Below 40% HP",
+          type: "text-only",
+          additionalText: "45% incoming"
+        },
+        {
+          label: "Heal",
+          type: "text-only",
+          additionalText: "Trevenant heals for 134.4% of damage dealt on each tick."
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Phantom Forest",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.6 * ATK + 15 * (Level - 1) + 700,
+          type: "physical"
+        },
+        {
+          label: "Shield - per Enemy Hit",
+          formula: (ATK, Level) => 0.8 * ATK + 0 * (Level - 1) + 500,
+          type: "physical"
+        },
+        {
+          label: "Damage - Marked Bonus",
+          formula: (ATK, Level) => 0 * ATK + 8 * (Level - 1) + 190,
+          type: "physical"
+        },
 	 ]
 	}
   },
