@@ -558,7 +558,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Primeiro passe: calcular valores não dependentes
         s.formulas.forEach((f, index) => {
           if (f.type === "text-only") {
-            // Pular cálculos para text-only
             calculatedValues[index] = { base: 0, modified: 0 };
             return;
           }
@@ -592,26 +591,22 @@ document.addEventListener("DOMContentLoaded", () => {
               modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
             }
             
-            // NOVA IMPLEMENTAÇÃO: Verificar se é ataque básico e se há bônus da passiva
+            // Verificar se é ataque básico e se há bônus da passiva do Armarouge
             if ((key === "atkboosted" || key === "basic" || key === "basicattack") && 
                 skills.passive?.nextBasicAttackBonus && 
                 activePassives[poke]) {
               
               const passiveBonus = skills.passive.nextBasicAttackBonus;
-              
-              // Armazenar tanto o valor original quanto o valor com bônus
-              calculatedValues[index] = { 
-                base: baseVal, 
-                modified: modifiedVal,
-                withPassive: { 
-                  base: baseVal + passiveBonus.base, 
-                  modified: modifiedVal + passiveBonus.modified 
-                },
-                hasPassiveBonus: true
-              };
-            } else {
-              calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
+              baseVal += passiveBonus.base;
+              modifiedVal += passiveBonus.modified;
             }
+            
+            // CORREÇÃO: Aplicar multiplicador do Decidueye APENAS no modifiedVal
+            if (poke === "decidueye" && activePassives[poke] && skills.passive) {
+              modifiedVal *= 1.20; // Só no modified para mostrar a diferença
+            }
+            
+            calculatedValues[index] = { base: baseVal, modified: modifiedVal };
           }
         });
         

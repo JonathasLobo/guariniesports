@@ -4165,6 +4165,14 @@ const skillDamage = {
   },
 
     "alcremie": {
+      "passive": {
+          name: "Aroma Veil",
+          description: "Cleanses hindrances from allies (and itself) under its buffs/shields, and its Sweet Gauge empowers and resets its Recover and Decorate moves when full.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4274,6 +4282,14 @@ const skillDamage = {
   },
 
     "azumarill": {
+      "passive": {
+          name: "Huge Power",
+          description: "Always crits on single targets, but never on multiple targets. Critical hits deal increased damage at 170% instead of 200%.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4388,6 +4404,16 @@ const skillDamage = {
   },
 
     "blastoise": {
+      "passive": {
+          name: "Torrent",
+          description: "While at 50% max HP or below: increases Attack and Sp. Atk by 20%.",
+          buff: {
+            ATK: 20,
+            SpATK: 20
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4507,6 +4533,29 @@ const skillDamage = {
   },
 
     "blaziken": {
+      "passive": {
+          name: "Blaze",
+          description: "Applying 5 Fire Fragment stacks to an enemy triggers bonus damage and HP steal. The HP restoration is increased when the user's HP is at half or below.",
+          buff: {
+          },
+          formulas: [
+          {
+            label: "Damage",
+            formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+            type: "physical"
+          },
+          {
+            label: "Healing",
+            formula: (HP) => 0.07 * HP,
+            type: "hp"
+          },
+          {
+            label: "Healing (at or below 50% HP)",
+            formula: (HP) => 0.1 * HP,
+            type: "hp"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4606,6 +4655,14 @@ const skillDamage = {
   },
 
     "blissey": {
+      "passive": {
+          name: "Natural Cure",
+          description: "Automatically cleanses this Pokémon every 6s, even if there are no effects to cleanse.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4685,6 +4742,16 @@ const skillDamage = {
   },
 
     "buzzwole": {
+        "passive": {
+          name: "Beast Boost",
+          description: "Gains massive move and attack speed on knockouts/assists. Building its Muscle Gauge through combat enables its strengths, but the gauge decays when out of combat.",
+          buff: {
+            Speed: 100,
+            AtkSPD: 50
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4784,6 +4851,25 @@ const skillDamage = {
   },
 
     "ceruledge": {
+      "passive": {
+          name: "Weak Armor",
+          description: "Gains move speed when hit by Attack-based damage. Attacking applies a stacking damage-over-time wound; at max stacks, the target takes increased damage from Ceruledge.",
+          buff: {
+            Speed: 10
+          },
+          formulas: [
+            {
+              label: "Damage - Flame Body",
+              formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+              type: "physical"
+            },
+            {
+              label: "Damage - First Stack",
+              formula: (ATK, Level) => 0.075 * ATK + 0 * (Level - 1) + 0,
+              type: "physical"
+            }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4868,6 +4954,14 @@ const skillDamage = {
   },
 
     "chandelure": {
+      "passive": {
+          name: "Infiltrator",
+          description: "Gains stacks that ignore a portion of the target's Special Defense with each damage dealt, refreshing duration on new stacks. Max stacks ignore 20% Sp. Def.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4977,6 +5071,15 @@ const skillDamage = {
   },
   
     "charizard": {
+      "passive": {
+          name: "Blaze",
+          description: "While at 50% max HP or below, this Pokémon's critical-hit rate is increased by 20%.",
+          buff: {
+            CritRate: 20
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5091,6 +5194,16 @@ const skillDamage = {
   },
 
     "cinderace": {
+      "passive": {
+          name: "Blaze",
+          description: "Below 50% HP, gain crit rate and attack speed (30s CD). Attacks apply cinders; at 5 stacks, they explode for bonus damage.",
+          buff: {
+            CritRate: 10,
+            AtkSPD: 20
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5165,6 +5278,14 @@ const skillDamage = {
   },
 
   "clefable": {
+    "passive": {
+          name: "Magic Guard",
+          description: "Gains a shield when healing allies, with shield strength equal to 50% of the HP restored.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5259,6 +5380,30 @@ const skillDamage = {
   },
 
     "comfey": {
+      "passive": {
+          name: "Triage",
+          description: "Gains movement speed near low-HP allies. Stores flowers to empower healing moves when attached, and provides shields and scoring support while untargetable.",
+          buff: {
+            Speed: 25
+          },
+          formulas: [
+          {
+          label: "Self Healing - Attached (per second)",
+          formula: (HP) => 0.01 * HP,
+          type: "hp"
+          },
+          {
+          label: "Shield - Attach (Sweet Kiss)",
+          formula: (HP) => 0.22 * HP,
+          type: "hp"
+          },
+          {
+          label: "Shield - Attach (Synthesis or Floral Healing)",
+          formula: (HP) => 0.15 * HP,
+          type: "hp"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5368,6 +5513,14 @@ const skillDamage = {
   },
 
     "cramorant": {
+      "passive": {
+          name: "Gulp Missile",
+          description: "Stores prey in mouth using moves, then spits it when hit to damage and debuff enemies. Prey type (Arrokuda or Pikachu) changes based on own HP.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5457,6 +5610,19 @@ const skillDamage = {
   },
 
   	"crustle": {
+      "passive": {
+          name: "Sturdy",
+          description: "Gains increasing Defense and Sp. Def for every 7% missing HP, maxing out at 70% missing HP.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Def & Sp. Def - Increase (Stacks 10x)",
+          formula: (ATK, Level) => 0 * ATK + 2 * (Level - 1) + 6,
+          type: "physical"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5546,6 +5712,24 @@ const skillDamage = {
   },
 
   	"darkrai": {
+      "passive": {
+          name: "Bad Dreams",
+          description: "Damages and marks sleeping enemies near Darkrai, empowering its boosted attack and dealing bonus damage over time without waking them.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.5 * SpATK + 2 * (Level - 1) + 6,
+          type: "special"
+          },
+          {
+          label: "Damage - DoT",
+          formula: (HP) => 0.02 * HP + 2,
+          type: "hp"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5675,6 +5859,14 @@ const skillDamage = {
   },
 
   "decidueye": {
+    "passive": {
+          name: "Long Reach",
+          description: "Increases Decidueye's auto attack and move damage by 20% to distant enemies.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5779,6 +5971,19 @@ const skillDamage = {
   },
 
     "delphox": {
+      "passive": {
+          name: "Blaze",
+          description: "Below 50% HP, using a move fires an extra fireball for bonus damage (15s cooldown).",
+          buff: {
+          },
+          formulas: [
+          {
+            label: "Damage - Fireball",
+            formula: (SPATK, Level) => 0.81 * SPATK + 18 * (Level - 1) + 325,
+            type: "special"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -5868,6 +6073,15 @@ const skillDamage = {
   },
 
   "dodrio": {
+    "passive": {
+          name: "Run Away",
+          description: "Gains movement speed near enemies and charges a sprint gauge while moving. Scores goals by splitting Aeos energy into multiple deposits.",
+          buff: {
+            Speed: 20
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
