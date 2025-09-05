@@ -65,14 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const safeCap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
   // ---- Itens que stackam ----
+  // ---- Itens que stackam ----
   const STACKABLE_ITEMS = {
-    "Attack Weight": { stat: "ATK", perStack: 12, max: 6, percent: false },
-    "Sp. Atk Specs": { stat: "SpATK", perStack: 16, max: 6, percent: false },
-    "Aeos Cookie": { stat: "HP", perStack: 200, max: 6, percent: false },
-    "Accel Bracer": { stat: "ATK", perStack: 0.6, max: 20, percent: true },
-    "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true },
-    "Weakness Police": { stat: "ATK", perStack: 2.5, max: 4, percent: true },
-    "Charging Charm": { stat: "ATK", perStack: 70, max: 1, percent: true, fixedBonus: 40 }
+    "Attack Weight": { stat: "ATK", perStack: 12, max: 6, percent: false, startFromZero: true },
+    "Sp. Atk Specs": { stat: "SpATK", perStack: 16, max: 6, percent: false, startFromZero: true },
+    "Aeos Cookie": { stat: "HP", perStack: 200, max: 6, percent: false, startFromZero: true },
+    "Accel Bracer": { stat: "ATK", perStack: 0.6, max: 20, percent: true, startFromZero: true },
+    "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true, startFromZero: true },
+    "Weakness Police": { stat: "ATK", perStack: 2.5, max: 4, percent: true, startFromZero: true },
+    "Charging Charm": { stat: "ATK", perStack: 70, max: 1, percent: true, fixedBonus: 40, startFromZero: true }
   };
 
   // ---- Emblemas ----
@@ -282,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (STACKABLE_ITEMS[itemName]) {
         const config = STACKABLE_ITEMS[itemName];
         const range = slot.querySelector(".stack-range");
-        const stacks = range ? parseInt(range.value, 10) || 1 : 1;
+        const stacks = range ? parseInt(range.value, 10) || 0 : 0;
 
         // Caso especial para "Charging Charm" (valor fixo + percentual)
         if (itemName === "Charging Charm") {
@@ -699,8 +700,8 @@ document.addEventListener("DOMContentLoaded", () => {
         stackDiv.innerHTML = `
           <div class="stack-slider">
             <label>Stacks:</label>
-            <input type="range" min="1" max="${config.max}" value="1" step="1" class="slider stack-range">
-            <span class="stack-value">1</span>
+            <input type="range" min="0" max="${config.max}" value="0" step="1" class="slider stack-range">
+            <span class="stack-value">0</span>
           </div>
         `;
         const range = stackDiv.querySelector(".stack-range");

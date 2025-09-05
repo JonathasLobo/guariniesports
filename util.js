@@ -3952,7 +3952,7 @@ const skillDamage = {
    "aegislash": {
       "passive": {
       name: "Stance Change",
-      description: "Changes form between Attack and Defense stances.",
+      description: "Changes form between Attack and Defense stances. + 15% Speed and Atk Speed",
       buff: {
         Speed: 15,
         AtkSPD: 15
