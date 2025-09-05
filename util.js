@@ -3839,10 +3839,17 @@ const skillDamage = {
  "absol": {
   "passive": {
       name: "Super Luck",
-      description: "Increases critical hit rate in 15%", // Opcional
+      description: "Increases the Pokémon's critical-hit rate.",
       buff: {
-        CritRate: 15 // Aumenta 15% de critical rate
-      }
+        CritRate: 15
+      },
+      formulas: [
+        {
+          label: "Critical Rate Bonus",
+          additionalText: "+15% Critical Rate",
+          type: "text-only"
+        }
+      ]
     },
 	"atkboosted": {
 	  name: "Ataque Básico",
@@ -3943,6 +3950,34 @@ const skillDamage = {
   },
 
    "aegislash": {
+      "passive": {
+      name: "Stance Change",
+      description: "Changes form between Attack and Defense stances.",
+      buff: {
+        Speed: 15,
+        AtkSPD: 15
+      },
+      formulas: [
+        {
+          label: "Defense - Increase (Shield Stance)",
+          formula: (ATK, level) => 0 * ATK + 25 * (level - 1) + 80,
+          type: "physical",
+          affects: "DEF"
+        },
+        {
+          label: "Attack - Increase (Sword Stance)",
+          formula: (ATK, level) => 0 * ATK + 15 * (level - 1) + 40,
+          type: "physical",
+          affects: "ATK"
+        },
+        {
+          label: "Special Defense - Increase (Shield Stance)",
+          formula: (ATK, level) => 0 * ATK + 20 * (level - 1) + 40,
+          type: "physical",
+          affects: "SPDEF"
+        },
+      ]
+    },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [

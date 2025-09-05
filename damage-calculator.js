@@ -88,27 +88,115 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ---- Função para aplicar buff da passiva ----
-  const applyPassiveBuff = (stats, pokemon) => {
-    if (!activePassives[pokemon] || !skillDamage[pokemon]?.passive?.buff) {
+    // ---- Função para aplicar buff da passiva ----
+  const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
+    if (!activePassives[pokemon] || !skillDamage[pokemon]?.passive) {
       return stats;
     }
 
-    const passiveBuff = skillDamage[pokemon].passive.buff;
-    const modifiedStats = { ...stats };
+    const passive = skillDamage[pokemon].passive;
+    let modifiedStats = { ...stats };
 
-    // Aplicar cada buff da passiva
-    Object.keys(passiveBuff).forEach(stat => {
-      if (modifiedStats.hasOwnProperty(stat)) {
-        const buffValue = passiveBuff[stat];
-        if (PERCENT_KEYS.has(stat)) {
-          // Para stats percentuais, adicionar diretamente
-          modifiedStats[stat] += buffValue;
-        } else {
-          // Para stats absolutos, calcular percentual da base
-          modifiedStats[stat] += stats[stat] * (buffValue / 100);
+    // Aplicar buffs de status se existirem
+    if (passive.buff) {
+      Object.keys(passive.buff).forEach(stat => {
+        if (modifiedStats.hasOwnProperty(stat)) {
+          const buffValue = passive.buff[stat];
+          if (PERCENT_KEYS.has(stat)) {
+            modifiedStats[stat] += buffValue;
+          } else {
+            modifiedStats[stat] += baseStats[stat] * (buffValue / 100);
+          }
         }
-      }
-    });
+      });
+    }
+
+    // Processar fórmulas da passiva se existirem e aplicar aos stats
+    if (passive.formulas && passive.formulas.length > 0) {
+      passive.formulas.forEach((f, index) => {
+        if (f.type !== "text-only" && f.type !== "dependent") {
+          let baseVal, modifiedVal;
+          
+          if (f.type === "multi" || f.useAllStats) {
+            baseVal = f.formula(baseStats, targetLevel);
+            modifiedVal = f.formula(modifiedStats, targetLevel);
+          } else {
+            let baseAttribute, modifiedAttribute;
+            
+            switch(f.type) {
+              case "special":
+                baseAttribute = baseStats.SpATK;
+                modifiedAttribute = modifiedStats.SpATK;
+                break;
+              case "hp":
+                baseAttribute = baseStats.HP;
+                modifiedAttribute = modifiedStats.HP;
+                break;
+              case "physical":
+              default:
+                baseAttribute = baseStats.ATK;
+                modifiedAttribute = modifiedStats.ATK;
+                break;
+            }
+            
+            baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
+            modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
+          }
+          
+          // Armazenar os valores calculados para uso posterior
+          if (!passive.calculatedValues) passive.calculatedValues = {};
+          passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+          
+          // Aplicar o resultado da fórmula ao stat correspondente
+          if (f.affects) {
+            // Usa a propriedade 'affects' se estiver definida
+            const statKey = f.affects.toUpperCase();
+            if (modifiedStats.hasOwnProperty(statKey)) {
+              modifiedStats[statKey] += modifiedVal;
+            }
+          } else {
+            // Fallback para análise do label
+            const label = f.label.toLowerCase();
+            
+            if (label.includes("defense") && !label.includes("special")) {
+              // Aplicar à DEF
+              modifiedStats.DEF += modifiedVal;
+            } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
+              // Aplicar à SpDEF
+              modifiedStats.SpDEF += modifiedVal;
+            } else if (label.includes("attack") && !label.includes("special")) {
+              // Aplicar à ATK
+              modifiedStats.ATK += modifiedVal;
+            } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
+              // Aplicar à SpATK
+              modifiedStats.SpATK += modifiedVal;
+            } else if (label.includes("hp") || label.includes("health")) {
+              // Aplicar à HP
+              modifiedStats.HP += modifiedVal;
+            } else if (label.includes("speed")) {
+              // Aplicar à Speed
+              modifiedStats.Speed += modifiedVal;
+            } else if (label.includes("crit") && label.includes("rate")) {
+              // Aplicar à CritRate
+              modifiedStats.CritRate += modifiedVal;
+            } else if (label.includes("crit") && label.includes("dmg")) {
+              // Aplicar à CritDmg
+              modifiedStats.CritDmg += modifiedVal;
+            } else if (label.includes("lifesteal")) {
+              // Aplicar à Lifesteal
+              modifiedStats.Lifesteal += modifiedVal;
+            } else if (label.includes("cdr") || label.includes("cooldown")) {
+              // Aplicar à CDR
+              modifiedStats.CDR += modifiedVal;
+            } else if (label.includes("atkspd") || label.includes("attack speed")) {
+              // Aplicar à AtkSPD
+              modifiedStats.AtkSPD += modifiedVal;
+            }
+            // Adicione mais condições conforme necessário para outros atributos
+          }
+        }
+      });
+    }
 
     return modifiedStats;
   };
@@ -120,6 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!poke) {
       resultado.style.display = "none";
       return;
+    }
+
+    // Resetar valores calculados da passiva
+    if (skillDamage[poke]?.passive?.calculatedValues) {
+      delete skillDamage[poke].passive.calculatedValues;
     }
 
     // Verificação se o Pokémon tem dados no baseStats
@@ -239,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Aplicar buff da passiva se ativa
-    modified = applyPassiveBuff(modified, poke);
+    modified = applyPassiveBuff(modified, poke, base, targetLevel);
     modified = ensureAllStats(modified);
 
     // Imagem do Pokémon
@@ -391,6 +484,35 @@ document.addEventListener("DOMContentLoaded", () => {
         const isActive = activePassives[poke] || false;
         const activeClass = isActive ? " active" : "";
 
+        let passiveFormulasHtml = "";
+        if (p.formulas && p.formulas.length > 0) {
+          passiveFormulasHtml = p.formulas.map((f, index) => {
+            // Se for type "text-only", mostrar apenas o additionalText
+            if (f.type === "text-only") {
+              return `<li><strong>${f.label}:</strong> <span style="color:#888; font-style:italic;">${f.additionalText}</span></li>`;
+            }
+            
+            const values = p.calculatedValues?.[index] || { base: 0, modified: 0 };
+            
+            // Formatação do resultado
+            let displayText = "";
+            let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
+            
+            if (Math.round(values.modified) > Math.round(values.base)) {
+              displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+            } else {
+              displayText = `${Math.round(values.modified)}`;
+            }
+            
+            // Adicionar texto explicativo se existir
+            if (hasAdditionalText) {
+              displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
+            }
+            
+            return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
+          }).join("");
+        }
+
         const passiveHtml = `
           <div class="skill-box passive${activeClass}" data-pokemon="${poke}" style="margin-bottom: 15px;">
             <img src="${imgPath}" alt="${p.name}" class="skill-icon"
@@ -399,6 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <h4>${p.name}</h4>
               <div class="passive-subtitle">passive skill</div>
               ${p.description ? `<ul><li style="color:#888; font-style:italic;">${p.description}</li></ul>` : ""}
+              ${passiveFormulasHtml ? `<ul>${passiveFormulasHtml}</ul>` : ""}
             </div>
             <div class="passive-status"></div>
           </div>
