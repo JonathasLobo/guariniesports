@@ -10064,7 +10064,7 @@ const skillDamage = {
       ]
     },
     "s12": {
-      name: "Hyper Beam",
+      name: "Hyper Voice",
       formulas: [
 	    {
           label: "Damage - Near (6x)",
@@ -10459,6 +10459,1099 @@ const skillDamage = {
           formula: (ATK, Level) => 0 * ATK + 8 * (Level - 1) + 190,
           type: "physical"
         },
+	 ]
+	}
+  },
+
+  "tsareena": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+	},
+    "s11": {
+      name: "Triple Axel",
+      formulas: [
+        {
+          label: "Damage - per Hit",
+          formula: (ATK, Level) => 0.46 * ATK + 3 * (Level - 1) + 57,
+          type: "physical"
+        },
+		    {
+          label: "Damage - per Hit (Queenly Majesty buff)",
+          formula: (ATK, Level) => 0.74 * ATK + 5 * (Level - 1) + 95,
+          type: "physical"
+        },
+		    {
+          label: "Heal per hit per target (Queenly Majesty buff)",
+          formula: (ATK, Level) => 0.4 * ATK + 3 * (Level - 1) + 20,
+          type: "physical"
+        },
+        {
+          label: "Attack Speed - Increase",
+          formula: (Level) => 0.04 + (0.015 * (Level - 1)),
+          type: "physical"
+        },
+        {
+          label: "Damage - per Hit Skill Plus",
+          formula: (ATK, Level) => 0.53 * ATK + 4 * (Level - 1) + 68,
+          type: "physical"
+        },
+        {
+          label: "Damage - per Hit (Queenly Majesty buff) Skill Plus",
+          formula: (ATK, Level) => 0.85 * ATK + 6 * (Level - 1) + 110,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Stomp",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 1.7 * ATK + 10 * (Level - 1) + 208,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff)",
+          formula: (ATK, Level) => 2.74 * ATK + 14 * (Level - 1) + 334,
+          type: "physical"
+        },
+        {
+          label: "Heal per hit per target (Queenly Majesty buff)",
+          formula: (ATK, Level) => 0.80 * ATK + 6 * (Level - 1) + 40,
+          type: "physical"
+        },
+		    {
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.98 * ATK + 10 * (Level - 1) + 240,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff) Skill Plus",
+          formula: (ATK, Level) => 3.14 * ATK + 16 * (Level - 1) + 385,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Trop Kick",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.7565 * ATK + 3 * (Level - 1) + 113,
+          type: "physical"
+        },
+        {
+          label: "Damage - DoT (7 Ticks)",
+          formula: (ATK, Level) => 0.113 * ATK + 1 * (Level - 1) + 17,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff)",
+          formula: (ATK, Level) => 1.211 * ATK + 4 * (Level - 1) + 181,
+          type: "physical"
+        },
+		    {
+          label: "Damage - DoT (7 Ticks - Queenly Majesty buff)",
+          formula: (ATK, Level) => 0.1809 * ATK + 1 * (Level - 1) + 28,
+          type: "physical"
+        },
+        {
+          label: "Shield (Queenly Majesty buff)",
+          formula: (ATK, Level) => 2.64 * ATK + 18 * (Level - 1) + 216,
+          type: "physical"
+        },
+        {
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 0.87 * ATK + 3 * (Level - 1) + 130,
+          type: "physical"
+        },
+        {
+          label: "Damage - DoT (7 Ticks) Skill Plus",
+          formula: (ATK, Level) => 0.13 * ATK + 1 * (Level - 1) + 20,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff) Skill Plus",
+          formula: (ATK, Level) => 1.392 * ATK + 5 * (Level - 1) + 208,
+          type: "physical"
+        },
+        {
+          label: "Damage - DoT (7 Ticks - Queenly Majesty buff) Skill Plus",
+          formula: (ATK, Level) => 0.208 * ATK + 1 * (Level - 1) + 32,
+          type: "physical"
+        },
+      ]
+    },
+    "s22": {
+      name: "Grassy Glide",
+      formulas: [
+        {
+          label: "Damage (2x)",
+          formula: (ATK, Level) => 0.6696 * ATK + 3 * (Level - 1) + 87,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff)",
+          formula: (ATK, Level) => 1.0713 * ATK + 5 * (Level - 1) + 139,
+          type: "physical"
+        },
+		    {
+          label: "Shield (Queenly Majesty buff)",
+          formula: (ATK, Level) => 2.64 * ATK + 18 * (Level - 1) + 216,
+          type: "physical"
+        },
+        {
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 0.77 * ATK + 4 * (Level - 1) + 100,
+          type: "physical"
+        },
+        {
+          label: "Damage (Queenly Majesty buff) Skill Plus",
+          formula: (ATK, Level) => 1.232 * ATK + 6 * (Level - 1) + 160,
+          type: "physical"
+        },
+      ]
+    },
+	
+	"ult": {
+		name: "Queen Ascendant",
+		formulas: [
+        {
+          label: "Damage (9x)",
+          formula: (ATK, Level) => 0.45 * ATK + 1 * (Level - 1) + 64,
+          type: "physical"
+        },
+        {
+          label: "Heal - Landing",
+          formula: (ATK, Level) => 0.7 * ATK + 5 * (Level - 1) + 350,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final Hit",
+          formula: (ATK, Level) => 1.8 * ATK + 4 * (Level - 1) + 256,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
+  "tyranitar": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Dark Pulse",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.64 * ATK + 13 * (Level - 1) + 330,
+          type: "physical"
+        },
+		{
+          label: "Damage - Additional",
+          formula: (ATK, Level) => 0.492 * ATK + 4 * (Level - 1) + 99,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Stone Edge",
+      formulas: [
+	    {
+          label: "Damage - Melee Range",
+          formula: (ATK, Level) => 1.18 * ATK + 7 * (Level - 1) + 270,
+          type: "physical"
+        },
+        {
+          label: "Damage - Max Range",
+          formula: (ATK, Level) => 0.91 * ATK + 5 * (Level - 1) + 208,
+          type: "physical"
+        },
+        {
+          label: "Damage - Melee Range Skill Plus",
+          formula: (ATK, Level) => 1.26 * ATK + 9 * (Level - 1) + 297,
+          type: "physical"
+        },
+		    {
+          label: "Damage - Max Range Skill Plus",
+          formula: (ATK, Level) => 0.98 * ATK + 6 * (Level - 1) + 235,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Ancient Power",
+      formulas: [
+        {
+          label: "Damage - Initial Hit",
+          formula: (ATK, Level) => 0.74 * ATK + 3 * (Level - 1) + 140,
+          type: "physical"
+        },
+        {
+          label: "Shield - per Stack",
+          formula: (ATK, Level) => 0.75 * ATK + 0 * (Level - 1) + 300,
+          type: "physical"
+        },
+        {
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 0.74 * ATK + 0 * (Level - 1) + 140,
+          type: "physical"
+        },
+		    {
+          label: "Shield - Additional",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 400,
+          type: "physical"
+        },
+        {
+          label: "Shield - per Stack Skill Plus",
+          formula: (ATK, Level) => 0.9 * ATK + 0 * (Level - 1) + 360,
+          type: "physical"
+        },
+        {
+          label: "Shield - Additional Skill Plus",
+          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 480,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Sand Tomb",
+      formulas: [
+        {
+          label: "Damage - Leap",
+          formula: (ATK, Level) => 0.39 * ATK + 3 * (Level - 1) + 60,
+          type: "physical"
+        },
+        {
+          label: "Damage - AoE (per Tick)",
+          formula: (ATK, Level) => 0.13 * ATK + 0 * (Level - 1) + 20,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Tyrannical Rampage",
+		formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.3 * ATK + 6 * (Level - 1) + 240,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "umbreon": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Heal",
+          type: "text-only",
+          additionalText: "10% Missing HP"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Mean Look",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.96 * ATK + 5 * (Level - 1) + 180,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Foul Play",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 0.58 * ATK + 6 * (Level - 1) + 145,
+          type: "physical"
+        },
+        {
+          label: "Damage (Second Hit)",
+          type: "text-only",
+          additionalText: "237.6% Attack of Target"
+        }
+      ]
+    },
+    "s21": {
+      name: "Wish",
+      formulas: [
+        {
+          label: "Heal",
+          formula: (ATK, Level) => 3 * ATK + 18 * (Level - 1) + 600,
+          type: "physical"
+        },
+        {
+          label: "Heal Skill Plus",
+          formula: (ATK, Level) => 3.8 * ATK + 18 * (Level - 1) + 700,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Snarl",
+      formulas: [
+        {
+          label: "Damage (8x)",
+          formula: (ATK, Level) => 0.15 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+        },
+        {
+          label: "Damage (Final Shout)",
+          formula: (ATK, Level) => 0.3 * ATK + 2 * (Level - 1) + 80,
+          type: "physical"
+        },
+        {
+          label: "Damage (Final Shout)",
+          formula: (HP) => 0.15 * HP,
+          type: "hp"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Moonlight Prance",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.24 * ATK + 13 * (Level - 1) + 630,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "urshifu": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Kubfu)",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Shield (Single Strike)",
+          formula: (ATK, Level) => 0.7 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Rapid Strike, 2x)",
+          formula: (ATK, Level) => 0.6 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Wicked Blow",
+      formulas: [
+        {
+          label: "Damage (Uncharged)",
+          formula: (ATK, Level) => 1.1 * ATK + 7 * (Level - 1) + 175,
+          type: "physical"
+        },
+        {
+          label: "Damage - Center (Charged)",
+          formula: (ATK, Level) => 1.75 * ATK + 12 * (Level - 1) + 280,
+          type: "physical",
+          additionalText: "Damage is always a critical and deals additional damage equal to 10% of the enemies missing HP. Against Wild Pokemon: This additional damage is capped at 1200."
+        },
+        {
+          label: "Damage - Conal (Charged)",
+          formula: (ATK, Level) => 1.75 * ATK + 12 * (Level - 1) + 280,
+          type: "physical",
+          additionalText: "Deals additional damage equal to 5% of the enemies' missing HP. Against Wild Pokemon: This additional damage is capped at 600."
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Surging Strikes",
+      formulas: [
+	    {
+          label: "Damage - per Hit",
+          formula: (ATK, Level) => 0.902 * ATK + 4 * (Level - 1) + 125,
+          type: "physical"
+        },
+        {
+          label: "Healing (2x)",
+          formula: (HP) => 0.02 * HP,
+          type: "hp"
+        }
+      ]
+    },
+    "s21": {
+      name: "Throat Chop",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.79 * ATK + 6 * (Level - 1) + 340,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Liquidation",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.975 * ATK + 6 * (Level - 1) + 165,
+          type: "physical"
+        },
+        {
+          label: "Shield (per Pokémon hit - up to 3)",
+          formula: (ATK, Level) => 0.9 * ATK + 0 * (Level - 1) + 260,
+          type: "physical"
+        },
+        {
+          label: "Damage (Final Shout)",
+          formula: (HP) => 0.15 * HP,
+          type: "hp"
+        }
+      ]
+    },
+	
+	"ult1": {
+		name: "Ebon Fist",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 3.3 * ATK + 12 * (Level - 1) + 615,
+          type: "physical"
+        },
+        {
+          label: "Damage - Collision",
+          formula: (ATK, Level) => 2.2 * ATK + 9 * (Level - 1) + 410,
+          type: "physical"
+        },
+        {
+          label: "Damage with Directive Input",
+          formula: (ATK, Level) => 4.4 * ATK + 17 * (Level - 1) + 820,
+          type: "physical"
+        }
+	 ]
+	},
+  "ult2": {
+		name: "Flowing Fists",
+		formulas: [
+        {
+          label: "Damage (Initial Hit)",
+          formula: (ATK, Level) => 0.37 * ATK + 2 * (Level - 1) + 70,
+          type: "physical"
+        },
+        {
+          label: "Damage (Hits during follow-up attack)",
+          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 140,
+          type: "physical"
+        },
+        {
+          label: "Damage (Final Hit and shove)",
+          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 140,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "venusaur": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+		},
+        {
+          label: "Damage - Boosted (2x)",
+          formula: (SPATK, Level) => 0.54 * SPATK + 10 * (Level - 1) + 180,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Sludge Bomb",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (SpATK, Level) => 0.45 * SpATK + 13 * (Level - 1) + 300,
+          type: "special"
+        },
+        {
+          label: "Damage - Area (10 Ticks)",
+          formula: (SpATK, Level) => 0.066 * SpATK + 1 * (Level - 1) + 39,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Giga Drain",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.55 * SpATK + 16 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Healing - per Target",
+          formula: (SpATK, Level) => 0.29 * SpATK + 8 * (Level - 1) + 200,
+          type: "special"
+        },
+        {
+          label: "Healing Skill Plus",
+          formula: (SpATK, Level) => 0.32 * SpATK + 9 * (Level - 1) + 230,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Solar Beam",
+      formulas: [
+		{
+          label: "Damage - per tick (x5)",
+          formula: (SpATK, Level) => 0.275 * SpATK + 6 * (Level - 1) + 230,
+          type: "special"
+        },
+		{
+          label: "Damage - Additional per tick (x5)",
+          type: "text-only",
+          additionalText: "1.5% Enemy Max HP"
+        },
+      ]
+    },
+	"s22": {
+      name: "Petal Dance",
+      formulas: [
+		{
+          label: "Damage - Aura (16 Ticks)",
+          formula: (SpATK, Level) => 0.12 * SpATK + 2 * (Level - 1) + 70,
+          type: "special"
+        }
+      ]
+    },
+	"ult": {
+		name: "Verdant Anger",
+		formulas: [
+        {
+          label: "Damage - Initial",
+          formula: (SpATK, Level) => 1.31 * SpATK + 23 * (Level - 1) + 1080,
+          type: "special"
+        },
+        {
+          label: "Damage - Secondary",
+          formula: (SpATK, Level) => 0.655 * SpATK + 12 * (Level - 1) + 540,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+  "wigglytuff": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+		},
+        {
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.44 * SPATK + 18 * (Level - 1) + 340,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Sludge Bomb",
+      formulas: [
+		{
+          label: "Damage - per Slap",
+          formula: (SpATK, Level) => 0.20 * SpATK + 10 * (Level - 1) + 230,
+          type: "special"
+        }
+      ]
+    },
+    "s12": {
+      name: "Dazzling Gleam",
+      formulas: [
+	    {
+          label: "Damage - First Hit",
+          formula: (SpATK, Level) => 0.22 * SpATK + 6 * (Level - 1) + 130,
+          type: "special"
+        },
+		{
+          label: "Damage - Second Hit",
+          formula: (SpATK, Level) => 1.125 * SpATK + 31 * (Level - 1) + 670,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Rollout",
+      formulas: [
+		{
+          label: "Damage - per Hit",
+          formula: (SpATK, Level) => 0.47 * SpATK + 14 * (Level - 1) + 590,
+          type: "special"
+        }
+      ]
+    },
+	"s22": {
+      name: "Sing",
+      formulas: [
+      ]
+    },
+	"ult": {
+		name: "Starlight Recital",
+		formulas: [
+        {
+          label: "Shield",
+          formula: (SpATK, Level) => 1.519 * SpATK + 0 * (Level - 1) + 810,
+          type: "special"
+        }
+	 ]
+	}
+  },
+
+  "zacian": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Stage One",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Stage Two",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Applies 15% Slow for 1s"
+        },
+        {
+          label: "Stage Three",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Heals 5% max hp"
+        },
+        {
+          label: "Stage Four",
+          formula: (ATK, Level) => 1.6 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Dashes towards the target, reducing all Move cooldowns by 15% of their current cooldown."
+        },
+        {
+          label: "Stage One - Boosted",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Deals additional 2% Max HP. (Additional damage capped at 400 on Wild Pokémon)"
+        },
+        {
+          label: "Stage Two - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Applies 15% Slow for 1s & deals additional 3% Max HP (Additional damage capped at 600 on Wild Pokémon)"
+        },
+        {
+          label: "Stage Three - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Heals 5% Max HP & deals additional 3% Max HP damage (Additional damage capped at 600 on Wild Pokémon)"
+        },
+        {
+          label: "Stage Four - Boosted",
+          formula: (ATK, Level) => 1.6 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "Dashes towards the target, reducing all Move cooldowns by 15% of their current cooldown. Also deals additional 4% Max HP damage. (Additional damage capped at 750 on Wild Pokémon)"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Metal Claw",
+      formulas: [
+        {
+          label: "Damage - Shockwave",
+          formula: (ATK, Level) => 1.01 * ATK + 5 * (Level - 1) + 155,
+          type: "physical"
+        },
+        {
+          label: "Damage - Charge",
+          formula: (ATK, Level) => 1.9 * ATK + 9 * (Level - 1) + 292,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted) - Shockwave",
+          formula: (ATK, Level) => 1.32 * ATK + 6 * (Level - 1) + 202,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted) - Charge",
+          formula: (ATK, Level) => 2.465 * ATK + 12 * (Level - 1) + 380,
+          type: "physical"
+        },
+
+      ]
+    },
+
+    "s12": {
+      name: "Sacred Sword",
+      formulas: [
+	    {
+          label: "Damage - Circle Draw",
+          formula: (ATK, Level) => 0.525 * ATK + 5 * (Level - 1) + 85,
+          type: "physical"
+        },
+        {
+          label: "Damage - Flurry (x3 hits)",
+          formula: (ATK, Level) => 0.345 * ATK + 3 * (Level - 1) + 60,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted) - Circle Draw",
+          formula: (ATK, Level) => 0.675 * ATK + 6 * (Level - 1) + 118,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted) - Flurry (x3 hits)",
+          formula: (ATK, Level) => 0.45 * ATK + 4 * (Level - 1) + 75,
+          type: "physical"
+        },
+      ]
+    },
+    "s21": {
+      name: "Agility",
+      formulas: [
+        {
+          label: "Boosted Shield (3s)",
+          formula: (HP) => 0.12 * HP + 50,
+          type: "hp"
+        }
+      ]
+    },
+    "s22": {
+      name: "Play Rough",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.46 * ATK + 9 * (Level - 1) + 240,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted)",
+          formula: (ATK, Level) => 1.898 * ATK + 12 * (Level - 1) + 312,
+          type: "physical"
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Sovereign Sword",
+		formulas: [
+        {
+          label: "Damage (<=10 Energy Charged)",
+          formula: (ATK, Level) => 3.96 * ATK + 23 * (Level - 1) + 650,
+          type: "physical"
+        },
+        {
+          label: "Damage (21-29 Energy Charged)",
+          formula: (ATK, Level) => 5.544 * ATK + 32 * (Level - 1) + 910,
+          type: "physical"
+        },
+        {
+          label: "Damage (Additional - Boosted) versus Unite Buffed Pokémon",
+          formula: (ATK, Level) => 1.98 * ATK + 12 * (Level - 1) + 325,
+          type: "physical"
+        },
+        {
+          label: "Damage (11-20 Energy Charged)",
+          formula: (ATK, Level) => 4.752 * ATK + 29 * (Level - 1) + 780,
+          type: "physical"
+        },
+        {
+          label: "Damage (30 Energy Charged - Boosted)",
+          formula: (ATK, Level) => 7.128 * ATK + 41 * (Level - 1) + 1170,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "zeraora": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Volt Switch",
+      formulas: [
+        {
+          label: "Damage - Initial Dash",
+          formula: (ATK, Level) => 0.72 * ATK + 4 * (Level - 1) + 228,
+          type: "physical"
+        },
+        {
+          label: "Damage - Return Dash",
+          formula: (ATK, Level) => 1.08 * ATK + 6 * (Level - 1) + 342,
+          type: "physical"
+        },
+        {
+          label: "Damage - Initial Dash Skill Plus",
+          formula: (ATK, Level) => 0.88 * ATK + 5 * (Level - 1) + 264,
+          type: "physical"
+        },
+        {
+          label: "Damage - Return Dash Skill Plus",
+          formula: (ATK, Level) => 1.32 * ATK + 8 * (Level - 1) + 396,
+          type: "physical"
+        },
+      ]
+    },
+
+    "s12": {
+      name: "Spark",
+      formulas: [
+	    {
+          label: "Damage - Jump",
+          formula: (ATK, Level) => 0.45 * ATK + 2 * (Level - 1) + 90,
+          type: "physical"
+        },
+        {
+          label: "Damage - Additional",
+          formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+          additionalText: "If an auto attack is used before the leap ends, deal 110% Atk as damage instead."
+        },
+        {
+          label: "Damage (Boosted) - Circle Draw",
+          formula: (ATK, Level) => 0.675 * ATK + 6 * (Level - 1) + 118,
+          type: "physical"
+        },
+        {
+          label: "Damage (Boosted) - Flurry (x3 hits)",
+          formula: (ATK, Level) => 0.45 * ATK + 4 * (Level - 1) + 75,
+          type: "physical"
+        },
+      ]
+    },
+    "s21": {
+      name: "Discharge",
+      formulas: [
+        {
+          label: "Damage - per Tick (6 Ticks)",
+          formula: (ATK, Level) => 0.41 * ATK + 2 * (Level - 1) + 70,
+          type: "physical"
+        },
+        {
+          label: "Damage - Aura (Final Tick)",
+          formula: (ATK, Level) => 0.82 * ATK + 4 * (Level - 1) + 140,
+          type: "physical"
+        },
+        {
+          label: "Damage - Pull",
+          formula: (ATK, Level) => 0.41 * ATK + 2 * (Level - 1) + 70,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 1.05 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Wild Charge",
+      formulas: [
+        {
+          label: "Damage - Initial Hit",
+          formula: (ATK, Level) => 1.64 * ATK + 10 * (Level - 1) + 530,
+          type: "physical"
+        },
+        {
+          label: "Damage - Subsequent Hits",
+          type: "text-only",
+          additionalText: "Deals half damage."
+        }
+      ]
+    },
+	
+	"ult": {
+		name: "Plasma Gale",
+		formulas: [
+        {
+          label: "Damage - Trail",
+          formula: (ATK, Level) => 0.99 * ATK + 6 * (Level - 1) + 270,
+          type: "physical"
+        },
+        {
+          label: "Damage - Area",
+          formula: (ATK, Level) => 1.98 * ATK + 11 * (Level - 1) + 540,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "zoroark": {
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Shadow Claw",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 0.91 * ATK + 11 * (Level - 1) + 270,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s12": {
+      name: "Cut",
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (ATK, Level) => 0.85 * ATK + 11 * (Level - 1) + 250,
+          type: "physical"
+        },
+        {
+          label: "Healing",
+          formula: (ATK, Level) => 0.462 * ATK + 6 * (Level - 1) + 138,
+          type: "physical"
+        },
+        {
+          label: "Healing Skill Plus",
+          formula: (ATK, Level) => 0.539 * ATK + 7 * (Level - 1) + 161,
+          type: "physical"
+        }
+      ]
+    },
+
+    "s21": {
+      name: "Night Slash",
+      formulas: [
+        {
+          label: "Damage - Dash",
+          formula: (ATK, Level) => 0.65 * ATK + 10 * (Level - 1) + 225,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final Slash",
+          formula: (ATK, Level) => 1.55 * ATK + 15 * (Level - 1) + 500,
+          type: "physical",
+          additionalText: "Deals an additional 10% missing enemy HP as damage. Against Wild Pokemon: The total damage is capped at 1000."
+        },
+        {
+          label: "Healing - Final Slash per Diagonal",
+          formula: (ATK, Level) => 0.6 * ATK + 9 * (Level - 1) + 190,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Feint Attack",
+      formulas: [
+        {
+          label: "Damage - Dash",
+          formula: (ATK, Level) => 1 * ATK + 10 * (Level - 1) + 300,
+          type: "physical"
+        },
+        {
+          label: "Damage - Leap",
+          formula: (ATK, Level) => 2.5 * ATK + 25 * (Level - 1) + 750,
+          type: "physical",
+          additionalText: "Deals an additional 15% missing enemy HP as damage. Against Wild Pokemon: The total damage is capped at 1200."
+        },
+      ]
+    },
+	
+	"ult": {
+		name: "Nightfall Daze",
+		formulas: [
+        {
+          label: "Damage - per Shockwave",
+          formula: (ATK, Level) => 1.58 * ATK + 9 * (Level - 1) + 430,
+          type: "physical"
+        }
 	 ]
 	}
   },

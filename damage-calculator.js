@@ -8,6 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const skillsDiv = document.getElementById("skills-column");
   const resultado = document.getElementById("resultado");
   const battleRadios = document.querySelectorAll("input[name='battle']");
+  const emblemasRadios = document.querySelectorAll("input[name='emblemas']");
+  const emblemasContainer = document.getElementById("emblemas-container");
+  const emblemaSelects = {
+    verde: document.getElementById("emblem-verde"),
+    vermelho: document.getElementById("emblem-vermelho"),
+    azul: document.getElementById("emblem-azul"),
+    branco: document.getElementById("emblem-branco"),
+    preto: document.getElementById("emblem-preto"),
+    amarelo: document.getElementById("emblem-amarelo"),
+    marrom: document.getElementById("emblem-marrom"),
+    roxo: document.getElementById("emblem-roxo"),
+    rosa: document.getElementById("emblem-rosa"),
+    azulMarinho: document.getElementById("emblem-azul-marinho"),
+    cinza: document.getElementById("emblem-cinza")
+  };
 
   if (btnResetar) btnResetar.type = "button";
 
@@ -55,6 +70,18 @@ document.addEventListener("DOMContentLoaded", () => {
     "Drive Lens": { stat: "SpATK", perStack: 0.6, max: 20, percent: true },
     "Weakness Police": { stat: "ATK", perStack: 2.5, max: 4, percent: true },
     "Charging Charm": { stat: "ATK", perStack: 70, max: 1, percent: true, fixedBonus: 40 }
+  };
+
+  // ---- Emblemas ----
+  const EMBLEM_BONUSES = {
+    verde: { stat: "SpATK", values: { 2: 1, 4: 2, 6: 4 } },
+    vermelho: { stat: "AtkSPD", values: { 3: 2, 5: 4, 7: 8 } },
+    azul: { stat: "DEF", values: { 2: 2, 4: 4, 6: 8 } },
+    branco: { stat: "HP", values: { 2: 1, 4: 2, 6: 4 } },
+    preto: { stat: "CDR", values: { 3: 1, 5: 2, 7: 4 } },
+    amarelo: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
+    marrom: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
+    roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } }
   };
 
   // ---- Função de cálculo ----
@@ -162,6 +189,26 @@ document.addEventListener("DOMContentLoaded", () => {
       modified.Speed += base.Speed * 0.45;
     }
 
+    // Aplicar efeito dos emblemas
+    let incluirEmblemas = "";
+    emblemasRadios.forEach(r => { if (r.checked) incluirEmblemas = r.value; });
+    
+    if (incluirEmblemas === "sim") {
+      Object.keys(emblemaSelects).forEach(cor => {
+        const select = emblemaSelects[cor];
+        if (select && select.value) {
+          const nivel = parseInt(select.value, 10);
+          const emblemConfig = EMBLEM_BONUSES[cor];
+          if (emblemConfig) {
+            const bonus = emblemConfig.values[nivel];
+            if (bonus) {
+              modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
+            }
+          }
+        }
+      });
+    }
+
     modified = ensureAllStats(modified);
 
     // Imagem do Pokémon
@@ -205,6 +252,43 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="stat-value">${itensHtml}</span>
         </div>
       `);
+    }
+
+    // Mostrar informações dos emblemas
+    if (incluirEmblemas === "sim") {
+      const activeEmblems = [];
+      Object.keys(emblemaSelects).forEach(cor => {
+        const select = emblemaSelects[cor];
+        if (select && select.value) {
+          const nivel = parseInt(select.value, 10);
+          const emblemConfig = EMBLEM_BONUSES[cor];
+          if (emblemConfig) {
+            const bonus = emblemConfig.values[nivel];
+            if (bonus) {
+              activeEmblems.push(`${cor.charAt(0).toUpperCase() + cor.slice(1)} Lv.${nivel} (+${bonus}%)`);
+            }
+          } else {
+            // Para emblemas que não afetam status (rosa, azul-marinho, cinza)
+            const nonStatEmblems = {
+              rosa: "Rosa",
+              azulMarinho: "Azul-Marinho", 
+              cinza: "Cinza"
+            };
+            if (nonStatEmblems[cor]) {
+              activeEmblems.push(`${nonStatEmblems[cor]} Lv.${nivel}`);
+            }
+          }
+        }
+      });
+
+      if (activeEmblems.length > 0) {
+        statusFinalDiv.insertAdjacentHTML("beforeend", `
+          <div class="stat-line">
+            <span class="stat-label">Emblemas</span>
+            <span class="stat-value">${activeEmblems.join(", ")}</span>
+          </div>
+        `);
+      }
     }
 
     // Mostrar Battle Item
@@ -404,6 +488,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   battleRadios.forEach(r => r.addEventListener("change", calcular));
+  
+  // Event listeners para emblemas
+  emblemasRadios.forEach(r => {
+    r.addEventListener("change", () => {
+      if (r.value === "sim") {
+        emblemasContainer.style.display = "block";
+      } else {
+        emblemasContainer.style.display = "none";
+      }
+      calcular();
+    });
+  });
+
+  Object.values(emblemaSelects).forEach(select => {
+    if (select) {
+      select.addEventListener("change", calcular);
+    }
+  });
 
   pokemonSelect.addEventListener("change", calcular);
 
@@ -419,6 +521,14 @@ document.addEventListener("DOMContentLoaded", () => {
       slot.querySelector(".stack-container").innerHTML = "";
     });
     battleRadios.forEach(r => { r.checked = false; });
+    emblemasRadios.forEach(r => { 
+      if (r.value === "nao") r.checked = true; 
+      else r.checked = false; 
+    });
+    emblemasContainer.style.display = "none";
+    Object.values(emblemaSelects).forEach(select => {
+      if (select) select.value = "";
+    });
     resultado.style.display = "none";
     statusFinalDiv.innerHTML = "";
     skillsDiv.innerHTML = "";

@@ -451,3 +451,133 @@ textarea.form-control {
   margin-left: 4px;
   display: inline-block;
 }
+/* Estilos para emblemas com radio buttons */
+.emblema-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.emblema-item > label {
+  display: block;
+  margin-bottom: 10px;
+  color: #fe8a01;
+  font-size: 16px;
+  margin-top: 0;
+}
+
+.emblem-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 20px;
+}
+
+.emblem-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 400;
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.emblem-options input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.emblem-options label:hover {
+  color: #ffcb05;
+}
+
+@media (max-width: 768px) {
+  .emblema-item {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .emblema-item > label {
+    font-size: 15px;
+  }
+  
+  .emblem-options {
+    margin-left: 15px;
+    gap: 6px;
+  }
+  
+  .emblem-options label {
+    font-size: 13px;
+  }
+
+  /* Estilos para emblemas com radio buttons */
+.emblema-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 2px solid #444;
+}
+
+/* Bordas coloridas para cada emblema */
+.emblema-item[data-color="verde"] {
+  border-color: #28a745;
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
+.emblema-item[data-color="vermelho"] {
+  border-color: #dc3545;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
+}
+
+.emblema-item[data-color="azul"] {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.emblema-item[data-color="branco"] {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.emblema-item[data-color="preto"] {
+  border-color: #343a40;
+  box-shadow: 0 0 8px rgba(52, 58, 64, 0.3);
+}
+
+.emblema-item[data-color="amarelo"] {
+  border-color: #ffc107;
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+}
+
+.emblema-item[data-color="marrom"] {
+  border-color: #8b4513;
+  box-shadow: 0 0 8px rgba(139, 69, 19, 0.3);
+}
+
+.emblema-item[data-color="roxo"] {
+  border-color: #6f42c1;
+  box-shadow: 0 0 8px rgba(111, 66, 193, 0.3);
+}
+
+.emblema-item[data-color="rosa"] {
+  border-color: #e83e8c;
+  box-shadow: 0 0 8px rgba(232, 62, 140, 0.3);
+}
+
+.emblema-item[data-color="azul-marinho"] {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 8px rgba(30, 58, 138, 0.3);
+}
+
+.emblema-item[data-color="cinza"] {
+  border-color: #6c757d;
+  box-shadow: 0 0 8px rgba(108, 117, 125, 0.3);
+}
+}
+
+/* Skills - Ajustes de alinhamento */

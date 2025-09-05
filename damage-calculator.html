@@ -42,6 +42,130 @@
       </label>
       </div>
 
+      <!-- Emblemas -->
+      <label>Deseja incluir buffs dos emblemas?</label>
+      <div class="battle-container">
+        <label>
+          <input type="radio" name="emblemas" value="sim">
+          Sim
+        </label>
+        <label>
+          <input type="radio" name="emblemas" value="nao" checked>
+          Não
+        </label>
+      </div>
+
+      <!-- Container dos Emblemas -->
+      <div id="emblemas-container" style="display: none; margin-top: 15px;">
+        <div class="campos-linha">
+          <div>
+            <label for="emblem-verde">Verde (Sp. ATK):</label>
+            <select id="emblem-verde" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="2">Nível 2 (+1% Sp. ATK)</option>
+              <option value="4">Nível 4 (+2% Sp. ATK)</option>
+              <option value="6">Nível 6 (+4% Sp. ATK)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-vermelho">Vermelho (Atk Speed):</label>
+            <select id="emblem-vermelho" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (+2% Atk Speed)</option>
+              <option value="5">Nível 5 (+4% Atk Speed)</option>
+              <option value="7">Nível 7 (+8% Atk Speed)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-azul">Azul (DEF):</label>
+            <select id="emblem-azul" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="2">Nível 2 (+2% DEF)</option>
+              <option value="4">Nível 4 (+4% DEF)</option>
+              <option value="6">Nível 6 (+8% DEF)</option>
+            </select>
+          </div>
+        </div>
+        <div class="campos-linha">
+          <div>
+            <label for="emblem-branco">Branco (HP):</label>
+            <select id="emblem-branco" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="2">Nível 2 (+1% HP)</option>
+              <option value="4">Nível 4 (+2% HP)</option>
+              <option value="6">Nível 6 (+4% HP)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-preto">Preto (CDR):</label>
+            <select id="emblem-preto" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (+1% CDR)</option>
+              <option value="5">Nível 5 (+2% CDR)</option>
+              <option value="7">Nível 7 (+4% CDR)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-amarelo">Amarelo (Speed):</label>
+            <select id="emblem-amarelo" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (+4% Speed)</option>
+              <option value="5">Nível 5 (+6% Speed)</option>
+              <option value="7">Nível 7 (+12% Speed)</option>
+            </select>
+          </div>
+        </div>
+        <div class="campos-linha">
+          <div>
+            <label for="emblem-marrom">Marrom (ATK):</label>
+            <select id="emblem-marrom" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="2">Nível 2 (+1% ATK)</option>
+              <option value="4">Nível 4 (+2% ATK)</option>
+              <option value="6">Nível 6 (+4% ATK)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-roxo">Roxo (Sp. DEF):</label>
+            <select id="emblem-roxo" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="2">Nível 2 (+2% Sp. DEF)</option>
+              <option value="4">Nível 4 (+4% Sp. DEF)</option>
+              <option value="6">Nível 6 (+8% Sp. DEF)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-rosa">Rosa (Hindrance Reduction):</label>
+            <select id="emblem-rosa" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (+4% Hindrance Reduction)</option>
+              <option value="5">Nível 5 (+8% Hindrance Reduction)</option>
+              <option value="7">Nível 7 (+16% Hindrance Reduction)</option>
+            </select>
+          </div>
+        </div>
+        <div class="campos-linha">
+          <div>
+            <label for="emblem-azul-marinho">Azul-Marinho (Ult Charge Rate):</label>
+            <select id="emblem-azul-marinho" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (+1% Ult Charge Rate)</option>
+              <option value="5">Nível 5 (+2% Ult Charge Rate)</option>
+              <option value="7">Nível 7 (+4% Ult Charge Rate)</option>
+            </select>
+          </div>
+          <div>
+            <label for="emblem-cinza">Cinza (Damage Taken):</label>
+            <select id="emblem-cinza" class="form-control">
+              <option value="">Nenhum</option>
+              <option value="3">Nível 3 (-3 Damage Taken)</option>
+              <option value="5">Nível 5 (-6 Damage Taken)</option>
+              <option value="7">Nível 7 (-12 Damage Taken)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- Seleção de Itens -->
       <label>Itens Segurados:</label>
       <div id="itens-container" class="campos-linha">
