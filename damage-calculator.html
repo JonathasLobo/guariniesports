@@ -18,13 +18,6 @@
       <label for="pokemon">Selecione o Pokémon:</label>
       <select id="pokemon" class="form-control"></select>
 
-      <!-- Seletor de Nível com Slider -->
-      <label for="nivel">Nível:</label>
-      <div class="nivel-container">
-      <input type="range" id="nivel" min="1" max="15" value="1" step="1" class="slider">
-      <span id="nivel-valor">1</span>
-      </div>
-
       <!-- Battle Items -->
       <label>Battle Item:</label>
       <div class="battle-container">
@@ -219,6 +212,13 @@
       <!-- Botões -->
       <div class="botoes-calculadora">
         <button id="resetar" class="btn">Resetar</button>
+      </div>
+
+      <!-- Seletor de Nível com Slider (movido para cá) -->
+      <label for="nivel-final">Nível:</label>
+      <div class="nivel-container">
+        <input type="range" id="nivel-final" min="1" max="15" value="1" step="1" class="slider">
+        <span id="nivel-valor-final">1</span>
       </div>
 
       <!-- Resultados -->

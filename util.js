@@ -6176,6 +6176,14 @@ const skillDamage = {
   },
 
     "dragapult": {
+      "passive": {
+          name: "Clear Body",
+          description: "Reduces the duration of debuffs inflicted on this Pokémon.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
