@@ -1,10 +1,10 @@
 .calculadora-container {
-  max-width: 1000px;  /* largura máxima igual à da página principal */
-  margin: 40px auto;  /* centraliza horizontalmente e dá margem em cima e embaixo */
-  padding: 20px;      /* espaço interno */
-  background-color: rgba(0,0,0,0.6); /* opcional: fundo transparente para destacar */
-  border-radius: 12px; /* bordas arredondadas */
-  box-shadow: 0 0 20px rgba(255, 173, 0, 0.4); /* sombra suave para destaque */
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 173, 0, 0.4);
   color: #fff;
   box-sizing: border-box;
 }
@@ -25,12 +25,12 @@ h2 {
   font-weight: 700;
   user-select: none;
 }
-/* Estilos para o select com imagens */
+
 #pokemon {
   background-image: none;
   padding-right: 30px;
 }
-/* Formulário e Controles */
+
 .form-control {
   width: 100%;
   padding: 10px 12px;
@@ -53,15 +53,14 @@ textarea.form-control {
   resize: vertical;
 }
 
-
-/* Cores específicas para cada role */
+/* Roles */
 .role-adc { background-color: #dc3545; color: white; }
 .role-jgl { background-color: #007bff; color: white; }
 .role-tank { background-color: #28a745; color: white; }
 .role-sup { background-color: #fd7e14; color: white; }
 .role-top { background-color: #6f42c1; color: white; }
 
-/* Estilos específicos para o resultado em colunas */
+/* Resultado */
 .resultado-container {
   display: none;
   flex-direction: row;
@@ -144,56 +143,12 @@ textarea.form-control {
   font-size: 14px;
 }
 
-.stat-line:last-child {
-  border-bottom: none;
-}
+.stat-line:last-child { border-bottom: none; }
 
-.stat-label {
-  color: #666;
-  font-weight: 500;
-}
+.stat-label { color: #666; font-weight: 500; }
+.stat-value { font-weight: bold; color: #333; }
 
-.stat-value {
-  font-weight: bold;
-  color: #333;
-}
-
-.desempenho-line {
-  background: #f8f9fa;
-  margin: 10px -10px;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #dee2e6;
-}
-
-.avaliacao {
-  font-weight: bold;
-  padding: 12px;
-  border-radius: 8px;
-  margin-top: 15px;
-  text-align: center;
-  font-size: 15px;
-}
-
-.avaliacao.fraco { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-.avaliacao.mediano { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
-.avaliacao.bom { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-.avaliacao.muito-bom { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-.avaliacao.excelente { background: #cce5ff; color: #004085; border: 1px solid #a3d5ff; }
-
-.multiplicador-info {
-  margin-top: 20px;
-  padding: 15px;
-  background: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 8px;
-  font-size: 13px;
-  text-align: center;
-  display: none;
-  color: #856404;
-}
-
-/* NOVO: Estilo para alinhar os botões lado a lado */
+/* Botões */
 .botoes-calculadora {
   display: flex;
   gap: 10px;
@@ -210,134 +165,55 @@ textarea.form-control {
   font-family: inherit;
 }
 
-/* NOVO: Container para os campos lado a lado */
+/* Campos lado a lado */
 .campos-linha {
   display: flex;
   gap: 20px;
 }
+.campos-linha > div { flex: 1; }
 
-/* NOVO: Ajuste para os campos dentro do container */
-.campos-linha > div {
-  flex: 1;
-}
-
-/* NOVO: Responsividade */
+/* Responsividade */
 @media (max-width: 992px) {
-  .resultado-container {
-    flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-  }
-  
-  .resultado-dados {
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-  }
-  
-  .coluna-temporada, .coluna-total {
-    min-width: 100%;
-    padding: 15px;
-    box-sizing: border-box;
-  }
-  
-  .resultado-image {
-    min-width: auto;
-    align-self: center;
-  }
-
-  .stat-line {
-    padding: 8px 0;
-    font-size: 15px;
-  }
-
-  .coluna-temporada h3, 
-  .coluna-total h3 {
-    font-size: 17px;
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-  }
-
-  .desempenho-line {
-    padding: 10px;
-    margin: 8px -8px;
-  }
-
-  .avaliacao {
-    font-size: 14px;
-    padding: 10px;
-    margin-top: 12px;
-  }
-
-  /* NOVO: Responsividade para os botões */
-  .botoes-calculadora {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  /* NOVO: Responsividade para os campos lado a lado */
-  .campos-linha {
-    flex-direction: column;
-    gap: 0;
-  }
+  .resultado-container { flex-direction: column; gap: 20px; padding: 15px; }
+  .resultado-dados { flex-direction: column; gap: 15px; width: 100%; }
+  .coluna-temporada, .coluna-total { min-width: 100%; padding: 15px; }
+  .resultado-image { min-width: auto; align-self: center; }
+  .stat-line { padding: 8px 0; font-size: 15px; }
+  .coluna-temporada h3, .coluna-total h3 { font-size: 17px; padding-bottom: 6px; margin-bottom: 12px; }
+  .botoes-calculadora { flex-direction: column; gap: 8px; }
+  .campos-linha { flex-direction: column; gap: 0; }
 }
-/* Ajustes adicionais para telas muito pequenas (menos de 576px) */
+
 @media (max-width: 576px) {
-  .calculadora-container {
-    margin: 20px auto;
-    padding: 15px;
-  }
-  
-  .resultado-container {
-    margin-top: 20px;
-    padding: 12px;
-  }
-  
-  .resultado-image img {
-    max-width: 140px;
-  }
-  
-  .coluna-temporada, .coluna-total {
-    padding: 12px;
-  }
-  
-  .stat-line {
-    font-size: 14px;
-  }
-  
-  .info-jogador {
-    padding: 12px;
-    font-size: 13px;
-  }
+  .calculadora-container { margin: 20px auto; padding: 15px; }
+  .resultado-container { margin-top: 20px; padding: 12px; }
+  .resultado-image img { max-width: 140px; }
+  .coluna-temporada, .coluna-total { padding: 12px; }
+  .stat-line { font-size: 14px; }
+  .info-jogador { padding: 12px; font-size: 13px; }
 }
 
-    .calculadora-voltar {
-      display: inline-block;
-      margin-top: 20px;
-      color: #ff7500;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    
-    .calculadora-voltar:hover {
-      text-decoration: underline;
-      color: #ffad00;
-    }
-
-    /* Slider genérico (nível e stacks) */
-    .nivel-container,
-    .stack-slider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0;
-    }
-
-    .slider {
-      width: 200px;
-      cursor: pointer;
+/* Voltar */
+.calculadora-voltar {
+  display: inline-block;
+  margin-top: 20px;
+  color: #ff7500;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
 }
+.calculadora-voltar:hover { text-decoration: underline; color: #ffad00; }
+
+/* Slider */
+.nivel-container,
+.stack-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.slider { width: 200px; cursor: pointer; }
+
 /* Battle Items */
 .battle-container {
   display: flex;
@@ -345,19 +221,15 @@ textarea.form-control {
   gap: 15px;
   margin: 10px 0;
 }
-
 .battle-container label {
   display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
 }
+.battle-icon { width: 28px; height: 28px; }
 
-.battle-icon {
-  width: 28px;
-  height: 28px;
-}
-/* Skills - Ajustes de alinhamento */
+/* Skills */
 .resultado-skills {
   display: flex;
   flex-direction: column;
@@ -365,93 +237,102 @@ textarea.form-control {
   margin-top: 15px;
   width: 100%;
 }
-
 .skill-box {
   display: flex;
   align-items: center;
   background: rgba(216, 216, 216, 0.4);
   padding: 10px;
   border-radius: 8px;
-  gap: 12px; /* Espaçamento entre imagem e texto */
+  gap: 12px;
 }
-
 .skill-icon {
   width: 40px;
   height: 40px;
-  flex-shrink: 0; /* Impede que a imagem seja comprimida */
-  object-fit: cover; /* Garante que a imagem mantenha proporção */
+  flex-shrink: 0;
+  object-fit: cover;
 }
-
-.skill-info {
-  flex: 1;
-  text-align: left;
-}
-
+.skill-info { flex: 1; text-align: left; }
 .skill-info h4 {
   margin: 0 0 5px 0;
   font-size: 14px;
-  color: #000000;
+  color: #000;
   font-weight: bold;
 }
-
 .skill-info ul {
   margin: 0;
   padding: 0;
-  list-style: none; /* Remove bullets */
+  list-style: none;
   font-size: 12px;
-  color: #000000;
+  color: #000;
 }
+.skill-info li { margin-bottom: 3px; text-align: left; }
+.skill-info li:last-child { margin-bottom: 0; }
 
-.skill-info li {
-  margin-bottom: 3px;
-  text-align: left;
-}
-
-.skill-info li:last-child {
-  margin-bottom: 0;
-}
-
-/* Responsividade para skills */
 @media (max-width: 576px) {
-  .skill-box {
-    padding: 8px;
-    gap: 10px;
-  }
-  
-  .skill-icon {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .skill-info h4 {
-    font-size: 13px;
-  }
-  
-  .skill-info ul {
-    font-size: 11px;
-  }
+  .skill-box { padding: 8px; gap: 10px; }
+  .skill-icon { width: 35px; height: 35px; }
+  .skill-info h4 { font-size: 13px; }
+  .skill-info ul { font-size: 11px; }
 }
 
-/* Adicione esta regra ao seu calculadora.css existente */
-
-/* Estilo especial para Ultimate skills */
+/* Ultimate */
 .skill-box.ultimate {
-  border: 2px solid #ff8c42; /* Borda alaranjada para ultimate */
-  background: rgba(255, 140, 66, 0.1); /* Background levemente alaranjado */
-  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3); /* Sombra alaranjada sutil */
+  border: 2px solid #ff8c42;
+  background: rgba(255, 140, 66, 0.1);
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3);
+}
+.skill-box.ultimate .skill-info h4 { color: #ff6b00; }
+
+/* Passiva */
+.skill-box.passive {
+  border: 2px solid #007bff;
+  background: rgba(0, 123, 255, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+  border-radius: 8px;
+  position: relative;
+}
+.skill-box.passive .skill-info h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000; /* nome da skill em preto */
+}
+.skill-box.passive .skill-info h4 .passive-label {
+  color: #ffd633; /* apenas "Passive Skill" em amarelo */
+  margin-right: 6px;
+}
+.skill-box.passive .passive-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+  color: #ffc107;
+  line-height: 1.2;
+}
+.skill-box.passive .passive-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc; /* cinza padrão */
+  transition: background-color 0.3s ease;
+}
+.skill-box.passive.active .passive-status {
+  background-color: #ffd633; /* amarelo quando ativa */
+}
+@media (max-width: 576px) {
+  .skill-box.passive .passive-subtitle { font-size: 10px; }
+  .skill-box.passive .passive-status {
+    width: 6px;
+    height: 6px;
+    top: 6px;
+    right: 6px;
+  }
 }
 
-.skill-box.ultimate .skill-info h4 {
-  color: #ff6b00; /* Título da ultimate em laranja mais forte */
-}
-
-/* Estilo para texto adicional nas fórmulas */
-.skill-info li span[style*="color:#888"] {
-  font-size: 11px;
-  margin-left: 4px;
-  display: inline-block;
-}
-/* Estilos para emblemas com radio buttons */
+/* Emblemas */
 .emblema-item {
   margin-bottom: 20px;
   padding: 15px;
@@ -459,7 +340,6 @@ textarea.form-control {
   border-radius: 8px;
   border: 1px solid #444;
 }
-
 .emblema-item > label {
   display: block;
   margin-bottom: 10px;
@@ -467,14 +347,12 @@ textarea.form-control {
   font-size: 16px;
   margin-top: 0;
 }
-
 .emblem-options {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-left: 20px;
 }
-
 .emblem-options label {
   display: flex;
   align-items: center;
@@ -483,101 +361,35 @@ textarea.form-control {
   color: #fff;
   font-weight: 400;
   font-size: 14px;
-  margin-top: 0;
 }
-
-.emblem-options input[type="radio"] {
-  margin: 0;
-  cursor: pointer;
-}
-
-.emblem-options label:hover {
-  color: #ffcb05;
-}
+.emblem-options input[type="radio"] { margin: 0; cursor: pointer; }
+.emblem-options label:hover { color: #ffcb05; }
 
 @media (max-width: 768px) {
-  .emblema-item {
-    padding: 12px;
-    margin-bottom: 15px;
-  }
-  
-  .emblema-item > label {
-    font-size: 15px;
-  }
-  
-  .emblem-options {
-    margin-left: 15px;
-    gap: 6px;
-  }
-  
-  .emblem-options label {
-    font-size: 13px;
-  }
-
-  /* Estilos para emblemas com radio buttons */
-.emblema-item {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 2px solid #444;
+  .emblema-item { padding: 12px; margin-bottom: 15px; }
+  .emblema-item > label { font-size: 15px; }
+  .emblem-options { margin-left: 15px; gap: 6px; }
+  .emblem-options label { font-size: 13px; }
 }
 
-/* Bordas coloridas para cada emblema */
-.emblema-item[data-color="verde"] {
-  border-color: #28a745;
-  box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+.emblem-color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
-
-.emblema-item[data-color="vermelho"] {
-  border-color: #dc3545;
-  box-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
+#emblemas-container label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #fe8a01;
+  font-size: 14px;
+  font-weight: 600;
 }
-
-.emblema-item[data-color="azul"] {
-  border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+@media (max-width: 768px) {
+  .emblem-color-dot { width: 10px; height: 10px; margin-right: 6px; }
+  #emblemas-container label { font-size: 13px; margin-bottom: 6px; }
 }
-
-.emblema-item[data-color="branco"] {
-  border-color: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-
-.emblema-item[data-color="preto"] {
-  border-color: #343a40;
-  box-shadow: 0 0 8px rgba(52, 58, 64, 0.3);
-}
-
-.emblema-item[data-color="amarelo"] {
-  border-color: #ffc107;
-  box-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
-}
-
-.emblema-item[data-color="marrom"] {
-  border-color: #8b4513;
-  box-shadow: 0 0 8px rgba(139, 69, 19, 0.3);
-}
-
-.emblema-item[data-color="roxo"] {
-  border-color: #6f42c1;
-  box-shadow: 0 0 8px rgba(111, 66, 193, 0.3);
-}
-
-.emblema-item[data-color="rosa"] {
-  border-color: #e83e8c;
-  box-shadow: 0 0 8px rgba(232, 62, 140, 0.3);
-}
-
-.emblema-item[data-color="azul-marinho"] {
-  border-color: #1e3a8a;
-  box-shadow: 0 0 8px rgba(30, 58, 138, 0.3);
-}
-
-.emblema-item[data-color="cinza"] {
-  border-color: #6c757d;
-  box-shadow: 0 0 8px rgba(108, 117, 125, 0.3);
-}
-}
-
-/* Skills - Ajustes de alinhamento */

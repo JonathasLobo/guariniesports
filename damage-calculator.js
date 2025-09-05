@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     cinza: document.getElementById("emblem-cinza")
   };
 
+  // Estado das passivas ativas
+  let activePassives = {};
+
   if (btnResetar) btnResetar.type = "button";
 
   // ---- Configuração de atributos ----
@@ -82,6 +85,32 @@ document.addEventListener("DOMContentLoaded", () => {
     amarelo: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
     marrom: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
     roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } }
+  };
+
+  // ---- Função para aplicar buff da passiva ----
+  const applyPassiveBuff = (stats, pokemon) => {
+    if (!activePassives[pokemon] || !skillDamage[pokemon]?.passive?.buff) {
+      return stats;
+    }
+
+    const passiveBuff = skillDamage[pokemon].passive.buff;
+    const modifiedStats = { ...stats };
+
+    // Aplicar cada buff da passiva
+    Object.keys(passiveBuff).forEach(stat => {
+      if (modifiedStats.hasOwnProperty(stat)) {
+        const buffValue = passiveBuff[stat];
+        if (PERCENT_KEYS.has(stat)) {
+          // Para stats percentuais, adicionar diretamente
+          modifiedStats[stat] += buffValue;
+        } else {
+          // Para stats absolutos, calcular percentual da base
+          modifiedStats[stat] += stats[stat] * (buffValue / 100);
+        }
+      }
+    });
+
+    return modifiedStats;
   };
 
   // ---- Função de cálculo ----
@@ -209,6 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Aplicar buff da passiva se ativa
+    modified = applyPassiveBuff(modified, poke);
     modified = ensureAllStats(modified);
 
     // Imagem do Pokémon
@@ -257,26 +288,65 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostrar informações dos emblemas
     if (incluirEmblemas === "sim") {
       const activeEmblems = [];
+      
+      // Mapeamento das cores dos emblemas
+      const emblemColors = {
+        verde: "#28a745",
+        vermelho: "#dc3545", 
+        azul: "#007bff",
+        branco: "#ffffff",
+        preto: "#343a40",
+        amarelo: "#ffc107",
+        marrom: "#8b4513",
+        roxo: "#6f42c1",
+        rosa: "#e83e8c",
+        azulMarinho: "#1e3a8a",
+        cinza: "#6c757d"
+      };
+
+      const emblemNames = {
+        verde: "Verde",
+        vermelho: "Vermelho",
+        azul: "Azul", 
+        branco: "Branco",
+        preto: "Preto",
+        amarelo: "Amarelo",
+        marrom: "Marrom",
+        roxo: "Roxo",
+        rosa: "Rosa",
+        azulMarinho: "Azul-Marinho",
+        cinza: "Cinza"
+      };
+
       Object.keys(emblemaSelects).forEach(cor => {
         const select = emblemaSelects[cor];
         if (select && select.value) {
           const nivel = parseInt(select.value, 10);
           const emblemConfig = EMBLEM_BONUSES[cor];
+          const color = emblemColors[cor] || "#666";
+          const name = emblemNames[cor] || cor;
+          
+          // Estilo especial para emblema branco (adicionar borda)
+          const borderStyle = cor === "branco" ? "border: 1px solid #ccc;" : "";
+          
           if (emblemConfig) {
             const bonus = emblemConfig.values[nivel];
             if (bonus) {
-              activeEmblems.push(`${cor.charAt(0).toUpperCase() + cor.slice(1)} Lv.${nivel} (+${bonus}%)`);
+              activeEmblems.push(
+                `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+                  ${name} Lv.${nivel} (+${bonus}%)
+                </span>`
+              );
             }
           } else {
             // Para emblemas que não afetam status (rosa, azul-marinho, cinza)
-            const nonStatEmblems = {
-              rosa: "Rosa",
-              azulMarinho: "Azul-Marinho", 
-              cinza: "Cinza"
-            };
-            if (nonStatEmblems[cor]) {
-              activeEmblems.push(`${nonStatEmblems[cor]} Lv.${nivel}`);
-            }
+            activeEmblems.push(
+              `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+                ${name} Lv.${nivel}
+              </span>`
+            );
           }
         }
       });
@@ -285,7 +355,9 @@ document.addEventListener("DOMContentLoaded", () => {
         statusFinalDiv.insertAdjacentHTML("beforeend", `
           <div class="stat-line">
             <span class="stat-label">Emblemas</span>
-            <span class="stat-value">${activeEmblems.join(", ")}</span>
+            <span class="stat-value" style="display: flex; flex-wrap: wrap; align-items: center;">
+              ${activeEmblems.join("")}
+            </span>
           </div>
         `);
       }
@@ -311,13 +383,40 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
       const skills = skillDamage[poke];
 
+      // Renderizar passiva primeiro se existir
+      if (skills.passive) {
+        const p = skills.passive;
+        const imgPath = `./estatisticas-shad/images/skills/${poke}_passive.png`;
+        const fallbackImg = `./estatisticas-shad/images/skills/passive.png`;
+        const isActive = activePassives[poke] || false;
+        const activeClass = isActive ? " active" : "";
+
+        const passiveHtml = `
+          <div class="skill-box passive${activeClass}" data-pokemon="${poke}" style="margin-bottom: 15px;">
+            <img src="${imgPath}" alt="${p.name}" class="skill-icon"
+                 onerror="this.onerror=null;this.src='${fallbackImg}'">
+            <div class="skill-info">
+              <h4>${p.name}</h4>
+              <div class="passive-subtitle">passive skill</div>
+              ${p.description ? `<ul><li style="color:#888; font-style:italic;">${p.description}</li></ul>` : ""}
+            </div>
+            <div class="passive-status"></div>
+          </div>
+        `;
+        
+        skillsDiv.insertAdjacentHTML("beforeend", passiveHtml);
+      }
+
+      // Renderizar outras skills
       Object.keys(skills).forEach(key => {
+        if (key === "passive") return; // Já renderizada acima
+        
         const s = skills[key];
         const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
         const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
         // Determinar se é ultimate para aplicar classe CSS especial
-        const isUltimate = key === "ult";
+        const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
         const ultimateClass = isUltimate ? " ultimate" : "";
 
         // Array para armazenar valores calculados desta skill
@@ -419,6 +518,17 @@ document.addEventListener("DOMContentLoaded", () => {
         
         skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
       });
+
+      // Adicionar event listeners para passivas clicáveis
+      const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
+      passiveBoxes.forEach(box => {
+        box.addEventListener("click", () => {
+          const pokemon = box.dataset.pokemon;
+          activePassives[pokemon] = !activePassives[pokemon];
+          calcular(); // Recalcular com a passiva ativa/inativa
+        });
+      });
+
     } else {
       skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
     }
@@ -507,7 +617,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  pokemonSelect.addEventListener("change", calcular);
+  pokemonSelect.addEventListener("change", () => {
+    // Reset passivas ativas quando trocar de pokémon
+    const poke = pokemonSelect.value;
+    if (poke && !activePassives.hasOwnProperty(poke)) {
+      activePassives[poke] = false;
+    }
+    calcular();
+  });
 
   // Já dispara cálculo inicial
   calcular();
@@ -529,6 +646,8 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.values(emblemaSelects).forEach(select => {
       if (select) select.value = "";
     });
+    // Reset passivas ativas
+    activePassives = {};
     resultado.style.display = "none";
     statusFinalDiv.innerHTML = "";
     skillsDiv.innerHTML = "";
