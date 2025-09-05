@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const safeCap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
   // ---- Itens que stackam ----
-  // ---- Itens que stackam ----
   const STACKABLE_ITEMS = {
     "Attack Weight": { stat: "ATK", perStack: 12, max: 6, percent: false, startFromZero: true },
     "Sp. Atk Specs": { stat: "SpATK", perStack: 16, max: 6, percent: false, startFromZero: true },
@@ -89,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ---- Função para aplicar buff da passiva ----
-    // ---- Função para aplicar buff da passiva ----
   const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     if (!activePassives[pokemon] || !skillDamage[pokemon]?.passive) {
       return stats;
@@ -148,9 +146,17 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!passive.calculatedValues) passive.calculatedValues = {};
           passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
           
-          // Aplicar o resultado da fórmula ao stat correspondente
-          if (f.affects) {
-            // Usa a propriedade 'affects' se estiver definida
+          // MODIFICAÇÃO: Se affects for "nextBasicAttack", armazenar o bônus
+          if (f.affects === "nextBasicAttack") {
+            // Armazena o bônus para ser usado no ataque básico
+            if (!passive.nextBasicAttackBonus) passive.nextBasicAttackBonus = {};
+            passive.nextBasicAttackBonus = {
+              base: baseVal,
+              modified: modifiedVal,
+              label: f.label
+            };
+          } else if (f.affects) {
+            // Usa a propriedade 'affects' se estiver definida e não for nextBasicAttack
             const statKey = f.affects.toUpperCase();
             if (modifiedStats.hasOwnProperty(statKey)) {
               modifiedStats[statKey] += modifiedVal;
@@ -214,6 +220,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Resetar valores calculados da passiva
     if (skillDamage[poke]?.passive?.calculatedValues) {
       delete skillDamage[poke].passive.calculatedValues;
+    }
+    if (skillDamage[poke]?.passive?.nextBasicAttackBonus) {
+      delete skillDamage[poke].passive.nextBasicAttackBonus;
     }
 
     // Verificação se o Pokémon tem dados no baseStats
@@ -583,7 +592,26 @@ document.addEventListener("DOMContentLoaded", () => {
               modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
             }
             
-            calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+            // NOVA IMPLEMENTAÇÃO: Verificar se é ataque básico e se há bônus da passiva
+            if ((key === "atkboosted" || key === "basic" || key === "basicattack") && 
+                skills.passive?.nextBasicAttackBonus && 
+                activePassives[poke]) {
+              
+              const passiveBonus = skills.passive.nextBasicAttackBonus;
+              
+              // Armazenar tanto o valor original quanto o valor com bônus
+              calculatedValues[index] = { 
+                base: baseVal, 
+                modified: modifiedVal,
+                withPassive: { 
+                  base: baseVal + passiveBonus.base, 
+                  modified: modifiedVal + passiveBonus.modified 
+                },
+                hasPassiveBonus: true
+              };
+            } else {
+              calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
+            }
           }
         });
         
@@ -593,12 +621,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const dependsOnIndex = f.dependsOn;
             if (calculatedValues[dependsOnIndex]) {
               // Usa a fórmula definida na skill, passando o valor da dependência
-              const baseVal = f.formula(calculatedValues[dependsOnIndex].base, targetLevel);
-              const modifiedVal = f.formula(calculatedValues[dependsOnIndex].modified, targetLevel);
-              calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+              let dependentBase = calculatedValues[dependsOnIndex].base;
+              let dependentModified = calculatedValues[dependsOnIndex].modified;
+              
+              // Se a dependência tem bônus de passiva, usar esses valores
+              if (calculatedValues[dependsOnIndex].hasPassiveBonus) {
+                dependentBase = calculatedValues[dependsOnIndex].withPassive.base;
+                dependentModified = calculatedValues[dependsOnIndex].withPassive.modified;
+              }
+              
+              const baseVal = f.formula(dependentBase, targetLevel);
+              const modifiedVal = f.formula(dependentModified, targetLevel);
+              calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
             } else {
               // Fallback se a dependência não foi encontrada
-              calculatedValues[index] = { base: 0, modified: 0 };
+              calculatedValues[index] = { base: 0, modified: 0, hasPassiveBonus: false };
             }
           }
         });
@@ -618,14 +655,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const values = calculatedValues[index];
                 
-                // Formatação do resultado com possível texto adicional
+                // NOVA FORMATAÇÃO: Verificar se tem bônus da passiva para mostrar o layout especial
                 let displayText = "";
                 let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
                 
-                if (Math.round(values.modified) > Math.round(values.base)) {
-                  displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+                if (values.hasPassiveBonus) {
+                  // Mostrar: valor_original → valor_com_passiva (com seta verde)
+                  if (Math.round(values.withPassive.modified) > Math.round(values.modified)) {
+                    displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
+                  } else {
+                    displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
+                  }
                 } else {
-                  displayText = `${Math.round(values.modified)}`;
+                  // Layout padrão para skills sem bônus de passiva
+                  if (Math.round(values.modified) > Math.round(values.base)) {
+                    displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+                  } else {
+                    displayText = `${Math.round(values.modified)}`;
+                  }
                 }
                 
                 // Adicionar texto explicativo se existir

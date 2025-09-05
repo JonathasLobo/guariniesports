@@ -4067,6 +4067,20 @@ const skillDamage = {
   },
 
     "armarouge": {
+    "passive": {
+          name: "Flash Fire",
+          description: "Reduces Sp. Atk damage taken by 20% for 3s and empowers next basic attack. Cooldown: 10s.",
+          buff: {
+          },
+          formulas: [
+            {
+              label: "Damage",
+              formula: (ATK, level) => 0.6 * ATK + 0 * (level - 1) + 120,
+              type: "physical",
+              affects: "nextBasicAttack"
+            }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
