@@ -15,6 +15,21 @@ const equipesData = {
       }
     ]
   },
+  streamer: {
+    titulo: "Streamer",
+    membros: [
+      {
+        nome: "Hiragimoi",
+        cargo: "Streamer",
+        descricao: "https://www.twitch.tv/hiragimoi"
+      },
+      {
+        nome: "Leandro",
+        cargo: "Streamer",
+        descricao: "https://www.twitch.tv/leandrodecidueye"
+      }
+    ]
+  },
   pokemon: {
     titulo: "Equipe Pokémon Unite",
     membros: [
@@ -79,6 +94,7 @@ const modalBody = document.getElementById('modalBody');
 const closeBtn = document.querySelector('.close');
 
 const staffBtn = document.getElementById('staffBtn');
+const streamerBtn = document.getElementById('streamerBtn');
 const pokemonBtn = document.getElementById('pokemonBtn');
 const yugiohBtn = document.getElementById('yugiohBtn');
 
@@ -117,6 +133,7 @@ function fecharModal() {
 
 // Event listeners
 staffBtn.addEventListener('click', () => abrirModal('staff'));
+streamerBtn.addEventListener('click', () => abrirModal('streamer'));
 pokemonBtn.addEventListener('click', () => abrirModal('pokemon'));
 yugiohBtn.addEventListener('click', () => abrirModal('yugioh'));
 
