@@ -6627,6 +6627,19 @@ const skillDamage = {
   },
 
     "espeon": {
+      "passive": {
+          name: "Magic Bounce",
+          description: "Negates a hindrance and grants brief hindrance immunity, while damaging and slowing the attacker (35s cooldown).",
+          buff: {
+          },
+          formulas: [
+          {
+            label: "Damage - Counter",
+            formula: (SPATK, Level) => 0.34 * SPATK + 8 * (Level - 1) + 140,
+            type: "special"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -6713,6 +6726,14 @@ const skillDamage = {
   },
 
     "falinks": {
+      "passive": {
+          name: "Battle Armor",
+          description: "Reduces enemy crit damage by 50% and carries extra Aeos Energy. Its multiple units take reduced damage, and its moves change effects based on formation.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -6843,6 +6864,14 @@ const skillDamage = {
   },
   
     "garchomp": {
+      "passive": {
+          name: "Rough Skin",
+          description: "Reflects 30% of damage taken from nearby melee attackers back to them as physical damage (2s cooldown).",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -6962,6 +6991,19 @@ const skillDamage = {
   },
 
   	"gardevoir": {
+      "passive": {
+          name: "Synchronize",
+          description: "Reflects slows and damage-over-time effects back to the attacker for 3s (8s cooldown).",
+          buff: {
+          },
+          formulas: [
+          {
+            label: "Damage - DoT Applied (4x)",
+            formula: (SPATK, Level) => 0.15 * SPATK + 0 * (Level - 1) + 15,
+            type: "special"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7061,6 +7103,15 @@ const skillDamage = {
   },
 
   	"gengar": {
+      "passive": {
+          name: "Levitate",
+          description: "Gains 10% movement speed after being out of combat for 5 seconds.",
+          buff: {
+            Speed: 10
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7160,6 +7211,15 @@ const skillDamage = {
   },
 
     "glaceon": {
+      "passive": {
+          name: "Snow Cloak",
+          description: "Negates a hindrance, grants brief invincibility and stealth, with a long cooldown reset on respawn.",
+          buff: {
+            Speed: 10
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7234,6 +7294,25 @@ const skillDamage = {
   },
 
     "goodra": {
+      "passive": {
+          name: "Gooey",
+          description: "When hit, may spread slime that damages, slows, and stacks a debuff on enemies. Also heals in tall grass while boosting its attack gauge.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Damage (Slime)",
+          formula: (SPATK, Level) => 0.6 * SPATK + 6 * (Level - 1) + 120,
+          type: "special"
+          },
+          {
+          label: "Healing (Per Tick)",
+          formula: (SPATK, Level) => 0 * SPATK + 3 * (Level - 1) + 50,
+          type: "special",
+          additionalText: "Additional 1.2% Missing HP per tick"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7342,6 +7421,24 @@ const skillDamage = {
   },
 
   	"greedent": {
+        "passive": {
+          name: "Cheek Pouch",
+          description: "Eating berries heals Greedent and stashes an Oran berry in its tail, which drops when hit and can be eaten by any player for healing.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Healing - Oran Berry",
+          formula: (HP, Level) => 0.45 + 5 * (Level - 1) + 0.02 * HP,
+          type: "hp"
+          },
+          {
+          label: "Healing - After Eating Any Berry",
+          formula: (HP, Level) => 0.23 + 3 * (Level - 1) + 0.01 * HP,
+          type: "hp"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
