@@ -6293,6 +6293,23 @@ const skillDamage = {
   },
 
     "dragonite": {
+      "passive1": {
+          name: "Marvel Scale",
+          description: "Gains 100 Defense for 1.5s when affected by a status condition (Dratini/Dragonair only).",
+          buff: {
+            DEF: 100
+          },
+          formulas: [
+          ]
+        },
+        "passive2": {
+          name: "Multiscale",
+          description: "Taking damage grants a 30% damage reduction buff for 2.5s, with a 15s cooldown.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -6377,6 +6394,14 @@ const skillDamage = {
   },
 
     "duraludon": {
+      "passive": {
+          name: "Heavy Metal",
+          description: "Blocks the first throw or shove attempt against it, then goes on a 50-second cooldown.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -6488,6 +6513,25 @@ const skillDamage = {
   },
 
   	"eldegoss": {
+      "passive": {
+          name: "Cotton Down",
+          description: "Taking a large hit triggers HP recovery, a self-speed boost, and revenge damage with a slow to nearby enemies (10s cooldown).",
+          buff: {
+            Speed: 15
+          },
+          formulas: [
+          {
+            label: "Damage - Revenge",
+            formula: (SPATK, Level) => 0.35 * SPATK + 0 * (Level - 1) + 150,
+            type: "special"
+          },
+          {
+            label: "Healing - Revenge",
+            formula: (SPATK, Level) => 0.65 * SPATK + 0 * (Level - 1) + 165,
+            type: "special"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
