@@ -784,12 +784,12 @@ const gameHeldItensStatus = {
 	"expshare": ['HP +240','Speed +150'],
 	"floatstone": ['ATK +24','Speed +150'],
 	"focusband": ['DEF +30','SpDEF +30'],
-	"leftovers": ['HP +360','HPRegen +9'],
+	"leftovers": ['HP +360','HPRegen +9%'],
 	"muscleband": ['ATK +15','AtkSPD +7.5%'],
 	"rapidscarf": ['ATK +12','AtkSPD +9%'],
 	"razorclaw": ['ATK +15','CritRate +2.1%'],
 	"rescuehood": ['DEF +30','SpDEF +30'],
-	"resonantguard": ['HP +450','HPRegen +18'],
+	"resonantguard": ['HP +450','HPRegen +18%'],
 	"rockyhelmet": ['HP +270','Def +51'],
 	"rustedsword": [],
 	"scopelens": ['CritRate +6%','CritDmg +12%'],
@@ -799,6 +799,25 @@ const gameHeldItensStatus = {
 	"spatkspecs": ['SpATK +24'],
 	"weaknesspolice": ['HP +210','ATK +15'],
 	"wiseglasses": ['SpATK +39'],
+}
+const gameHeldItensPassive = {
+    "wiseglasses": { SpATK: "+7%" }, // aumenta 7% do valor atual de SpATK
+    "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
+    "muscleband": {}, // sem passivo extra
+    "leftovers": { HPRegen: "+4%"}, 
+    "focusband": { HPRegen: "+25%"},
+    "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4) },
+    "draincrown": { Lifesteal: "+15%"},
+    "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
+    "floatstone": { Speed: "+20%"},
+    "razorclaw": { formula: (stats) => 20 + (stats.SpATK * 0.5)},
+    "scoreshield": { Shield: "+10%"},
+    "rapidscarf": { AtkSPD: "+25%"},
+    "rescuehood": { Shield: "+17%"},
+    "resonantguard": { Shield: "+6%"},
+    
+
+    // aqui você vai adicionando os outros efeitos...
 }
 
 const defaultHeldItems = {
@@ -3954,8 +3973,8 @@ const skillDamage = {
       name: "Stance Change",
       description: "Changes form between Attack and Defense stances. + 15% Speed and Atk Speed",
       buff: {
-        Speed: 15,
-        AtkSPD: 15
+        Speed: "15%",
+        AtkSPD: "15%"
       },
       formulas: [
         {
@@ -4408,8 +4427,8 @@ const skillDamage = {
           name: "Torrent",
           description: "While at 50% max HP or below: increases Attack and Sp. Atk by 20%.",
           buff: {
-            ATK: 20,
-            SpATK: 20
+            ATK: "20%",
+            SpATK: "20%"
           },
           formulas: [
           ]
@@ -4746,8 +4765,8 @@ const skillDamage = {
           name: "Beast Boost",
           description: "Gains massive move and attack speed on knockouts/assists. Building its Muscle Gauge through combat enables its strengths, but the gauge decays when out of combat.",
           buff: {
-            Speed: 100,
-            AtkSPD: 50
+            Speed: "100%",
+            AtkSPD: "50%"
           },
           formulas: [
           ]
@@ -4855,7 +4874,7 @@ const skillDamage = {
           name: "Weak Armor",
           description: "Gains move speed when hit by Attack-based damage. Attacking applies a stacking damage-over-time wound; at max stacks, the target takes increased damage from Ceruledge.",
           buff: {
-            Speed: 10
+            Speed: "10%"
           },
           formulas: [
             {
@@ -5075,7 +5094,7 @@ const skillDamage = {
           name: "Blaze",
           description: "While at 50% max HP or below, this Pokémon's critical-hit rate is increased by 20%.",
           buff: {
-            CritRate: 20
+            CritRate: "20%"
           },
           formulas: [
           ]
@@ -5198,8 +5217,8 @@ const skillDamage = {
           name: "Blaze",
           description: "Below 50% HP, gain crit rate and attack speed (30s CD). Attacks apply cinders; at 5 stacks, they explode for bonus damage.",
           buff: {
-            CritRate: 10,
-            AtkSPD: 20
+            CritRate: "10%",
+            AtkSPD: "20%"
           },
           formulas: [
           ]
@@ -5384,7 +5403,7 @@ const skillDamage = {
           name: "Triage",
           description: "Gains movement speed near low-HP allies. Stores flowers to empower healing moves when attached, and provides shields and scoring support while untargetable.",
           buff: {
-            Speed: 25
+            Speed: "25%"
           },
           formulas: [
           {
@@ -6077,7 +6096,7 @@ const skillDamage = {
           name: "Run Away",
           description: "Gains movement speed near enemies and charges a sprint gauge while moving. Scores goals by splitting Aeos energy into multiple deposits.",
           buff: {
-            Speed: 20
+            Speed: "20%"
           },
           formulas: [
           ]
@@ -6517,7 +6536,7 @@ const skillDamage = {
           name: "Cotton Down",
           description: "Taking a large hit triggers HP recovery, a self-speed boost, and revenge damage with a slow to nearby enemies (10s cooldown).",
           buff: {
-            Speed: 15
+            Speed: "15%"
           },
           formulas: [
           {
@@ -7107,7 +7126,7 @@ const skillDamage = {
           name: "Levitate",
           description: "Gains 10% movement speed after being out of combat for 5 seconds.",
           buff: {
-            Speed: 10
+            Speed: "10%"
           },
           formulas: [
           ]
@@ -7215,7 +7234,7 @@ const skillDamage = {
           name: "Snow Cloak",
           description: "Negates a hindrance, grants brief invincibility and stealth, with a long cooldown reset on respawn.",
           buff: {
-            Speed: 10
+            Speed: "10%"
           },
           formulas: [
           ]
@@ -7518,6 +7537,16 @@ const skillDamage = {
   },
 
     "greninja": {
+      "passive": {
+          name: "Torrent",
+          description: "While at 50% HP or below, increases Attack by 5% and movement speed by 12%.",
+          buff: {
+            Speed: "12%",
+            ATK: "5%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7602,6 +7631,17 @@ const skillDamage = {
   },
 
   	"gyarados": {
+      "passive": {
+          name: "Moxie",
+          description: "Knockouts or assists reduce move cooldowns by 30%. Passively gains bonus HP, Attack, and attack speed permanently.",
+          buff: {
+            AtkSPD: "40%",
+            ATK: 100,
+            HP: 1200
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7737,6 +7777,15 @@ const skillDamage = {
   },
 
     "hooh": {
+      "passive": {
+          name: "Regenarator",
+          description: "Recovers 3% max HP every 2s when not damaged by enemies for 3s. Ho-Oh gains additional healing, and shield damage doesn't interrupt this effect.",
+          buff: {
+            HPRegen: "3%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7828,6 +7877,14 @@ const skillDamage = {
   },
 
   	"hoopa": {
+      "passive": {
+          name: "Magician",
+          description: "Steals a berry or Aeos energy from the enemy side to warp in front of Hoopa, with a reduced cooldown if no berry is stolen.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7923,6 +7980,15 @@ const skillDamage = {
   },
 
   	"inteleon": {
+      "passive": {
+          name: "Sniper",
+          description: "Becomes camouflaged near walls, gaining guaranteed critical hit stacks over time. Higher evolutions can hold more stacks, and crits deal 250% damage.",
+          buff: {
+            CritDmg: "250%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -7997,6 +8063,14 @@ const skillDamage = {
   },
 
 	"lapras": {
+    "passive": {
+          name: "Shell Armor",
+          description: "Reduces any single instance of damage exceeding 10% of max HP by 20%.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8087,6 +8161,15 @@ const skillDamage = {
   },
 
   	"latias": {
+      "passive": {
+          name: "Levitate",
+          description: "Gains burst of speed after using a move. Can fly to an allied Latios when out of combat, becoming unstoppable during the flight (90s cooldown for both).",
+          buff: {
+            Speed: "50%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8181,6 +8264,15 @@ const skillDamage = {
   },
 
     "latios": {
+      "passive": {
+          name: "Levitate",
+          description: "Gains burst of speed after using a move. Can fly to an allied Latias when out of combat, becoming unstoppable during the flight (90s cooldown for both).",
+          buff: {
+            Speed: "50%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8255,6 +8347,15 @@ const skillDamage = {
   },
 
   	"leafeon": {
+      "passive": {
+          name: "Chlorophyll",
+          description: "Charges a gauge while out of tall grass; when full, grants 15% increased movement speed.",
+          buff: {
+            Speed: "15%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8385,6 +8486,20 @@ const skillDamage = {
   },
 
   	"lucario": {
+      "passive": {
+          name: "Steadfast",
+          description: "At 50% HP or below, grants a shield and 20% movement speed for 5s (45s cooldown).",
+          buff: {
+            Speed: "20%"
+          },
+          formulas: [
+          {
+          label: "Shield",
+          formula: (ATK, Level) => 2.5 * ATK + 50 * (Level - 1) + 50,
+          type: "physical"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8479,6 +8594,15 @@ const skillDamage = {
   },
 
     "machamp": {
+      "passive": {
+          name: "Guts",
+          description: "Gains 10% Attack for 5s when afflicted by any debuff.",
+          buff: {
+            ATK: "10%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8558,6 +8682,19 @@ const skillDamage = {
   },
 
     "mamoswine": {
+    "passive": {
+          name: "Thick Fat",
+          description: "Gains Defense and Sp. Def stacks when dealing damage. Ice moves empower the next basic attack and slow enemy scoring if used on allied goals.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Defense & Sp. Defense",
+          formula: (ATK, Level) => 0 * ATK + 10 * (Level - 1) + 20,
+          type: "physical"
+          },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8667,6 +8804,17 @@ const skillDamage = {
   },
 
   	"meowscara": {
+    "passive": {
+          name: "Overgrow",
+          description: "At 50% HP or below, taking damage triggers invisibility, a speed boost, and enhanced damage with lifesteal for 4s (60s cooldown).",
+          buff: {
+            Speed: "15%",
+            ATK: "15%",
+            HPRegen: "15%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8756,6 +8904,14 @@ const skillDamage = {
   },
 
   	"metagross": {
+    "passive": {
+          name: "Clear Body",
+          description: "Reduces hindrance duration by up to 50% based on the number of nearby enemy players (max 5 enemies).",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8885,6 +9041,24 @@ const skillDamage = {
   },
 
   	"mew": {
+    "passive1": {
+          name: "Synchronize",
+          description: "Using a move grants Mew and nearby allies 15% increased movement speed for 2s.",
+          buff: {
+          Speed: "15%"
+          },
+          formulas: [
+          ]
+        },
+        "passive2": {
+          name: "Move Reset",
+          description: "Can reset and change moves every 25s, with cooldown reduced by KOs, assists, or scoring. Using it also charges the Unite Move.",
+          buff: {
+          CDR: "40%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -8984,6 +9158,19 @@ const skillDamage = {
   },
 
   	"mewtwox": {
+    "passive": {
+          name: "Pressure",
+          description: "Building Mega Gauge through attacks boosts stats and enables Mega Evolution, which consumes Aeos energy to extend duration and grants massive stat increases.",
+          buff: {
+          ATK: "18%",
+          DEF: "18%",
+          SpDEF: "18%",
+          HP: "10%",
+          AtkSPD: "5%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9064,6 +9251,18 @@ const skillDamage = {
   },
 
   	"mewtwoy": {
+    "passive": {
+          name: "Pressure",
+          description: "Basic attacks build Mega Gauge to boost Sp. Atk and attack speed. At max stacks, Mega Evolution consumes Aeos energy for enhanced stats and extended duration.",
+          buff: {
+          SpATK: "10%",
+          Speed: "5%",
+          HP: "10%",
+          AtkSPD: "35%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9144,6 +9343,16 @@ const skillDamage = {
   },
 
     "mimikyu": {
+    "passive": {
+          name: "Disguise",
+          description: "Starts disguised, blocking damage and marking attackers when hit. Gains speed and damage against marked enemies, and reverts to disguise faster after knocking them out.",
+          buff: {
+          Speed: "10%",
+          ATK: "10%",
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9239,6 +9448,16 @@ const skillDamage = {
   },
 
     "miraidon": {
+    "passive": {
+          name: "Hadron Engine",
+          description: "Hitting enemies creates Electric Terrain, boosting move damage for Miraidon and allies, enhancing ally goals, and weakening enemy goals. Size scales with consumed Aeos Energy.",
+          buff: {
+          },
+          skillDamageMultiplier: 1.30, // 30% de aumento no dano das skills
+          affectsBasicAttack: false,
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
