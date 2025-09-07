@@ -225,31 +225,30 @@
 
     <section id="loja">
       <h2>Loja Oficial</h2>
-      <div class="produtos">
-        <div class="produto">
-          <img src="./shop/camisa.jpg" alt="Camisa Guariní">
-          <h3>Camisa Oficial</h3>
-          <p>R$ 69,90</p>
-          <button class="btn-comprar">Comprar</button>
-        </div>
-        <div class="produto">
-          <img src="./shop/bone.jpg" alt="Boné Guariní">
-          <h3>Boné Guariní</h3>
-          <p>R$ 39,90</p>
-          <button class="btn-comprar">Comprar</button>
-        </div>
-        <div class="produto">
-          <img src="./shop/mousepad.jpg" alt="Mousepad Guariní">
-          <h3>Mousepad Gamer</h3>
-          <p>R$ 49,90</p>
-          <button class="btn-comprar">Comprar</button>
-        </div>
-      </div>
+      <section class="produtos">
+        <article class="produto">
+          <img src="./shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guariní" />
+          <h3>Adesivos holográficos Kiss-Cut</h3>
+          <p class="preco">$ 11,00</p>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5571571">Comprar</button>
+        </article>
+        <article class="produto">
+          <img src="./shop/garrafinha.jpg" alt="Garrafa de água Guariní" />
+          <h3>Garrafa de água de aço inoxidável</h3>
+          <p class="preco">$ 30,00</p>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023084">Comprar</button>
+        </article>
+        <article class="produto">
+          <img src="./shop/caneca.jpg" alt="Caneca Guariní" />
+          <h3>Caneca de viagem com alça</h3>
+          <p class="preco">$ 29,00</p>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023087">Comprar</button>
+        </article>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 Guariní e-sport. Todos os direitos reservados.</p>
+    <p>&copy; 2019 Guariní e-sport. Todos os direitos reservados.</p>
     <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
     <p>Created by: Lobo & Shad</p>
   </footer>
@@ -358,5 +357,22 @@
       }
     });
   </script>
+
+<script>
+  // Pega todos os botões de compra
+  const botoes = document.querySelectorAll(".btn-comprar");
+
+  // Adiciona evento de clique em cada botão
+  botoes.forEach((botao) => {
+    botao.addEventListener("click", () => {
+      const link = botao.getAttribute("data-link");
+      if (link) {
+        window.open(link, "_blank"); // abre em nova aba
+        // window.location.href = link; // use esta linha se quiser na mesma aba
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
