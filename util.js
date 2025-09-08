@@ -9553,6 +9553,14 @@ const skillDamage = {
   },
 
   	"mrmime": {
+      "passive": {
+          name: "Filter",
+          description: "After using a move, takes 10% reduced damage for 2 seconds.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9658,6 +9666,19 @@ const skillDamage = {
   },
 
     "ninetales": {
+      "passive": {
+          name: "Snow Warning",
+          description: "Attacks sling snow to slow enemies; hitting the same target 4 times freezes them.",
+          buff: {
+          },
+          formulas: [
+          {
+          label: "Damage",
+          formula: (SpATK, Level) => 0.6 * SpATK + 0 * (Level - 1) + 100,
+          type: "special"
+          }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9765,6 +9786,14 @@ const skillDamage = {
   },
 
    	"pikachu": {
+      "passive": {
+          name: "Static",
+          description: "When damaged, paralyzes nearby enemies, slowing their movement and attack speed (30s cooldown).",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9855,6 +9884,15 @@ const skillDamage = {
   },
 
     "psyduck": {
+    "passive": {
+          name: "Swift Swim",
+          description: "Gains speed when damaged. Taking damage fills a headache gauge; when full, triggers a powerful unstoppable burst that shoves enemies, resets cooldowns, and empowers moves.",
+          buff: {
+            Speed: "40%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -9939,6 +9977,14 @@ const skillDamage = {
   },
 
   	"raichu": {
+      "passive": {
+          name: "Surge Surfer",
+          description: "Can attack while moving but is slowed when attacking or using certain moves. Gains a dash after using a move or boosted attack.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10033,6 +10079,21 @@ const skillDamage = {
   },
 
   	"rapidash": {
+    "passive": {
+          name: "Pastel Veil",
+          description: "Charges a psychic shield by moving, granting hindrance resistance when full. Higher movement speed also significantly boosts move damage.",
+          buff: {
+          },
+          skillDamageMultiplier: 1.60, // 30% de aumento no dano das skills
+          affectsBasicAttack: false,
+          formulas: [
+          {
+          label: "Shield",
+          formula: (SPATK, Level) => 1.12 * SPATK + 0 * (Level - 1) + 280,
+          type: "special"
+		      }
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10097,6 +10158,15 @@ const skillDamage = {
   },
 
     "sableye": {
+      "passive": {
+          name: "Prankster",
+          description: "Enters stealth with increased speed when unseen by enemies, briefly maintaining stealth even after being spotted until attacking.",
+          buff: {
+            Speed: "10%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10168,6 +10238,19 @@ const skillDamage = {
   },
 
     "scizor": {
+      "passive": {
+          name: "Technician",
+          description: "After using a move, the next basic attack hits twice in a row, with the second hit dealing reduced damage.",
+          buff: {
+          },
+          formulas: [
+            {
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10249,6 +10332,19 @@ const skillDamage = {
   },
 
     "scyther": {
+      "passive": {
+          name: "Technician",
+          description: "After using a move, the next basic attack hits twice in a row, with the second hit dealing reduced damage.",
+          buff: {
+          },
+          formulas: [
+            {
+          label: "Damage - Second Hit",
+          formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10345,6 +10441,14 @@ const skillDamage = {
   },
 
   	"slowbro": {
+      "passive": {
+          name: "Oblivious",
+          description: "Stores lost HP temporarily and deals damage to reduce enemy Sp. Def with certain moves, stacking up to 5 times.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10409,6 +10513,20 @@ const skillDamage = {
   },
 
     "snorlax": {
+       "passive": {
+          name: "Gluttony",
+          description: "Gains movement speed near berries/food and enhances healing from berries and Alcremie's Recover.",
+          buff: {
+            Speed: "25%"
+          },
+          formulas: [
+            {
+          label: "Heal - Additional",
+          formula: (HP, Level) => 0.01 * HP + 0 * (Level - 1) + 23,
+          type: "hp"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10582,6 +10700,24 @@ const skillDamage = {
   },
 
   "suicune": {
+    "passive": {
+          name: "Pressure",
+          description: "Executes frozen low-HP enemies with bonus true damage. Moves grant shields and create/flood areas to freeze and mark enemies for additional effects.",
+          buff: {
+          },
+          formulas: [
+            {
+          label: "Shield",
+          formula: (SpATK, Level) => 0.5 * SpATK + 0 * (Level - 1) + 200,
+          type: "special"
+        },
+         {
+          label: "Damage - Freezing",
+          formula: (SpATK, Level) => 0.25 * SpATK + 7 * (Level - 1) + 100,
+          type: "special"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10676,6 +10812,16 @@ const skillDamage = {
   },
 
   "sylveon": {
+    "passive": {
+          name: "Pixilate",
+          description: "Dealing or taking damage increases Sp. Atk and Sp. Def, stacking up to 6 times.",
+          buff: {
+            SpATK: "2.5%",
+            SpDEF: "2.5%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10760,6 +10906,15 @@ const skillDamage = {
   },
 
     "talonflame": {
+      "passive": {
+          name: "Gale Wings",
+          description: "Gains 15% movement speed while at 85% HP or higher.",
+          buff: {
+            Speed: "15%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10846,6 +11001,15 @@ const skillDamage = {
   },
 
     "tinkaton": {
+      "passive": {
+          name: "Mold Breaker",
+          description: "Deals bonus damage to shielded enemies and permanently increases Attack with each hit, enhancing move range at certain stacks.",
+          buff: {
+            ATK: "30%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -10946,6 +11110,19 @@ const skillDamage = {
   },
 
     "trevenant": {
+      "passive": {
+          name: "Natural Cure",
+          description: "At low HP, dealing or taking damage triggers healing and cooldown reduction, with a long cooldown reduced by damaging enemies.",
+          buff: {
+          },
+          formulas: [
+            {
+          label: "Heal - 8 Ticks",
+          formula: (HP, Level) => 2 + (0.18 * (Level - 1)) * HP,
+          type: "hp"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11103,6 +11280,14 @@ const skillDamage = {
   },
 
   "tsareena": {
+      "passive": {
+          name: "Queenly Majesty",
+          description: "Reduces hindrance duration and gains stacks to empower moves, allowing reuse with enhanced effects after 3 stacks.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11288,6 +11473,21 @@ const skillDamage = {
   },
 
   "tyranitar": {
+    "passive": {
+          name: "Sand Stream",
+          description: "Using a move summons a sandstorm that boosts defenses and damages nearby enemies.",
+          buff: {
+            DEF: "65%",
+            SpDEF: "65%"
+          },
+          formulas: [
+            {
+          label: "Damage - per Tick (7 Ticks)",
+          formula: (ATK, Level) => 0.2 * ATK + 2 * (Level - 1) + 30,
+          type: "physical"
+        },
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11409,6 +11609,16 @@ const skillDamage = {
   },
 
   "umbreon": {
+    "passive": {
+          name: "Inner Focus",
+          description: "Negates shoves, throws, and disabling effects, becoming unstoppable with boosted defenses (40s cooldown, resets on respawn).",
+          buff: {
+            DEF: "30%",
+            SpDEF: "30%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11505,6 +11715,14 @@ const skillDamage = {
   },
 
   "urshifu": {
+    "passive": {
+          name: "Unseen Fist",
+          description: "Deals bonus damage to shielded enemies, converting 30% of shield damage to HP damage.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11643,6 +11861,16 @@ const skillDamage = {
   },
 
   "venusaur": {
+    "passive": {
+          name: "Overgrow",
+          description: "Deals 20% increased damage when HP is at 30% or below.",
+          buff: {
+          },
+          skillDamageMultiplier: 1.20, // 20% de aumento
+          affectsBasicAttack: true,
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11737,6 +11965,14 @@ const skillDamage = {
   },
 
   "wigglytuff": {
+    "passive": {
+          name: "Cute Charm",
+          description: "When hit at close range, infatuates the attacker, forcing them to approach Wigglytuff (10s cooldown).",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11806,6 +12042,14 @@ const skillDamage = {
   },
 
   "zacian": {
+    "passive": {
+          name: "Intrepid Sword",
+          description: "Holding the goal button charges Aeos energy into Zacian's sword, empowering its basic attacks and one move based on charge duration (8s cooldown).",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -11970,6 +12214,15 @@ const skillDamage = {
   },
 
   "zeraora": {
+    "passive": {
+          name: "Volt Absorb",
+          description: "Converts 8% of damage taken into bonus Attack for 4s, up to a maximum of 200 bonus Attack.",
+          buff: {
+            ATK: "8%"
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -12097,6 +12350,14 @@ const skillDamage = {
   },
 
   "zoroark": {
+     "passive": {
+          name: "Illusion",
+          description: "Disguises as the nearest enemy, becoming unstoppable briefly. The illusion breaks upon taking damage, attacking, scoring, or recalling.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [

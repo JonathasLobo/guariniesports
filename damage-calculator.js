@@ -693,27 +693,18 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
               modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
             }
 
-            if (poke === "miraidon" && skills.passive) {
-            const passive = skills.passive;
-            const isPassiveActive = activePassives[poke] && activePassives[poke]['passive'];
-            
-            // Verificar se deve aplicar o multiplicador
-            if (isPassiveActive && 
-                passive.skillDamageMultiplier && 
-                key !== "atkboosted" && // Não afeta ataque básico
-                key !== "basic" && 
-                key !== "basicattack") {
-                
-                // Se affectsBasicAttack for false, não aplicar em ataques básicos
-                if (passive.affectsBasicAttack === false && 
-                    (key === "atkboosted" || key === "basic" || key === "basicattack")) {
-                    // Não aplicar multiplicador
-                } else {
-                    // Aplicar multiplicador de dano
-                    modifiedVal *= passive.skillDamageMultiplier;
-                }
-            }
-        }
+            if (skills.passive) {
+              const passive = skills.passive;
+              const isPassiveActive = activePassives[poke] && activePassives[poke]['passive'];
+              
+              if (isPassiveActive && passive.skillDamageMultiplier) {
+                  const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+                  
+                  if (!isBasicAttack || passive.affectsBasicAttack === true) {
+                      modifiedVal *= passive.skillDamageMultiplier;
+                  }
+              }
+          }
         
             
             if ((key === "atkboosted" || key === "basic" || key === "basicattack")) {
