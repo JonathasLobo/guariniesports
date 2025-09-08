@@ -7276,7 +7276,7 @@ const skillDamage = {
         {
           label: "Damage - Basic",
           formula: (ATK, Level) => 0.39 * ATK + 4 * (Level - 1) + 70,
-          type: "physical"
+          type: "special"
         },
 		{
           label: "Damage - Boosted (Eevee)",
