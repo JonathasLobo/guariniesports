@@ -117,6 +117,65 @@ function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
   return ((win + mvp) / 2).toFixed(2);
 }
 
+// Média exata usada para calcular pontos por partida
+const mediaMaestria = 138799 / 581; 
+const niveisMaestria = [
+  {nome: "Sem Maestria", pontos: 0},
+  {nome: "Verde", pontos: 30000},
+  {nome: "Azul", pontos: 85000},
+  {nome: "Dourado", pontos: 165000}
+];
+
+// Função para calcular maestria com base no total de batalhas
+function calcularMaestria(totalBattles) {
+  const pontosTotais = totalBattles * mediaMaestria;
+
+  let nivelAtual = niveisMaestria[0];
+  let proximoNivel = null;
+
+  for (let i = 0; i < niveisMaestria.length; i++) {
+    if (pontosTotais >= niveisMaestria[i].pontos) {
+      nivelAtual = niveisMaestria[i];
+      proximoNivel = niveisMaestria[i+1] || null;
+    }
+  }
+
+  let resultado = `
+    <div class="stat-line">
+      <span class="stat-label">Pontos estimados:</span>
+      <span class="stat-value">${pontosTotais.toFixed(0)}</span>
+    </div>
+    <div class="stat-line">
+      <span class="stat-label">Nível atual:</span>
+      <span class="stat-value">${nivelAtual.nome}</span>
+    </div>
+  `;
+
+  if (proximoNivel) {
+    const faltamPontos = proximoNivel.pontos - pontosTotais;
+    const faltamPartidas = Math.ceil(faltamPontos / mediaMaestria);
+    resultado += `
+      <div class="stat-line">
+        <span class="stat-label">Próximo nível:</span>
+        <span class="stat-value">${proximoNivel.nome}</span>
+      </div>
+      <div class="stat-line">
+        <span class="stat-label">Faltam:</span>
+        <span class="stat-value">${faltamPontos.toFixed(0)} pts (~${faltamPartidas} partidas)</span>
+      </div>
+    `;
+  } else {
+    resultado += `
+      <div class="stat-line">
+        <span class="stat-label">Status:</span>
+        <span class="stat-value">🎉 Nível máximo (Dourado)!</span>
+      </div>
+    `;
+  }
+
+  return resultado;
+}
+
 // Função principal que calcula e exibe o desempenho
 function calcularDesempenho() {
   const jogador = document.getElementById("jogador").value;
@@ -240,6 +299,20 @@ function calcularDesempenho() {
       ✅ ${avaliacaoTotal}
     </div>
   `;
+
+// --- Adiciona Maestria ---
+const maestriaHTML = calcularMaestria(total.battles);
+
+// Cria ou atualiza um bloco de Maestria
+let blocoMaestria = document.getElementById("dados-maestria");
+if (!blocoMaestria) {
+  const colunaTotal = document.querySelector(".coluna-total");
+  const div = document.createElement("div");
+  div.innerHTML = `<h3>⭐ Maestria</h3><div id="dados-maestria">${maestriaHTML}</div>`;
+  colunaTotal.appendChild(div);
+} else {
+  blocoMaestria.innerHTML = maestriaHTML;
+}
 
   // Mostra ou esconde info do multiplicador
   const multiplicadorInfo = document.getElementById("multiplicador-info");
