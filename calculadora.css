@@ -76,6 +76,7 @@ textarea.form-control {
   flex-shrink: 0;
   text-align: center;
   min-width: 180px;
+  position: relative;
 }
 
 .resultado-image img {
@@ -89,6 +90,32 @@ textarea.form-control {
   margin-right: auto;
 }
 
+/* Gradiente da role na borda da imagem */
+.resultado-image.role-speedster img {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #2492c9, #1a7ba8, #2492c9) 1;
+}
+
+.resultado-image.role-allrounder img {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #ce5fd3, #b84bc4, #ce5fd3) 1;
+}
+
+.resultado-image.role-support img {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #e1b448, #d4a335, #e1b448) 1;
+}
+
+.resultado-image.role-defender img {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #9bd652, #87c43f, #9bd652) 1;
+}
+
+.resultado-image.role-attacker img {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #f16c38, #e55a25, #f16c38) 1;
+}
+
 .info-jogador {
   background: #e9ecef;
   padding: 15px;
@@ -97,6 +124,38 @@ textarea.form-control {
   font-weight: bold;
   font-size: 14px;
   color: #333;
+}
+
+/* Tarja da role */
+.role-badge {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.role-badge.speedster {
+  background-color: #2492c9;
+}
+
+.role-badge.allrounder {
+  background-color: #ce5fd3;
+}
+
+.role-badge.support {
+  background-color: #e1b448;
+}
+
+.role-badge.defender {
+  background-color: #9bd652;
+}
+
+.role-badge.attacker {
+  background-color: #f16c38;
 }
 
 .resultado-dados {
@@ -156,6 +215,57 @@ textarea.form-control {
 .stat-label { color: #666; font-weight: 500; }
 .stat-value { font-weight: bold; color: #333; }
 
+/* Container dos ícones dos itens */
+.item-icons-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Item containers */
+.item-icon-container {
+  position: relative;
+  display: inline-block;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 4px;
+  transition: all 0.3s ease;
+}
+
+.item-icon-container.item-clickable {
+  cursor: pointer;
+  border-color: #ccc;
+}
+
+.item-icon-container.item-clickable:hover {
+  border-color: #ffcb05;
+  box-shadow: 0 0 8px rgba(255, 203, 5, 0.4);
+}
+
+.item-icon-container.item-active {
+  border-color: #28a745;
+  background-color: rgba(40, 167, 69, 0.1);
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+
+.item-passive-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffc107;
+  border: 2px solid white;
+  transition: background-color 0.3s ease;
+}
+
+.item-icon-container.item-active .item-passive-dot {
+  background-color: #28a745;
+}
+
 /* Botões */
 .botoes-calculadora {
   display: flex;
@@ -190,6 +300,7 @@ textarea.form-control {
   .coluna-temporada h3, .coluna-total h3 { font-size: 17px; padding-bottom: 6px; margin-bottom: 12px; }
   .botoes-calculadora { flex-direction: column; gap: 8px; }
   .campos-linha { flex-direction: column; gap: 0; }
+  .item-icons-container { justify-content: center; }
 }
 
 @media (max-width: 576px) {
@@ -199,6 +310,8 @@ textarea.form-control {
   .coluna-temporada, .coluna-total { padding: 12px; }
   .stat-line { font-size: 14px; }
   .info-jogador { padding: 12px; font-size: 13px; }
+  .item-icons-container { gap: 4px; }
+  .item-icon-container img { width: 32px; height: 32px; }
 }
 
 /* Voltar */

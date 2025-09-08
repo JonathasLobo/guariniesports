@@ -49,6 +49,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield"]);
 
+  // Cores das roles
+  const rolesColor = {
+    'Speedster': '#2492c9',
+    'All Rounder': '#ce5fd3',
+    'Support': '#e1b448',
+    'Defender': '#9bd652',
+    'Attacker': '#f16c38'
+  };
+
+  // Passivas dos itens - agora usando a constante gameHeldItensPassive
+  const gameHeldItensPassive = {
+    "wiseglasses": { SpATK: "+7%" },
+    "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
+    "muscleband": {},
+    "leftovers": { HPRegen: "+4%"},
+    "focusband": { HPRegen: "+25%"},
+    "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4) },
+    "draincrown": { Lifesteal: "+15%"},
+    "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
+    "floatstone": { Speed: "+20%"},
+    "razorclaw": { formula: (stats) => 20 + (stats.SpATK * 0.5)},
+    "scoreshield": { Shield: "+10%"},
+    "rapidscarf": { AtkSPD: "+25%"},
+    "rescuehood": { Shield: "+17%"},
+    "resonantguard": { Shield: "+6%"}
+  };
+
   const ensureAllStats = (obj) => {
     const out = { ...obj };
     STAT_KEYS.forEach(k => { if (out[k] === undefined) out[k] = 0; });
@@ -82,10 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const getItemPassivesSource = () => {
-    if (typeof gameHeldItensPassive !== "undefined" && gameHeldItensPassive && typeof gameHeldItensPassive === "object") {
-      return gameHeldItensPassive;
-    }
-    return ITEM_PASSIVE_FALLBACK;
+    return gameHeldItensPassive;
   };
 
   /**
@@ -155,134 +179,134 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ---- Função para aplicar buff da passiva (do Pokémon) ----
-  // Modifique a função applyPassiveBuff para lidar corretamente com buffs
-const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
-  if (!skillDamage[pokemon]) {
-    return stats;
-  }
-
-  let modifiedStats = { ...stats };
-  const skills = skillDamage[pokemon];
-
-  // Tratar múltiplas passivas (passive, passive1, passive2)
-  const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
-  
-  passiveKeys.forEach(passiveKey => {
-    if (!activePassives[pokemon] || !activePassives[pokemon][passiveKey]) {
-      return;
+  const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
+    if (!skillDamage[pokemon]) {
+      return stats;
     }
 
-    const passive = skills[passiveKey];
+    let modifiedStats = { ...stats };
+    const skills = skillDamage[pokemon];
 
-    // Aplicar buffs de status se existirem
-    if (passive.buff) {
-      Object.keys(passive.buff).forEach(stat => {
-        if (modifiedStats.hasOwnProperty(stat)) {
-          const rawVal = passive.buff[stat];
-          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-          const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+    // Tratar múltiplas passivas (passive, passive1, passive2)
+    const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
+    
+    passiveKeys.forEach(passiveKey => {
+      if (!activePassives[pokemon] || !activePassives[pokemon][passiveKey]) {
+        return;
+      }
 
-          if (!Number.isFinite(numeric)) return;
+      const passive = skills[passiveKey];
 
-          // CORREÇÃO: Verificar se o stat está em PERCENT_KEYS
-          if (PERCENT_KEYS.has(stat)) {
-            // Para stats percentuais (como Speed, AtkSPD, etc), sempre somar pontos diretos
-            modifiedStats[stat] += numeric;
-          } else {
-            // Para stats não percentuais (HP, ATK, DEF, etc)
-            if (isPercentString) {
-              // Se tem "%" na string, aplicar como percentual do valor base
-              modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-            } else {
-              // Se não tem "%" na string, aplicar como valor fixo
+      // Aplicar buffs de status se existirem
+      if (passive.buff) {
+        Object.keys(passive.buff).forEach(stat => {
+          if (modifiedStats.hasOwnProperty(stat)) {
+            const rawVal = passive.buff[stat];
+            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+            if (!Number.isFinite(numeric)) return;
+
+            // CORREÇÃO: Verificar se o stat está em PERCENT_KEYS
+            if (PERCENT_KEYS.has(stat)) {
+              // Para stats percentuais (como Speed, AtkSPD, etc), sempre somar pontos diretos
               modifiedStats[stat] += numeric;
+            } else {
+              // Para stats não percentuais (HP, ATK, DEF, etc)
+              if (isPercentString) {
+                // Se tem "%" na string, aplicar como percentual do valor base
+                modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+              } else {
+                // Se não tem "%" na string, aplicar como valor fixo
+                modifiedStats[stat] += numeric;
+              }
             }
           }
-        }
-      });
-    }
+        });
+      }
 
-    // Processar fórmulas da passiva se existirem e aplicar aos stats
-    if (passive.formulas && passive.formulas.length > 0) {
-      passive.formulas.forEach((f, index) => {
-        if (f.type !== "text-only" && f.type !== "dependent") {
-          let baseVal, modifiedVal;
-          
-          if (f.type === "multi" || f.useAllStats) {
-            baseVal = f.formula(baseStats, targetLevel);
-            modifiedVal = f.formula(modifiedStats, targetLevel);
-          } else {
-            let baseAttribute, modifiedAttribute;
+      // Processar fórmulas da passiva se existirem e aplicar aos stats
+      if (passive.formulas && passive.formulas.length > 0) {
+        passive.formulas.forEach((f, index) => {
+          if (f.type !== "text-only" && f.type !== "dependent") {
+            let baseVal, modifiedVal;
             
-            switch(f.type) {
-              case "special":
-                baseAttribute = baseStats.SpATK;
-                modifiedAttribute = modifiedStats.SpATK;
-                break;
-              case "hp":
-                baseAttribute = baseStats.HP;
-                modifiedAttribute = modifiedStats.HP;
-                break;
-              case "physical":
-              default:
-                baseAttribute = baseStats.ATK;
-                modifiedAttribute = modifiedStats.ATK;
-                break;
+            if (f.type === "multi" || f.useAllStats) {
+              baseVal = f.formula(baseStats, targetLevel);
+              modifiedVal = f.formula(modifiedStats, targetLevel);
+            } else {
+              let baseAttribute, modifiedAttribute;
+              
+              switch(f.type) {
+                case "special":
+                  baseAttribute = baseStats.SpATK;
+                  modifiedAttribute = modifiedStats.SpATK;
+                  break;
+                case "hp":
+                  baseAttribute = baseStats.HP;
+                  modifiedAttribute = modifiedStats.HP;
+                  break;
+                case "physical":
+                default:
+                  baseAttribute = baseStats.ATK;
+                  modifiedAttribute = modifiedStats.ATK;
+                  break;
+              }
+              
+              baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
+              modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
             }
             
-            baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
-            modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
+            if (!passive.calculatedValues) passive.calculatedValues = {};
+            passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+            
+            if (f.affects === "nextBasicAttack") {
+              if (!passive.nextBasicAttackBonus) passive.nextBasicAttackBonus = {};
+              passive.nextBasicAttackBonus = {
+                base: baseVal,
+                modified: modifiedVal,
+                label: f.label
+              };
+            } else if (f.affects) {
+              const statKey = f.affects.toUpperCase();
+              if (modifiedStats.hasOwnProperty(statKey)) {
+                modifiedStats[statKey] += modifiedVal;
+              }
+            } else {
+              const label = f.label.toLowerCase();
+              
+              if (label.includes("defense") && !label.includes("special")) {
+                modifiedStats.DEF += modifiedVal;
+              } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
+                modifiedStats.SpDEF += modifiedVal;
+              } else if (label.includes("attack") && !label.includes("special")) {
+                modifiedStats.ATK += modifiedVal;
+              } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
+                modifiedStats.SpATK += modifiedVal;
+              } else if (label.includes("hp") || label.includes("health")) {
+                modifiedStats.HP += modifiedVal;
+              } else if (label.includes("speed")) {
+                modifiedStats.Speed += modifiedVal;
+              } else if (label.includes("crit") && label.includes("rate")) {
+                modifiedStats.CritRate += modifiedVal;
+              } else if (label.includes("crit") && label.includes("dmg")) {
+                modifiedStats.CritDmg += modifiedVal;
+              } else if (label.includes("lifesteal")) {
+                modifiedStats.Lifesteal += modifiedVal;
+              } else if (label.includes("cdr") || label.includes("cooldown")) {
+                modifiedStats.CDR += modifiedVal;
+              } else if (label.includes("atkspd") || label.includes("attack speed")) {
+                modifiedStats.AtkSPD += modifiedVal;
+              }
+            }
           }
-          
-          if (!passive.calculatedValues) passive.calculatedValues = {};
-          passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
-          
-          if (f.affects === "nextBasicAttack") {
-            if (!passive.nextBasicAttackBonus) passive.nextBasicAttackBonus = {};
-            passive.nextBasicAttackBonus = {
-              base: baseVal,
-              modified: modifiedVal,
-              label: f.label
-            };
-          } else if (f.affects) {
-            const statKey = f.affects.toUpperCase();
-            if (modifiedStats.hasOwnProperty(statKey)) {
-              modifiedStats[statKey] += modifiedVal;
-            }
-          } else {
-            const label = f.label.toLowerCase();
-            
-            if (label.includes("defense") && !label.includes("special")) {
-              modifiedStats.DEF += modifiedVal;
-            } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
-              modifiedStats.SpDEF += modifiedVal;
-            } else if (label.includes("attack") && !label.includes("special")) {
-              modifiedStats.ATK += modifiedVal;
-            } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
-              modifiedStats.SpATK += modifiedVal;
-            } else if (label.includes("hp") || label.includes("health")) {
-              modifiedStats.HP += modifiedVal;
-            } else if (label.includes("speed")) {
-              modifiedStats.Speed += modifiedVal;
-            } else if (label.includes("crit") && label.includes("rate")) {
-              modifiedStats.CritRate += modifiedVal;
-            } else if (label.includes("crit") && label.includes("dmg")) {
-              modifiedStats.CritDmg += modifiedVal;
-            } else if (label.includes("lifesteal")) {
-              modifiedStats.Lifesteal += modifiedVal;
-            } else if (label.includes("cdr") || label.includes("cooldown")) {
-              modifiedStats.CDR += modifiedVal;
-            } else if (label.includes("atkspd") || label.includes("attack speed")) {
-              modifiedStats.AtkSPD += modifiedVal;
-            }
-          }
-        }
-      });
-    }
-  });
+        });
+      }
+    });
 
-  return modifiedStats;
-};
+    return modifiedStats;
+  };
+
   // ---- Função de cálculo ----
   const calcular = () => {
     const poke = pokemonSelect.value;
@@ -322,13 +346,18 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
         </div>
       `;
       
+      // Obter a role e a cor da role
+      const pokemonRole = pokemonRoles[poke] || 'Unknown';
+      const roleColor = rolesColor[pokemonRole] || '#666';
+      
       const prevImg = document.querySelector(".resultado-image");
       if (prevImg) prevImg.remove();
       resultado.insertAdjacentHTML("afterbegin", `
-        <div class="resultado-image">
+        <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
           <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}"
-               onerror="this.style.display='none'">
-          <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel}) - ${pokemonRoles[poke]}</div>
+               onerror="this.style.display='none'" style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
+          <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel})</div>
+          <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
         </div>
       `);
       return;
@@ -441,13 +470,19 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     modified = applyPassiveBuff(modified, poke, base, targetLevel);
     modified = ensureAllStats(modified);
 
-    // Imagem do Pokémon
+    // Obter a role e a cor da role
+    const pokemonRole = pokemonRoles[poke] || 'Unknown';
+    const roleColor = rolesColor[pokemonRole] || '#666';
+
+    // Imagem do Pokémon com borda da cor da role
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
     resultado.insertAdjacentHTML("afterbegin", `
-      <div class="resultado-image">
-        <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}">
+      <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
+        <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}"
+             style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
         <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel})</div>
+        <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
       </div>
     `);
 
@@ -462,7 +497,7 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
         return statLine(STAT_LABELS[k], formatValue(k, m));
       }).join("");
 
-    // Mostrar ícones dos itens com status ativo/inativo
+    // Mostrar ícones dos itens com status ativo/inativo - ALTERAÇÃO: display flex para ficar em linha horizontal
     const chosenItems = [];
     itemSlots.forEach(slot => {
       const sel = slot.querySelector(".held-item");
@@ -491,7 +526,9 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
       statusFinalDiv.insertAdjacentHTML("beforeend", `
         <div class="stat-line">
           <span class="stat-label">Itens</span>
-          <span class="stat-value item-icons-container">${itensHtml}</span>
+          <span class="stat-value" style="display: flex; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px;">
+            ${itensHtml}
+          </span>
         </div>
       `);
     }
