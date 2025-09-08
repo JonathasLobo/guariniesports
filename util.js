@@ -62,12 +62,12 @@ const pokemonBaseImages = {
 	miraidon: 'miraidon-left-bg',
     mrmime: 'mrmime-left-bg',
     ninetales: 'ninetales-left-bg',
+	pawmot: 'pawmot-left-bg',
     pikachu: 'pikachu-left-bg',
 	psyduck: 'psyduck-left-bg',
 	rapidash: 'rapidash-left-bg',
     sableye: 'sableye-left-bg',
     scizor: 'scizor-left-bg',
-	scyther:'scyther-left-bg',
     slowbro: 'slowbro-left-bg',
     snorlax: 'snorlax-left-bg',
 	suicune: 'suicune-left-bg',
@@ -142,12 +142,12 @@ const pokemonRoles = {
 	miraidon: 'Attacker',
     mrmime: 'Support',
     ninetales: 'Attacker',
+	pawmot: 'All Rounder',
     pikachu: 'Attacker',
 	psyduck: 'Support',
 	rapidash: 'Speedster',
     sableye: 'Support',
     scizor: 'All Rounder',
-	scyther: 'Speedster',
     slowbro: 'Defender',
     snorlax: 'Defender',
 	suicune: 'All Rounder',
@@ -222,6 +222,7 @@ const pokemonLanes = {
 	miraidon: 'Bot',
     mrmime: 'Top',
     ninetales: 'Bot',
+	pawmot: 'Top',
     pikachu: 'Bot',
 	psyduck: 'Bot',
 	rapidash: 'Jungle',
@@ -592,6 +593,12 @@ const pokemonSkills = {
 		"s21": "Blizzard",
 		"s22": "Aurora Veil"
     },
+	"pawmot": {
+		"s11": "Thunder Punch",
+		"s12": "Supercell Slam",
+		"s21": "Volt Switch",
+		"s22": "Mach Punch"
+    },
     "pikachu": {
 		"s12": "Electro Ball",
 		"u11": "Thunder",
@@ -784,12 +791,12 @@ const gameHeldItensStatus = {
 	"expshare": ['HP +240','Speed +150'],
 	"floatstone": ['ATK +24','Speed +150'],
 	"focusband": ['DEF +30','SpDEF +30'],
-	"leftovers": ['HP +360','HPRegen +9%'],
+	"leftovers": ['HP +360','HPRegen +9'],
 	"muscleband": ['ATK +15','AtkSPD +7.5%'],
 	"rapidscarf": ['ATK +12','AtkSPD +9%'],
 	"razorclaw": ['ATK +15','CritRate +2.1%'],
 	"rescuehood": ['DEF +30','SpDEF +30'],
-	"resonantguard": ['HP +450','HPRegen +18%'],
+	"resonantguard": ['HP +450','HPRegen +18'],
 	"rockyhelmet": ['HP +270','Def +51'],
 	"rustedsword": [],
 	"scopelens": ['CritRate +6%','CritDmg +12%'],
@@ -799,25 +806,6 @@ const gameHeldItensStatus = {
 	"spatkspecs": ['SpATK +24'],
 	"weaknesspolice": ['HP +210','ATK +15'],
 	"wiseglasses": ['SpATK +39'],
-}
-const gameHeldItensPassive = {
-    "wiseglasses": { SpATK: "+7%" }, // aumenta 7% do valor atual de SpATK
-    "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
-    "muscleband": {}, // sem passivo extra
-    "leftovers": { HPRegen: "+4%"}, 
-    "focusband": { HPRegen: "+25%"},
-    "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4) },
-    "draincrown": { Lifesteal: "+15%"},
-    "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
-    "floatstone": { Speed: "+20%"},
-    "razorclaw": { formula: (stats) => 20 + (stats.SpATK * 0.5)},
-    "scoreshield": { Shield: "+10%"},
-    "rapidscarf": { AtkSPD: "+25%"},
-    "rescuehood": { Shield: "+17%"},
-    "resonantguard": { Shield: "+6%"},
-    
-
-    // aqui você vai adicionando os outros efeitos...
 }
 
 const defaultHeldItems = {
@@ -875,6 +863,7 @@ const defaultHeldItems = {
 	miraidon: ['wiseglasses','choicespecs','slickspoon'],
     mrmime: ['buddybarrier','aeoscookie','expshare'],
     ninetales: ['curseincense','slickspoon','choicespecs'],
+	pawmot: ['weaknesspolice','focusband','attackweight'],
     pikachu: ['energyamplifier','curseincense','slickspoon'],
 	psyduck: ['expshare','focusband','resonantguard'],
 	raichu: ['wiseglasses','shellbell','choicespecs'],
@@ -909,8 +898,7 @@ const baseStats = {
 		"CritRate": 10,
 		"CDR": 20,
 		"AtkSPD": 30,
-    "Lifesteal": 10,
-		"HPRegen": 0,
+		"HPRegen": 10,
 		"EnergyRate": 0,
 		"Speed": 4250,
 		"CritDmg": 0,
@@ -1657,6 +1645,21 @@ const baseStats = {
 		"Speed": 4300,
 		"CritDmg": 0,
 	},
+	"pawmot": {
+		"HP": 9000,
+		"ATK": 475,
+		"DEF": 560,
+		"SpATK": 115,
+		"SpDEF": 400,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 40,
+		"HPRegen": 0,
+		"Lifesteal": 20,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
 	"pikachu": {
 		"HP": 6300,
 		"ATK": 290,
@@ -1723,20 +1726,6 @@ const baseStats = {
 		"CDR": 0,
 		"AtkSPD": 30,
 		"HPRegen": 15,
-		"EnergyRate": 0,
-		"Speed": 4250,
-		"CritDmg": 0,
-	},
-	"scyther": {
-		"HP": 6540,
-		"ATK": 630,
-		"DEF": 300,
-		"SpATK": 115,
-		"SpDEF": 200,
-		"CritRate": 10,
-		"CDR": 20,
-		"AtkSPD": 30,
-		"HPRegen": 0,
 		"EnergyRate": 0,
 		"Speed": 4250,
 		"CritDmg": 0,
@@ -2053,6 +2042,7 @@ const pokemonKillsRate = {
 	"miraidon": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"mrmime": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
+	"pawmot": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
     "pikachu": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
@@ -2132,6 +2122,7 @@ const pokemonAssistRate = {
 	"miraidon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"mrmime": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+	"pawmot": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
     "pikachu": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2211,6 +2202,7 @@ const pokemonDamageDoneRate = {
 	"miraidon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"mrmime": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
+	"pawmot": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
     "pikachu": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2290,6 +2282,7 @@ const pokemonDamageTakenRate = {
 	"miraidon": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"mrmime": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"ninetales": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
+	"pawmot": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
     "pikachu": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"psyduck": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"rapidash": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
@@ -2369,6 +2362,7 @@ const pokemonDamageHealedRate = {
 	"miraidon": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"mrmime": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
+	"pawmot": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
     "pikachu": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
@@ -2448,6 +2442,7 @@ const pokemonTierListUDB = {
 	miraidon: 'B+',
     mrmime: 'B',
     ninetales: 'B',
+	pawmot: 'TBD',
     pikachu: 'B+',
 	psyduck: 'A',
 	rapidash: 'A',
@@ -3438,6 +3433,24 @@ const levelStats = {
     15: { HP: 6299, ATK: 289, DEF: 225, SpATK: 1002, SpDEF: 175, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4300 }
   },
 
+  "pawmot": {
+    1: { HP: 3250, ATK: 145, DEF: 90, SpATK: 20, SpDEF: 65, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3332, ATK: 150, DEF: 97, SpATK: 21, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.43 , Speed: 3700 },
+    3: { HP: 3431, ATK: 156, DEF: 105, SpATK: 23, SpDEF: 76, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3700 },
+    4: { HP: 3550, ATK: 163, DEF: 115, SpATK: 25, SpDEF: 83, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.57 , Speed: 3700 },
+    5: { HP: 4124, ATK: 196, DEF: 162, SpATK: 34, SpDEF: 116, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.56 , Speed: 3850 },
+    6: { HP: 4295, ATK: 206, DEF: 176, SpATK: 37, SpDEF: 126, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.45 , Speed: 3850 },
+    7: { HP: 4932, ATK: 243, DEF: 228, SpATK: 48, SpDEF: 163, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.77 , Speed: 4000 },
+    8: { HP: 5179, ATK: 257, DEF: 248, SpATK: 52, SpDEF: 177, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 20.06 , Speed: 4000 },
+    9: { HP: 5475, ATK: 274, DEF: 272, SpATK: 57, SpDEF: 194, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 21.61 , Speed: 4150 },
+    10: { HP: 5830, ATK: 294, DEF: 301, SpATK: 63, SpDEF: 215, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 23.46 , Speed: 4150 },
+    11: { HP: 6256, ATK: 318, DEF: 336, SpATK: 70, SpDEF: 240, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 25.68 , Speed: 4300 },
+    12: { HP: 6767, ATK: 347, DEF: 378, SpATK: 78, SpDEF: 270, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 28.35 , Speed: 4300 },
+    13: { HP: 7380, ATK: 382, DEF: 428, SpATK: 88, SpDEF: 306, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 31.55 , Speed: 4300 },
+    14: { HP: 8116, ATK: 424, DEF: 488, SpATK: 100, SpDEF: 349, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 35.39 , Speed: 4300 },
+    15: { HP: 9000, ATK: 475, DEF: 560, SpATK: 115, SpDEF: 400, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 40.00 , Speed: 4300 },
+  },
+
     "pikachu": {
     1: { HP: 3292, ATK: 134, DEF: 35, SpATK: 50, SpDEF: 27, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
     2: { HP: 3399, ATK: 140, DEF: 42, SpATK: 82, SpDEF: 33, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
@@ -3853,7 +3866,6 @@ const levelStats = {
   }
   // continue manualmente
 }
-
 const skillDamage = {
  "absol": {
   "passive": {
@@ -9784,6 +9796,164 @@ const skillDamage = {
 	 ]
 	}
   },
+    "pawmot": {
+    "passive": {
+          name: "Iron Fist",
+          description: "Hitting with a move empowers the next basic attack, dealing bonus damage and healing. In Fighter Mode, it also dashes to the target and boosts attack speed with stacking potential.",
+          buff: {
+          AtkSPD: "30%"
+          },
+          formulas: [
+		{
+          label: "Damage - Enhanced Auto",
+          formula: (ATK, Level) => 1.6 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Heal",
+          formula: (ATK, Level) => 0.76 * ATK + 7 * (Level - 1) + 88,
+          type: "physical"
+        },
+		{
+          label: "Damage - Enhanced Auto (Fighter Mode)",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+          ]
+        },
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Thunder Punch",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.53 * ATK + 31 * (Level - 1) + 440,
+          type: "physical"
+        },
+		{
+          label: "Damage (Fighter Mode)",
+          formula: (ATK, Level) => 3.52 * ATK + 44 * (Level - 1) + 616,
+          type: "physical"
+        },
+		{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 2.92 * ATK + 35 * (Level - 1) + 506,
+          type: "physical"
+        },
+		{
+          label: "Damage (Fighter Mode) Skill Plus",
+          formula: (ATK, Level) => 4.07 * ATK + 51 * (Level - 1) + 708,
+          type: "physical"
+        },
+      ]
+    },
+    "s12": {
+      name: "Supercell Slam",
+      formulas: [
+	    {
+          label: "Damage - First Use",
+          formula: (ATK, Level) => 1.3 * ATK + 12 * (Level - 1) + 172,
+          type: "physical"
+        },
+        {
+          label: "Damage - Second Use",
+          formula: (ATK, Level) => 1.7 * ATK + 16 * (Level - 1) + 225,
+          type: "physical"
+        },
+		{
+          label: "Damage - First Use (Fighter Mode)",
+          formula: (ATK, Level) => 1.81 * ATK + 18 * (Level - 1) + 242,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Use (Fighter Mode)",
+          formula: (ATK, Level) => 2.37 * ATK + 22 * (Level - 1) + 315,
+          type: "physical"
+        },
+		{
+          label: "Damage - First Use Skill Plus",
+          formula: (ATK, Level) => 1.44 * ATK + 14 * (Level - 1) + 192,
+          type: "physical"
+        },
+        {
+          label: "Damage - Second Use Skill Plus",
+          formula: (ATK, Level) => 2.09 * ATK + 20 * (Level - 1) + 278,
+          type: "physical"
+        },
+		{
+          label: "Damage - First Use (Fighter Mode) Skill Plus",
+          formula: (ATK, Level) => 2.16 * ATK + 22 * (Level - 1) + 288,
+          type: "physical"
+        },
+		{
+          label: "Damage - Second Use (Fighter Mode) Skill Plus",
+          formula: (ATK, Level) => 2.37 * ATK + 26 * (Level - 1) + 362,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Volt Switch",
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.44 * ATK + 15 * (Level - 1) + 220,
+          type: "physical"
+        },
+        {
+          label: "Damage (Fighter Mode)",
+          formula: (ATK, Level) => 2.86 * ATK + 31 * (Level - 1) + 440,
+          type: "physical"
+        }
+      ]
+    },
+    
+    "s22": {
+      name: "Mach Punch",
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.8 * ATK + 20 * (Level - 1) + 270,
+          type: "physical"
+        },
+        {
+          label: "Damage (Fighter Mode)",
+          formula: (ATK, Level) => 0.85 * ATK + 9 * (Level - 1) + 126,
+          type: "physical"
+        },
+		{
+          label: "Damage (Fighter Mode) Skill Plus",
+          formula: (ATK, Level) => 0.96 * ATK + 11 * (Level - 1) + 145,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Zip Zap Full-Charge Spark",
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 3.02 * ATK + 36 * (Level - 1) + 504,
+          type: "physical"
+        }
+	 ]
+	}
+  },
 
    	"pikachu": {
       "passive": {
@@ -12455,158 +12625,4 @@ const skillDamage = {
 	 ]
 	}
   },
-
-  /*"pikachu": {
-    "s11": {
-      name: "Thunder Shock",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "0.60 * SpATK + 2 * (Level - 1) + 50",
-          type: "special"
-        }
-      ]
-    },
-    "s12": {
-      name: "Electro Ball",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "0.75 * SpATK + 3 * (Level - 1) + 80",
-          type: "special"
-        }
-      ]
-    },
-    "s21": {
-      name: "Thunderbolt",
-      formulas: [
-        {
-          label: "Initial Damage",
-          formula: "1.10 * SpATK + 7 * (Level - 1) + 110",
-          type: "special"
-        },
-        {
-          label: "Chain Lightning",
-          formula: "0.55 * SpATK + 3.5 * (Level - 1) + 55",
-          type: "special"
-        }
-      ]
-    },
-    "s22": {
-      name: "Thunder",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "1.50 * SpATK + 10 * (Level - 1) + 150",
-          type: "special"
-        }
-      ]
-    }
-  },
-
-  "charizard": {
-    "s11": {
-      name: "Fire Punch",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "0.65 * ATK + 2.5 * (Level - 1) + 75",
-          type: "physical"
-        },
-        {
-          label: "Burn Damage (per tick)",
-          formula: "0.20 * ATK + 1 * (Level - 1) + 20",
-          type: "physical"
-        }
-      ]
-    },
-    "s12": {
-      name: "Flame Burst",
-      formulas: [
-        {
-          label: "Direct Hit",
-          formula: "0.70 * SpATK + 3 * (Level - 1) + 70",
-          type: "special"
-        },
-        {
-          label: "Area Damage",
-          formula: "0.45 * SpATK + 2 * (Level - 1) + 45",
-          type: "special"
-        }
-      ]
-    },
-    "s21": {
-      name: "Fire Blast",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "1.30 * SpATK + 8 * (Level - 1) + 130",
-          type: "special"
-        }
-      ]
-    },
-    "s22": {
-      name: "Flamethrower",
-      formulas: [
-        {
-          label: "Damage (per hit)",
-          formula: "0.35 * SpATK + 2 * (Level - 1) + 35",
-          type: "special"
-        },
-        {
-          label: "Total Damage (full channel)",
-          formula: "2.10 * SpATK + 12 * (Level - 1) + 210",
-          type: "special"
-        }
-      ]
-    }
-  },
-
-  "garchomp": {
-    "s11": {
-      name: "Sand Attack",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "0.55 * ATK + 2 * (Level - 1) + 60",
-          type: "physical"
-        }
-      ]
-    },
-    "s12": {
-      name: "Dragon Rush",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "0.85 * ATK + 4 * (Level - 1) + 90",
-          type: "physical"
-        }
-      ]
-    },
-    "s21": {
-      name: "Earthquake",
-      formulas: [
-        {
-          label: "Damage",
-          formula: "1.25 * ATK + 9 * (Level - 1) + 140",
-          type: "physical"
-        }
-      ]
-    },
-    "s22": {
-      name: "Dragon Claw",
-      formulas: [
-        {
-          label: "First Hit",
-          formula: "0.90 * ATK + 5 * (Level - 1) + 100",
-          type: "physical"
-        },
-        {
-          label: "Second Hit",
-          formula: "1.10 * ATK + 7 * (Level - 1) + 120",
-          type: "physical"
-        }
-      ]
-    }
-  }*/
   };
