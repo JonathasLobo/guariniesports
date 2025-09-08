@@ -5,10 +5,9 @@
   background-color: rgba(0,0,0,0.6);
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(255, 173, 0, 0.4);
-  color: #fff;
+  color: #000000;
   box-sizing: border-box;
 }
-
 label {
   display: block;
   margin-top: 1rem;
@@ -124,6 +123,15 @@ textarea.form-control {
   text-align: center;
   font-size: 18px;
 }
+
+/* Avaliação (Fraco, Mediano, Bom, etc.) */
+.avaliacao {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 8px;
+  color: #000; /* Força a cor preta */
+}
+
 
 .coluna-total h3 {
   color: #28a745;

@@ -120,13 +120,13 @@ function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
 // Média exata usada para calcular pontos por partida
 const mediaMaestria = 138799 / 581; 
 const niveisMaestria = [
-  {nome: "Sem Maestria", pontos: 0},
-  {nome: "Verde", pontos: 30000},
-  {nome: "Azul", pontos: 85000},
-  {nome: "Dourado", pontos: 165000}
+  {nome: "Sem Maestria", pontos: 0, img: "./estatisticas-shad/images/icons/block.png"},
+  {nome: "Verde", pontos: 30000, img: "./estatisticas-shad/images/icons/verde.png"},
+  {nome: "Azul", pontos: 85000, img: "./estatisticas-shad/images/icons/azul.png"},
+  {nome: "Dourado", pontos: 165000, img: "./estatisticas-shad/images/icons/dourado.png"}
 ];
 
-// Função para calcular maestria com base no total de batalhas
+// Função para calcular maestria em HTML
 function calcularMaestria(totalBattles) {
   const pontosTotais = totalBattles * mediaMaestria;
 
@@ -147,7 +147,11 @@ function calcularMaestria(totalBattles) {
     </div>
     <div class="stat-line">
       <span class="stat-label">Nível atual:</span>
-      <span class="stat-value">${nivelAtual.nome}</span>
+      <span class="stat-value">
+      <img src="${nivelAtual.img}" alt="${nivelAtual.nome}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+      ${nivelAtual.nome}
+    </span>
+
     </div>
   `;
 
@@ -160,7 +164,7 @@ function calcularMaestria(totalBattles) {
         <span class="stat-value">${proximoNivel.nome}</span>
       </div>
       <div class="stat-line">
-        <span class="stat-label">Faltam:</span>
+        <span class="stat-label">Faltam em média:</span>
         <span class="stat-value">${faltamPontos.toFixed(0)} pts (~${faltamPartidas} partidas)</span>
       </div>
     `;
@@ -171,6 +175,37 @@ function calcularMaestria(totalBattles) {
         <span class="stat-value">🎉 Nível máximo (Dourado)!</span>
       </div>
     `;
+  }
+
+  return resultado;
+}
+
+// Função para calcular maestria em TEXTO (para copiar)
+function calcularMaestriaTexto(totalBattles) {
+  const pontosTotais = totalBattles * mediaMaestria;
+  let nivelAtual = niveisMaestria[0];
+  let proximoNivel = null;
+
+  for (let i = 0; i < niveisMaestria.length; i++) {
+    if (pontosTotais >= niveisMaestria[i].pontos) {
+      nivelAtual = niveisMaestria[i];
+      proximoNivel = niveisMaestria[i+1] || null;
+    }
+  }
+
+  let resultado = `⭐ Maestria
+- Pontos estimados: ${pontosTotais.toFixed(0)}
+- Nível atual: ${nivelAtual.nome}`;
+
+  if (proximoNivel) {
+    const faltamPontos = proximoNivel.pontos - pontosTotais;
+    const faltamPartidas = Math.ceil(faltamPontos / mediaMaestria);
+    resultado += `
+- Próximo nível: ${proximoNivel.nome}
+- Faltam: ${faltamPontos.toFixed(0)} pts (~${faltamPartidas} partidas)`;
+  } else {
+    resultado += `
+- Status: 🎉 Nível máximo (Dourado)!`;
   }
 
   return resultado;
@@ -300,19 +335,19 @@ function calcularDesempenho() {
     </div>
   `;
 
-// --- Adiciona Maestria ---
-const maestriaHTML = calcularMaestria(total.battles);
+  // --- Adiciona Maestria ---
+  const maestriaHTML = calcularMaestria(total.battles);
 
-// Cria ou atualiza um bloco de Maestria
-let blocoMaestria = document.getElementById("dados-maestria");
-if (!blocoMaestria) {
-  const colunaTotal = document.querySelector(".coluna-total");
-  const div = document.createElement("div");
-  div.innerHTML = `<h3>⭐ Maestria</h3><div id="dados-maestria">${maestriaHTML}</div>`;
-  colunaTotal.appendChild(div);
-} else {
-  blocoMaestria.innerHTML = maestriaHTML;
-}
+  // Cria ou atualiza um bloco de Maestria
+  let blocoMaestria = document.getElementById("dados-maestria");
+  if (!blocoMaestria) {
+    const colunaTotal = document.querySelector(".coluna-total");
+    const div = document.createElement("div");
+    div.innerHTML = `<h3>⭐ Maestria</h3><div id="dados-maestria">${maestriaHTML}</div>`;
+    colunaTotal.appendChild(div);
+  } else {
+    blocoMaestria.innerHTML = maestriaHTML;
+  }
 
   // Mostra ou esconde info do multiplicador
   const multiplicadorInfo = document.getElementById("multiplicador-info");
@@ -397,6 +432,9 @@ function copiarResultado() {
     mensagemMultiplicador = "\n⚠️ No cálculo de desempenho de SUP e TANK é utilizado um multiplicador para o valor de MVP, pois essas roles têm menos MVPs por partida.";
   }
 
+  // Novo: inclui maestria em texto
+  const maestriaTexto = calcularMaestriaTexto(total.battles);
+
   const resultadoFinal = `🔥 RELATÓRIO DE DESEMPENHO - POKÉMON UNITE 🔥
 
 👤 Jogador: ${jogador}
@@ -424,6 +462,8 @@ function copiarResultado() {
 • MVP/Vitória: ${tot.mvpWinRate}%
 • 🔍 Desempenho Total: ${desempenhoTotal}%
 • ✅ Avaliação: ${avaliacaoTotal}${mensagemMultiplicador}
+
+${maestriaTexto}
 
 📊 Calculadora Guariní e-sport`;
 
