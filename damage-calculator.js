@@ -291,6 +291,44 @@ document.addEventListener("DOMContentLoaded", () => {
     return modifiedStats;
   };
 
+  // ---- Função para inicializar o bloqueio de itens ----
+  const inicializarBloqueioItens = () => {
+    const poke = pokemonSelect.value;
+    
+    // Habilitar todas as opções primeiro
+    itemSlots.forEach(slot => {
+      const sel = slot.querySelector(".held-item");
+      Array.from(sel.options).forEach(opt => {
+        opt.disabled = false;
+      });
+    });
+
+    // Desabilitar itens fixos que não pertencem a este Pokémon
+    itemSlots.forEach(slot => {
+      const sel = slot.querySelector(".held-item");
+      Array.from(sel.options).forEach(opt => {
+        const itemKey = opt.value;
+        if (FIXED_ONLY_ITEMS.has(itemKey) && pokemonFixedItems[poke] !== itemKey) {
+          opt.disabled = true;
+        }
+      });
+      
+      // Atualizar a UI customizada
+      updateCustomSelectFromNative(sel);
+    });
+
+    // Se o Pokémon tiver item fixo, aplicar no 1º slot
+    if (poke && pokemonFixedItems[poke]) {
+      const fixedItem = pokemonFixedItems[poke];
+      const firstSel = itemSlots[0].querySelector(".held-item");
+      firstSel.value = fixedItem;
+      firstSel.disabled = true; // bloquear o select nativo
+      
+      // Atualizar custom UI correspondente para mostrar o item fixo
+      updateCustomSelectFromNative(firstSel);
+    }
+  };
+
   // ---- Função de cálculo ----
   const calcular = () => {
     const poke = pokemonSelect.value;
@@ -665,7 +703,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
-          }).join("");
+            }).join("");
         }
 
         const passiveHtml = `
@@ -1128,6 +1166,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---- chamar transformação após popular os selects ----
   transformAllHeldSelects();
+  
+  // Inicializar o bloqueio de itens assim que a página carrega
+  inicializarBloqueioItens();
+  
   // ---- Eventos ----
   levelSelect.addEventListener("input", () => {
     levelValor.textContent = levelSelect.value;
@@ -1168,41 +1210,8 @@ pokemonSelect.addEventListener("change", () => {
     // Resetar passivas dos itens ativos
     activeItemPassives = {};
 
-    // Habilitar todas as opções primeiro
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      Array.from(sel.options).forEach(opt => {
-        opt.disabled = false;
-      });
-    });
-
-    // Desabilitar itens fixos que não pertencem a este Pokémon
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      Array.from(sel.options).forEach(opt => {
-        const itemKey = opt.value;
-        if (FIXED_ONLY_ITEMS.has(itemKey) && pokemonFixedItems[poke] !== itemKey) {
-          opt.disabled = true;
-        }
-      });
-      
-      // Atualizar a UI customizada
-      updateCustomSelectFromNative(sel);
-    });
-
-    // Se o Pokémon tiver item fixo, aplicar no 1º slot
-    if (pokemonFixedItems[poke]) {
-      const fixedItem = pokemonFixedItems[poke];
-      const firstSel = itemSlots[0].querySelector(".held-item");
-      firstSel.value = fixedItem;
-      firstSel.disabled = true; // bloquear o select nativo
-      
-      // Atualizar custom UI correspondente para mostrar o item fixo
-      updateCustomSelectFromNative(firstSel);
-      
-      // Também disparar o evento change para aplicar stacks se necessário
-      firstSel.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+    // Aplicar bloqueio de itens
+    inicializarBloqueioItens();
 
     // Inicializar passivas do pokémon se ainda não existirem
     if (poke && !activePassives.hasOwnProperty(poke)) {

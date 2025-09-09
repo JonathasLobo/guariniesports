@@ -758,7 +758,7 @@ const gameHeldItens = {
 	"focusband": 'Focus Band',
 	"leftovers": 'Leftovers',
   "mewtwonitex": 'Mewtwonite X',
-  "mewtwonitey": 'Mewtwonite y',
+  "mewtwonitey": 'Mewtwonite Y',
 	"muscleband": 'Muscle Band',
 	"rapidscarf": 'Rapid Scarf',
 	"razorclaw": 'Razor Claw',
