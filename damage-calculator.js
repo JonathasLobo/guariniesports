@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const levelSelect = document.getElementById("nivel-final");
   const levelValor = document.getElementById("nivel-valor-final");
   const itemSlots = document.querySelectorAll(".item-slot");
-  const btnResetar = document.getElementById("resetar");
   const statusFinalDiv = document.getElementById("status-final");
   const skillsDiv = document.getElementById("skills-column");
   const resultado = document.getElementById("resultado");
@@ -28,8 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let activePassives = {};
   // Estado das passivas dos itens ativas
   let activeItemPassives = {};
-
-  if (btnResetar) btnResetar.type = "button";
 
   // ---- Configuração de atributos ----
   const STAT_KEYS = [
@@ -1140,36 +1137,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cálculo inicial
   calcular();
-
-  btnResetar.addEventListener("click", () => {
-    pokemonSelect.value = "";
-    levelSelect.value = "1";
-    levelValor.textContent = "1";
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      sel.value = "";
-      sel.disabled = false;
-      slot.querySelector(".stack-container").innerHTML = "";
-      updateCustomSelectFromNative(sel);
-    });
-    battleRadios.forEach(r => { r.checked = false; });
-    emblemasRadios.forEach(r => { 
-      if (r.value === "nao") r.checked = true; 
-      else r.checked = false; 
-    });
-    emblemasContainer.style.display = "none";
-    Object.values(emblemaSelects).forEach(select => {
-      if (select) select.value = "";
-    });
-    activePassives = {};
-    activeItemPassives = {}; // Resetar também as passivas dos itens
-    resultado.style.display = "none";
-    statusFinalDiv.innerHTML = "";
-    skillsDiv.innerHTML = "";
-    const prevImg = document.querySelector(".resultado-image");
-    if (prevImg) prevImg.remove();
-
-    // fechar painéis custom
-    closeAllCustomSelects();
-  });
 });
