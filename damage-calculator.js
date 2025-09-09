@@ -28,11 +28,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Estado das passivas dos itens ativas
   let activeItemPassives = {};
 
+  // ---- NOVO: itens fixos por Pokémon (mapa poke -> itemKey) ----
+  const pokemonFixedItems = {
+    "zacian": "rustedsword",
+    "mewtwox": "mewtwonitex",
+    "mewtwoy": "mewtwonitey"
+    // adicione mais: "nomeDoPokémon": "itemkey"
+  };
+
+  const FIXED_ONLY_ITEMS = new Set(Object.values(pokemonFixedItems));
+
   // ---- Configuração de atributos ----
   const STAT_KEYS = [
     "HP","ATK","DEF","SpATK","SpDEF","Speed",
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
-    "HPRegen","EnergyRate", "Shield"
+    "HPRegen","EnergyRate", "Shield", "DmgTaken"
   ];
 
   const STAT_LABELS = {
@@ -41,19 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     AtkSPD: "Atk Speed", CDR: "Cooldown Reduction",
     CritRate: "Crit Rate", CritDmg: "Crit Dmg",
     Lifesteal: "Lifesteal", HPRegen: "HP Regen",
-    EnergyRate: "Energy Rate", Shield: "Shield"
+    EnergyRate: "Energy Rate", Shield: "Shield", 
+    DmgTaken: "Dmg Taken Reduction"
   };
 
-  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield"]);
-
-  // Cores das roles
-  const rolesColor = {
-    'Speedster': '#2492c9',
-    'All Rounder': '#ce5fd3',
-    'Support': '#e1b448',
-    'Defender': '#9bd652',
-    'Attacker': '#f16c38'
-  };
+  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken"]);
 
   const ensureAllStats = (obj) => {
     const out = { ...obj };
@@ -61,11 +63,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return out;
   };
 
-  const formatValue = (key, val) => {
-    if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
-    if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
-    return Math.round(Number(val));
-  };
+ const formatValue = (key, val, extraFixed = null) => {
+  if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
+  
+  if (key === "DmgTaken") {
+    const percentText = `${Number(val).toFixed(1)}%`;
+    if (extraFixed !== null) {
+      return `${percentText} <span style="color:#888;">(-${extraFixed})</span>`;
+    }
+    return percentText;
+  }
+
+  if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
+  return Math.round(Number(val));
+};
 
   const statLine = (label, valueHtml) =>
     `<div class="stat-line"><span class="stat-label">${label}</span><span class="stat-value">${valueHtml}</span></div>`;
@@ -83,24 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
     "Charging Charm": { stat: "ATK", perStack: 70, max: 1, percent: true, fixedBonus: 40, startFromZero: true }
   };
 
-  const ITEM_PASSIVE_FALLBACK = {
-    wiseglasses: { SpATK: "+7%" }
-  };
-
   const getItemPassivesSource = () => {
     return gameHeldItensPassive;
   };
 
-  /**
-   * ---- Função para aplicar efeitos passivos dos itens ----
-   * Ordem correta: aplicar DEPOIS de somar bônus fixos/stacks dos itens.
-   * Regras:
-   *  - Se o atributo é percentual (em PERCENT_KEYS), somar pontos percentuais.
-   *  - Caso contrário:
-   *      * "+X%" => aplicar sobre o valor ATUAL (modified) daquele atributo.
-   *      * número puro => somar valor fixo.
-   * NOVO: só aplicar se o item estiver ativo em activeItemPassives
-   */
   const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     const passives = getItemPassivesSource();
     let result = ensureAllStats({ ...modifiedStats });
@@ -118,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
         result[targetStat] += passive.formula(result);
         return;
       }
-
 
       Object.entries(passive).forEach(([stat, rawVal]) => {
         if (!STAT_KEYS.includes(stat)) return;
@@ -155,7 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
     preto: { stat: "CDR", values: { 3: 1, 5: 2, 7: 4 } },
     amarelo: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
     marrom: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
-    roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } }
+    roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } },
+    cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } }
   };
 
   // ---- Função para aplicar buff da passiva (do Pokémon) ----
@@ -188,19 +185,24 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!Number.isFinite(numeric)) return;
 
             // CORREÇÃO: Verificar se o stat está em PERCENT_KEYS
-            if (PERCENT_KEYS.has(stat)) {
-              // Para stats percentuais (como Speed, AtkSPD, etc), sempre somar pontos diretos
+            if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
               modifiedStats[stat] += numeric;
-            } else {
-              // Para stats não percentuais (HP, ATK, DEF, etc)
+            } else if (stat === "DmgTaken") {
               if (isPercentString) {
-                // Se tem "%" na string, aplicar como percentual do valor base
+                // aplicar como percentual (% de redução de dano)
+                modifiedStats[stat] += numeric;
+              } else {
+                // aplicar como valor fixo (ex.: emblemas cinzas)
+                modifiedStats[stat] += numeric;
+              }
+            } else {
+              if (isPercentString) {
                 modifiedStats[stat] += baseStats[stat] * (numeric / 100);
               } else {
-                // Se não tem "%" na string, aplicar como valor fixo
                 modifiedStats[stat] += numeric;
               }
             }
+
           }
         });
       }
@@ -277,6 +279,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 modifiedStats.CDR += modifiedVal;
               } else if (label.includes("atkspd") || label.includes("attack speed")) {
                 modifiedStats.AtkSPD += modifiedVal;
+              } else if (label.includes("dmgtaken") || label.includes("dmg taken")) {
+                modifiedStats.DmgTaken += modifiedVal;
               }
             }
           }
@@ -377,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const map = {
           HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
           ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
-          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate"
+          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken"
         };
         const prop = map[key];
         if (!prop) return;
@@ -435,11 +439,17 @@ document.addEventListener("DOMContentLoaded", () => {
           if (emblemConfig) {
             const bonus = emblemConfig.values[nivel];
             if (bonus) {
-              if (PERCENT_KEYS.has(emblemConfig.stat)) {
+              if (cor === "cinza") {
+                // Guardar redução fixa separada para exibir depois
+                modified.DmgTaken += 0; // mantém percentual normal
+                if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
+                modified._fixedDmgTaken += bonus;
+              } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
                 modified[emblemConfig.stat] += bonus;
               } else {
                 modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
               }
+
             }
           }
         }
@@ -467,15 +477,17 @@ document.addEventListener("DOMContentLoaded", () => {
     `);
 
     // Status Final (com comparação base → final)
-    statusFinalDiv.innerHTML = STAT_KEYS
-      .map(k => {
-        const b = Number(base[k]) || 0;
-        const m = Number(modified[k]) || 0;
-        if (m > b) {
-          return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:limegreen;">▲ ${formatValue(k, m)}</span>`);
-        }
-        return statLine(STAT_LABELS[k], formatValue(k, m));
-      }).join("");
+      statusFinalDiv.innerHTML = STAT_KEYS
+        .map(k => {
+          const b = Number(base[k]) || 0;
+          const m = Number(modified[k]) || 0;
+          const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
+
+          if (m > b) {
+            return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:limegreen;">▲ ${formatValue(k, m, extraFixed)}</span>`);
+          }
+          return statLine(STAT_LABELS[k], formatValue(k, m, extraFixed));
+        }).join("");
 
     // Mostrar ícones dos itens com status ativo/inativo - ALTERAÇÃO: display flex para ficar em linha horizontal
     const chosenItems = [];
@@ -556,8 +568,18 @@ document.addEventListener("DOMContentLoaded", () => {
           const borderStyle = cor === "branco" ? "border: 1px solid #ccc;" : "";
           
           if (emblemConfig) {
-            const bonus = emblemConfig.values[nivel];
-            if (bonus) {
+          const bonus = emblemConfig.values[nivel];
+          if (bonus) {
+            if (cor === "cinza") {
+              // Emblema Cinza: mostrar redução fixa com sinal de menos
+              activeEmblems.push(
+                `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+                  ${name} Lv.${nivel} (-${bonus})
+                </span>`
+              );
+            } else {
+              // Demais emblemas: bônus percentual normal
               activeEmblems.push(
                 `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
                   <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
@@ -565,14 +587,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 </span>`
               );
             }
-          } else {
-            activeEmblems.push(
-              `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-                ${name} Lv.${nivel}
-              </span>`
-            );
           }
+        } else {
+          activeEmblems.push(
+            `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+              ${name} Lv.${nivel}
+            </span>`
+          );
+        }
+
         }
       });
 
@@ -952,12 +976,19 @@ document.addEventListener("DOMContentLoaded", () => {
     closeAllCustomSelects();
   });
 
-
     // criar itens
     Object.keys(gameHeldItens).forEach(itemKey => {
       const d = document.createElement("div");
       d.className = "custom-select-item";
       d.dataset.value = itemKey;
+
+      // Adicionar título para itens desabilitados
+      if (FIXED_ONLY_ITEMS.has(itemKey)) {
+        const pokemonComAcesso = Object.keys(pokemonFixedItems).find(
+          p => pokemonFixedItems[p] === itemKey
+        );
+        d.title = `Item exclusivo de ${safeCap(pokemonComAcesso)}`;
+      }
 
       const img = document.createElement("img");
       img.src = `./estatisticas-shad/images/held-itens/${itemKey.toLowerCase()}.png`;
@@ -974,7 +1005,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // click na opção
       d.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        // Verificar se o item está desabilitado
+        const sel = slot.querySelector(".held-item");
+        const option = sel.querySelector(`option[value="${itemKey}"]`);
+        
+        if (option && option.disabled) {
+          // Mostrar mensagem de alerta
+          alert(`Este item é exclusivo de ${safeCap(Object.keys(pokemonFixedItems).find(p => pokemonFixedItems[p] === itemKey))} e não pode ser usado com este Pokémon.`);
+          return;
+        }
+        
         if (container.classList.contains("custom-select-disabled")) return;
+
         sel.value = itemKey;
 
         // Limpar stack-container quando for nenhum item
@@ -987,6 +1031,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sel.dispatchEvent(new Event('change', { bubbles: true }));
         closeAllCustomSelects();
       });
+
     });
 
     // click toggle abrir/fechar
@@ -1048,13 +1093,29 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         it.classList.remove("selected");
       }
+      
+      // Atualizar estado desabilitado
+      const option = sel.querySelector(`option[value="${it.dataset.value}"]`);
+      if (option && option.disabled) {
+        it.classList.add("disabled");
+        it.style.opacity = "0.5";
+        it.style.pointerEvents = "none";
+      } else {
+        it.classList.remove("disabled");
+        it.style.opacity = "";
+        it.style.pointerEvents = "";
+      }
     });
 
     // se select estiver disabled (ex.: item fixo), refletir no custom
     if (sel.disabled) {
       container.classList.add("custom-select-disabled");
+      toggle.style.opacity = "0.7";
+      toggle.style.cursor = "not-allowed";
     } else {
       container.classList.remove("custom-select-disabled");
+      toggle.style.opacity = "";
+      toggle.style.cursor = "";
     }
   }
 
@@ -1067,13 +1128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---- chamar transformação após popular os selects ----
   transformAllHeldSelects();
-
-  // ---- NOVO: itens fixos por Pokémon (mapa poke -> itemKey) ----
-  const pokemonFixedItems = {
-    "zacian": "rustedsword"
-    // adicione mais: "nomeDoPokémon": "itemkey"
-  };
-
   // ---- Eventos ----
   levelSelect.addEventListener("input", () => {
     levelValor.textContent = levelSelect.value;
@@ -1100,15 +1154,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  pokemonSelect.addEventListener("change", () => {
+pokemonSelect.addEventListener("change", () => {
     const poke = pokemonSelect.value;
 
-    // Resetar todos os slots primeiro (mantendo select no DOM)
+    // Resetar todos os slots primeiro
     itemSlots.forEach(slot => {
       const sel = slot.querySelector(".held-item");
       sel.disabled = false;
       sel.value = "";
       slot.querySelector(".stack-container").innerHTML = "";
+    });
+
+    // Resetar passivas dos itens ativos
+    activeItemPassives = {};
+
+    // Habilitar todas as opções primeiro
+    itemSlots.forEach(slot => {
+      const sel = slot.querySelector(".held-item");
+      Array.from(sel.options).forEach(opt => {
+        opt.disabled = false;
+      });
+    });
+
+    // Desabilitar itens fixos que não pertencem a este Pokémon
+    itemSlots.forEach(slot => {
+      const sel = slot.querySelector(".held-item");
+      Array.from(sel.options).forEach(opt => {
+        const itemKey = opt.value;
+        if (FIXED_ONLY_ITEMS.has(itemKey) && pokemonFixedItems[poke] !== itemKey) {
+          opt.disabled = true;
+        }
+      });
+      
+      // Atualizar a UI customizada
       updateCustomSelectFromNative(sel);
     });
 
@@ -1118,10 +1196,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const firstSel = itemSlots[0].querySelector(".held-item");
       firstSel.value = fixedItem;
       firstSel.disabled = true; // bloquear o select nativo
-      // atualizar custom UI correspondente
+      
+      // Atualizar custom UI correspondente para mostrar o item fixo
       updateCustomSelectFromNative(firstSel);
+      
+      // Também disparar o evento change para aplicar stacks se necessário
+      firstSel.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
+    // Inicializar passivas do pokémon se ainda não existirem
     if (poke && !activePassives.hasOwnProperty(poke)) {
       activePassives[poke] = {};
       if (skillDamage[poke]) {
@@ -1132,6 +1215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+    
     calcular();
   });
 

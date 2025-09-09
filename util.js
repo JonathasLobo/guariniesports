@@ -757,6 +757,8 @@ const gameHeldItens = {
 	"floatstone": 'Float Stone',
 	"focusband": 'Focus Band',
 	"leftovers": 'Leftovers',
+  "mewtwonitex": 'Mewtwonite X',
+  "mewtwonitey": 'Mewtwonite y',
 	"muscleband": 'Muscle Band',
 	"rapidscarf": 'Rapid Scarf',
 	"razorclaw": 'Razor Claw',
@@ -792,6 +794,8 @@ const gameHeldItensStatus = {
 	"floatstone": ['ATK +24','Speed +150'],
 	"focusband": ['DEF +30','SpDEF +30'],
 	"leftovers": ['HP +360','HPRegen +9'],
+  "mewtwonitex": [],
+  "mewtwonitey": [],
 	"muscleband": ['ATK +15','AtkSPD +7.5%'],
 	"rapidscarf": ['ATK +12','AtkSPD +9%'],
 	"razorclaw": ['ATK +15','CritRate +2.1%'],
@@ -875,8 +879,8 @@ const defaultHeldItems = {
 	meowscara: ['scopelens','attackweight','razorclaw'],
 	metagross: ['muscleband','attackweight','weaknesspolice'],
     mew: ['slickspoon','wiseglasses','choicespecs'],
-	mewtwox: ['muscleband','rapidscarf','razorclaw'],
-	mewtwoy: ['muscleband','rapidscarf','slickspoon'],
+	mewtwox: ['mewtwonitex','rapidscarf','razorclaw'],
+	mewtwoy: ['mewtwonitey','rapidscarf','slickspoon'],
 	mimikyu: ['muscleband','attackweight','razorclaw'],
 	miraidon: ['wiseglasses','choicespecs','slickspoon'],
     mrmime: ['buddybarrier','aeoscookie','expshare'],
@@ -9617,6 +9621,7 @@ const skillDamage = {
           name: "Filter",
           description: "After using a move, takes 10% reduced damage for 2 seconds.",
           buff: {
+            DmgTaken: "10%"
           },
           formulas: [
           ]
