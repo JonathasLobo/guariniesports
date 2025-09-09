@@ -960,7 +960,7 @@ document.addEventListener("DOMContentLoaded", () => {
       d.dataset.value = itemKey;
 
       const img = document.createElement("img");
-      img.src = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
+      img.src = `./estatisticas-shad/images/held-itens/${itemKey.toLowerCase()}.png`;
       img.alt = gameHeldItens[itemKey];
       img.onerror = function() { this.style.display = "none"; };
 
