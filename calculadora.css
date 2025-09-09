@@ -514,3 +514,140 @@ textarea.form-control {
   .emblem-color-dot { width: 10px; height: 10px; margin-right: 6px; }
   #emblemas-container label { font-size: 13px; margin-bottom: 6px; }
 }
+
+/* -----------------------------
+   ESTILOS DO DROPDOWN CUSTOMIZADO
+   (miniaturas ao lado do nome)
+   ----------------------------- */
+
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  margin-top: 6px;
+  font-family: inherit;
+}
+
+.custom-select-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.custom-select-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 203, 5, 0.2);
+}
+
+/* Thumb da miniatura */
+.custom-select-thumb {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.custom-select-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-select-arrow {
+  margin-left: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Painel com opções */
+.custom-select-panel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 999;
+  display: none;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* Cada opção */
+.custom-select-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.custom-select-item img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.custom-select-item:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.custom-select-item.selected {
+  background: rgba(40,167,69,0.08);
+  border: 1px solid rgba(40,167,69,0.12);
+}
+
+/* Estado desabilitado */
+.custom-select-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Responsividade do painel (mobile) */
+@media (max-width: 576px) {
+  .custom-select-panel {
+    max-height: 180px;
+  }
+  .custom-select-item img { width: 30px; height: 30px; }
+  .custom-select-thumb { width: 30px; height: 30px; }
+}
+/* Força nome dos itens no dropdown custom a ser preto */
+.custom-select-label,
+.custom-select-item span {
+  color: #000 !important;
+  font-weight: 500;
+}
+
+/* Ajusta container dos slots para que o stack-slider fique abaixo */
+.item-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Garante que o stack-slider apareça sempre abaixo do custom-select */
+.item-slot .stack-container {
+  order: 2;
+}
+.custom-select-container {
+  order: 1;
+}

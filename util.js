@@ -809,23 +809,22 @@ const gameHeldItensStatus = {
 }
 
 const gameHeldItensPassive = {
-    "wiseglasses": { SpATK: "+7%" }, // aumenta 7% do valor atual de SpATK
-    "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
-    "muscleband": {}, // sem passivo extra
-    "leftovers": { HPRegen: "+4%"}, 
-    "focusband": { HPRegen: "+25%"},
-    "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4) },
-    "draincrown": { Lifesteal: "+15%"},
-    "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
-    "floatstone": { Speed: "+20%"},
-    "razorclaw": { formula: (stats) => 20 + (stats.SpATK * 0.5)},
-    "scoreshield": { Shield: "+10%"},
-    "rapidscarf": { AtkSPD: "+25%"},
-    "rescuehood": { Shield: "+17%"},
-    "resonantguard": { Shield: "+6%"},
+  "wiseglasses": { SpATK: "+7%" },
+  "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
+  "muscleband": {},
+  "leftovers": { HPRegen: "+4%"}, 
+  "focusband": { HPRegen: "+25%"},
+  "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4), target: "SpATK" },
+  "draincrown": { Lifesteal: "+15%"},
+  "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
+  "floatstone": { Speed: "+20%"},
+  "razorclaw": { formula: (stats) => 20 + (stats.ATK * 0.5), target: "ATK" }, // Corrigido: ATK em vez de SpATK
+  "scoreshield": { Shield: "+10%"},
+  "rapidscarf": { AtkSPD: "+25%"},
+  "rescuehood": { Shield: "+17%"},
+  "resonantguard": { Shield: "+6%"},
+};
 
-    // aqui você vai adicionando os outros efeitos...
-}
 
 const defaultHeldItems = {
 	absol: ['razorclaw','scopelens','chargingcharm'],
@@ -9419,7 +9418,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
         {
@@ -9627,7 +9626,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
@@ -9745,7 +9744,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
@@ -10018,7 +10017,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
@@ -10117,7 +10116,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 100,
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
 		}
       ]
@@ -11948,6 +11947,11 @@ const skillDamage = {
         {
           label: "Damage - Basic",
           formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Single Strike)",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
         {

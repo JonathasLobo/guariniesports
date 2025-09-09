@@ -58,24 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     'Attacker': '#f16c38'
   };
 
-  // Passivas dos itens - agora usando a constante gameHeldItensPassive
-  const gameHeldItensPassive = {
-    "wiseglasses": { SpATK: "+7%" },
-    "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
-    "muscleband": {},
-    "leftovers": { HPRegen: "+4%"},
-    "focusband": { HPRegen: "+25%"},
-    "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4) },
-    "draincrown": { Lifesteal: "+15%"},
-    "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
-    "floatstone": { Speed: "+20%"},
-    "razorclaw": { formula: (stats) => 20 + (stats.SpATK * 0.5)},
-    "scoreshield": { Shield: "+10%"},
-    "rapidscarf": { AtkSPD: "+25%"},
-    "rescuehood": { Shield: "+17%"},
-    "resonantguard": { Shield: "+6%"}
-  };
-
   const ensureAllStats = (obj) => {
     const out = { ...obj };
     STAT_KEYS.forEach(k => { if (out[k] === undefined) out[k] = 0; });
@@ -135,10 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
        // 🔹 Caso especial: fórmula
       if (typeof passive.formula === "function") {
-        // Choice Specs -> incrementa o dano baseado em SpATK
-        result.SpATK += passive.formula(result);
+        const targetStat = passive.target || "SpATK"; // padrão = SpATK se não definido
+        result[targetStat] += passive.formula(result);
         return;
       }
+
 
       Object.entries(passive).forEach(([stat, rawVal]) => {
         if (!STAT_KEYS.includes(stat)) return;
@@ -887,7 +870,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pokemonSelect.appendChild(opt);
   });
 
-  // ---- Preencher dropdowns de itens ----
+  // ---- Preencher dropdowns de itens (mantemos o <select> por compatibilidade) ----
   itemSlots.forEach(slot => {
     const sel = slot.querySelector(".held-item");
     const empty = document.createElement("option");
@@ -899,13 +882,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const opt = document.createElement("option");
       opt.value = item;
       opt.textContent = gameHeldItens[item];
-      opt.style.backgroundImage = `url('./estatisticas-shad/images/held-itens/${item}.png')`;
-      opt.style.backgroundRepeat = "no-repeat";
-      opt.style.backgroundSize = "20px 20px";
-      opt.style.paddingLeft = "28px";
+      // NÃO confiamos em background-image em <option> — por isso o dropdown customizado faz a miniatura.
       sel.appendChild(opt);
     });
 
+    // Mantemos listener original que cria stack sliders
     sel.addEventListener("change", () => {
       const stackDiv = slot.querySelector(".stack-container");
       stackDiv.innerHTML = "";
@@ -927,8 +908,174 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
       calcular();
+      // atualizar custom UI (se existir) para refletir a mudança quando alguém alterar diretamente o select
+      updateCustomSelectFromNative(sel);
     });
   });
+
+  // ---- CRIAÇÃO DO DROPDOWN CUSTOMIZADO COM MINIATURAS ----
+  // Função que cria e injeta o dropdown custom ao lado do select (mantendo o select escondido)
+  function createCustomSelectFor(slot) {
+    const sel = slot.querySelector(".held-item");
+    // remover container anterior se houver
+    const existing = slot.querySelector(".custom-select-container");
+    if (existing) existing.remove();
+
+    // esconder select (manter no DOM para lógica)
+    sel.style.display = "none";
+
+    const container = document.createElement("div");
+    container.className = "custom-select-container";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "custom-select-toggle";
+    toggle.innerHTML = `
+      <img class="custom-select-thumb" src="" alt="" onerror="this.style.display='none'">
+      <span class="custom-select-label">-- Nenhum --</span>
+      <span class="custom-select-arrow">▾</span>
+    `;
+
+    const panel = document.createElement("div");
+    panel.className = "custom-select-panel";
+
+    // opção vazia
+    const itemEmpty = document.createElement("div");
+    itemEmpty.className = "custom-select-item";
+    itemEmpty.dataset.value = "";
+    itemEmpty.innerHTML = `<span style="width:36px; height:36px; display:inline-block;"></span><span>-- Nenhum --</span>`;
+    panel.appendChild(itemEmpty);
+
+    itemEmpty.addEventListener("click", () => {
+    if (container.classList.contains("custom-select-disabled")) return;
+    sel.value = "";
+    const stackDiv = slot.querySelector(".stack-container");
+    stackDiv.innerHTML = "";
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+    closeAllCustomSelects();
+  });
+
+
+    // criar itens
+    Object.keys(gameHeldItens).forEach(itemKey => {
+      const d = document.createElement("div");
+      d.className = "custom-select-item";
+      d.dataset.value = itemKey;
+
+      const img = document.createElement("img");
+      img.src = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
+      img.alt = gameHeldItens[itemKey];
+      img.onerror = function() { this.style.display = "none"; };
+
+      const span = document.createElement("span");
+      span.textContent = gameHeldItens[itemKey];
+
+      d.appendChild(img);
+      d.appendChild(span);
+
+      panel.appendChild(d);
+
+      // click na opção
+      d.addEventListener("click", (e) => {
+        if (container.classList.contains("custom-select-disabled")) return;
+        sel.value = itemKey;
+
+        // Limpar stack-container quando for nenhum item
+        const stackDiv = slot.querySelector(".stack-container");
+        if (itemKey === "") {
+          stackDiv.innerHTML = "";
+        }
+
+        // dispara o evento change do select, assim a lógica de stacks continua funcionando
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        closeAllCustomSelects();
+      });
+    });
+
+    // click toggle abrir/fechar
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (container.classList.contains("custom-select-disabled")) return;
+      const opened = panel.style.display === "block";
+      closeAllCustomSelects();
+      panel.style.display = opened ? "none" : "block";
+    });
+
+    container.appendChild(toggle);
+    container.appendChild(panel);
+    slot.appendChild(container);
+
+    // clique fora fecha
+    document.addEventListener("click", () => {
+      panel.style.display = "none";
+    });
+
+    // atualizar pra refletir select.value
+    updateCustomSelectFromNative(sel);
+  }
+
+  // Fecha todos os dropdowns custom
+  function closeAllCustomSelects() {
+    const panels = document.querySelectorAll(".custom-select-panel");
+    panels.forEach(p => p.style.display = "none");
+  }
+
+  // Atualiza a UI custom baseada no select nativo
+  function updateCustomSelectFromNative(sel) {
+    const slot = sel.closest(".item-slot");
+    if (!slot) return;
+    const container = slot.querySelector(".custom-select-container");
+    if (!container) return;
+    const toggle = container.querySelector(".custom-select-toggle");
+    const thumb = toggle.querySelector(".custom-select-thumb");
+    const label = toggle.querySelector(".custom-select-label");
+    const panel = container.querySelector(".custom-select-panel");
+
+    // valor atual
+    const val = sel.value || "";
+    if (!val) {
+      thumb.style.display = "none";
+      label.textContent = "-- Nenhum --";
+    } else {
+      const imgPath = `./estatisticas-shad/images/held-itens/${val}.png`;
+      thumb.style.display = "";
+      thumb.src = imgPath;
+      label.textContent = gameHeldItens[val] || val;
+    }
+
+    // atualizar seleção visual no painel
+    const items = panel.querySelectorAll(".custom-select-item");
+    items.forEach(it => {
+      if (it.dataset.value === val) {
+        it.classList.add("selected");
+      } else {
+        it.classList.remove("selected");
+      }
+    });
+
+    // se select estiver disabled (ex.: item fixo), refletir no custom
+    if (sel.disabled) {
+      container.classList.add("custom-select-disabled");
+    } else {
+      container.classList.remove("custom-select-disabled");
+    }
+  }
+
+  // transforma todos os selects de item em custom-selects
+  function transformAllHeldSelects() {
+    itemSlots.forEach(slot => {
+      createCustomSelectFor(slot);
+    });
+  }
+
+  // ---- chamar transformação após popular os selects ----
+  transformAllHeldSelects();
+
+  // ---- NOVO: itens fixos por Pokémon (mapa poke -> itemKey) ----
+  const pokemonFixedItems = {
+    "zacian": "rustedsword"
+    // adicione mais: "nomeDoPokémon": "itemkey"
+  };
 
   // ---- Eventos ----
   levelSelect.addEventListener("input", () => {
@@ -958,6 +1105,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pokemonSelect.addEventListener("change", () => {
     const poke = pokemonSelect.value;
+
+    // Resetar todos os slots primeiro (mantendo select no DOM)
+    itemSlots.forEach(slot => {
+      const sel = slot.querySelector(".held-item");
+      sel.disabled = false;
+      sel.value = "";
+      slot.querySelector(".stack-container").innerHTML = "";
+      updateCustomSelectFromNative(sel);
+    });
+
+    // Se o Pokémon tiver item fixo, aplicar no 1º slot
+    if (pokemonFixedItems[poke]) {
+      const fixedItem = pokemonFixedItems[poke];
+      const firstSel = itemSlots[0].querySelector(".held-item");
+      firstSel.value = fixedItem;
+      firstSel.disabled = true; // bloquear o select nativo
+      // atualizar custom UI correspondente
+      updateCustomSelectFromNative(firstSel);
+    }
+
     if (poke && !activePassives.hasOwnProperty(poke)) {
       activePassives[poke] = {};
       if (skillDamage[poke]) {
@@ -979,8 +1146,11 @@ document.addEventListener("DOMContentLoaded", () => {
     levelSelect.value = "1";
     levelValor.textContent = "1";
     itemSlots.forEach(slot => {
-      slot.querySelector(".held-item").value = "";
+      const sel = slot.querySelector(".held-item");
+      sel.value = "";
+      sel.disabled = false;
       slot.querySelector(".stack-container").innerHTML = "";
+      updateCustomSelectFromNative(sel);
     });
     battleRadios.forEach(r => { r.checked = false; });
     emblemasRadios.forEach(r => { 
@@ -998,5 +1168,8 @@ document.addEventListener("DOMContentLoaded", () => {
     skillsDiv.innerHTML = "";
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
+
+    // fechar painéis custom
+    closeAllCustomSelects();
   });
 });
