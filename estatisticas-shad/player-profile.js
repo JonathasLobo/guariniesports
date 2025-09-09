@@ -13,7 +13,7 @@ fetch('./results.json')
     mainMenuOption.classList.add("p-2", "cursor-pointer", "text-black", "hover:bg-gray-200");
     mainMenuOption.innerText = "Menu Principal";
     mainMenuOption.onclick = () => {
-        window.location.href = window.location.pathname.replace('player-profile.html', 'index.html');
+        window.location.href = window.location.pathname.replace('player-profile.html', 'indexStat.html');
     };
     dropdownMenu.appendChild(mainMenuOption);
 
