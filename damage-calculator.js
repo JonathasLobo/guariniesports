@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const STAT_KEYS = [
     "HP","ATK","DEF","SpATK","SpDEF","Speed",
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
-    "HPRegen","EnergyRate", "Shield", "DmgTaken"
+    "HPRegen","EnergyRate", "Shield", "DmgTaken", "HindRed"
   ];
 
   const STAT_LABELS = {
@@ -65,10 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     CritRate: "Crit Rate", CritDmg: "Crit Dmg",
     Lifesteal: "Lifesteal", HPRegen: "HP Regen",
     EnergyRate: "Energy Rate", Shield: "Shield", 
-    DmgTaken: "Dmg Taken Reduction"
+    DmgTaken: "Dmg Taken Reduction", HindRed: "Hindrance Reduction"
   };
 
-  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken"]);
+  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed"]);
 
   const ensureAllStats = (obj) => {
     const out = { ...obj };
@@ -160,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
     amarelo: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
     marrom: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
     roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } },
-    cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } }
+    cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } },
+    rosa: { stat: "HindRed", values: { 3: 4, 5: 8, 7: 16 } },
   };
 
   // Função para aplicar buff da passiva (do Pokémon)
@@ -282,6 +283,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 modifiedStats.AtkSPD += modifiedVal;
               } else if (label.includes("dmgtaken") || label.includes("dmg taken")) {
                 modifiedStats.DmgTaken += modifiedVal;
+              } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
+                modifiedStats.HindRed += modifiedVal;
               }
             }
           }
@@ -692,7 +695,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const map = {
           HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
           ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
-          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken"
+          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
+          HindRed: "HindRed"
         };
         const prop = map[key];
         if (!prop) return;

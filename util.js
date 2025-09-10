@@ -4155,6 +4155,7 @@ const skillDamage = {
           name: "Flash Fire",
           description: "Reduces Sp. Atk damage taken by 20% for 3s and empowers next basic attack. Cooldown: 10s.",
           buff: {
+            DmgTaken: "20%"
           },
           formulas: [
             {
@@ -4253,6 +4254,7 @@ const skillDamage = {
           name: "Aroma Veil",
           description: "Cleanses hindrances from allies (and itself) under its buffs/shields, and its Sweet Gauge empowers and resets its Recover and Decorate moves when full.",
           buff: {
+            HindRed: "100%"
           },
           formulas: [
           ]
@@ -6381,6 +6383,7 @@ const skillDamage = {
           name: "Multiscale",
           description: "Taking damage grants a 30% damage reduction buff for 2.5s, with a 15s cooldown.",
           buff: {
+            DmgTaken: "30%"
           },
           formulas: [
           ]
@@ -6706,6 +6709,7 @@ const skillDamage = {
           name: "Magic Bounce",
           description: "Negates a hindrance and grants brief hindrance immunity, while damaging and slowing the attacker (35s cooldown).",
           buff: {
+            HindRed: "100%"
           },
           formulas: [
           {
@@ -6805,6 +6809,7 @@ const skillDamage = {
           name: "Battle Armor",
           description: "Reduces enemy crit damage by 50% and carries extra Aeos Energy. Its multiple units take reduced damage, and its moves change effects based on formation.",
           buff: {
+            DmgTaken: "10%"
           },
           formulas: [
           ]
@@ -7290,7 +7295,8 @@ const skillDamage = {
           name: "Snow Cloak",
           description: "Negates a hindrance, grants brief invincibility and stealth, with a long cooldown reset on respawn.",
           buff: {
-            Speed: "10%"
+            Speed: "10%",
+            HindRed: "100%"
           },
           formulas: [
           ]
@@ -8123,6 +8129,7 @@ const skillDamage = {
           name: "Shell Armor",
           description: "Reduces any single instance of damage exceeding 10% of max HP by 20%.",
           buff: {
+            DmgTaken: "20%"
           },
           formulas: [
           ]
@@ -8964,6 +8971,7 @@ const skillDamage = {
           name: "Clear Body",
           description: "Reduces hindrance duration by up to 50% based on the number of nearby enemy players (max 5 enemies).",
           buff: {
+            HindRed: "50%"
           },
           formulas: [
           ]
