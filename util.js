@@ -6376,16 +6376,7 @@ const skillDamage = {
   },
 
     "dragonite": {
-      "passive1": {
-          name: "Marvel Scale",
-          description: "Gains 100 Defense for 1.5s when affected by a status condition (Dratini/Dragonair only).",
-          buff: {
-            DEF: 100
-          },
-          formulas: [
-          ]
-        },
-        "passive2": {
+        "passive": {
           name: "Multiscale",
           description: "Taking damage grants a 30% damage reduction buff for 2.5s, with a 15s cooldown.",
           buff: {

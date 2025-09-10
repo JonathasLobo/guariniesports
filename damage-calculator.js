@@ -1,8 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const pokemonSelect = document.getElementById("pokemon");
+  // Elementos do seletor de Pokémon
+  const pokemonCircle = document.getElementById("pokemon-circle");
+  const pokemonGridPanel = document.getElementById("pokemon-grid-panel");
+  const pokemonGrid = document.getElementById("pokemon-grid");
+  const selectedPokemonImage = document.getElementById("selected-pokemon-image");
+  const selectedPokemonName = document.getElementById("selected-pokemon-name");
+  const pokemonPlaceholder = document.querySelector(".pokemon-placeholder");
+  
+  // Elementos originais
   const levelSelect = document.getElementById("nivel-final");
   const levelValor = document.getElementById("nivel-valor-final");
-  const itemSlots = document.querySelectorAll(".item-slot");
   const statusFinalDiv = document.getElementById("status-final");
   const skillsDiv = document.getElementById("skills-column");
   const resultado = document.getElementById("resultado");
@@ -23,22 +30,28 @@ document.addEventListener("DOMContentLoaded", () => {
     cinza: document.getElementById("emblem-cinza")
   };
 
-  // Estado das passivas ativas
+  // Variáveis globais
+  let selectedPokemon = "";
+  let selectedHeldItems = [];
+  const maxHeldItems = 3;
   let activePassives = {};
-  // Estado das passivas dos itens ativas
   let activeItemPassives = {};
 
-  // ---- NOVO: itens fixos por Pokémon (mapa poke -> itemKey) ----
+  // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
     "zacian": "rustedsword",
     "mewtwox": "mewtwonitex",
     "mewtwoy": "mewtwonitey"
-    // adicione mais: "nomeDoPokémon": "itemkey"
   };
 
   const FIXED_ONLY_ITEMS = new Set(Object.values(pokemonFixedItems));
 
-  // ---- Configuração de atributos ----
+  // Função para verificar se um item é fixo para o Pokémon atual
+  const isFixedItemForCurrentPokemon = (itemKey) => {
+    return selectedPokemon && pokemonFixedItems[selectedPokemon] === itemKey;
+  };
+
+  // Configuração de atributos
   const STAT_KEYS = [
     "HP","ATK","DEF","SpATK","SpDEF","Speed",
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
@@ -63,27 +76,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return out;
   };
 
- const formatValue = (key, val, extraFixed = null) => {
-  if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
-  
-  if (key === "DmgTaken") {
-    const percentText = `${Number(val).toFixed(1)}%`;
-    if (extraFixed !== null) {
-      return `${percentText} <span style="color:#888;">(-${extraFixed})</span>`;
+  const formatValue = (key, val, extraFixed = null) => {
+    if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
+    
+    if (key === "DmgTaken") {
+      const percentText = `${Number(val).toFixed(1)}%`;
+      if (extraFixed !== null) {
+        return `${percentText} <span style="color:#888;">(-${extraFixed})</span>`;
+      }
+      return percentText;
     }
-    return percentText;
-  }
 
-  if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
-  return Math.round(Number(val));
-};
+    if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
+    return Math.round(Number(val));
+  };
 
   const statLine = (label, valueHtml) =>
     `<div class="stat-line"><span class="stat-label">${label}</span><span class="stat-value">${valueHtml}</span></div>`;
 
   const safeCap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
-  // ---- Itens que stackam ----
+  // Itens que stackam
   const STACKABLE_ITEMS = {
     "Attack Weight": { stat: "ATK", perStack: 12, max: 6, percent: false, startFromZero: true },
     "Sp. Atk Specs": { stat: "SpATK", perStack: 16, max: 6, percent: false, startFromZero: true },
@@ -103,15 +116,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let result = ensureAllStats({ ...modifiedStats });
 
     selectedItems.forEach(itemKey => {
-      // Só aplicar se a passiva do item estiver ativa
       if (!activeItemPassives[itemKey]) return;
       
       const passive = passives[itemKey];
       if (!passive) return;
 
-       // 🔹 Caso especial: fórmula
       if (typeof passive.formula === "function") {
-        const targetStat = passive.target || "SpATK"; // padrão = SpATK se não definido
+        const targetStat = passive.target || "SpATK";
         result[targetStat] += passive.formula(result);
         return;
       }
@@ -123,12 +134,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
         if (!Number.isFinite(numeric)) return;
 
-        // Atributos percentuais: somar pontos percentuais
         if (PERCENT_KEYS.has(stat)) {
-          // "+7%" -> soma 7 pontos; "3" -> soma 3 pontos
           result[stat] += numeric;
         } else {
-          // Atributos não percentuais: % escala sobre o valor ATUAL (após bônus fixos/stacks)
           if (isPercentString) {
             const baseForBuff = Number(result[stat]) || 0;
             result[stat] += baseForBuff * (numeric / 100);
@@ -142,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return ensureAllStats(result);
   };
 
-  // ---- Emblemas ----
+  // Emblemas
   const EMBLEM_BONUSES = {
     verde: { stat: "SpATK", values: { 2: 1, 4: 2, 6: 4 } },
     vermelho: { stat: "AtkSPD", values: { 3: 2, 5: 4, 7: 8 } },
@@ -155,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } }
   };
 
-  // ---- Função para aplicar buff da passiva (do Pokémon) ----
+  // Função para aplicar buff da passiva (do Pokémon)
   const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     if (!skillDamage[pokemon]) {
       return stats;
@@ -164,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let modifiedStats = { ...stats };
     const skills = skillDamage[pokemon];
 
-    // Tratar múltiplas passivas (passive, passive1, passive2)
     const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
     
     passiveKeys.forEach(passiveKey => {
@@ -174,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const passive = skills[passiveKey];
 
-      // Aplicar buffs de status se existirem
       if (passive.buff) {
         Object.keys(passive.buff).forEach(stat => {
           if (modifiedStats.hasOwnProperty(stat)) {
@@ -184,15 +190,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!Number.isFinite(numeric)) return;
 
-            // CORREÇÃO: Verificar se o stat está em PERCENT_KEYS
             if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
               modifiedStats[stat] += numeric;
             } else if (stat === "DmgTaken") {
               if (isPercentString) {
-                // aplicar como percentual (% de redução de dano)
                 modifiedStats[stat] += numeric;
               } else {
-                // aplicar como valor fixo (ex.: emblemas cinzas)
                 modifiedStats[stat] += numeric;
               }
             } else {
@@ -202,12 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 modifiedStats[stat] += numeric;
               }
             }
-
           }
         });
       }
 
-      // Processar fórmulas da passiva se existirem e aplicar aos stats
       if (passive.formulas && passive.formulas.length > 0) {
         passive.formulas.forEach((f, index) => {
           if (f.type !== "text-only" && f.type !== "dependent") {
@@ -291,56 +292,340 @@ document.addEventListener("DOMContentLoaded", () => {
     return modifiedStats;
   };
 
-  // ---- Função para inicializar o bloqueio de itens ----
-  const inicializarBloqueioItens = () => {
-    const poke = pokemonSelect.value;
+  // CRIAÇÃO DO GRID DE POKÉMON
+  const createPokemonGrid = () => {
+    pokemonGrid.innerHTML = "";
     
-    // Habilitar todas as opções primeiro
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      Array.from(sel.options).forEach(opt => {
-        opt.disabled = false;
-      });
-    });
-
-    // Desabilitar itens fixos que não pertencem a este Pokémon
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      Array.from(sel.options).forEach(opt => {
-        const itemKey = opt.value;
-        if (FIXED_ONLY_ITEMS.has(itemKey) && pokemonFixedItems[poke] !== itemKey) {
-          opt.disabled = true;
-        }
+    Object.keys(pokemonRoles).forEach(poke => {
+      const role = pokemonRoles[poke] || 'Unknown';
+      const roleClass = role.toLowerCase().replace(' ', '');
+      
+      const gridItem = document.createElement("div");
+      gridItem.className = "pokemon-grid-item";
+      gridItem.dataset.pokemon = poke;
+      
+      if (poke === selectedPokemon) {
+        gridItem.classList.add("selected");
+      }
+      
+      const img = document.createElement("img");
+      img.src = `./estatisticas-shad/images/backgrounds/${poke}-left-bg.png`;
+      img.alt = safeCap(poke);
+      img.onerror = function() { 
+        this.src = './estatisticas-shad/images/backgrounds/placeholder.png';
+      };
+      
+      const span = document.createElement("span");
+      span.textContent = safeCap(poke);
+      
+      const roleBadge = document.createElement("div");
+      roleBadge.className = `pokemon-role-badge ${roleClass}`;
+      roleBadge.title = role;
+      
+      gridItem.appendChild(roleBadge);
+      gridItem.appendChild(img);
+      gridItem.appendChild(span);
+      
+      gridItem.addEventListener("click", () => {
+        selectPokemon(poke);
       });
       
-      // Atualizar a UI customizada
-      updateCustomSelectFromNative(sel);
+      pokemonGrid.appendChild(gridItem);
     });
+  };
 
-    // Se o Pokémon tiver item fixo, aplicar no 1º slot
-    if (poke && pokemonFixedItems[poke]) {
-      const fixedItem = pokemonFixedItems[poke];
-      const firstSel = itemSlots[0].querySelector(".held-item");
-      firstSel.value = fixedItem;
-      firstSel.disabled = true; // bloquear o select nativo
-      
-      // Atualizar custom UI correspondente para mostrar o item fixo
-      updateCustomSelectFromNative(firstSel);
+  // FUNÇÃO PARA SELECIONAR POKÉMON
+  const selectPokemon = (poke) => {
+    // Atualizar seleção
+    selectedPokemon = poke;
+    
+    // Atualizar interface do círculo
+    selectedPokemonImage.src = `./estatisticas-shad/images/backgrounds/${poke}-left-bg.png`;
+    selectedPokemonImage.style.display = "block";
+    selectedPokemonName.textContent = safeCap(poke);
+    pokemonPlaceholder.style.display = "none";
+    
+    // Atualizar grid
+    const gridItems = pokemonGrid.querySelectorAll(".pokemon-grid-item");
+    gridItems.forEach(item => {
+      if (item.dataset.pokemon === poke) {
+        item.classList.add("selected");
+      } else {
+        item.classList.remove("selected");
+      }
+    });
+    
+    // Fechar painel
+    closePokemonPanel();
+    
+    // Limpar itens e aplicar configurações do novo Pokémon
+    selectedHeldItems = [];
+    activeItemPassives = {};
+    inicializarBloqueioItens();
+    
+    // Inicializar passivas do pokémon se ainda não existirem
+    if (!activePassives.hasOwnProperty(poke)) {
+      activePassives[poke] = {};
+      if (skillDamage[poke]) {
+        ['passive', 'passive1', 'passive2'].forEach(passiveKey => {
+          if (skillDamage[poke][passiveKey]) {
+            activePassives[poke][passiveKey] = false;
+          }
+        });
+      }
+    }
+    
+    calcular();
+  };
+
+  // FUNÇÃO PARA ABRIR/FECHAR PAINEL
+  const togglePokemonPanel = () => {
+    const isOpen = pokemonGridPanel.classList.contains("show");
+    
+    if (isOpen) {
+      closePokemonPanel();
+    } else {
+      openPokemonPanel();
     }
   };
 
-  // ---- Função de cálculo ----
+  const openPokemonPanel = () => {
+    pokemonGridPanel.classList.add("show");
+    
+    // Criar overlay
+    const overlay = document.createElement("div");
+    overlay.className = "pokemon-overlay show";
+    overlay.id = "pokemon-overlay";
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener("click", closePokemonPanel);
+  };
+
+  const closePokemonPanel = () => {
+    pokemonGridPanel.classList.remove("show");
+    
+    // Remover overlay
+    const overlay = document.getElementById("pokemon-overlay");
+    if (overlay) {
+      overlay.remove();
+    }
+  };
+
+  // SISTEMA DE HELD ITEMS
+  const createHeldItemsGrid = () => {
+    const grid = document.getElementById("held-items-grid");
+    const selectedDisplay = document.getElementById("selected-items-display");
+    
+    grid.innerHTML = "";
+    
+    Object.keys(gameHeldItens).forEach(itemKey => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "held-item-option";
+      itemDiv.dataset.itemKey = itemKey;
+      
+      const isDisabled = FIXED_ONLY_ITEMS.has(itemKey) && pokemonFixedItems[selectedPokemon] !== itemKey;
+      const isFixed = isFixedItemForCurrentPokemon(itemKey);
+      
+      if (isDisabled) {
+        itemDiv.classList.add("disabled");
+        const pokemonComAcesso = Object.keys(pokemonFixedItems).find(
+          p => pokemonFixedItems[p] === itemKey
+        );
+        itemDiv.title = `Item exclusivo de ${safeCap(pokemonComAcesso)}`;
+      } else if (isFixed) {
+        itemDiv.classList.add("fixed");
+        itemDiv.title = "Item fixo (não pode ser removido)";
+      }
+      
+      const img = document.createElement("img");
+      img.src = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
+      img.alt = gameHeldItens[itemKey];
+      img.className = "item-icon";
+      img.onerror = function() { this.style.display = "none"; };
+      
+      const span = document.createElement("span");
+      span.textContent = gameHeldItens[itemKey];
+      
+      itemDiv.appendChild(img);
+      itemDiv.appendChild(span);
+      
+      if (!isFixed) {
+        itemDiv.addEventListener("click", () => {
+          if (isDisabled) {
+            const pokemonComAcesso = Object.keys(pokemonFixedItems).find(
+              p => pokemonFixedItems[p] === itemKey
+            );
+            alert(`Este item é exclusivo de ${safeCap(pokemonComAcesso)} e não pode ser usado com este Pokémon.`);
+            return;
+          }
+          
+          toggleHeldItem(itemKey);
+        });
+      }
+      
+      grid.appendChild(itemDiv);
+    });
+    
+    updateGridDisplay();
+  };
+
+  const toggleHeldItem = (itemKey) => {
+    const hasFixedItem = selectedPokemon && pokemonFixedItems[selectedPokemon];
+    const maxItems = hasFixedItem ? maxHeldItems - 1 : maxHeldItems;
+    
+    if (isFixedItemForCurrentPokemon(itemKey)) {
+      alert("Este item é fixo e não pode ser removido deste Pokémon.");
+      return;
+    }
+    
+    const existingIndex = selectedHeldItems.findIndex(item => item.key === itemKey);
+    
+    if (existingIndex !== -1) {
+      selectedHeldItems.splice(existingIndex, 1);
+    } else {
+      if (selectedHeldItems.length < maxHeldItems) {
+        selectedHeldItems.push({
+          key: itemKey,
+          name: gameHeldItens[itemKey],
+          stacks: 0
+        });
+      } else {
+        alert(`Você pode selecionar no máximo ${maxHeldItems} itens.`);
+        return;
+      }
+    }
+    
+    updateGridDisplay();
+    updateSelectedItemsDisplay();
+    calcular();
+  };
+
+  const updateGridDisplay = () => {
+    const items = document.querySelectorAll(".held-item-option");
+    
+    items.forEach(item => {
+      const itemKey = item.dataset.itemKey;
+      const selectedIndex = selectedHeldItems.findIndex(selected => selected.key === itemKey);
+      
+      const existingNumber = item.querySelector(".slot-number");
+      if (existingNumber) existingNumber.remove();
+      
+      if (selectedIndex !== -1) {
+        item.classList.add("selected");
+        
+        const numberDiv = document.createElement("div");
+        numberDiv.className = "slot-number";
+        numberDiv.textContent = selectedIndex + 1;
+        item.appendChild(numberDiv);
+      } else {
+        item.classList.remove("selected");
+      }
+    });
+  };
+
+  const updateSelectedItemsDisplay = () => {
+    const display = document.getElementById("selected-items-display");
+    const container = document.getElementById("selected-items-container");
+    
+    if (selectedHeldItems.length === 0) {
+      display.style.display = "none";
+      return;
+    }
+    
+    display.style.display = "block";
+    container.innerHTML = "";
+    
+    selectedHeldItems.forEach((item, index) => {
+      const slotDiv = document.createElement("div");
+      slotDiv.className = "selected-item-slot";
+      
+      if (isFixedItemForCurrentPokemon(item.key)) {
+        slotDiv.classList.add("fixed-item");
+      }
+      
+      const header = document.createElement("div");
+      header.className = "slot-header";
+      header.textContent = `Slot ${index + 1}`;
+      
+      const img = document.createElement("img");
+      img.src = `./estatisticas-shad/images/held-itens/${item.key}.png`;
+      img.alt = item.name;
+      img.className = "item-icon";
+      img.onerror = function() { this.style.display = "none"; };
+      
+      const name = document.createElement("div");
+      name.className = "item-name";
+      name.textContent = item.name;
+      
+      slotDiv.appendChild(header);
+      slotDiv.appendChild(img);
+      slotDiv.appendChild(name);
+      
+      if (STACKABLE_ITEMS[item.name] && !isFixedItemForCurrentPokemon(item.key)) {
+        const config = STACKABLE_ITEMS[item.name];
+        const stackControls = document.createElement("div");
+        stackControls.className = "stack-controls";
+        
+        const label = document.createElement("label");
+        label.textContent = "Stacks:";
+        label.style.fontSize = "10px";
+        label.style.color = "#fff";
+        
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = "0";
+        slider.max = config.max;
+        slider.value = item.stacks;
+        slider.className = "slider";
+        slider.style.width = "60px";
+        
+        const value = document.createElement("span");
+        value.textContent = item.stacks;
+        value.style.fontSize = "10px";
+        value.style.color = "#fff";
+        
+        slider.addEventListener("input", () => {
+          item.stacks = parseInt(slider.value, 10);
+          value.textContent = item.stacks;
+          calcular();
+        });
+        
+        stackControls.appendChild(label);
+        stackControls.appendChild(slider);
+        stackControls.appendChild(value);
+        slotDiv.appendChild(stackControls);
+      }
+      
+      container.appendChild(slotDiv);
+    });
+  };
+
+  const inicializarBloqueioItens = () => {
+    selectedHeldItems = [];
+    
+    if (selectedPokemon && pokemonFixedItems[selectedPokemon]) {
+      const fixedItem = pokemonFixedItems[selectedPokemon];
+      selectedHeldItems.push({
+        key: fixedItem,
+        name: gameHeldItens[fixedItem],
+        stacks: 0
+      });
+    }
+    
+    createHeldItemsGrid();
+    updateSelectedItemsDisplay();
+  };
+
+  // FUNÇÃO DE CÁLCULO
   const calcular = () => {
-    const poke = pokemonSelect.value;
     const targetLevel = parseInt(levelSelect.value, 10) || 1;
-    if (!poke) {
+    if (!selectedPokemon) {
       resultado.style.display = "none";
       return;
     }
 
-    // Resetar valores calculados das passivas
-    if (skillDamage[poke]) {
-      const skills = skillDamage[poke];
+    if (skillDamage[selectedPokemon]) {
+      const skills = skillDamage[selectedPokemon];
       ['passive', 'passive1', 'passive2'].forEach(passiveKey => {
         if (skills[passiveKey]) {
           if (skills[passiveKey].calculatedValues) {
@@ -353,8 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Verificação se o Pokémon tem dados no baseStats
-    if (!baseStats[poke]) {
+    if (!baseStats[selectedPokemon]) {
       resultado.style.display = "flex";
       statusFinalDiv.innerHTML = `
         <div class="stat-line">
@@ -368,17 +652,16 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
       
-      // Obter a role e a cor da role
-      const pokemonRole = pokemonRoles[poke] || 'Unknown';
+      const pokemonRole = pokemonRoles[selectedPokemon] || 'Unknown';
       const roleColor = rolesColor[pokemonRole] || '#666';
       
       const prevImg = document.querySelector(".resultado-image");
       if (prevImg) prevImg.remove();
       resultado.insertAdjacentHTML("afterbegin", `
         <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
-          <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}"
+          <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
                onerror="this.style.display='none'" style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
-          <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel})</div>
+          <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
           <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
         </div>
       `);
@@ -386,31 +669,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let base =
-      (typeof levelStats !== "undefined" && levelStats?.[poke]?.[targetLevel])
-        ? { ...levelStats[poke][targetLevel] }
-        : { ...baseStats[poke] };
+      (typeof levelStats !== "undefined" && levelStats?.[selectedPokemon]?.[targetLevel])
+        ? { ...levelStats[selectedPokemon][targetLevel] }
+        : { ...baseStats[selectedPokemon] };
 
     base = ensureAllStats(base);
     let modified = { ...base };
 
-    // Coletar itens selecionados (chaves como 'wiseglasses', 'muscleband', etc.)
-    const selectedItems = [];
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      if (sel.value) {
-        selectedItems.push(sel.value);
-      }
-    });
+    const selectedItems = selectedHeldItems.map(item => item.key);
 
-    // 1) Aplicar bônus normais dos itens (util.js) e stacks
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      if (!sel.value) return;
-      
-      const itemName = gameHeldItens[sel.value];
+    // 1) Aplicar bônus normais dos itens e stacks
+    selectedHeldItems.forEach(selectedItem => {
+      const itemKey = selectedItem.key;
+      const itemName = selectedItem.name;
 
-      // Bônus base do util.js
-      const bonuses = gameHeldItensStatus?.[sel.value] || [];
+      const bonuses = gameHeldItensStatus?.[itemKey] || [];
       bonuses.forEach(b => {
         const parts = String(b).split(" +");
         const rawStat = parts[0] || "";
@@ -429,15 +702,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Stacks (se aplicável)
       if (STACKABLE_ITEMS[itemName]) {
         const config = STACKABLE_ITEMS[itemName];
-        const range = slot.querySelector(".stack-range");
-        const stacks = range ? parseInt(range.value, 10) || 0 : 0;
+        const stacks = selectedItem.stacks || 0;
 
         if (itemName === "Charging Charm") {
           const bonusPercent = (base[config.stat] * (config.perStack / 100)) * stacks;
-          modified[config.stat] += config.fixedBonus + bonusPercent; // 40 fixo + 70% do ATK base
+          modified[config.stat] += config.fixedBonus + bonusPercent;
         } else if (config.percent) {
           const bonus = (base[config.stat] * (config.perStack / 100)) * stacks;
           modified[config.stat] += bonus;
@@ -447,8 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 2) AGORA aplicar os passivos dos itens (sobre o valor já modificado pelos bônus fixos/stacks)
-    // Só aplicar se estiver ativo em activeItemPassives
+    // 2) Aplicar passivos dos itens
     modified = applyItemPassiveEffects(base, modified, selectedItems);
 
     // 3) Battle Items
@@ -462,6 +732,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (selectedBattle === "xspeed") {
       modified.Speed += base.Speed * 0.45;
+    }
+    if (selectedBattle === "potion") {
+      const potionHealing = 160 + (modified.HP * 0.20);
+      modified.HP += potionHealing;
     }
 
     // 4) Emblemas
@@ -478,8 +752,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const bonus = emblemConfig.values[nivel];
             if (bonus) {
               if (cor === "cinza") {
-                // Guardar redução fixa separada para exibir depois
-                modified.DmgTaken += 0; // mantém percentual normal
+                modified.DmgTaken += 0;
                 if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
                 modified._fixedDmgTaken += bonus;
               } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
@@ -487,56 +760,48 @@ document.addEventListener("DOMContentLoaded", () => {
               } else {
                 modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
               }
-
             }
           }
         }
       });
     }
 
-    // 5) Passiva do Pokémon (se ativa)
-    modified = applyPassiveBuff(modified, poke, base, targetLevel);
+    // 5) Passiva do Pokémon
+    modified = applyPassiveBuff(modified, selectedPokemon, base, targetLevel);
     modified = ensureAllStats(modified);
 
-    // Obter a role e a cor da role
-    const pokemonRole = pokemonRoles[poke] || 'Unknown';
+    const pokemonRole = pokemonRoles[selectedPokemon] || 'Unknown';
     const roleColor = rolesColor[pokemonRole] || '#666';
 
-    // Imagem do Pokémon com borda da cor da role
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
     resultado.insertAdjacentHTML("afterbegin", `
       <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
-        <img src="./estatisticas-shad/images/backgrounds/${poke}-left-bg.png" alt="${safeCap(poke)}"
+        <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
              style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
-        <div class="info-jogador">${safeCap(poke)} (Lv. ${targetLevel})</div>
+        <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
         <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
       </div>
     `);
 
-    // Status Final (com comparação base → final)
-      statusFinalDiv.innerHTML = STAT_KEYS
-        .map(k => {
-          const b = Number(base[k]) || 0;
-          const m = Number(modified[k]) || 0;
-          const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
+    // Status Final
+    statusFinalDiv.innerHTML = STAT_KEYS
+      .map(k => {
+        const b = Number(base[k]) || 0;
+        const m = Number(modified[k]) || 0;
+        const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
 
-          if (m > b) {
-            return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:limegreen;">▲ ${formatValue(k, m, extraFixed)}</span>`);
-          }
-          return statLine(STAT_LABELS[k], formatValue(k, m, extraFixed));
-        }).join("");
+        if (m > b) {
+          return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:limegreen;">▲ ${formatValue(k, m, extraFixed)}</span>`);
+        }
+        return statLine(STAT_LABELS[k], formatValue(k, m, extraFixed));
+      }).join("");
 
-    // Mostrar ícones dos itens com status ativo/inativo - ALTERAÇÃO: display flex para ficar em linha horizontal
-    const chosenItems = [];
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      if (sel.value) chosenItems.push(sel.value);
-    });
-
-    if (chosenItems.length > 0) {
+    // Mostrar ícones dos itens
+    if (selectedHeldItems.length > 0) {
       const passives = getItemPassivesSource();
-      const itensHtml = chosenItems.map(it => {
+      const itensHtml = selectedHeldItems.map(selectedItem => {
+        const it = selectedItem.key;
         const hasPassive = passives[it] && Object.keys(passives[it]).length > 0;
         const isActive = activeItemPassives[it] || false;
         const activeClass = hasPassive && isActive ? " item-active" : "";
@@ -563,36 +828,20 @@ document.addEventListener("DOMContentLoaded", () => {
       `);
     }
 
-    // Mostrar informações dos emblemas
+    // Mostrar emblemas ativos
     if (incluirEmblemas === "sim") {
       const activeEmblems = [];
       
       const emblemColors = {
-        verde: "#28a745",
-        vermelho: "#dc3545", 
-        azul: "#007bff",
-        branco: "#ffffff",
-        preto: "#343a40",
-        amarelo: "#ffc107",
-        marrom: "#8b4513",
-        roxo: "#6f42c1",
-        rosa: "#e83e8c",
-        azulMarinho: "#1e3a8a",
-        cinza: "#6c757d"
+        verde: "#28a745", vermelho: "#dc3545", azul: "#007bff", branco: "#ffffff",
+        preto: "#343a40", amarelo: "#ffc107", marrom: "#8b4513", roxo: "#6f42c1",
+        rosa: "#e83e8c", azulMarinho: "#1e3a8a", cinza: "#6c757d"
       };
 
       const emblemNames = {
-        verde: "Verde",
-        vermelho: "Vermelho",
-        azul: "Azul", 
-        branco: "Branco",
-        preto: "Preto",
-        amarelo: "Amarelo",
-        marrom: "Marrom",
-        roxo: "Roxo",
-        rosa: "Rosa",
-        azulMarinho: "Azul-Marinho",
-        cinza: "Cinza"
+        verde: "Verde", vermelho: "Vermelho", azul: "Azul", branco: "Branco",
+        preto: "Preto", amarelo: "Amarelo", marrom: "Marrom", roxo: "Roxo",
+        rosa: "Rosa", azulMarinho: "Azul-Marinho", cinza: "Cinza"
       };
 
       Object.keys(emblemaSelects).forEach(cor => {
@@ -606,35 +855,25 @@ document.addEventListener("DOMContentLoaded", () => {
           const borderStyle = cor === "branco" ? "border: 1px solid #ccc;" : "";
           
           if (emblemConfig) {
-          const bonus = emblemConfig.values[nivel];
-          if (bonus) {
-            if (cor === "cinza") {
-              // Emblema Cinza: mostrar redução fixa com sinal de menos
-              activeEmblems.push(
-                `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-                  ${name} Lv.${nivel} (-${bonus})
-                </span>`
-              );
-            } else {
-              // Demais emblemas: bônus percentual normal
-              activeEmblems.push(
-                `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-                  ${name} Lv.${nivel} (+${bonus}%)
-                </span>`
-              );
+            const bonus = emblemConfig.values[nivel];
+            if (bonus) {
+              if (cor === "cinza") {
+                activeEmblems.push(
+                  `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+                    ${name} Lv.${nivel} (-${bonus})
+                  </span>`
+                );
+              } else {
+                activeEmblems.push(
+                  `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
+                    ${name} Lv.${nivel} (+${bonus}%)
+                  </span>`
+                );
+              }
             }
           }
-        } else {
-          activeEmblems.push(
-            `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-              ${name} Lv.${nivel}
-            </span>`
-          );
-        }
-
         }
       });
 
@@ -653,9 +892,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostrar Battle Item
     const selectedBattleNow = Array.from(battleRadios).find(r => r.checked)?.value;
     if (selectedBattleNow) {
+      const battleItemName = gameBattleItems[selectedBattleNow] || selectedBattleNow;
+      
       const battleImg = `<img src="./estatisticas-shad/images/battle-items/${selectedBattleNow}.png" 
-                          alt="${selectedBattleNow}" 
-                          title="${selectedBattleNow}" 
+                          alt="${battleItemName}" 
+                          title="${battleItemName}" 
                           style="width:40px; height:40px;">`;
       statusFinalDiv.insertAdjacentHTML("beforeend", `
         <div class="stat-line">
@@ -665,20 +906,20 @@ document.addEventListener("DOMContentLoaded", () => {
       `);
     }
 
-    // Cálculo e exibição das skills
+    // Cálculo das skills
     skillsDiv.innerHTML = "";
 
-    if (typeof skillDamage !== "undefined" && skillDamage[poke]) {
-      const skills = skillDamage[poke];
+    if (typeof skillDamage !== "undefined" && skillDamage[selectedPokemon]) {
+      const skills = skillDamage[selectedPokemon];
 
-      // Renderizar passivas (passive, passive1, passive2)
+      // Renderizar passivas
       const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
       
       passiveKeys.forEach(passiveKey => {
         const p = skills[passiveKey];
-        const imgPath = `./estatisticas-shad/images/skills/${poke}_${passiveKey}.png`;
+        const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${passiveKey}.png`;
         const fallbackImg = `./estatisticas-shad/images/skills/passive.png`;
-        const isActive = (activePassives[poke] && activePassives[poke][passiveKey]) || false;
+        const isActive = (activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey]) || false;
         const activeClass = isActive ? " active" : "";
 
         let passiveFormulasHtml = "";
@@ -703,11 +944,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
-            }).join("");
+          }).join("");
         }
 
         const passiveHtml = `
-          <div class="skill-box passive${activeClass}" data-pokemon="${poke}" data-passive-key="${passiveKey}" style="margin-bottom: 15px;">
+          <div class="skill-box passive${activeClass}" data-pokemon="${selectedPokemon}" data-passive-key="${passiveKey}" style="margin-bottom: 15px;">
             <img src="${imgPath}" alt="${p.name}" class="skill-icon"
                  onerror="this.onerror=null;this.src='${fallbackImg}'">
             <div class="skill-info">
@@ -728,7 +969,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (key === "passive" || key === "passive1" || key === "passive2") return;
         
         const s = skills[key];
-        const imgPath = `./estatisticas-shad/images/skills/${poke}_${key}.png`;
+        const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
         const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
         const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
@@ -774,17 +1015,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (skills.passive) {
               const passive = skills.passive;
-              const isPassiveActive = activePassives[poke] && activePassives[poke]['passive'];
+              const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon]['passive'];
               
               if (isPassiveActive && passive.skillDamageMultiplier) {
-                  const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
-                  
-                  if (!isBasicAttack || passive.affectsBasicAttack === true) {
-                      modifiedVal *= passive.skillDamageMultiplier;
-                  }
+                const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+                
+                if (!isBasicAttack || passive.affectsBasicAttack === true) {
+                  modifiedVal *= passive.skillDamageMultiplier;
+                }
               }
-          }
-        
+            }
             
             if ((key === "atkboosted" || key === "basic" || key === "basicattack")) {
               let totalPassiveBonus = { base: 0, modified: 0 };
@@ -792,7 +1032,7 @@ document.addEventListener("DOMContentLoaded", () => {
               
               passiveKeys.forEach(passiveKey => {
                 if (skills[passiveKey]?.nextBasicAttackBonus && 
-                    activePassives[poke] && activePassives[poke][passiveKey]) {
+                    activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey]) {
                   const passiveBonus = skills[passiveKey].nextBasicAttackBonus;
                   totalPassiveBonus.base += passiveBonus.base;
                   totalPassiveBonus.modified += passiveBonus.modified;
@@ -803,9 +1043,9 @@ document.addEventListener("DOMContentLoaded", () => {
               modifiedVal += totalPassiveBonus.modified;
             }
             
-            if (poke === "decidueye" && activePassives[poke]) {
+            if (selectedPokemon === "decidueye" && activePassives[selectedPokemon]) {
               const hasAnyPassiveActive = ['passive', 'passive1', 'passive2'].some(passiveKey => 
-                skills[passiveKey] && activePassives[poke][passiveKey]);
+                skills[passiveKey] && activePassives[selectedPokemon][passiveKey]);
               
               if (hasAnyPassiveActive) {
                 modifiedVal *= 1.20;
@@ -839,49 +1079,48 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const skillHtml = `
-        <div class="skill-box${ultimateClass}" style="margin-bottom: 15px;">
-          <img src="${imgPath}" alt="${s.name}" class="skill-icon"
-          onerror="this.onerror=null;this.src='${fallbackImg}'">
-          <div class="skill-info">
-            <h4>${s.name}</h4>
-            <ul>
-              ${s.formulas.map((f, index) => {
-                if (f.type === "text-only") {
-                  return `<li><strong>${f.label}:</strong> <span style="color:#888; font-style:italic;">${f.additionalText}</span></li>`;
-                }
-                
-                const values = calculatedValues[index];
-                let displayText = "";
-                let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
-                
-                if (values.hasPassiveBonus) {
-                  if (Math.round(values.withPassive.modified) > Math.round(values.modified)) {
-                    displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
-                  } else {
-                    displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
+          <div class="skill-box${ultimateClass}" style="margin-bottom: 15px;">
+            <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+                 onerror="this.onerror=null;this.src='${fallbackImg}'">
+            <div class="skill-info">
+              <h4>${s.name}</h4>
+              <ul>
+                ${s.formulas.map((f, index) => {
+                  if (f.type === "text-only") {
+                    return `<li><strong>${f.label}:</strong> <span style="color:#888; font-style:italic;">${f.additionalText}</span></li>`;
                   }
-                } else {
-                  if (Math.round(values.modified) > Math.round(values.base)) {
-                    displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+                  
+                  const values = calculatedValues[index];
+                  let displayText = "";
+                  let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
+                  
+                  if (values.hasPassiveBonus) {
+                    if (Math.round(values.withPassive.modified) > Math.round(values.modified)) {
+                      displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
+                    } else {
+                      displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
+                    }
                   } else {
-                    displayText = `${Math.round(values.modified)}`;
+                    if (Math.round(values.modified) > Math.round(values.base)) {
+                      displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+                    } else {
+                      displayText = `${Math.round(values.modified)}`;
+                    }
                   }
-                }
-                
-                if (hasAdditionalText) {
-                  displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
-                }
-                
-                return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
-              }).join("")}
-            </ul>
+                  
+                  if (hasAdditionalText) {
+                    displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
+                  }
+                  
+                  return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
+                }).join("")}
+              </ul>
+            </div>
           </div>
-        </div>
-      `;
+        `;
         
         skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
       });
-      
 
       // Event listeners para passivas clicáveis
       const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
@@ -915,267 +1154,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resultado.style.display = "flex";
   };
+
+  // EVENT LISTENERS PRINCIPAIS
   
-
-  // ---- Preencher dropdown de Pokémons usando pokemonRoles ----
-  Object.keys(pokemonRoles).forEach(poke => {
-    const opt = document.createElement("option");
-    opt.value = poke;
-    opt.textContent = safeCap(poke);
-    opt.style.backgroundImage = `url('./estatisticas-shad/images/backgrounds/${poke}-left-bg.png')`;
-    opt.style.backgroundRepeat = "no-repeat";
-    opt.style.backgroundSize = "20px 20px";
-    opt.style.paddingLeft = "28px";
-    pokemonSelect.appendChild(opt);
+  // Pokémon selector
+  pokemonCircle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePokemonPanel();
   });
 
-  // ---- Preencher dropdowns de itens (mantemos o <select> por compatibilidade) ----
-  itemSlots.forEach(slot => {
-    const sel = slot.querySelector(".held-item");
-    const empty = document.createElement("option");
-    empty.value = "";
-    empty.textContent = "-- Nenhum --";
-    sel.appendChild(empty);
-
-    Object.keys(gameHeldItens).forEach(item => {
-      const opt = document.createElement("option");
-      opt.value = item;
-      opt.textContent = gameHeldItens[item];
-      // NÃO confiamos em background-image em <option> — por isso o dropdown customizado faz a miniatura.
-      sel.appendChild(opt);
-    });
-
-    // Mantemos listener original que cria stack sliders
-    sel.addEventListener("change", () => {
-      const stackDiv = slot.querySelector(".stack-container");
-      stackDiv.innerHTML = "";
-      const itemName = gameHeldItens[sel.value];
-      if (STACKABLE_ITEMS[itemName]) {
-        const config = STACKABLE_ITEMS[itemName];
-        stackDiv.innerHTML = `
-          <div class="stack-slider">
-            <label>Stacks:</label>
-            <input type="range" min="0" max="${config.max}" value="0" step="1" class="slider stack-range">
-            <span class="stack-value">0</span>
-          </div>
-        `;
-        const range = stackDiv.querySelector(".stack-range");
-        const value = stackDiv.querySelector(".stack-value");
-        range.addEventListener("input", () => {
-          value.textContent = range.value;
-          calcular();
-        });
-      }
-      calcular();
-      // atualizar custom UI (se existir) para refletir a mudança quando alguém alterar diretamente o select
-      updateCustomSelectFromNative(sel);
-    });
-  });
-
-  // ---- CRIAÇÃO DO DROPDOWN CUSTOMIZADO COM MINIATURAS ----
-  // Função que cria e injeta o dropdown custom ao lado do select (mantendo o select escondido)
-  function createCustomSelectFor(slot) {
-    const sel = slot.querySelector(".held-item");
-    // remover container anterior se houver
-    const existing = slot.querySelector(".custom-select-container");
-    if (existing) existing.remove();
-
-    // esconder select (manter no DOM para lógica)
-    sel.style.display = "none";
-
-    const container = document.createElement("div");
-    container.className = "custom-select-container";
-
-    const toggle = document.createElement("button");
-    toggle.type = "button";
-    toggle.className = "custom-select-toggle";
-    toggle.innerHTML = `
-      <img class="custom-select-thumb" src="" alt="" onerror="this.style.display='none'">
-      <span class="custom-select-label">-- Nenhum --</span>
-      <span class="custom-select-arrow">▾</span>
-    `;
-
-    const panel = document.createElement("div");
-    panel.className = "custom-select-panel";
-
-    // opção vazia
-    const itemEmpty = document.createElement("div");
-    itemEmpty.className = "custom-select-item";
-    itemEmpty.dataset.value = "";
-    itemEmpty.innerHTML = `<span style="width:36px; height:36px; display:inline-block;"></span><span>-- Nenhum --</span>`;
-    panel.appendChild(itemEmpty);
-
-    itemEmpty.addEventListener("click", () => {
-    if (container.classList.contains("custom-select-disabled")) return;
-    sel.value = "";
-    const stackDiv = slot.querySelector(".stack-container");
-    stackDiv.innerHTML = "";
-    sel.dispatchEvent(new Event("change", { bubbles: true }));
-    closeAllCustomSelects();
-  });
-
-    // criar itens
-    Object.keys(gameHeldItens).forEach(itemKey => {
-      const d = document.createElement("div");
-      d.className = "custom-select-item";
-      d.dataset.value = itemKey;
-
-      // Adicionar título para itens desabilitados
-      if (FIXED_ONLY_ITEMS.has(itemKey)) {
-        const pokemonComAcesso = Object.keys(pokemonFixedItems).find(
-          p => pokemonFixedItems[p] === itemKey
-        );
-        d.title = `Item exclusivo de ${safeCap(pokemonComAcesso)}`;
-      }
-
-      const img = document.createElement("img");
-      img.src = `./estatisticas-shad/images/held-itens/${itemKey.toLowerCase()}.png`;
-      img.alt = gameHeldItens[itemKey];
-      img.onerror = function() { this.style.display = "none"; };
-
-      const span = document.createElement("span");
-      span.textContent = gameHeldItens[itemKey];
-
-      d.appendChild(img);
-      d.appendChild(span);
-
-      panel.appendChild(d);
-
-      // click na opção
-      d.addEventListener("click", (e) => {
-        e.stopPropagation();
-        
-        // Verificar se o item está desabilitado
-        const sel = slot.querySelector(".held-item");
-        const option = sel.querySelector(`option[value="${itemKey}"]`);
-        
-        if (option && option.disabled) {
-          // Mostrar mensagem de alerta
-          alert(`Este item é exclusivo de ${safeCap(Object.keys(pokemonFixedItems).find(p => pokemonFixedItems[p] === itemKey))} e não pode ser usado com este Pokémon.`);
-          return;
-        }
-        
-        if (container.classList.contains("custom-select-disabled")) return;
-
-        sel.value = itemKey;
-
-        // Limpar stack-container quando for nenhum item
-        const stackDiv = slot.querySelector(".stack-container");
-        if (itemKey === "") {
-          stackDiv.innerHTML = "";
-        }
-
-        // dispara o evento change do select, assim a lógica de stacks continua funcionando
-        sel.dispatchEvent(new Event('change', { bubbles: true }));
-        closeAllCustomSelects();
-      });
-
-    });
-
-    // click toggle abrir/fechar
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (container.classList.contains("custom-select-disabled")) return;
-      const opened = panel.style.display === "block";
-      closeAllCustomSelects();
-      panel.style.display = opened ? "none" : "block";
-    });
-
-    container.appendChild(toggle);
-    container.appendChild(panel);
-    slot.appendChild(container);
-
-    // clique fora fecha
-    document.addEventListener("click", () => {
-      panel.style.display = "none";
-    });
-
-    // atualizar pra refletir select.value
-    updateCustomSelectFromNative(sel);
-  }
-
-  // Fecha todos os dropdowns custom
-  function closeAllCustomSelects() {
-    const panels = document.querySelectorAll(".custom-select-panel");
-    panels.forEach(p => p.style.display = "none");
-  }
-
-  // Atualiza a UI custom baseada no select nativo
-  function updateCustomSelectFromNative(sel) {
-    const slot = sel.closest(".item-slot");
-    if (!slot) return;
-    const container = slot.querySelector(".custom-select-container");
-    if (!container) return;
-    const toggle = container.querySelector(".custom-select-toggle");
-    const thumb = toggle.querySelector(".custom-select-thumb");
-    const label = toggle.querySelector(".custom-select-label");
-    const panel = container.querySelector(".custom-select-panel");
-
-    // valor atual
-    const val = sel.value || "";
-    if (!val) {
-      thumb.style.display = "none";
-      label.textContent = "-- Nenhum --";
-    } else {
-      const imgPath = `./estatisticas-shad/images/held-itens/${val}.png`;
-      thumb.style.display = "";
-      thumb.src = imgPath;
-      label.textContent = gameHeldItens[val] || val;
+  // Fechar painel quando clicar fora
+  document.addEventListener("click", (e) => {
+    if (!pokemonGridPanel.contains(e.target) && !pokemonCircle.contains(e.target)) {
+      closePokemonPanel();
     }
+  });
 
-    // atualizar seleção visual no painel
-    const items = panel.querySelectorAll(".custom-select-item");
-    items.forEach(it => {
-      if (it.dataset.value === val) {
-        it.classList.add("selected");
-      } else {
-        it.classList.remove("selected");
-      }
-      
-      // Atualizar estado desabilitado
-      const option = sel.querySelector(`option[value="${it.dataset.value}"]`);
-      if (option && option.disabled) {
-        it.classList.add("disabled");
-        it.style.opacity = "0.5";
-        it.style.pointerEvents = "none";
-      } else {
-        it.classList.remove("disabled");
-        it.style.opacity = "";
-        it.style.pointerEvents = "";
-      }
-    });
-
-    // se select estiver disabled (ex.: item fixo), refletir no custom
-    if (sel.disabled) {
-      container.classList.add("custom-select-disabled");
-      toggle.style.opacity = "0.7";
-      toggle.style.cursor = "not-allowed";
-    } else {
-      container.classList.remove("custom-select-disabled");
-      toggle.style.opacity = "";
-      toggle.style.cursor = "";
-    }
-  }
-
-  // transforma todos os selects de item em custom-selects
-  function transformAllHeldSelects() {
-    itemSlots.forEach(slot => {
-      createCustomSelectFor(slot);
-    });
-  }
-
-  // ---- chamar transformação após popular os selects ----
-  transformAllHeldSelects();
-  
-  // Inicializar o bloqueio de itens assim que a página carrega
-  inicializarBloqueioItens();
-  
-  // ---- Eventos ----
+  // Level slider
   levelSelect.addEventListener("input", () => {
     levelValor.textContent = levelSelect.value;
     calcular();
   });
 
+  // Battle items
   battleRadios.forEach(r => r.addEventListener("change", calcular));
   
   // Emblemas
@@ -1196,38 +1197,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-pokemonSelect.addEventListener("change", () => {
-    const poke = pokemonSelect.value;
-
-    // Resetar todos os slots primeiro
-    itemSlots.forEach(slot => {
-      const sel = slot.querySelector(".held-item");
-      sel.disabled = false;
-      sel.value = "";
-      slot.querySelector(".stack-container").innerHTML = "";
-    });
-
-    // Resetar passivas dos itens ativos
-    activeItemPassives = {};
-
-    // Aplicar bloqueio de itens
-    inicializarBloqueioItens();
-
-    // Inicializar passivas do pokémon se ainda não existirem
-    if (poke && !activePassives.hasOwnProperty(poke)) {
-      activePassives[poke] = {};
-      if (skillDamage[poke]) {
-        ['passive', 'passive1', 'passive2'].forEach(passiveKey => {
-          if (skillDamage[poke][passiveKey]) {
-            activePassives[poke][passiveKey] = false;
-          }
-        });
-      }
-    }
-    
-    calcular();
-  });
-
-  // Cálculo inicial
+  // INICIALIZAÇÃO
+  createPokemonGrid();
+  createHeldItemsGrid();
   calcular();
 });

@@ -15,24 +15,99 @@
       <h2>Calculadora de Status</h2>
 
       <!-- Seleção de Pokémon -->
-      <label for="pokemon">Selecione o Pokémon:</label>
-      <select id="pokemon" class="form-control"></select>
-
+      <label>Selecione o Pokémon:</label>
+      <div class="pokemon-selector-container">
+        <div class="pokemon-circle" id="pokemon-circle">
+          <div class="pokemon-circle-content">
+            <img id="selected-pokemon-image" src="./estatisticas-shad/images/backgrounds/placeholder.png" alt="Selecionar Pokémon" style="display: none;">
+            <div class="pokemon-placeholder">?</div>
+          </div>
+          <div class="pokemon-name" id="selected-pokemon-name">Selecionar Pokémon</div>
+        </div>
+        
+        <div class="pokemon-grid-panel" id="pokemon-grid-panel">
+          <div class="pokemon-grid" id="pokemon-grid">
+            <!-- Os Pokémons serão gerados dinamicamente pelo JavaScript -->
+          </div>
+        </div>
+      </div>
       <!-- Battle Items -->
       <label>Battle Item:</label>
-      <div class="battle-container">
-      <label>
+      <div class="battle-items-grid">
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="ejectbutton">
+          <img src="./estatisticas-shad/images/battle-items/ejectbutton.png" alt="Eject Button" class="battle-icon">
+          <span>Eject Button</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="tail">
+          <img src="./estatisticas-shad/images/battle-items/tail.png" alt="Fluffy Tail" class="battle-icon">
+          <span>Fluffy Tail</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="purify">
+          <img src="./estatisticas-shad/images/battle-items/purify.png" alt="Full Heal" class="battle-icon">
+          <span>Full Heal</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="shedinjadoll">
+          <img src="./estatisticas-shad/images/battle-items/shedinjadoll.png" alt="Shedinja Doll" class="battle-icon">
+          <span>Shedinja Doll</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="gear">
+          <img src="./estatisticas-shad/images/battle-items/gear.png" alt="Smoke" class="battle-icon">
+          <span>Smoke</span>
+        </label>
+        
+        <label class="battle-item-option">
           <input type="radio" name="battle" value="xattack">
-          <img src="./estatisticas-shad/images/battle-items/xattack.png" alt="X Attack" title="X Attack" class="battle-icon">
-      </label>
-      <label>
+          <img src="./estatisticas-shad/images/battle-items/xattack.png" alt="X-Attack" class="battle-icon">
+          <span>X-Attack</span>
+        </label>
+        
+        <label class="battle-item-option">
           <input type="radio" name="battle" value="xspeed">
-          <img src="./estatisticas-shad/images/battle-items/xspeed.png" alt="X Speed" title="X Speed" class="battle-icon">
-      </label>
-      <label>
-          <input type="radio" name="battle" value="" checked>
-          Nenhum
-      </label>
+          <img src="./estatisticas-shad/images/battle-items/xspeed.png" alt="X-Speed" class="battle-icon">
+          <span>X-Speed</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="potion">
+          <img src="./estatisticas-shad/images/battle-items/potion.png" alt="Potion" class="battle-icon">
+          <span>Potion</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="ganrao">
+          <img src="./estatisticas-shad/images/battle-items/ganrao.png" alt="Goal Getter" class="battle-icon">
+          <span>Goal Getter</span>
+        </label>
+        
+        <label class="battle-item-option">
+          <input type="radio" name="battle" value="controller">
+          <img src="./estatisticas-shad/images/battle-items/controller.png" alt="Goal Hacker" class="battle-icon">
+          <span>Goal Hacker</span>
+        </label>
+      </div>
+
+      <!-- Seleção de Itens -->
+      <label>Held Itens:</label>
+      <div class="held-items-grid" id="held-items-grid">
+        <!-- Os itens serão gerados dinamicamente pelo JavaScript -->
+      </div>
+
+      <!-- Container para mostrar os itens selecionados -->
+      <div id="selected-items-display" style="margin-top: 15px; display: none;">
+        <label>Itens Selecionados:</label>
+        <div id="selected-items-container" class="selected-items-container">
+          <!-- Slots dos itens selecionados aparecerão aqui -->
+        </div>
       </div>
 
       <!-- Emblemas -->
@@ -189,23 +264,6 @@
               <option value="7">Nível 7 (-12 Damage Taken)</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      <!-- Seleção de Itens -->
-      <label>Itens Segurados:</label>
-      <div id="itens-container" class="campos-linha">
-        <div class="item-slot">
-          <select class="form-control held-item"></select>
-          <div class="stack-container"></div>
-        </div>
-        <div class="item-slot">
-          <select class="form-control held-item"></select>
-          <div class="stack-container"></div>
-        </div>
-        <div class="item-slot">
-          <select class="form-control held-item"></select>
-          <div class="stack-container"></div>
         </div>
       </div>
 
