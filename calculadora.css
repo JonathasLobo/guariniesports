@@ -1009,8 +1009,8 @@ textarea.form-control {
 
 .pokemon-circle {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 120px;
+  height: 120px;
   border: 4px solid #ffcb05;
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(255, 203, 5, 0.1), rgba(255, 138, 1, 0.1));
@@ -1030,8 +1030,8 @@ textarea.form-control {
 }
 
 .pokemon-circle-content {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1067,12 +1067,12 @@ textarea.form-control {
 /* Pokemon Grid Panel */
 .pokemon-grid-panel {
   position: absolute;
-  top: calc(100% + 20px);
+  top: calc(-170% + 20px);
   left: 50%;
   transform: translateX(-50%);
   width: 90vw;
-  max-width: 800px;
-  max-height: 600px;
+  max-width: 1000px;
+  max-height: 800px;
   background: rgba(0, 0, 0, 0.95);
   border: 2px solid #ffcb05;
   border-radius: 15px;
@@ -1110,9 +1110,9 @@ textarea.form-control {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 2px;
   border: 2px solid transparent;
-  border-radius: 10px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.05);
@@ -1169,8 +1169,8 @@ textarea.form-control {
 /* Responsividade */
 @media (max-width: 768px) {
   .pokemon-circle {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
   }
   
   .pokemon-circle-content {
@@ -1214,8 +1214,8 @@ textarea.form-control {
 
 @media (max-width: 576px) {
   .pokemon-circle {
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
   }
   
   .pokemon-circle-content {

@@ -827,6 +827,7 @@ const gameHeldItensPassive = {
   "rapidscarf": { AtkSPD: "+25%"},
   "rescuehood": { Shield: "+17%"},
   "resonantguard": { Shield: "+6%"},
+  "choicescarf": { Speed: "+40%" }
 };
 
 
