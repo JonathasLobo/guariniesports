@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedPokemonImage = document.getElementById("selected-pokemon-image");
   const selectedPokemonName = document.getElementById("selected-pokemon-name");
   const pokemonPlaceholder = document.querySelector(".pokemon-placeholder");
+  const compartilharContainer = document.getElementById("compartilhar-container");
+  const btnCompartilhar = document.getElementById("btn-compartilhar");
+
   
   // Elementos originais
   const levelSelect = document.getElementById("nivel-final");
@@ -51,11 +54,29 @@ document.addEventListener("DOMContentLoaded", () => {
     return selectedPokemon && pokemonFixedItems[selectedPokemon] === itemKey;
   };
 
+  // Função para calcular cooldown com CDR
+  const calculateCooldown = (baseCooldown, cdrPercent) => {
+    if (!baseCooldown || baseCooldown <= 0) return null;
+    
+    // CDR funciona como redução percentual
+    const effectiveCooldown = baseCooldown * (1 - (cdrPercent / 100));
+    
+    // Mínimo de 0.5 segundos
+    return Math.max(0.5, effectiveCooldown);
+  };
+
+  const formatCooldown = (cooldown) => {
+    if (cooldown === null || cooldown === undefined) return "";
+    return `🕐 ${cooldown.toFixed(1)}s`;
+  };
+
   // Configuração de atributos
   const STAT_KEYS = [
     "HP","ATK","DEF","SpATK","SpDEF","Speed",
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
-    "HPRegen","EnergyRate", "Shield", "DmgTaken", "HindRed"
+    "HPRegen","EnergyRate", "Shield", "DmgTaken", "HindRed",
+    "SpDEFPen"
+
   ];
 
   const STAT_LABELS = {
@@ -65,10 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
     CritRate: "Crit Rate", CritDmg: "Crit Dmg",
     Lifesteal: "Lifesteal", HPRegen: "HP Regen",
     EnergyRate: "Energy Rate", Shield: "Shield", 
-    DmgTaken: "Dmg Taken Reduction", HindRed: "Hindrance Reduction"
+    DmgTaken: "Dmg Taken Reduction", HindRed: "Hindrance Reduction",
+    SpDEFPen: "Sp. DEF Penetration"
   };
 
-  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed"]);
+  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed", "SpDEFPen"]);
 
   const ensureAllStats = (obj) => {
     const out = { ...obj };
@@ -285,7 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 modifiedStats.DmgTaken += modifiedVal;
               } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
                 modifiedStats.HindRed += modifiedVal;
+              } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
+                modifiedStats.HindRed += modifiedVal;
               }
+              
             }
           }
         });
@@ -470,6 +495,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     updateGridDisplay();
+    createResetButton();
   };
 
   const toggleHeldItem = (itemKey) => {
@@ -603,6 +629,74 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+const resetHeldItems = () => {
+  // Salvar itens fixos antes de limpar
+  const fixedItems = [];
+  if (selectedPokemon && pokemonFixedItems[selectedPokemon]) {
+    const fixedItem = pokemonFixedItems[selectedPokemon];
+    fixedItems.push({
+      key: fixedItem,
+      name: gameHeldItens[fixedItem],
+      stacks: 0
+    });
+  }
+  
+  // Limpar todos os itens selecionados
+  selectedHeldItems = [];
+  
+  // Restaurar apenas os itens fixos
+  selectedHeldItems = [...fixedItems];
+  
+  // Limpar passivas ativas dos itens
+  activeItemPassives = {};
+  
+  // Atualizar displays
+  updateGridDisplay();
+  updateSelectedItemsDisplay();
+  
+  // Recalcular com os itens resetados
+  calcular();
+};
+
+// Adicione esta função após createHeldItemsGrid()
+
+const createResetButton = () => {
+  // Verificar se já existe um botão de reset
+  const existingButton = document.getElementById("reset-held-items-btn");
+  if (existingButton) {
+    return; // Botão já existe
+  }
+  
+  // Criar o botão de reset
+  const resetButton = document.createElement("button");
+  resetButton.id = "reset-held-items-btn";
+  resetButton.className = "reset-held-items-button";
+  resetButton.textContent = "🗑️ Resetar Held Itens";
+  resetButton.title = "Limpar todos os held items selecionados";
+  
+  // Adicionar event listener
+  resetButton.addEventListener("click", () => {
+    if (selectedHeldItems.length === 0) {
+      alert("Nenhum item para resetar.");
+      return;
+    }
+    
+    // Confirmar ação se houver itens selecionados
+    const hasNonFixedItems = selectedHeldItems.some(item => 
+      !isFixedItemForCurrentPokemon(item.key)
+    );
+    
+    resetHeldItems();
+  });
+  
+  // Encontrar onde inserir o botão (após o grid de held items)
+  const heldItemsGrid = document.getElementById("held-items-grid");
+  if (heldItemsGrid && heldItemsGrid.parentNode) {
+    heldItemsGrid.parentNode.insertBefore(resetButton, heldItemsGrid.nextSibling);
+  }
+};
+
+
   const inicializarBloqueioItens = () => {
     selectedHeldItems = [];
     
@@ -617,6 +711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     createHeldItemsGrid();
     updateSelectedItemsDisplay();
+    createResetButton();
   };
 
   // FUNÇÃO DE CÁLCULO
@@ -682,6 +777,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedItems = selectedHeldItems.map(item => item.key);
 
     // 1) Aplicar bônus normais dos itens e stacks
+    // Primeiro: calcular somatório de todos os bônus "flat" por stat (vindo de gameHeldItensStatus)
+    const flatBonusesByStat = {};
+    selectedHeldItems.forEach(selectedItem => {
+      const itemKey = selectedItem.key;
+      const bonuses = gameHeldItensStatus?.[itemKey] || [];
+      bonuses.forEach(b => {
+        const parts = String(b).split(" +");
+        const rawStat = parts[0] || "";
+        const valStr = parts[1] || "0";
+        const key = rawStat.replace(/[^a-z]/gi, "").toUpperCase();
+        const map = {
+          HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
+          ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
+          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
+          HindRed: "HindRed", SPDEFPEN: "SpDEFPen"
+        };
+        const prop = map[key];
+        if (!prop) return;
+        const amount = parseFloat(valStr.replace(",", "."));
+        if (!isNaN(amount)) {
+          flatBonusesByStat[prop] = (flatBonusesByStat[prop] || 0) + amount;
+        }
+      });
+    });
+
+    // Agora aplicar: começamos com base e adicionamos os bônus flat. Depois aplicamos stacks (percentuais) usando base + flatBonusesByStat.
+    modified = { ...base }; // reinicia modified a partir da base para garantir consistência
+
     selectedHeldItems.forEach(selectedItem => {
       const itemKey = selectedItem.key;
       const itemName = selectedItem.name;
@@ -696,7 +819,7 @@ document.addEventListener("DOMContentLoaded", () => {
           HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
           ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
           LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
-          HindRed: "HindRed"
+          HindRed: "HindRed", SPDEFPEN: "SpDEFPen"
         };
         const prop = map[key];
         if (!prop) return;
@@ -711,16 +834,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const stacks = selectedItem.stacks || 0;
 
         if (itemName === "Charging Charm") {
-          const bonusPercent = (base[config.stat] * (config.perStack / 100)) * stacks;
-          modified[config.stat] += config.fixedBonus + bonusPercent;
+          // Charging Charm: tem fixedBonus + parte percentual — aplicamos a parte percentual sobre base + flats
+          const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
+          const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
+          modified[config.stat] += (config.fixedBonus || 0) + bonusPercent;
         } else if (config.percent) {
-          const bonus = (base[config.stat] * (config.perStack / 100)) * stacks;
-          modified[config.stat] += bonus;
+          // itens percentuais (ex: Accel Bracer) -> aplicar percent sobre (base + todos os bônus flat deste stat)
+          const totalPercentage = config.perStack * stacks;
+          const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
+          modified[config.stat] = baseForPercent * (1 + totalPercentage / 100);
         } else {
+          // itens de incremento flat por stack
           modified[config.stat] += config.perStack * stacks;
         }
       }
     });
+
 
     // 2) Aplicar passivos dos itens
     modified = applyItemPassiveEffects(base, modified, selectedItems);
@@ -979,6 +1108,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
         const ultimateClass = isUltimate ? " ultimate" : "";
 
+        // Calcular cooldown da skill
+        const baseCooldown = s.cooldown || null;
+        const currentCDR = modified.CDR || 0;
+        const effectiveCooldown = calculateCooldown(baseCooldown, currentCDR);
+        const cooldownDisplay = formatCooldown(effectiveCooldown);
+
         const calculatedValues = [];
         
         // Primeiro passe: calcular valores não dependentes
@@ -1087,7 +1222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <img src="${imgPath}" alt="${s.name}" class="skill-icon"
                  onerror="this.onerror=null;this.src='${fallbackImg}'">
             <div class="skill-info">
-              <h4>${s.name}</h4>
+              <h4>${s.name} ${cooldownDisplay ? `<span style="color:#a30404; font-size:12px; margin-left:8px;">${cooldownDisplay}</span>` : ""}</h4>
               <ul>
                 ${s.formulas.map((f, index) => {
                   if (f.type === "text-only") {
@@ -1157,6 +1292,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     resultado.style.display = "flex";
+    compartilharContainer.style.display = "block";
+
   };
 
   // EVENT LISTENERS PRINCIPAIS
@@ -1205,4 +1342,5 @@ document.addEventListener("DOMContentLoaded", () => {
   createPokemonGrid();
   createHeldItemsGrid();
   calcular();
+  
 });

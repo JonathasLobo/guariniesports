@@ -814,10 +814,10 @@ const gameHeldItensStatus = {
 
 const gameHeldItensPassive = {
   "wiseglasses": { SpATK: "+7%" },
-  "scopelens": { CritRate: "+6%", CritDmg: "+12%" },
-  "muscleband": {},
+  "scopelens": { ATK: "+75%" },
+  "muscleband": { ATK: "+3%" },
   "leftovers": { HPRegen: "+4%"}, 
-  "focusband": { HPRegen: "+25%"},
+  "focusband": { HPRegen: "+12%"},
   "choicespecs": { formula: (stats) => 60 + (stats.SpATK * 0.4), target: "SpATK" },
   "draincrown": { Lifesteal: "+15%"},
   "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
@@ -825,9 +825,14 @@ const gameHeldItensPassive = {
   "razorclaw": { formula: (stats) => 20 + (stats.ATK * 0.5), target: "ATK" }, // Corrigido: ATK em vez de SpATK
   "scoreshield": { Shield: "+10%"},
   "rapidscarf": { AtkSPD: "+25%"},
-  "rescuehood": { Shield: "+17%"},
+  "rescuehood": { Shield: "+17%", HPRegen: "+17%"},
   "resonantguard": { Shield: "+6%"},
-  "choicescarf": { Speed: "+40%" }
+  "choicescarf": { Speed: "+40%" },
+  "assaultvest": { Shield: "+20%" },
+  "buddybarrier": { Shield: "+25%"},
+  "rockyhelmet": { ATK: "+1.8%" },
+  "shellbell": { formula: (stats) => 80 + (stats.SpATK * 0.6), target: "HP" },
+  "slickspoon": { SpDEFPen: "+15%"}
 };
 
 
@@ -3958,6 +3963,7 @@ const skillDamage = {
 
     "s11": {
       name: "Psycho Cut",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -3978,6 +3984,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Pursuit",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage",
@@ -3993,6 +4000,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Night Slash",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage First Hit",
@@ -4008,6 +4016,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Sucker Punch",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -4023,6 +4032,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Midnight Slash",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage - Full (6 Hits)",
@@ -4090,6 +4100,7 @@ const skillDamage = {
 
     "s11": {
       name: "Sacred Sword",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage - Triangle Attack",
@@ -4105,6 +4116,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Shadow Claw",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage - First 2 Hits Damage",
@@ -4120,6 +4132,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Wide Guard",
+      cooldown: 8,
       formulas: [
         {
           label: "Shield",
@@ -4130,6 +4143,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Iron Head",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -4140,6 +4154,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Coup de Grace",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -4184,6 +4199,7 @@ const skillDamage = {
 
     "s11": {
       name: "Fire Spin",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - per Tick",
@@ -4199,6 +4215,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Armor Cannon",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage - Explosion",
@@ -4214,6 +4231,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Flame Charge",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -4229,6 +4247,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Psychock",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -4239,6 +4258,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Psykaboom",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -4272,6 +4292,7 @@ const skillDamage = {
 
     "s11": {
       name: "Recover",
+      cooldown: 7,
       formulas: [
         {
           label: "Healing - Basic",
@@ -4297,6 +4318,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Sweet Scent",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Explosion",
@@ -4312,6 +4334,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Decorate",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Shield",
@@ -4337,6 +4360,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Dazzling Gleam",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -4352,6 +4376,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Fluffy Cream Supreme",
+    cooldown: 100,
 		formulas: [
         {
           label: "Healing - per Cream (48 max)",
@@ -4394,6 +4419,7 @@ const skillDamage = {
 
     "s11": {
       name: "Play Rough",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - per Hit (3 hits)",
@@ -4404,6 +4430,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Water Pulse",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -4414,6 +4441,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Whirlpool",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - per Hit",
@@ -4444,6 +4472,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Aqua Tail",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage - Basic (Close Range)",
@@ -4474,6 +4503,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Belly Bash",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage",
@@ -4523,6 +4553,7 @@ const skillDamage = {
 
     "s11": {
       name: "Water Spout",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Area (6 Hits)",
@@ -4548,6 +4579,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Hydro Pump",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage (3 Hits)",
@@ -4573,6 +4605,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Surf",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -4588,6 +4621,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Rapid Spin",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage (10 hits)",
@@ -4603,6 +4637,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Hydro Typhoon",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage",
@@ -4660,6 +4695,7 @@ const skillDamage = {
 
     "s11": {
       name: "Fire Punch",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Per Punch (2x)",
@@ -4675,6 +4711,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Overheat",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Low Charge",
@@ -4710,6 +4747,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Focus Blast",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -4720,6 +4758,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Blaze Kick",
+      cooldown: 9.5,
       formulas: [
         {
           label: "Damage",
@@ -4730,6 +4769,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Spinning Flame Fist",
+    cooldown: 4.7,
 		formulas: [
         {
           label: "Damage (2x)",
@@ -4767,6 +4807,7 @@ const skillDamage = {
 
     "s11": {
       name: "Egg Bomb",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage",
@@ -4777,11 +4818,13 @@ const skillDamage = {
     },
     "s12": {
       name: "Helping Hand",
+      cooldown: 9,
 	  formulas: [
       ]
     },
     "s21": {
       name: "Soft-Boiled",
+      cooldown: 12,
       formulas: [
         {
           label: "Healing",
@@ -4797,6 +4840,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Safeguard",
+      cooldown: 10,
       formulas: [
         {
           label: "Shield",
@@ -4812,6 +4856,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Bliss Assistance",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -4861,6 +4906,7 @@ const skillDamage = {
 
     "s11": {
       name: "Lunge",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -4871,6 +4917,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Smack Down",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -4886,6 +4933,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Leech Life",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - per Tick",
@@ -4906,6 +4954,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Superpower",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Initial",
@@ -4921,6 +4970,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Ultra Swole Slam",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Sweep",
@@ -4979,6 +5029,7 @@ const skillDamage = {
 
     "s11": {
       name: "Bitter Blade",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -4989,6 +5040,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Pyscho Cut",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -5009,6 +5061,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Phantom Force",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage",
@@ -5019,6 +5072,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Flame Charge",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -5029,6 +5083,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Revenant Rend",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (x3)",
@@ -5044,6 +5099,7 @@ const skillDamage = {
           name: "Infiltrator",
           description: "Gains stacks that ignore a portion of the target's Special Defense with each damage dealt, refreshing duration on new stacks. Max stacks ignore 20% Sp. Def.",
           buff: {
+            SpDEFPen: "2.5%"
           },
           formulas: [
           ]
@@ -5071,6 +5127,7 @@ const skillDamage = {
 
     "s11": {
       name: "Flamethrower",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -5091,6 +5148,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Overheat",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -5126,6 +5184,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Poltergeist",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -5136,11 +5195,13 @@ const skillDamage = {
     },
     "s22": {
       name: "Imprison",
+      cooldown: 9.5,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Ignite Midnight",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage (6x)",
@@ -5184,6 +5245,7 @@ const skillDamage = {
 
     "s11": {
       name: "Flamethrower",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -5209,6 +5271,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Fire Punch",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -5224,6 +5287,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Fire Blast",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -5249,6 +5313,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Flare Blitz",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage",
@@ -5264,6 +5329,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Seismic Slam",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage - Burning (2x)",
@@ -5308,6 +5374,7 @@ const skillDamage = {
 
     "s11": {
       name: "Pyro Ball",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -5323,6 +5390,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Blaze Kick",
+      cooldown: 9.5,
       formulas: [
         {
           label: "Damage",
@@ -5338,6 +5406,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Flame Charge",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -5348,11 +5417,13 @@ const skillDamage = {
     },
     "s22": {
       name: "Feint",
+      cooldown: 9,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Blazing Bicycle Kick",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -5390,6 +5461,7 @@ const skillDamage = {
 
     "s11": {
       name: "Moonlight",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Heal - per Tick (per half second)",
@@ -5400,6 +5472,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Draining Kiss",
+      cooldown: 4,
       formulas: [
         {
           label: "Damage",
@@ -5410,6 +5483,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Gravity",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Auto Attacks",
@@ -5420,6 +5494,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Follow Me",
+      cooldown: 7.5,
       formulas: [
 		{
 		  label: "Shield",
@@ -5430,6 +5505,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Wonder Wish",
+    cooldown: 100,
 		formulas: [
         {
           label: "Explosion",
@@ -5508,6 +5584,7 @@ const skillDamage = {
 
     "s11": {
       name: "Floral Healing",
+      cooldown: 5,
       formulas: [
         {
           label: "Healing",
@@ -5533,6 +5610,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Sweet Kiss",
+      cooldown: 6,
       formulas: [
         {
           label: "Additional Shield",
@@ -5543,6 +5621,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Magical Leaf",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage - per leaf",
@@ -5553,6 +5632,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Grass Knot",
+      cooldown: 6,
       formulas: [
 		{
 		  label: "Damage",
@@ -5568,6 +5648,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Flowery Fields Forever",
+    cooldown: 89,
 		formulas: [
         {
           label: "Heal - per tick",
@@ -5625,6 +5706,7 @@ const skillDamage = {
 
     "s11": {
       name: "Surf",
+      cooldown: 7.5,
       formulas: [
         {
           label: "First Hit",
@@ -5640,6 +5722,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dive",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -5660,6 +5743,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Hurricane",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -5670,6 +5754,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Air Slash",
+      cooldown: 8,
       formulas: [
 		{
 		  label: "Damage - per Blade (5 blades)",
@@ -5685,6 +5770,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Gatling Gulp Missile",
+    cooldown: 123,
 		formulas: [
         {
           label: "Damage (10x)",
@@ -5727,6 +5813,7 @@ const skillDamage = {
 
     "s11": {
       name: "Rock Tomb",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage - Projectile",
@@ -5747,11 +5834,13 @@ const skillDamage = {
     },
     "s12": {
       name: "Shell Smash",
+      cooldown: 7,
       formulas: [
       ]
     },
     "s21": {
       name: "Stealth Rock",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage",
@@ -5762,6 +5851,7 @@ const skillDamage = {
     },
     "s22": {
       name: "X-Scissor",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -5782,6 +5872,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Rubble Rouser",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage - Revenge",
@@ -5834,6 +5925,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dark Void",
+      cooldown: 4,
       formulas: [
         {
           label: "Damage",
@@ -5844,6 +5936,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Nasty Plot",
+      cooldown: 3,
       formulas: [
         {
           label: "Damage - Additional (Per Counter)",
@@ -5859,6 +5952,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Shadow Claw",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -5924,6 +6018,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Dark Pulse",
+      cooldown: 8,
       formulas: [
 		{
 		  label: "Damage",
@@ -5939,6 +6034,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Worst Nightmare",
+    cooldown: 112,
 		formulas: [
 	]
 	}
@@ -5971,6 +6067,7 @@ const skillDamage = {
 
     "s11": {
       name: "Razor leaf",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Basic [Main Target]",
@@ -6001,6 +6098,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Spirit Shackle",
+      cooldown: 8.5,
       formulas: [
 		{
           label: "Damage - Min Charge",
@@ -6021,6 +6119,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Leaf Tornado",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -6031,6 +6130,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Shadow Sneak",
+      cooldown: 12,
       formulas: [
 		{
           label: "Damage",
@@ -6041,6 +6141,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Nock Nock",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - per Quill (30 Quills)",
@@ -6088,6 +6189,7 @@ const skillDamage = {
 
     "s11": {
       name: "Fire Blast",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage - Initial",
@@ -6113,6 +6215,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Mystical Fire",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage",
@@ -6123,6 +6226,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Fire Spin",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage - per Tick",
@@ -6133,6 +6237,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Flame Charge",
+      cooldown: 4.5,
       formulas: [
 		{
 		  label: "Damage",
@@ -6148,6 +6253,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Fanciful Fireworks",
+    cooldown: 84,
 		formulas: [
         {
           label: "Damage - per Tick",
@@ -6191,6 +6297,7 @@ const skillDamage = {
 
     "s11": {
       name: "Tri Attack",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -6216,6 +6323,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Drill Peck",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage - 3x (No Gauge)",
@@ -6231,11 +6339,13 @@ const skillDamage = {
     },
     "s21": {
       name: "Agility",
+      cooldown: 9,
       formulas: [
       ]
     },
     "s22": {
       name: "Jump Kick",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage - Initial",
@@ -6251,6 +6361,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Triple Trample",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage",
@@ -6288,6 +6399,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dragon Breath",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -6313,6 +6425,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Shadow Ball",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage",
@@ -6348,6 +6461,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dragon Dance",
+      cooldown: 11,
       formulas: [
         {
           label: "Damage",
@@ -6363,11 +6477,13 @@ const skillDamage = {
     },
     "s22": {
       name: "Phantom Force",
+      cooldown: 12,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Dreep and Destroy",
+    cooldown: 10,
 		formulas: [
         {
           label: "Damage",
@@ -6406,11 +6522,13 @@ const skillDamage = {
 
     "s11": {
       name: "Dragon Dance",
+      cooldown: 5.5,
       formulas: [
       ]
     },
     "s12": {
       name: "Extreme Speed",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage",
@@ -6421,6 +6539,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Hyper Beam",
+      cooldown: 10.5,
       formulas: [
         {
           label: "Damage - Stage 0",
@@ -6446,6 +6565,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Outrage",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage - Stomp",
@@ -6461,6 +6581,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Draco Impact",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -6498,6 +6619,7 @@ const skillDamage = {
 
     "s11": {
       name: "Flash Cannon",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage - Rupture",
@@ -6513,6 +6635,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dragon Pulse",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage - No Charge",
@@ -6540,6 +6663,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dragon Tail",
+      cooldown: 14,
       formulas: [
         {
           label: "Damage",
@@ -6555,6 +6679,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Stealth Rock",
+      cooldown: 8.5,
       formulas: [
 		{
           label: "Damage - per Tick (4 Ticks)",
@@ -6570,6 +6695,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Revolving Ruin",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage - per Hit",
@@ -6633,6 +6759,7 @@ const skillDamage = {
 
     "s11": {
       name: "Pollen Puff",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -6653,6 +6780,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Leaf Tornado",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - First Hit",
@@ -6669,6 +6797,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Cotton Guard",
+      cooldown: 10.5,
       formulas: [
         {
           label: "Shield",
@@ -6679,6 +6808,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Cotton Spore",
+      cooldown: 6,
       formulas: [
 		{
 		  label: "Damage",
@@ -6689,6 +6819,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Cotton Cloud Crash",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -6737,6 +6868,7 @@ const skillDamage = {
 
     "s11": {
       name: "Psyshock",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - First Hit",
@@ -6752,6 +6884,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Stored Power",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - First Hit",
@@ -6772,6 +6905,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Psybeam",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Initial",
@@ -6783,6 +6917,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Future Sight",
+      cooldown: 7,
       formulas: [
 		{
 		  label: "Damage",
@@ -6794,6 +6929,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Psychic Solare",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -6832,6 +6968,7 @@ const skillDamage = {
 
     "s11": {
       name: "Megahorn",
+      cooldown: 8,
       formulas: [
 		{
           label: "Shield",
@@ -6861,6 +6998,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Iron Head",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Shield",
@@ -6883,6 +7021,7 @@ const skillDamage = {
     },
     "s21": {
       name: "No Retreat",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -6908,6 +7047,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Beat Up",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage - Charge (x2)",
@@ -6933,6 +7073,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Dust Devil Formation",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - per Hit",
@@ -6975,6 +7116,7 @@ const skillDamage = {
 
     "s11": {
       name: "Earthquake",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage - Initial",
@@ -6990,6 +7132,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dragon Rush",
+      cooldown: 5.5,
       formulas: [
 		{
           label: "Damage",
@@ -7000,6 +7143,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dig",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -7015,6 +7159,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Dragon Claw",
+      cooldown: 4,
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -7040,6 +7185,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Livid Outrage",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - First Hit",
@@ -7102,6 +7248,7 @@ const skillDamage = {
 
     "s11": {
       name: "Psychic",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -7117,6 +7264,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Moonblast",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -7132,6 +7280,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Psyshock",
+      cooldown: 11,
       formulas: [
         {
           label: "Damage",
@@ -7157,6 +7306,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Future Sight",
+      cooldown: 9,
       formulas: [
 		{
 		  label: "Damage",
@@ -7167,6 +7317,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Fairy Singularity",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage - Final Tick",
@@ -7210,6 +7361,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dream Eater",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -7235,6 +7387,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Sludge Bomb",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -7245,6 +7398,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Shadow Ball",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage",
@@ -7265,6 +7419,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Hex",
+      cooldown: 7.5,
       formulas: [
 		{
 		  label: "Damage",
@@ -7280,6 +7435,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Phantom Ambush",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -7324,6 +7480,7 @@ const skillDamage = {
 
     "s11": {
       name: "Icicle Spear",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - per Ice Crystal",
@@ -7334,6 +7491,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Icy Wind",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage - per Ice Crystal",
@@ -7344,6 +7502,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Ice Shard",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage - Basic",
@@ -7354,6 +7513,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Freeze Dry",
+      cooldown: 8.5,
       formulas: [
 		{
 		  label: "Damage",
@@ -7364,6 +7524,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Glacial Stage",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -7412,6 +7573,7 @@ const skillDamage = {
 
     "s11": {
       name: "Muddy Water",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage",
@@ -7432,6 +7594,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dragon Pulse",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage (Center - per hit up to 4 hits)",
@@ -7471,6 +7634,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Power Whip",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -7481,6 +7645,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Acid Spray",
+      cooldown: 7.5,
       formulas: [
 		{
 		  label: "Damage (Initial)",
@@ -7496,6 +7661,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Right as Rain",
+    cooldown: 89,
 		formulas: [
 	]
 	}
@@ -7538,6 +7704,7 @@ const skillDamage = {
 
     "1a": {
       name: "Bullet Seed",
+      cooldown: 4.5,
       formulas: [
 		{
           label: "Damage - per Seed",
@@ -7553,6 +7720,7 @@ const skillDamage = {
     },
     "1b": {
       name: "Belch",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage",
@@ -7568,11 +7736,13 @@ const skillDamage = {
     },
     "2a": {
       name: "Stuff Cheeks",
+      cooldown: 8,
       formulas: [
       ]
     },
     "2b": {
       name: "Covet",
+      cooldown: 10,
       formulas: [
 		{
           label: "Damage",
@@ -7588,6 +7758,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Berry Belly Flop",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -7627,6 +7798,7 @@ const skillDamage = {
 
     "s11": {
       name: "Water Shuriken",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage - per Shuriken",
@@ -7642,6 +7814,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Surf",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage",
@@ -7667,11 +7840,13 @@ const skillDamage = {
     },
     "s21": {
       name: "Double Team",
+      cooldown: 8,
       formulas: [
       ]
     },
     "s22": {
       name: "Smokescreen",
+      cooldown: 13,
       formulas: [
 		{
           label: "Damage - Boosted (Replacement)",
@@ -7682,6 +7857,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Waterburst Shuriken",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage (2x)",
@@ -7722,6 +7898,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dragon Breath",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage",
@@ -7757,6 +7934,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Aqua Tail",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage",
@@ -7782,6 +7960,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Waterfall",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage",
@@ -7793,6 +7972,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Bounce",
+      cooldown: 8.5,
       formulas: [
 		{
           label: "Damage",
@@ -7813,6 +7993,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Dragon Current",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -7867,6 +8048,7 @@ const skillDamage = {
 
     "s11": {
       name: "Sacred Fire",
+      cooldown: 12,
       formulas: [
 		{
           label: "Damage - Fireball",
@@ -7877,6 +8059,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Fire Spin",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage (Vortex)",
@@ -7893,6 +8076,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Flamethrower",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage",
@@ -7913,6 +8097,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Sky Attack",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage",
@@ -7933,6 +8118,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Rekindling Flame",
+    cooldown: 134,
 		formulas: [
 	 ]
 	}
@@ -7965,6 +8151,7 @@ const skillDamage = {
 
     "s11": {
       name: "Phantom Force",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -7980,6 +8167,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Shadow Ball",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage",
@@ -7995,6 +8183,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Hyperspace Hole",
+      cooldown: 12,
       formulas: [
         {
           label: "Damage",
@@ -8005,6 +8194,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Trick",
+      cooldown: 7.5,
       formulas: [
 		{
 		  label: "Shield",
@@ -8021,6 +8211,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Rings Unbound",
+    cooldown: 112,
 		formulas: [
 		{
           label: "Auto Attack Damage",
@@ -8069,6 +8260,7 @@ const skillDamage = {
 
     "s11": {
       name: "Fell Stinger",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -8079,6 +8271,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Acrobatics",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -8089,6 +8282,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Snipe Shot",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage (Close)",
@@ -8109,6 +8303,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Liquidation",
+      cooldown: 6,
       formulas: [
 		{
 		  label: "Damage (per bullet)",
@@ -8119,6 +8314,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Azure Spy Vision",
+    cooldown: 112,
 		formulas: [
 	]
 	}
@@ -8153,6 +8349,7 @@ const skillDamage = {
 
     "s11": {
       name: "Water Pulse",
+      cooldown: 4,
       formulas: [
         {
           label: "Damage (First Pulse)",
@@ -8168,6 +8365,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Perish Song",
+      cooldown: 6.5,
       formulas: [
         {
           label: "Damage",
@@ -8178,6 +8376,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Bubble Beam",
+      cooldown: 9,
       formulas: [
         {
           label: "Shield",
@@ -8198,6 +8397,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Ice Beam",
+      cooldown: 8,
       formulas: [
 		{
 		  label: "Damage - Beam",
@@ -8213,6 +8413,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Lapras Express",
+    cooldown: 100,
 		formulas: [
 		{
 		  label: "Damage",
@@ -8246,6 +8447,7 @@ const skillDamage = {
 
     "s11": {
       name: "Mist Ball",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Projectile",
@@ -8261,6 +8463,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dragon Cheer",
+      cooldown: 8,
       formulas: [
         {
           label: "Extra Damage",
@@ -8281,6 +8484,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dragon Pulse",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -8301,6 +8505,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Dragon Breath",
+      cooldown: 6,
       formulas: [
 		{
 		  label: "Damage",
@@ -8311,6 +8516,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Mist Blast",
+    cooldown: 112,
 		formulas: [
 		{
 		  label: "Damage",
@@ -8349,6 +8555,7 @@ const skillDamage = {
 
     "s11": {
       name: "Luster Purge",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -8359,6 +8566,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Telekinesis",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -8369,6 +8577,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dragon Pulse",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Boosted Attack",
@@ -8384,6 +8593,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Draco Meteor",
+      cooldown: 7.5,
       formulas: [
 		{
 		  label: "Damage - per Comet",
@@ -8394,6 +8604,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Eon Blast",
+    cooldown: 112,
 		formulas: [
 		{
 		  label: "Damage",
@@ -8443,6 +8654,7 @@ const skillDamage = {
 
     "s11": {
       name: "Razor Leaf",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage (Outgoing - First Leaf)",
@@ -8473,6 +8685,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Solar Blade",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage (1st Level Charge)",
@@ -8498,6 +8711,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Aerial Ace",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage",
@@ -8508,6 +8722,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Leaf Blade",
+      cooldown: 8.5,
       formulas: [
 		{
           label: "Damage (Inner Ring x3)",
@@ -8523,6 +8738,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Emerald Two-Step",
+    cooldown: 100,
 		formulas: [
 		{
           label: "Damage (Initial leap)",
@@ -8581,6 +8797,7 @@ const skillDamage = {
 
     "s11": {
       name: "Power-Up Punch",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage - Uncharged",
@@ -8596,6 +8813,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Extreme Speed",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage",
@@ -8616,6 +8834,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Bone Rush",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage - per Hit (4-7 Hits)",
@@ -8626,6 +8845,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Close Combat",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage - per Hit (11 Hits)",
@@ -8646,6 +8866,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Aura Cannon",
+    cooldown: 100,
 		formulas: [
 		{
           label: "Damage - per Tick",
@@ -8684,6 +8905,7 @@ const skillDamage = {
 
     "s11": {
       name: "Close Combat",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage - per Hit (4 hits)",
@@ -8699,6 +8921,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Cross Chop",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage",
@@ -8709,6 +8932,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Dynamic Punch",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage - per Tick (4 Ticks)",
@@ -8719,6 +8943,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Submission",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage (2x)",
@@ -8729,6 +8954,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Barrage Blow",
+    cooldown: 134,
 		formulas: [
 		{
           label: "Damage (6x)",
@@ -8781,6 +9007,7 @@ const skillDamage = {
 
     "s11": {
       name: "Icicle Crash",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage - Small Icicles (3x)",
@@ -8801,6 +9028,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Ice Fang",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -8816,6 +9044,7 @@ const skillDamage = {
     },
     "s21": {
       name: "High Horsepower",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage - Charge",
@@ -8836,6 +9065,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Earthquake",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage",
@@ -8846,6 +9076,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Mammoth Mash",
+    cooldown: 112,
 		formulas: [
 		{
           label: "Damage - First Stomp",
@@ -8895,7 +9126,8 @@ const skillDamage = {
 	},
 
     "s11": {
-      name: "Flowe Trick",
+      name: "Flower Trick",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage - Explosion Base",
@@ -8911,6 +9143,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Night Slash",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage",
@@ -8931,6 +9164,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Double Team",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -8941,6 +9175,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Trailblaze",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage",
@@ -8956,6 +9191,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Floral Flourish",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - per tick (max 13)",
@@ -8994,6 +9230,7 @@ const skillDamage = {
 
     "s11": {
       name: "Meteor Mash",
+      cooldown: 7,
       formulas: [
         {
           label: "Shield (per charge stack)",
@@ -9049,6 +9286,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Gyro Ball",
+      cooldown: 4,
       formulas: [
 		{
           label: "Damage",
@@ -9064,6 +9302,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Zen Headbutt",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -9074,6 +9313,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Magnet Rise",
+      cooldown: 9,
       formulas: [
 		  {
           label: "Damage - Grounding",
@@ -9084,6 +9324,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Compute and Crush",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (2 punches)",
@@ -9141,6 +9382,7 @@ const skillDamage = {
 
     "s1a": {
       name: "Electro Ball",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage (No Light Screen Boost)",
@@ -9156,6 +9398,7 @@ const skillDamage = {
     },
     "s1b": {
       name: "Solar Beam",
+      cooldown: 9,
       formulas: [
 	    	{
           label: "Damage - per Tick (max 3)",
@@ -9171,6 +9414,7 @@ const skillDamage = {
     },
     "s1c": {
       name: "Surf",
+      cooldown: 12,
       formulas: [
 	    	{
           label: "Damage ",
@@ -9191,6 +9435,7 @@ const skillDamage = {
     },
     "s2a": {
       name: "Coaching",
+      cooldown: 7,
       formulas: [
         {
           label: "Shield",
@@ -9201,16 +9446,19 @@ const skillDamage = {
     },
     "s2b": {
       name: "Light Screen",
+      cooldown: 9,
       formulas: [  
       ]
     },
     "s2c": {
       name: "Agility",
+      cooldown: 10,
       formulas: [	  
       ]
     },
 	"ult": {
 		name: "Mystical Mirage",
+    cooldown: 123,
 		formulas: [
         {
           label: "Damage ",
@@ -9258,6 +9506,7 @@ const skillDamage = {
 
     "s11": {
       name: "Future Sight",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - Pull and Explosion",
@@ -9268,6 +9517,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Psystrike",
+      cooldown: 9,
       formulas: [
 	    	{
           label: "Damage (x5)",
@@ -9283,6 +9533,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Recover",
+      cooldown: 10,
       formulas: [
         {
           label: "Shield",
@@ -9299,11 +9550,13 @@ const skillDamage = {
     
     "s22": {
       name: "Teleport",
+      cooldown: 10,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Infinite Psyburn",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage ",
@@ -9345,6 +9598,7 @@ const skillDamage = {
 
     "s11": {
       name: "Future Sight",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage - Shove",
@@ -9360,6 +9614,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Psystrike",
+      cooldown: 9,
       formulas: [
 	    	{
           label: "Damage (x5)",
@@ -9374,6 +9629,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Recover",
+      cooldown: 11,
       formulas: [
         {
           label: "Shield",
@@ -9390,12 +9646,14 @@ const skillDamage = {
     
     "s22": {
       name: "Teleport",
+      cooldown: 11,
       formulas: [
 		  
       ]
     },
 	"ult": {
 		name: "Infinite Psyburn",
+    cooldown: 134,
 		formulas: [
         {
           label: "Damage ",
@@ -9435,6 +9693,7 @@ const skillDamage = {
 
     "s11": {
       name: "Play Rough",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Pull and Explosion",
@@ -9445,6 +9704,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Shadow Claw",
+      cooldown: 4,
       formulas: [
 	    {
           label: "Damage - Last Hit",
@@ -9460,6 +9720,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Shadow Sneak",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - After Teleporting",
@@ -9486,11 +9747,13 @@ const skillDamage = {
     
     "s22": {
       name: "Trick Room",
+      cooldown: 7,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Play With Me...",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - per hit",
@@ -9535,6 +9798,7 @@ const skillDamage = {
 
     "s11": {
       name: "Charge Beam",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage - Regular",
@@ -9550,6 +9814,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Electro Drift",
+      cooldown: 12,
       formulas: [
 	    	{
           label: "Damage - Regular",
@@ -9565,6 +9830,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Thunder",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage (x5)",
@@ -9576,6 +9842,7 @@ const skillDamage = {
     
     "s22": {
       name: "Parabolic Charge",
+      cooldown: 11,
       formulas: [
 		{
           label: "Damage",
@@ -9606,6 +9873,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Bright Future Meteor Storm",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Base per meteorite",
@@ -9644,11 +9912,13 @@ const skillDamage = {
 
     "s11": {
       name: "Barrier",
+      cooldown: 8,
       formulas: [
       ]
     },
     "s12": {
       name: "Psychic",
+      cooldown: 6.5,
       formulas: [
 	    	{
           label: "Damage - per Pulse",
@@ -9664,6 +9934,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Confusion",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -9700,6 +9971,7 @@ const skillDamage = {
     
     "s22": {
       name: "Power Swap",
+      cooldown: 4.5,
       formulas: [
 		{
           label: "Damage - per Tick",
@@ -9715,6 +9987,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Showtime",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage - First 3 Hits",
@@ -9762,6 +10035,7 @@ const skillDamage = {
 
     "s11": {
       name: "Avalanche",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage - Wind or Wall",
@@ -9772,6 +10046,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dazzling Gleam",
+      cooldown: 7.5,
       formulas: [
 	    	{
           label: "Damage",
@@ -9787,6 +10062,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Blizzard",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Initial Blast",
@@ -9825,6 +10101,7 @@ const skillDamage = {
     
     "s22": {
       name: "Aurora Veil",
+      cooldown: 13,
       formulas: [
 		{
           label: "Heal - per Boosted Attack",
@@ -9835,6 +10112,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Snow Globe",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Frozen Enemies",
@@ -9892,6 +10170,7 @@ const skillDamage = {
 
     "s11": {
       name: "Thunder Punch",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -9917,6 +10196,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Supercell Slam",
+      cooldown: 6,
       formulas: [
 	    {
           label: "Damage - First Use",
@@ -9962,6 +10242,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Volt Switch",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage",
@@ -9978,6 +10259,7 @@ const skillDamage = {
     
     "s22": {
       name: "Mach Punch",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage",
@@ -10035,6 +10317,7 @@ const skillDamage = {
 
     "s11": {
       name: "Thunderbolt",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage - per Bolt",
@@ -10050,6 +10333,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Electro Ball",
+      cooldown: 5.5,
       formulas: [
 	    {
           label: "Damage - Area",
@@ -10075,6 +10359,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Volt Tackle",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage (5x)",
@@ -10086,6 +10371,7 @@ const skillDamage = {
     
     "u11": {
       name: "Thunder",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage - Area (5x)",
@@ -10096,6 +10382,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Thunderstorm",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage",
@@ -10129,6 +10416,7 @@ const skillDamage = {
 
     "s11": {
       name: "Surf",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage",
@@ -10144,6 +10432,7 @@ const skillDamage = {
     },
 	"s12": {
       name: "Bubble Beam",
+      cooldown: 6.5,
       formulas: [
 		{
           label: "Damage",
@@ -10169,6 +10458,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Disable",
+      cooldown: 8,
       formulas: [
 	    {
           label: "Damage",
@@ -10179,6 +10469,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Psychic",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage",
@@ -10189,6 +10480,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Full-Power Psy-ay-ay!",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -10226,6 +10518,7 @@ const skillDamage = {
 
     "s11": {
       name: "Stored Power",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage",
@@ -10236,6 +10529,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Electro Ball",
+      cooldown: 6,
       formulas: [
 	    {
           label: "Damage",
@@ -10256,6 +10550,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Thunderbolt",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage",
@@ -10266,6 +10561,7 @@ const skillDamage = {
     },
 	"s22": {
       name: "Psychic",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage",
@@ -10286,6 +10582,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Thunderstorm Aerial",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -10330,6 +10627,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dazzling Gleam",
+      cooldown: 4.5,
       formulas: [
 		{
           label: "Damage",
@@ -10340,6 +10638,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Fairy Wind",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage - First 2 Hits (per Hit)",
@@ -10355,6 +10654,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Smart Strike",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage",
@@ -10365,11 +10665,13 @@ const skillDamage = {
     },
 	"s22": {
       name: "Agility",
+      cooldown: 2,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Triad Blitz",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -10408,6 +10710,7 @@ const skillDamage = {
 
     "s11": {
       name: "Knock Off",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage (per Hit)",
@@ -10418,6 +10721,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Shadow Sneak",
+      cooldown: 12,
       formulas: [
 	    {
           label: "Damage - Additional",
@@ -10428,6 +10732,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Feint Attack",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage - per Tick (9 Ticks)",
@@ -10439,6 +10744,7 @@ const skillDamage = {
     
     "s22": {
 		name: "Confuse Ray",
+    cooldown: 10,
       	formulas: [
         {
           label: "Damage",
@@ -10450,6 +10756,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Chaos Glower",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage",
@@ -10492,6 +10799,7 @@ const skillDamage = {
 
     "s12": {
       name: "Bullet Punch",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage - Initial Punch",
@@ -10518,6 +10826,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Double Hit",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage",
@@ -10528,6 +10837,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Swords Dance",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage - Eighth Attack",
@@ -10539,6 +10849,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Red Illusion Dive",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Initial Punch, Ground Punch, & Copy Contact",
@@ -10591,6 +10902,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dual Wingbeat",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Slash",
@@ -10627,6 +10939,7 @@ const skillDamage = {
 
     "s21": {
       name: "Double Hit",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage",
@@ -10637,6 +10950,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Swords Dance",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage - Eighth Attack",
@@ -10648,6 +10962,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Green Illusion Dive",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Initial, Dash, & Copy Dash",
@@ -10690,6 +11005,7 @@ const skillDamage = {
 
     "s11": {
       name: "Scald",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage - per Hit (3 Hits)",
@@ -10705,6 +11021,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Surf",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage - per Wave (3 Waves)",
@@ -10715,16 +11032,19 @@ const skillDamage = {
     },
     "s21": {
       name: "Amnesia",
+      cooldown: 9,
       formulas: [
       ]
     },
 	"s22": {
       name: "Telekinesis",
+      cooldown: 7.5,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Slowbeam",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (x6)",
@@ -10768,6 +11088,7 @@ const skillDamage = {
 
     "s11": {
       name: "Flail",
+      cooldown: 7,
       formulas: [
         {
           label: "Basic Attack - Above 80% HP",
@@ -10874,6 +11195,7 @@ const skillDamage = {
 
     "s12": {
       name: "Heavy Slam",
+      cooldown: 6,
       formulas: [
 	    {
           label: "Damage",
@@ -10889,6 +11211,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Block",
+      cooldown: 8,
       formulas: [
         {
           label: "Shield",
@@ -10900,12 +11223,14 @@ const skillDamage = {
 
 	"s2": {
       name: "Yawn",
+      cooldown: 10.5,
       formulas: [
       ]
     },
 	
 	"ult": {
 		name: "Power Nap",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage",
@@ -10964,6 +11289,7 @@ const skillDamage = {
 
     "s11": {
       name: "Whirlpool",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage - Per tick",
@@ -10979,6 +11305,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Surf",
+      cooldown: 5,
       formulas: [
 	    {
           label: "Damage",
@@ -10994,6 +11321,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Ice Beam",
+      cooldown: 7.5,
       formulas: [
 		{
           label: "Damage Skill Plus",
@@ -11004,6 +11332,7 @@ const skillDamage = {
     },
 	"s22": {
       name: "Icy Wind",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage",
@@ -11019,6 +11348,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Endless Ice Spikes",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Spike Creation",
@@ -11063,6 +11393,7 @@ const skillDamage = {
 
     "s11": {
       name: "Mystical Fire",
+      cooldown: 7,
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -11073,6 +11404,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Hyper Voice",
+      cooldown: 5.5,
       formulas: [
 	    {
           label: "Damage - Near (6x)",
@@ -11088,6 +11420,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Draining Kiss",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage (3x)",
@@ -11108,6 +11441,7 @@ const skillDamage = {
     },
 	"s22": {
       name: "Calm Mind",
+      cooldown: 9.5,
       formulas: [
 		{
           label: "Shield",
@@ -11118,6 +11452,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Fairy Frolic",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -11156,6 +11491,7 @@ const skillDamage = {
 
     "s11": {
       name: "Aerial Ace",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -11177,6 +11513,7 @@ const skillDamage = {
 
     "s12": {
       name: "Flame Charge",
+      cooldown: 6.5,
       formulas: [
 	    {
           label: "Damage",
@@ -11192,6 +11529,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Fly",
+      cooldown: 12,
       formulas: [
         {
           label: "Damage",
@@ -11202,6 +11540,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Brave Bird",
+      cooldown: 8.5,
       formulas: [
         {
           label: "Damage",
@@ -11213,6 +11552,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Flame Sweep",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage (2x)",
@@ -11257,6 +11597,7 @@ const skillDamage = {
 
     "s11": {
       name: "Gigaton Hammer",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Low charge",
@@ -11281,6 +11622,7 @@ const skillDamage = {
 
     "s12": {
       name: "Smack Down",
+      cooldown: 6,
       formulas: [
 	    {
           label: "Damage",
@@ -11296,6 +11638,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Ice Hammer",
+      cooldown: 5,
       formulas: [
         {
           label: "Damage",
@@ -11306,6 +11649,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Thief",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -11317,6 +11661,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Kiss Bliss Kaboom",
+    cooldown: 89,
 		formulas: [
         {
           label: "Damage - Kiss Bliss",
@@ -11364,6 +11709,7 @@ const skillDamage = {
 
     "s11": {
       name: "Wood Hammer",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - Both Hits",
@@ -11391,6 +11737,7 @@ const skillDamage = {
 
     "s12": {
       name: "Curse",
+      cooldown: 6,
       formulas: [
 	    {
           label: "Damage - per Tick",
@@ -11421,6 +11768,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Horn Leech",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage - 2 Hits",
@@ -11451,6 +11799,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Pain Split",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage - per conditional tick",
@@ -11482,6 +11831,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Phantom Forest",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -11528,6 +11878,7 @@ const skillDamage = {
 	},
     "s11": {
       name: "Triple Axel",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage - per Hit",
@@ -11564,6 +11915,7 @@ const skillDamage = {
 
     "s12": {
       name: "Stomp",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage",
@@ -11594,6 +11946,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Trop Kick",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -11644,6 +11997,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Grassy Glide",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage (2x)",
@@ -11675,6 +12029,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Queen Ascendant",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (9x)",
@@ -11729,6 +12084,7 @@ const skillDamage = {
 
     "s11": {
       name: "Dark Pulse",
+      cooldown: 5.5,
       formulas: [
         {
           label: "Damage",
@@ -11745,6 +12101,7 @@ const skillDamage = {
 
     "s12": {
       name: "Stone Edge",
+      cooldown: 8,
       formulas: [
 	    {
           label: "Damage - Melee Range",
@@ -11770,6 +12127,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Ancient Power",
+      cooldown: 11,
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -11805,6 +12163,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Sand Tomb",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage - Leap",
@@ -11821,6 +12180,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Tyrannical Rampage",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Basic",
@@ -11865,6 +12225,7 @@ const skillDamage = {
 
     "s11": {
       name: "Mean Look",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage",
@@ -11876,6 +12237,7 @@ const skillDamage = {
 
     "s12": {
       name: "Foul Play",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage",
@@ -11891,6 +12253,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Wish",
+      cooldown: 6,
       formulas: [
         {
           label: "Heal",
@@ -11906,6 +12269,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Snarl",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage (8x)",
@@ -11927,6 +12291,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Moonlight Prance",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -11979,6 +12344,7 @@ const skillDamage = {
 
     "s11": {
       name: "Wicked Blow",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage (Uncharged)",
@@ -12002,6 +12368,7 @@ const skillDamage = {
 
     "s12": {
       name: "Surging Strikes",
+      cooldown: 10,
       formulas: [
 	    {
           label: "Damage - per Hit",
@@ -12017,6 +12384,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Throat Chop",
+      cooldown: 7,
       formulas: [
         {
           label: "Damage",
@@ -12027,6 +12395,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Liquidation",
+      cooldown: 10,
       formulas: [
         {
           label: "Damage",
@@ -12048,6 +12417,7 @@ const skillDamage = {
 	
 	"ult1": {
 		name: "Ebon Fist",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage",
@@ -12068,6 +12438,7 @@ const skillDamage = {
 	},
   "ult2": {
 		name: "Flowing Fists",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (Initial Hit)",
@@ -12117,6 +12488,7 @@ const skillDamage = {
 
     "s11": {
       name: "Sludge Bomb",
+      cooldown: 6,
       formulas: [
 		{
           label: "Damage",
@@ -12132,6 +12504,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Giga Drain",
+      cooldown: 7,
       formulas: [
 	    {
           label: "Damage",
@@ -12152,6 +12525,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Solar Beam",
+      cooldown: 9,
       formulas: [
 		{
           label: "Damage - per tick (x5)",
@@ -12167,6 +12541,7 @@ const skillDamage = {
     },
 	"s22": {
       name: "Petal Dance",
+      cooldown: 8,
       formulas: [
 		{
           label: "Damage - Aura (16 Ticks)",
@@ -12177,6 +12552,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Verdant Anger",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Initial",
@@ -12218,7 +12594,8 @@ const skillDamage = {
 	},
 
     "s11": {
-      name: "Sludge Bomb",
+      name: "Doubleslap",
+      cooldown: 5,
       formulas: [
 		{
           label: "Damage - per Slap",
@@ -12229,6 +12606,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Dazzling Gleam",
+      cooldown: 4,
       formulas: [
 	    {
           label: "Damage - First Hit",
@@ -12244,6 +12622,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Rollout",
+      cooldown: 10,
       formulas: [
 		{
           label: "Damage - per Hit",
@@ -12254,11 +12633,13 @@ const skillDamage = {
     },
 	"s22": {
       name: "Sing",
+      cooldown: 8,
       formulas: [
       ]
     },
 	"ult": {
 		name: "Starlight Recital",
+    cooldown: 89,
 		formulas: [
         {
           label: "Shield",
@@ -12333,6 +12714,7 @@ const skillDamage = {
 
     "s11": {
       name: "Metal Claw",
+      cooldown: 7.5,
       formulas: [
         {
           label: "Damage - Shockwave",
@@ -12360,6 +12742,7 @@ const skillDamage = {
 
     "s12": {
       name: "Sacred Sword",
+      cooldown: 8,
       formulas: [
 	    {
           label: "Damage - Circle Draw",
@@ -12385,6 +12768,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Agility",
+      cooldown: 10,
       formulas: [
         {
           label: "Boosted Shield (3s)",
@@ -12395,6 +12779,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Play Rough",
+      cooldown: 9,
       formulas: [
         {
           label: "Damage",
@@ -12411,6 +12796,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Sovereign Sword",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage (<=10 Energy Charged)",
@@ -12469,6 +12855,7 @@ const skillDamage = {
 
     "s11": {
       name: "Volt Switch",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Initial Dash",
@@ -12495,6 +12882,7 @@ const skillDamage = {
 
     "s12": {
       name: "Spark",
+      cooldown: 9,
       formulas: [
 	    {
           label: "Damage - Jump",
@@ -12521,6 +12909,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Discharge",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - per Tick (6 Ticks)",
@@ -12546,6 +12935,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Wild Charge",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -12562,6 +12952,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Plasma Gale",
+    cooldown: 112,
 		formulas: [
         {
           label: "Damage - Trail",
@@ -12604,6 +12995,7 @@ const skillDamage = {
 
     "s11": {
       name: "Shadow Claw",
+      cooldown: 4.5,
       formulas: [
         {
           label: "Damage",
@@ -12615,6 +13007,7 @@ const skillDamage = {
 
     "s12": {
       name: "Cut",
+      cooldown: 4.5,
       formulas: [
 	    {
           label: "Damage",
@@ -12636,6 +13029,7 @@ const skillDamage = {
 
     "s21": {
       name: "Night Slash",
+      cooldown: 8,
       formulas: [
         {
           label: "Damage - Dash",
@@ -12657,6 +13051,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Feint Attack",
+      cooldown: 6,
       formulas: [
         {
           label: "Damage - Dash",
@@ -12674,6 +13069,7 @@ const skillDamage = {
 	
 	"ult": {
 		name: "Nightfall Daze",
+    cooldown: 100,
 		formulas: [
         {
           label: "Damage - per Shockwave",

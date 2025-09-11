@@ -389,6 +389,17 @@ textarea.form-control {
 .skill-info li { margin-bottom: 3px; text-align: left; }
 .skill-info li:last-child { margin-bottom: 0; }
 
+/* Cooldown styling */
+.skill-cooldown {
+  color: #a30404;
+  font-size: 15px;
+  font-weight: normal;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
 @media (max-width: 576px) {
   .skill-box { padding: 8px; gap: 10px; }
   .skill-icon { width: 35px; height: 35px; }
@@ -1252,4 +1263,54 @@ textarea.form-control {
 
 .pokemon-overlay.show {
   display: block;
+}
+
+/* Estilo para o botão de reset dos held items */
+.reset-held-items-button {
+  background: linear-gradient(135deg, #ff8c00, #ff6b00);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 15px auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+  min-width: 140px;
+  justify-content: center;
+}
+
+.reset-held-items-button:hover {
+  background: linear-gradient(135deg, #ff7700, #ff5500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.reset-held-items-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 140, 0, 0.3);
+}
+
+.reset-held-items-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animação quando não há itens para resetar */
+.reset-held-items-button.no-items {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.reset-held-items-button.no-items:hover {
+  background: #666;
+  transform: none;
+  box-shadow: none;
 }
