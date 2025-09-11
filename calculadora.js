@@ -118,7 +118,7 @@ function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
 }
 
 // Média exata usada para calcular pontos por partida
-const mediaMaestria = 138799 / 581; 
+const mediaMaestria = 195; 
 const niveisMaestria = [
   {nome: "Sem Maestria", pontos: 0, img: "./estatisticas-shad/images/icons/block.png"},
   {nome: "Verde", pontos: 30000, img: "./estatisticas-shad/images/icons/verde.png"},
