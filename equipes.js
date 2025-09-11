@@ -54,7 +54,7 @@ const equipesData = {
         descricao: "Jungler - Controlar o mapa, garantindo objetivos e criando vantagens, exigindo estratégia, decisões rápidas e boa coordenação com a equipe."
       },
       {
-        nome: "N/A",
+        nome: "Raphael (Enfer)",
         cargo: "Attacker",
         descricao: "Attack Damage Carry - Responsável por causar dano constante à distância, mantendo pressão ofensiva e convertendo vantagens em vitórias, exigindo bom posicionamento para sobreviver e ser eficaz."
       },
