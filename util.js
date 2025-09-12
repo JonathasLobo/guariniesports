@@ -4297,22 +4297,22 @@ const skillDamage = {
         {
           label: "Healing - Basic",
           formula: (SPATK, Level) => 2.6 * SPATK + 16 * (Level - 1) + 330,
-          type: "special"
+          type: "heal"
         },
         {
           label: "Healing - Empowered",
           formula: (SPATK, Level) => 3.9 * SPATK + 24 * (Level - 1) + 495,
-          type: "special"
+          type: "heal"
         },
 		{
           label: "Additional Healing (Ally Snorlax) - Basic",
           formula: (SPATK, Level) => 0.192 * SPATK + 1 * (Level - 1) + 24,
-          type: "special"
+          type: "heal"
         },
 		{
           label: "Additional Healing (Ally Snorlax) - Empowered",
           formula: (SPATK, Level) => 0.288 * SPATK + 2 * (Level - 1) + 36,
-          type: "special"
+          type: "heal"
         },
       ]
     },
@@ -4339,7 +4339,7 @@ const skillDamage = {
         {
           label: "Shield",
           formula: (SPATK, Level) => 1.28 * SPATK + 16 * (Level - 1) + 400,
-          type: "special"
+          type: "shield"
         },
 		{
           label: "Additional Damage",
@@ -4354,7 +4354,7 @@ const skillDamage = {
 		{
           label: "Shield Skill Plus",
           formula: (SPATK, Level) => 1.52 * SPATK + 20 * (Level - 1) + 480,
-          type: "special"
+          type: "shield"
         },
       ]
     },
@@ -4381,7 +4381,7 @@ const skillDamage = {
         {
           label: "Healing - per Cream (48 max)",
           formula: (SPATK, Level) => 0.19 * SPATK + 3 * (Level - 1) + 45,
-          type: "special"
+          type: "heal"
         },
 		{
           label: "Max HP Increase - per Cream (48 max)",
@@ -4829,12 +4829,12 @@ const skillDamage = {
         {
           label: "Healing",
           formula: (SPATK, Level) => 1.70 * SPATK + 0 * (Level - 1) + 220,
-          type: "special"
+          type: "heal"
         },
 		{
           label: "Healing - HoT (2x)",
           formula: (SPATK, Level) => 0.70 * SPATK + 0 * (Level - 1) + 85,
-          type: "special"
+          type: "heal"
         }
       ]
     },
@@ -4845,12 +4845,12 @@ const skillDamage = {
         {
           label: "Shield",
           formula: (SPATK, Level) => 1.85 * SPATK + 13 * (Level - 1) + 620,
-          type: "special"
+          type: "shield"
         },
 		{
           label: "Shield Skill Plus",
           formula: (SPATK, Level) => 2.05 * SPATK + 14 * (Level - 1) + 690,
-          type: "special"
+          type: "shield"
         }
       ]
     },

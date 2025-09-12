@@ -842,7 +842,8 @@ const createResetButton = () => {
           // itens percentuais (ex: Accel Bracer) -> aplicar percent sobre (base + todos os bônus flat deste stat)
           const totalPercentage = config.perStack * stacks;
           const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
-          modified[config.stat] = baseForPercent * (1 + totalPercentage / 100);
+          const bonusAmount = baseForPercent * (totalPercentage / 100);
+          modified[config.stat] += bonusAmount;
         } else {
           // itens de incremento flat por stack
           modified[config.stat] += config.perStack * stacks;
@@ -1141,6 +1142,16 @@ const createResetButton = () => {
                   baseAttribute = base.HP;
                   modifiedAttribute = modified.HP;
                   break;
+                case "heal":
+                  // Para heal, usa o atributo base da fórmula mas aplica multiplicador de HP Regen
+                  baseAttribute = base.SpATK; // ou outro atributo conforme definido
+                  modifiedAttribute = modified.SpATK;
+                  break;
+                case "shield":
+                  // Para shield, usa o atributo base da fórmula mas aplica multiplicador de Shield
+                  baseAttribute = base.SpATK; // ou outro atributo conforme definido
+                  modifiedAttribute = modified.SpATK;
+                  break;
                 case "physical":
                 default:
                   baseAttribute = base.ATK;
@@ -1150,6 +1161,15 @@ const createResetButton = () => {
               
               baseVal = f.formula(baseAttribute, targetLevel, base.HP);
               modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+              
+              // Aplicar multiplicadores para heal e shield
+              if (f.type === "heal") {
+                const healMultiplier = 1 + (modified.HPRegen / 100);
+                modifiedVal *= healMultiplier;
+              } else if (f.type === "shield") {
+                const shieldMultiplier = 1 + (modified.Shield / 100);
+                modifiedVal *= shieldMultiplier;
+              }
             }
 
             if (skills.passive) {
