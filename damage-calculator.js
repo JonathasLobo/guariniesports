@@ -1343,7 +1343,7 @@ const createResetButton = () => {
   createHeldItemsGrid();
   calcular();
   
-  // Botão de download como imagem
+// Botão de download como imagem
 const btnDownload = document.getElementById("btn-download");
 if (btnDownload) {
   btnDownload.addEventListener("click", () => {
@@ -1353,12 +1353,18 @@ if (btnDownload) {
       return;
     }
 
+    if (!selectedPokemon) {
+      alert("Selecione um Pokémon primeiro!");
+      return;
+    }
+
     html2canvas(resultado, {
       useCORS: true,
       scale: 2 // melhora a qualidade
     }).then(canvas => {
       const link = document.createElement("a");
-      link.download = "resultado.png";
+      const pokemonName = safeCap(selectedPokemon);
+      link.download = `resultado-${pokemonName}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     }).catch(err => {
