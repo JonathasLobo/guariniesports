@@ -1343,4 +1343,30 @@ const createResetButton = () => {
   createHeldItemsGrid();
   calcular();
   
+  // Botão de download como imagem
+const btnDownload = document.getElementById("btn-download");
+if (btnDownload) {
+  btnDownload.addEventListener("click", () => {
+    const resultado = document.getElementById("resultado");
+    if (!resultado || resultado.style.display === "none") {
+      alert("Nenhum resultado para capturar ainda!");
+      return;
+    }
+
+    html2canvas(resultado, {
+      useCORS: true,
+      scale: 2 // melhora a qualidade
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "resultado.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }).catch(err => {
+      console.error("Erro ao gerar imagem:", err);
+      alert("Não foi possível gerar a imagem.");
+    });
+  });
+}
+
+  
 });
