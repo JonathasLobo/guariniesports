@@ -1,0 +1,21 @@
+{
+  "name": "Guariní e-sports",
+  "short_name": "Guariní",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff0000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./img-site/Guarini.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img-site/Guarini.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
