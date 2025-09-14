@@ -30,7 +30,7 @@ const equipesData = {
       }
     ]
   },
-  pokemon: {
+  unite: {
     titulo: "Equipe Pokémon Unite",
     membros: [
       {
@@ -75,6 +75,16 @@ const equipesData = {
       }
     ]
   },
+  vgc: {
+    titulo: "Equipe Pokémon VGC",
+    membros: [
+      {
+        nome: "Jonathas (Lobo)",
+        cargo: "Treinador Principal",
+        descricao: "Especialista em times de sol"
+      }
+    ]
+  },  
   yugioh: {
     titulo: "Equipe Yu-Gi-Oh!",
     membros: [
@@ -95,7 +105,8 @@ const closeBtn = document.querySelector('.close');
 
 const staffBtn = document.getElementById('staffBtn');
 const streamerBtn = document.getElementById('streamerBtn');
-const pokemonBtn = document.getElementById('pokemonBtn');
+const uniteBtn = document.getElementById('uniteBtn');
+const vgcBtn = document.getElementById('vgcBtn');
 const yugiohBtn = document.getElementById('yugiohBtn');
 
 // Função para abrir o modal
@@ -134,7 +145,8 @@ function fecharModal() {
 // Event listeners
 staffBtn.addEventListener('click', () => abrirModal('staff'));
 streamerBtn.addEventListener('click', () => abrirModal('streamer'));
-pokemonBtn.addEventListener('click', () => abrirModal('pokemon'));
+uniteBtn.addEventListener('click', () => abrirModal('unite'));
+vgcBtn.addEventListener('click', () => abrirModal('vgc'));
 yugiohBtn.addEventListener('click', () => abrirModal('yugioh'));
 
 closeBtn.addEventListener('click', fecharModal);
