@@ -133,44 +133,46 @@ document.addEventListener("DOMContentLoaded", () => {
     return gameHeldItensPassive;
   };
 
-  const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
-    const passives = getItemPassivesSource();
-    let result = ensureAllStats({ ...modifiedStats });
+const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
+  const passives = getItemPassivesSource();
+  let result = ensureAllStats({ ...modifiedStats });
 
-    selectedItems.forEach(itemKey => {
-      if (!activeItemPassives[itemKey]) return;
-      
-      const passive = passives[itemKey];
-      if (!passive) return;
+  selectedItems.forEach(itemKey => {
+    if (!activeItemPassives[itemKey]) return;
+    
+    const passive = passives[itemKey];
+    if (!passive) return;
 
-      if (typeof passive.formula === "function") {
-        const targetStat = passive.target || "SpATK";
-        result[targetStat] += passive.formula(result);
-        return;
-      }
+    if (typeof passive.formula === "function") {
+      const targetStat = passive.target || "SpATK";
+      // Use baseStats for formula calculations to avoid order dependency
+      result[targetStat] += passive.formula(baseStats);
+      return;
+    }
 
-      Object.entries(passive).forEach(([stat, rawVal]) => {
-        if (!STAT_KEYS.includes(stat)) return;
+    Object.entries(passive).forEach(([stat, rawVal]) => {
+      if (!STAT_KEYS.includes(stat)) return;
 
-        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-        const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
-        if (!Number.isFinite(numeric)) return;
+      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+      const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
+      if (!Number.isFinite(numeric)) return;
 
-        if (PERCENT_KEYS.has(stat)) {
-          result[stat] += numeric;
+      if (PERCENT_KEYS.has(stat)) {
+        result[stat] += numeric;
+      } else {
+        if (isPercentString) {
+          // Use baseStats for percentage calculations to avoid order dependency
+          const baseForBuff = Number(baseStats[stat]) || 0;
+          result[stat] += baseForBuff * (numeric / 100);
         } else {
-          if (isPercentString) {
-            const baseForBuff = Number(result[stat]) || 0;
-            result[stat] += baseForBuff * (numeric / 100);
-          } else {
-            result[stat] += numeric;
-          }
+          result[stat] += numeric;
         }
-      });
+      }
     });
+  });
 
-    return ensureAllStats(result);
-  };
+  return ensureAllStats(result);
+};
 
   // Emblemas
   const EMBLEM_BONUSES = {
@@ -1142,10 +1144,29 @@ const createResetButton = () => {
                   baseAttribute = base.HP;
                   modifiedAttribute = modified.HP;
                   break;
-                case "heal":
-                  // Para heal, usa o atributo base da fórmula mas aplica multiplicador de HP Regen
-                  baseAttribute = base.SpATK; // ou outro atributo conforme definido
-                  modifiedAttribute = modified.SpATK;
+               case "heal":
+                  // Verificar se há um atributo específico definido para heal
+                  if (f.healAttribute) {
+                    const healAttr = f.healAttribute.toUpperCase();
+                    if (healAttr === "ATK") {
+                      baseAttribute = base.ATK;
+                      modifiedAttribute = modified.ATK;
+                    } else if (healAttr === "SPATK") {
+                      baseAttribute = base.SpATK;
+                      modifiedAttribute = modified.SpATK;
+                    } else if (healAttr === "HP") {
+                      baseAttribute = base.HP;
+                      modifiedAttribute = modified.HP;
+                    } else {
+                      // Fallback para SpATK se não reconhecer o atributo
+                      baseAttribute = base.SpATK;
+                      modifiedAttribute = modified.SpATK;
+                    }
+                  } else {
+                    // Comportamento padrão: usar SpATK
+                    baseAttribute = base.SpATK;
+                    modifiedAttribute = modified.SpATK;
+                  }
                   break;
                 case "shield":
                   // Para shield, usa o atributo base da fórmula mas aplica multiplicador de Shield

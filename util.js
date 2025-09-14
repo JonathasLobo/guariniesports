@@ -68,6 +68,7 @@ const pokemonBaseImages = {
 	rapidash: 'rapidash-left-bg',
     sableye: 'sableye-left-bg',
     scizor: 'scizor-left-bg',
+    scyther: 'scyther-left-bg',
     slowbro: 'slowbro-left-bg',
     snorlax: 'snorlax-left-bg',
 	suicune: 'suicune-left-bg',
@@ -148,6 +149,7 @@ const pokemonRoles = {
 	rapidash: 'Speedster',
     sableye: 'Support',
     scizor: 'All Rounder',
+    scyther: 'Speedster',
     slowbro: 'Defender',
     snorlax: 'Defender',
 	suicune: 'All Rounder',
@@ -228,6 +230,7 @@ const pokemonLanes = {
 	rapidash: 'Jungle',
     sableye: 'Top',
     scizor: 'Top',
+    scyther: 'Jungle',
     slowbro: 'Bot',
     snorlax: 'Bot',
 	suicune: 'Top',
@@ -624,6 +627,14 @@ const pokemonSkills = {
 		"s22": "Confuse Ray"
     },
     "scizor": {
+		"scythers11": "Dual Wingbeat",
+		"scythers121":"Bullet Punch",
+		"s21": "Double Hit",
+		"s22": "Swords Dance",
+		"scythers21": "Double Hit",
+		"scythers22": "Swords Dance"
+    },
+    "scyther": {
 		"scythers11": "Dual Wingbeat",
 		"scythers121":"Bullet Punch",
 		"s21": "Double Hit",
@@ -1774,16 +1785,16 @@ const baseStats = {
 		"Speed": 4300,
 		"CritDmg": 0,
 	},
-	"scizor": {
-		"HP": 8100,
-		"ATK": 460,
-		"DEF": 510,
+  "scyther": {
+		"HP": 6450,
+		"ATK": 630,
+		"DEF": 300,
 		"SpATK": 115,
-		"SpDEF": 410,
-		"CritRate": 20,
-		"CDR": 0,
+		"SpDEF": 200,
+		"CritRate": 10,
+		"CDR": 20,
 		"AtkSPD": 30,
-		"HPRegen": 15,
+		"HPRegen": 0,
 		"EnergyRate": 0,
 		"Speed": 4250,
 		"CritDmg": 0,
@@ -4296,23 +4307,27 @@ const skillDamage = {
       formulas: [
         {
           label: "Healing - Basic",
-          formula: (SPATK, Level) => 2.6 * SPATK + 16 * (Level - 1) + 330,
-          type: "heal"
+          formula: (attribute, Level) => 2.6 * attribute + 16 * (Level - 1) + 330,
+          type: "heal",
+          healAttribute: "SpATK"
         },
         {
           label: "Healing - Empowered",
-          formula: (SPATK, Level) => 3.9 * SPATK + 24 * (Level - 1) + 495,
-          type: "heal"
+          formula: (attribute, Level) => 3.9 * attribute + 24 * (Level - 1) + 495,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Additional Healing (Ally Snorlax) - Basic",
-          formula: (SPATK, Level) => 0.192 * SPATK + 1 * (Level - 1) + 24,
-          type: "heal"
+          formula: (attribute, Level) => 0.192 * attribute + 1 * (Level - 1) + 24,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Additional Healing (Ally Snorlax) - Empowered",
-          formula: (SPATK, Level) => 0.288 * SPATK + 2 * (Level - 1) + 36,
-          type: "heal"
+          formula: (attribute, Level) => 0.288 * attribute + 2 * (Level - 1) + 36,
+          type: "heal",
+          healAttribute: "SpATK"
         },
       ]
     },
@@ -4380,8 +4395,9 @@ const skillDamage = {
 		formulas: [
         {
           label: "Healing - per Cream (48 max)",
-          formula: (SPATK, Level) => 0.19 * SPATK + 3 * (Level - 1) + 45,
-          type: "heal"
+          formula: (attribute, Level) => 0.19 * attribute + 3 * (Level - 1) + 45,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Max HP Increase - per Cream (48 max)",
@@ -4828,13 +4844,15 @@ const skillDamage = {
       formulas: [
         {
           label: "Healing",
-          formula: (SPATK, Level) => 1.70 * SPATK + 0 * (Level - 1) + 220,
-          type: "heal"
+          formula: (attribute, Level) => 1.70 * attribute + 0 * (Level - 1) + 220,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Healing - HoT (2x)",
-          formula: (SPATK, Level) => 0.70 * SPATK + 0 * (Level - 1) + 85,
-          type: "heal"
+          formula: (attribute, Level) => 0.70 * attribute + 0 * (Level - 1) + 85,
+          type: "heal",
+          healAttribute: "SpATK"
         }
       ]
     },
@@ -5465,8 +5483,9 @@ const skillDamage = {
       formulas: [
         {
           label: "Heal - per Tick (per half second)",
-          formula: (SPATK, Level) => 0.64 * SPATK + 0 * (Level - 1) + 58,
-          type: "special"
+          formula: (attribute, Level) => 0.64 * attribute + 0 * (Level - 1) + 58,
+          type: "heal",
+          healAttribute: "SpATK"
         }
       ]
     },
@@ -5588,13 +5607,15 @@ const skillDamage = {
       formulas: [
         {
           label: "Healing",
-          formula: (SPATK, Level) => 0.97 * SPATK + 0 * (Level - 1) + 300,
-          type: "special"
+          formula: (attribute, Level) => 0.97 * attribute + 0 * (Level - 1) + 300,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Healing - Additional Per Flower",
-          formula: (SPATK, Level) => 0.15 * SPATK + 0 * (Level - 1) + 45,
-          type: "special"
+          formula: (attribute, Level) => 0.15 * attribute + 0 * (Level - 1) + 45,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Overheal Shield",
@@ -5615,7 +5636,7 @@ const skillDamage = {
         {
           label: "Additional Shield",
           formula: (SPATK, Level) => 0.85 * SPATK + 0 * (Level - 1) + 288,
-          type: "special"
+          type: "shield"
         }
       ]
     },
@@ -5652,8 +5673,10 @@ const skillDamage = {
 		formulas: [
         {
           label: "Heal - per tick",
-          formula: (SPATK, Level) => 0.225 * SPATK + 0 * (Level - 1) + 120,
-          type: "special"
+          formula: (attribute, Level) => 0.225 * attribute + 0 * (Level - 1) + 120,
+          type: "heal",
+          healAttribute: "SpATK"
+          
         },
 		{
           label: "Empowered Floral Healing Healing - Additional Per Flower",
@@ -6768,8 +6791,9 @@ const skillDamage = {
         },
 		{
           label: "Healing",
-          formula: (SPATK, Level) => 1.5 * SPATK + 13 * (Level - 1) + 300,
-          type: "special"
+          formula: (attribute, Level) => 1.5 * attribute + 13 * (Level - 1) + 300,
+          type: "heal",
+          healAttribute: "SpATK"
         },
 		{
           label: "Damage - DoT (every 0.5s, up to 4 times) Skill Plus",
@@ -6802,7 +6826,7 @@ const skillDamage = {
         {
           label: "Shield",
           formula: (SPATK, Level) => 1.725 * SPATK + 23 * (Level - 1) + 290,
-          type: "special"
+          type: "shield"
         }
       ]
     },
@@ -6827,9 +6851,10 @@ const skillDamage = {
           type: "special"
         },
 		{
-          label: "Damage",
-          formula: (SPATK, Level) => 3.06 * SPATK + 13 * (Level - 1) + 636,
-          type: "special"
+          label: "Healing",
+          formula: (attribute, Level) => 3.06 * attribute + 13 * (Level - 1) + 636,
+          type: "heal",
+          healAttribute: "SpATK"
         }
 	]
 	}
@@ -7274,7 +7299,7 @@ const skillDamage = {
 		{
           label: "Shield",
           formula: (SPATK, Level) => 0.69 * SPATK + 0 * (Level - 1) + 345, // 25% do primeiro hit
-		  type: "special",
+    		  type: "special",
         }
       ]
     },
@@ -8199,7 +8224,7 @@ const skillDamage = {
 		{
 		  label: "Shield",
           formula: (SPATK, Level) => 2 * SPATK + 30 * (Level - 1) + 600,
-          type: "special"
+          type: "shield"
 		},
 		{
 		  label: "Damage - Shadow Ball Bonus",
@@ -8473,12 +8498,12 @@ const skillDamage = {
 		{
           label: "Shield",
           formula: (SPATK, Level) => 1.5 * SPATK + 0 * (Level - 1) + 400,
-          type: "special"
+          type: "shield"
         },
 		{
           label: "Shield Skill Plus",
           formula: (SPATK, Level) => 1.8 * SPATK + 0 * (Level - 1) + 480,
-          type: "special"
+          type: "shield"
         }
       ]
     },
@@ -9440,7 +9465,7 @@ const skillDamage = {
         {
           label: "Shield",
           formula: (SpATK, Level) => 0.1 * SpATK + 0 * (Level - 1) + 300,
-          type: "special"
+          type: "shield"
         }
       ]
     },
@@ -9980,8 +10005,9 @@ const skillDamage = {
         },
 		{
           label: "Healing - per Tick",
-          formula: (SpATK, Level) => 0.21 * SpATK + 2 * (Level - 1) + 15,
-          type: "special"
+          formula: (attribute, Level) => 0.21 * attribute + 2 * (Level - 1) + 15,
+          type: "heal",
+          healAttribute: "SpATK"
         }
       ]
     },
@@ -12257,8 +12283,9 @@ const skillDamage = {
       formulas: [
         {
           label: "Heal",
-          formula: (ATK, Level) => 3 * ATK + 18 * (Level - 1) + 600,
-          type: "physical"
+          formula: (attribute, Level) => 3 * attribute + 18 * (Level - 1) + 600,
+          type: "heal",
+          healAttribute: "ATK"
         },
         {
           label: "Heal Skill Plus",
@@ -12644,7 +12671,7 @@ const skillDamage = {
         {
           label: "Shield",
           formula: (SpATK, Level) => 1.519 * SpATK + 0 * (Level - 1) + 810,
-          type: "special"
+          type: "shield"
         }
 	 ]
 	}
