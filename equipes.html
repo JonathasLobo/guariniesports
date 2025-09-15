@@ -8,7 +8,31 @@
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="equipes.css" />
+  <div id="google_translate_element"></div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement(
+    {pageLanguage: 'pt', includedLanguages: 'pt,en,ja'},
+    'google_translate_element'
+  );
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<!-- Adsense tag -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
+     crossorigin="anonymous"></script>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-84NHN394WF');
+</script>
 <body>
   <a id="topo"></a>
   
@@ -90,7 +114,15 @@
         <img src="./img-site/pokemonunite.png" alt="Pokémon Unite" />
         <h3>Pokémon Unite</h3>
         <p class="descricao">Nossa equipe competitiva de Pokemon Unite</p>
-        <button type="button" class="btn-comprar" id="pokemonBtn">Ver Detalhes</button>
+        <button type="button" class="btn-comprar" id="uniteBtn">Ver Detalhes</button>
+      </article>
+
+      <!-- Pokemon VGC -->
+      <article class="equipe">
+        <img src="./img-site/pkmvgc.png" alt="Pokémon VGC" />
+        <h3>Pokémon VGC</h3>
+        <p class="descricao">Nossos treinadores profissionais de Pokémon VGC</p>
+        <button type="button" class="btn-comprar" id="vgcBtn">Ver Detalhes</button>
       </article>
 
       <!-- YugiOh -->
