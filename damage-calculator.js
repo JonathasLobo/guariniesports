@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const maxHeldItems = 3;
   let activePassives = {};
   let activeItemPassives = {};
+  let currentRoleFilter = "All";
 
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
@@ -322,7 +323,103 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     return modifiedStats;
   };
 
-  // CRIAÇÃO DO GRID DE POKÉMON
+      // CRIAÇÃO DOS FILTROS DE ROLE
+    const createRoleFilters = () => {
+      const filterContainer = document.createElement("div");
+      filterContainer.className = "role-filters-container";
+      filterContainer.style.cssText = `
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        padding: 0 10px;
+      `;
+
+      const roles = ["All", "Attacker", "All Rounder", "Speedster", "Defender", "Support"];
+      const roleColors = {
+        "All": "#666666",
+        "Attacker": "#f16c38", 
+        "All Rounder": "#ce5fd3",  // Note: espaço ao invés de hífen
+        "Speedster": "#2492c9",
+        "Defender": "#9bd652",
+        "Support": "#e1b448"       // Note: "Support" ao invés de "Supporter"
+      };
+
+      roles.forEach(role => {
+        const button = document.createElement("button");
+        button.className = "role-filter-btn";
+        button.dataset.role = role;
+        button.textContent = role;
+        
+        const isActive = currentRoleFilter === role;
+        const color = roleColors[role] || "#666";
+        
+        button.style.cssText = `
+          background: ${isActive ? color : 'transparent'};
+          color: ${isActive ? '#fff' : color};
+          border: 2px solid ${color};
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        `;
+
+        button.addEventListener("click", () => {
+          currentRoleFilter = role;
+          updateRoleFilters();
+          filterPokemonGrid();
+        });
+
+        button.addEventListener("mouseenter", () => {
+          if (currentRoleFilter !== role) {
+            button.style.background = color;
+            button.style.color = "#fff";
+          }
+        });
+
+        button.addEventListener("mouseleave", () => {
+          if (currentRoleFilter !== role) {
+            button.style.background = "transparent";
+            button.style.color = color;
+          }
+        });
+
+        filterContainer.appendChild(button);
+      });
+
+      // Inserir os filtros antes do grid, mas dentro do painel
+      pokemonGrid.parentNode.insertBefore(filterContainer, pokemonGrid);
+    };
+
+        // Atualizar visual dos botões de filtro
+    const updateRoleFilters = () => {
+      const filterButtons = document.querySelectorAll(".role-filter-btn");
+      const roleColors = {
+        "All": "#666666",
+        "Attacker": "#f16c38", 
+        "All Rounder": "#ce5fd3",  // Note: espaço ao invés de hífen
+        "Speedster": "#2492c9",
+        "Defender": "#9bd652",
+        "Support": "#e1b448"       // Mesmo ajuste aqui
+      };
+
+      filterButtons.forEach(button => {
+        const role = button.dataset.role;
+        const color = roleColors[role] || "#666";
+        const isActive = currentRoleFilter === role;
+
+        button.style.background = isActive ? color : 'transparent';
+        button.style.color = isActive ? '#fff' : color;
+        button.style.border = `2px solid ${color}`;
+      });
+    };
+
+    // CRIAÇÃO DO GRID DE POKÉMON
   const createPokemonGrid = () => {
     pokemonGrid.innerHTML = "";
     
@@ -333,6 +430,7 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
       const gridItem = document.createElement("div");
       gridItem.className = "pokemon-grid-item";
       gridItem.dataset.pokemon = poke;
+      gridItem.dataset.role = role; // Adicione esta linha
       
       if (poke === selectedPokemon) {
         gridItem.classList.add("selected");
@@ -406,6 +504,22 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     }
     
     calcular();
+  };
+
+    // Filtrar Pokémon por role
+  const filterPokemonGrid = () => {
+    const gridItems = pokemonGrid.querySelectorAll(".pokemon-grid-item");
+    
+    gridItems.forEach(item => {
+      const pokemonRole = item.dataset.role;
+      const shouldShow = currentRoleFilter === "All" || pokemonRole === currentRoleFilter;
+      
+      if (shouldShow) {
+        item.style.display = "flex";
+      } else {
+        item.style.display = "none";
+      }
+    });
   };
 
   // FUNÇÃO PARA ABRIR/FECHAR PAINEL
@@ -760,9 +874,55 @@ const createResetButton = () => {
       resultado.insertAdjacentHTML("afterbegin", `
         <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
           <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
-               onerror="this.style.display='none'" style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
+              style="border: none;">
           <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
           <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
+          
+          <!-- Marca d'água da equipe -->
+          <div class="team-watermark" style="
+          position: absolute;
+          bottom: -550px;
+          left: 50%;
+          transform: translateX(-50%);
+          text-align: center;
+          opacity: 0.8;
+          font-size: 9px;
+          color: #000000ff;
+          z-index: 10;
+          padding: 6px 10px;
+          max-width: 180px;
+          white-space: nowrap;
+        ">
+            <div style="margin-bottom: 2px;">
+            <img src="./estatisticas-shad/images/logo-team.png" alt="Logo" 
+                style="width: 16px; height: 16px; border: none;"
+                onerror="this.style.display='none'">
+          </div>
+          <div style="font-size: 14px; margin-bottom: 2px; font-weight: 500;">
+            desenvolvido por:
+          </div>
+          <div style="display: flex; justify-content: center; gap: 4px; align-items: center;">
+            <a href="https://x.com/Shadtrader32" target="_blank" style="
+              color: #fff; 
+              text-decoration: none; 
+              font-size: 12px; 
+              font-weight: bold;
+              transition: color 0.2s ease;
+            " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#fff'">
+              @Shadtrader32
+            </a>
+            <span style="color: #ccc; font-size: 7px;">|</span>
+            <a href="https://x.com/lobo_vgc" target="_blank" style="
+              color: #fff; 
+              text-decoration: none; 
+              font-size: 12px; 
+              font-weight: bold;
+              transition: color 0.2s ease;
+            " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#fff'">
+              @lobo_vgc
+            </a>
+          </div>
+          </div>
         </div>
       `);
       return;
@@ -912,13 +1072,59 @@ const createResetButton = () => {
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
     resultado.insertAdjacentHTML("afterbegin", `
-      <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
-        <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
-             style="border: 3px solid; border-image: linear-gradient(45deg, ${roleColor}, ${roleColor}AA, ${roleColor}) 1;">
-        <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
-        <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
+    <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
+      <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
+          onerror="this.style.display='none'" style="border: none;">
+      <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
+      <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
+      
+      <!-- Marca d'água da equipe -->
+        <div class="team-watermark" style="
+        position: absolute;
+        bottom: -550px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        opacity: 0.8;
+        font-size: 9px;
+        color: #000000ff;
+        z-index: 10;
+        padding: 6px 10px;
+        max-width: 180px;
+        white-space: nowrap;
+      ">
+        <div style="margin-bottom: 2px;">
+          <img src="./estatisticas-shad/images/logos/Guarini.png" alt="Logo" 
+              style="width: 54px; height: 54px; border: none;"
+              onerror="this.style.display='none'">
+        </div>
+        <div style="font-size: 14px; margin-bottom: 2px; font-weight: 500;">
+          desenvolvido por:
+        </div>
+        <div style="display: flex; justify-content: center; gap: 4px; align-items: center;">
+          <a href="https://x.com/Shadtrader32" target="_blank" style="
+            color: #000000ff; 
+            text-decoration: none; 
+            font-size: 12px; 
+            font-weight: bold;
+            transition: color 0.2s ease;
+          " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#000000ff'">
+            @Shadtrader32
+          </a>
+          <span style="color: #ccc; font-size: 7px;">|</span>
+          <a href="https://x.com/lobo_vgc" target="_blank" style="
+            color: #000000ff; 
+            text-decoration: none; 
+            font-size: 12px; 
+            font-weight: bold;
+            transition: color 0.2s ease;
+          " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#000000ff'">
+            @lobo_vgc
+          </a>
+        </div>
       </div>
-    `);
+    </div>
+  `);
 
     // Status Final
     statusFinalDiv.innerHTML = STAT_KEYS
@@ -1380,7 +1586,9 @@ const createResetButton = () => {
   });
 
   // INICIALIZAÇÃO
+  createRoleFilters();
   createPokemonGrid();
+  filterPokemonGrid(); // Aplicar filtro inicial
   createHeldItemsGrid();
   calcular();
   
