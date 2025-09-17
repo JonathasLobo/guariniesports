@@ -792,3 +792,92 @@ html {
     margin-top: 20px;
   }
 }
+
+/* Botão de instalar app */
+.btn-install {
+  background: #ff7500;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-install:hover {
+  background: #ffad00;
+}
+
+/* Seletor de idioma */
+.language-selector {
+  position: relative;
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.language-btn {
+  background: #ff7500;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-btn:hover {
+  background: #ffad00;
+}
+
+.language-dropdown {
+  display: none;
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  background: rgba(0,0,0,0.95);
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  min-width: 160px;
+  z-index: 1000;
+  padding: 5px 0;
+}
+
+.language-dropdown.show {
+  display: block;
+}
+
+.language-option {
+  padding: 8px 12px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s;
+}
+
+.language-option:hover {
+  background: rgba(255, 173, 0, 0.2);
+}
+
+/* Bandeiras */
+.flag {
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  background-size: cover;
+  border-radius: 3px;
+}
+
+.flag-br { background-image: url('https://flagcdn.com/w20/br.png'); }
+.flag-us { background-image: url('https://flagcdn.com/w20/us.png'); }
+.flag-jp { background-image: url('https://flagcdn.com/w20/jp.png'); }

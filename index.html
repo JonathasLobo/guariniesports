@@ -3,63 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Site oficial da equipe Guariní e-sport">
-  <title>Guariní e-sport</title>
+  <meta name="description" content="Site oficial da equipe Guarini e-sport">
+  <title>Guarini e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="noticias.css">
   <link rel="stylesheet" href="videos.css">
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffad00">
-<!-- iOS meta tags -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-<div id="google_translate_element"></div>
+  <meta name="theme-color" content="#ffad00">
+  <!-- iOS meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement(
-    {pageLanguage: 'pt', includedLanguages: 'pt,en,ja'},
-    'google_translate_element'
-  );
-}
-</script>
+  <!-- Adsense tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
+       crossorigin="anonymous"></script>
 
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<!-- Adsense tag -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
-     crossorigin="anonymous"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-84NHN394WF');
+  </script>
+
+
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-84NHN394WF');
-</script>
-<button id="installBtn">Instalar Guariní</button>
-
-<script>
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBtn').style.display = 'block';
-});
-
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  document.getElementById('installBtn').style.display = 'none';
-  console.log('Usuário respondeu:', outcome);
-});
-</script>
 
 <body>
   <a id="topo"></a>
@@ -77,7 +48,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
       <!-- Logo Central -->
       <div class="logo-center">
         <a href="index.html" aria-label="Início" class="ativo">
-          <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
+          <img src="./logos/Guarini.png" alt="Guarini e-sport" class="header-logo">
         </a>
       </div>
 
@@ -121,7 +92,7 @@ document.getElementById('installBtn').addEventListener('click', async () => {
   <main>
     <section id="home" class="hero">
       <div class="hero-image">
-        <img src="./img-site/o que te dá forças.png" alt="O que te dá forças - Guariní e-sport">
+        <img src="./img-site/o que te dá forças.png" alt="O que te dá forças - Guarini e-sport">
       </div>
       <div class="hero-content">
         <p>Unindo <span class="destaque">FORÇA</span>, <span class="destaque">ESTRATÉGIA</span> e <span class="destaque">PAIXÃO</span> pelos games desde 2019</p>
@@ -138,8 +109,8 @@ document.getElementById('installBtn').addEventListener('click', async () => {
               <img src="./img-site/noticia5.jpg" alt="Notícia 5">
             </div>
             <div class="noticia-conteudo-horizontal">
-              <h3>Guariní vence Fire Wall</h3>
-              <p>Vitória importante da Guariní</p>
+              <h3>Guarini vence Fire Wall</h3>
+              <p>Vitória importante da Guarini</p>
               <a href="noticia5.html#noticia5" class="noticia-link">Leia mais</a>
             </div>
           </div>
@@ -149,8 +120,8 @@ document.getElementById('installBtn').addEventListener('click', async () => {
               <img src="./img-site/noticia4.jpg" alt="Notícia 4">
             </div>
             <div class="noticia-conteudo-horizontal">
-              <h3>Guariní segue firme no topo</h3>
-              <p>Guariní vence a Cálice Real e entra no G4.</p>
+              <h3>Guarini segue firme no topo</h3>
+              <p>Guarini vence a Cálice Real e entra no G4.</p>
               <a href="noticia4.html#noticia4" class="noticia-link">Leia mais</a>
             </div>
           </div>
@@ -160,8 +131,8 @@ document.getElementById('installBtn').addEventListener('click', async () => {
               <img src="./img-site/noticia3.jpg" alt="Notícia 3">
             </div>
             <div class="noticia-conteudo-horizontal">
-              <h3>Mais uma vitória da Guariní!</h3>
-              <p>Guariní vence a Amazon e garante a terceira vitória seguida no Brasileirão Unite!</p>
+              <h3>Mais uma vitória da Guarini!</h3>
+              <p>Guarini vence a Amazon e garante a terceira vitória seguida no Brasileirão Unite!</p>
               <a href="noticia3.html#noticia3" class="noticia-link">Leia mais</a>
             </div>
           </div>
@@ -169,13 +140,12 @@ document.getElementById('installBtn').addEventListener('click', async () => {
         
         <!-- Coluna Direita -->
         <div class="noticias-coluna">
-
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
               <img src="./img-site/noticia2.jpg" alt="Notícia 2">
             </div>
             <div class="noticia-conteudo-horizontal">
-              <h3>Guariní vence mais uma!</h3>
+              <h3>Guarini vence mais uma!</h3>
               <p>Segunda vitória seguida no Brasileirão assumindo o 3º lugar na tabela.</p>
               <a href="noticia2.html#noticia2" class="noticia-link">Leia mais</a>
             </div>
@@ -186,23 +156,11 @@ document.getElementById('installBtn').addEventListener('click', async () => {
               <img src="./img-site/noticia1.jpg" alt="Notícia 1">
             </div>
             <div class="noticia-conteudo-horizontal">
-              <h3>Guariní vence Kingdravôs</h3>
+              <h3>Guarini vence Kingdravôs</h3>
               <p>Nossa equipe conquistou a primeira vitória pelo brasileirão série C.</p>
               <a href="noticia1.html#noticia1" class="noticia-link">Leia mais</a>
             </div>
           </div>
-          
-          <!-- Notícia 6 -->
-          <!--<div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia6.jpg" alt="Notícia 6">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Atualização de uniformes</h3>
-              <p>Conheça os novos uniformes da equipe, com design moderno e tecnologia que melhora o desempenho dos jogadores.</p>
-              <a href="#" class="noticia-link">Leia mais</a>
-            </div>
-          </div>-->
         </div>
       </div>
     </section>
@@ -276,31 +234,80 @@ document.getElementById('installBtn').addEventListener('click', async () => {
       <h2>Loja Oficial</h2>
       <section class="produtos">
         <article class="produto">
-          <img src="./shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guariní" />
+          <img src="./shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guarini" />
           <h3>Adesivos holográficos Kiss-Cut</h3>
           <p class="preco">$ 11,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5571571">Comprar</button>
         </article>
         <article class="produto">
-          <img src="./shop/garrafinha.jpg" alt="Garrafa de água Guariní" />
+          <img src="./shop/garrafinha.jpg" alt="Garrafa de água Guarini" />
           <h3>Garrafa de água de aço inoxidável</h3>
           <p class="preco">$ 30,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023084">Comprar</button>
         </article>
         <article class="produto">
-          <img src="./shop/caneca.jpg" alt="Caneca Guariní" />
+          <img src="./shop/caneca.jpg" alt="Caneca Guarini" />
           <h3>Caneca de viagem com alça</h3>
           <p class="preco">$ 29,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023087">Comprar</button>
         </article>
+      </section>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2019 Guariní e-sport. Todos os direitos reservados.</p>
-    <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
-    <p>Created by: Lobo & Shad</p>
+    <div class="footer-content">
+      <!-- Botões de ação no footer -->
+      <div class="footer-actions">
+        <!-- Botão de instalar app -->
+        <button id="installBtn" class="btn-install">📱 Instalar Guarini</button>
+        
+        <!-- Seletor de idioma customizado -->
+        <div class="language-selector">
+          <button class="language-btn" id="languageBtn">
+            <span class="flag flag-br"></span>
+            <span id="currentLang">Português</span>
+            <span>▼</span>
+          </button>
+          <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option" data-lang="pt" data-flag="flag-br" data-name="Português">
+              <span class="flag flag-br"></span>
+              <span>Português</span>
+            </div>
+            <div class="language-option" data-lang="en" data-flag="flag-us" data-name="English">
+              <span class="flag flag-us"></span>
+              <span>English</span>
+            </div>
+            <div class="language-option" data-lang="ja" data-flag="flag-jp" data-name="日本語">
+              <span class="flag flag-jp"></span>
+              <span>日本語</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações do footer -->
+      <div class="footer-info">
+        <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
   </footer>
+
+  <!-- Google Translate (oculto) -->
+  <div id="google_translate_element" style="display: none;"></div>
+
+  <!-- Scripts -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'pt', includedLanguages: 'pt,en,ja'},
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <!-- Firebase e Autenticação -->
   <script type="module">
@@ -377,8 +384,9 @@ document.getElementById('installBtn').addEventListener('click', async () => {
     });
   </script>
 
-  <!-- Scripts originais -->
+  <!-- Scripts principais -->
   <script src="videos.js"></script>
+
   <script>
     // Funcionalidade do menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
@@ -405,32 +413,96 @@ document.getElementById('installBtn').addEventListener('click', async () => {
         mobileMenu.classList.remove('ativo');
       }
     });
-  </script>
 
-<script>
-  // Pega todos os botões de compra
-  const botoes = document.querySelectorAll(".btn-comprar");
+    // Funcionalidade dos botões de compra
+    const botoes = document.querySelectorAll(".btn-comprar");
+    botoes.forEach((botao) => {
+      botao.addEventListener("click", () => {
+        const link = botao.getAttribute("data-link");
+        if (link) {
+          window.open(link, "_blank");
+        }
+      });
+    });
 
-  // Adiciona evento de clique em cada botão
-  botoes.forEach((botao) => {
-    botao.addEventListener("click", () => {
-      const link = botao.getAttribute("data-link");
-      if (link) {
-        window.open(link, "_blank"); // abre em nova aba
-        // window.location.href = link; // use esta linha se quiser na mesma aba
+    // PWA - Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then(() => console.log("Service Worker registrado!"))
+        .catch((err) => console.error("Erro no Service Worker:", err));
+    }
+
+    // PWA - Botão de instalação
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+      console.log('Usuário respondeu:', outcome);
+    });
+
+    // Seletor de idioma customizado
+    const languageBtn = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const currentLang = document.getElementById('currentLang');
+    const languageOptions = document.querySelectorAll('.language-option');
+
+    // Toggle dropdown
+    languageBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      languageDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!languageBtn.contains(e.target)) {
+        languageDropdown.classList.remove('show');
       }
     });
-  });
-</script>
 
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then(() => console.log("Service Worker registrado!"))
-      .catch((err) => console.error("Erro no Service Worker:", err));
-  }
-</script>
+    // Selecionar idioma
+    languageOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const lang = this.dataset.lang;
+        const flag = this.dataset.flag;
+        const name = this.dataset.name;
+        
+        // Atualizar interface do botão
+        const flagElement = languageBtn.querySelector('.flag');
+        flagElement.className = `flag ${flag}`;
+        currentLang.textContent = name;
+        
+        // Fechar dropdown
+        languageDropdown.classList.remove('show');
+        
+        // Usar Google Translate
+        const translateElement = document.querySelector('.goog-te-combo');
+        if (translateElement) {
+          translateElement.value = lang;
+          translateElement.dispatchEvent(new Event('change'));
+        } else {
+          // Se o Google Translate não estiver carregado ainda, aguardar
+          setTimeout(() => {
+            const translateElement = document.querySelector('.goog-te-combo');
+            if (translateElement) {
+              translateElement.value = lang;
+              translateElement.dispatchEvent(new Event('change'));
+            }
+          }, 1000);
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
