@@ -109,10 +109,45 @@ function googleTranslateElementInit() {
 
   <!-- Rodapé -->
   <footer>
-    <p>&copy; 2019 Guariní e-sport. Todos os direitos reservados.</p>
-    <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">Conheça nossas redes sociais</a></p>
-    <p>Created by: Lobo & Shad</p>
-  </footer>
+  <div class="footer-content">
+    <!-- Botões de ação no footer -->
+    <div class="footer-actions">
+      <!-- Botão de instalar app -->
+      <button id="installBtn" class="btn-install">📱 Instalar Guarini</button>
+      
+      <!-- Seletor de idioma customizado -->
+      <div class="language-selector">
+        <button class="language-btn" id="languageBtn">
+          <span class="flag flag-br"></span>
+          <span id="currentLang">Português</span>
+          <span>▼</span>
+        </button>
+        <div class="language-dropdown" id="languageDropdown">
+          <div class="language-option" data-lang="pt" data-flag="flag-br" data-name="Português">
+            <span class="flag flag-br"></span>
+            <span>Português</span>
+          </div>
+          <div class="language-option" data-lang="en" data-flag="flag-us" data-name="English">
+            <span class="flag flag-us"></span>
+            <span>English</span>
+          </div>
+          <div class="language-option" data-lang="ja" data-flag="flag-jp" data-name="日本語">
+            <span class="flag flag-jp"></span>
+            <span>日本語</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações do footer -->
+    <div class="footer-info">
+      <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
+      <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+      <p>Created by: Lobo & Shad</p>
+    </div>
+  </div>
+</footer>
+
 
   <!-- Firebase e Autenticação -->
   <script type="module">
@@ -199,5 +234,68 @@ function googleTranslateElementInit() {
       }
     });
   </script>
+<script>
+  // PWA - Botão de instalação
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBtn').style.display = 'block';
+  });
+
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+    console.log('Usuário respondeu:', outcome);
+  });
+
+  // Seletor de idioma customizado
+  const languageBtn = document.getElementById('languageBtn');
+  const languageDropdown = document.getElementById('languageDropdown');
+  const currentLang = document.getElementById('currentLang');
+  const languageOptions = document.querySelectorAll('.language-option');
+
+  languageBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    languageDropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!languageBtn.contains(e.target)) {
+      languageDropdown.classList.remove('show');
+    }
+  });
+
+  languageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      const flag = this.dataset.flag;
+      const name = this.dataset.name;
+      
+      const flagElement = languageBtn.querySelector('.flag');
+      flagElement.className = `flag ${flag}`;
+      currentLang.textContent = name;
+      languageDropdown.classList.remove('show');
+      
+      const translateElement = document.querySelector('.goog-te-combo');
+      if (translateElement) {
+        translateElement.value = lang;
+        translateElement.dispatchEvent(new Event('change'));
+      } else {
+        setTimeout(() => {
+          const translateElement = document.querySelector('.goog-te-combo');
+          if (translateElement) {
+            translateElement.value = lang;
+            translateElement.dispatchEvent(new Event('change'));
+          }
+        }, 1000);
+      }
+    });
+  });
+</script>
+
 </body>
 </html>

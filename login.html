@@ -4,30 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login Firebase</title>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Firebase</title>
 <style>
+  :root{
+    --accent:#ff7500;
+    --accent-2:#ffad00;
+  }
+  html,body{height:100%;}
   body {
     font-family: Arial, sans-serif;
-    background: url('background.jpg');
+    background: url('background.jpg') no-repeat center center fixed;
     background-size: cover;
+    margin: 0;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    margin: 0;
+    padding-bottom: 120px; /* espaço para footer */
+    box-sizing: border-box;
   }
   .container {
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
     width: 300px;
     text-align: center;
   }
-  h2 { margin-bottom: 20px; color: #333; }
+  h2 { margin-bottom: 15px; color: #333; }
   input, button {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
+    padding: 9px;
+    margin: 6px 0;
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
@@ -35,52 +48,116 @@
   }
   button {
     border: none;
-    background-color: #ff7500;
+    background-color: var(--accent);
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  button:hover { background-color: #ffad00; }
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  .error-message {
-    color: #ff0000;
-    font-size: 12px;
-    margin: 5px 0;
-    display: none;
-  }
-  .success-message {
-    color: #00aa00;
-    font-size: 12px;
-    margin: 5px 0;
-    display: none;
-  }
-  .loading {
-    display: none;
-    color: #666;
-    font-size: 12px;
-    margin: 5px 0;
-  }
-  .divider {
-    margin: 15px 0;
-    border-bottom: 1px solid #eee;
-    position: relative;
-  }
+  button:hover { background-color: var(--accent-2); }
+  button:disabled { background-color: #ccc; cursor: not-allowed; }
+  .error-message { color: #ff0000; font-size: 12px; margin: 5px 0; display: none; }
+  .success-message { color: #00aa00; font-size: 12px; margin: 5px 0; display: none; }
+  .loading { display: none; color: #666; font-size: 12px; margin: 5px 0; }
+  .divider { margin: 12px 0; border-bottom: 1px solid #eee; position: relative; }
   .divider::after {
     content: "ou";
     position: absolute;
-    bottom: -10px;
+    bottom: -9px;
     left: 50%;
     transform: translateX(-50%);
     background: white;
-    padding: 0 10px;
+    padding: 0 8px;
     color: #666;
     font-size: 12px;
   }
+
+  footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.94);
+    color: #fff;
+    border-top: 2px solid var(--accent);
+    padding: 8px 6px;
+    box-sizing: border-box;
+    z-index: 9999;
+  }
+  .footer-content{
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer-actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  .btn-install{
+    background: linear-gradient(45deg, var(--accent), var(--accent-2));
+    color: #000;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    min-width: 180px;
+    font-size: 13px;
+  }
+  .btn-install:hover{ transform: translateY(-1px); }
+  .language-selector{ position: relative; display: inline-block; }
+  .language-btn{
+    background: transparent;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    font-weight: 600;
+    min-width: 180px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .language-btn:hover{ background: rgba(255,255,255,0.05); }
+  .language-dropdown{
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.96);
+    border-radius: 6px;
+    padding: 6px 4px;
+    min-width: 160px;
+    z-index: 10000;
+  }
+  .language-dropdown.show{ display: block; }
+  .language-option{
+    padding: 6px 10px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+  .language-option:hover{ background: rgba(255,173,0,0.08); }
+  .flag{ display:inline-block; width:18px; height:12px; background-size: cover; border-radius:3px; }
+  .flag-br{ background-image: url('https://flagcdn.com/w20/br.png'); }
+  .flag-us{ background-image: url('https://flagcdn.com/w20/us.png'); }
+  .flag-jp{ background-image: url('https://flagcdn.com/w20/jp.png'); }
+  .footer-info{ text-align:center; font-size:0.8rem; opacity:0.8; }
 </style>
-<div id="google_translate_element"></div>
+<div id="google_translate_element" style="display:none"></div>
 
 <script type="text/javascript">
 function googleTranslateElementInit() {
@@ -100,13 +177,12 @@ function googleTranslateElementInit() {
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag(){dataLayer.push(arguments);} 
   gtag('js', new Date());
-
   gtag('config', 'G-84NHN394WF');
 </script>
 <body>
-<div class="container">
+<div class="container" role="main">
   <h2>Login</h2>
   
   <div class="error-message" id="errorMessage"></div>
@@ -118,19 +194,56 @@ function googleTranslateElementInit() {
   
   <button id="btnLogin">Entrar</button>
   
-  <div class="divider"></div>
+  <div class="divider" aria-hidden="true"></div>
   
   <button id="btnGoogle">Entrar com Google</button>
   
-  <div style="margin-top: 20px;">
-    <p style="font-size: 12px; color: #666;">
+  <div style="margin-top: 14px;">
+    <p style="font-size: 12px; color: #666; margin:0;">
       Não tem uma conta? 
-      <button id="btnRegistrar" style="background: none; border: none; color: #ff7500; cursor: pointer; text-decoration: underline; padding: 0; font-size: 12px;">
+      <button id="btnRegistrar" style="background: none; border: none; color: var(--accent); cursor: pointer; text-decoration: underline; padding: 0; font-size: 12px;">
         Criar conta
       </button>
     </p>
   </div>
 </div>
+
+<!-- RODAPÉ PADRONIZADO (botões empilhados abaixo) -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-actions" role="group" aria-label="Ações do rodapé">
+      <button id="installBtn" class="btn-install" aria-label="Instalar aplicativo">📱 Instalar Guarini</button>
+
+      <div class="language-selector" id="langSel">
+        <button class="language-btn" id="languageBtn" aria-haspopup="true" aria-expanded="false">
+          <span class="flag flag-br" aria-hidden="true"></span>
+          <span id="currentLang">Português</span>
+          <span aria-hidden="true">▼</span>
+        </button>
+        <div class="language-dropdown" id="languageDropdown" role="menu" aria-hidden="true">
+          <div class="language-option" data-lang="pt" data-flag="flag-br" data-name="Português" role="menuitem">
+            <span class="flag flag-br" aria-hidden="true"></span>
+            <span>Português</span>
+          </div>
+          <div class="language-option" data-lang="en" data-flag="flag-us" data-name="English" role="menuitem">
+            <span class="flag flag-us" aria-hidden="true"></span>
+            <span>English</span>
+          </div>
+          <div class="language-option" data-lang="ja" data-flag="flag-jp" data-name="日本語" role="menuitem">
+            <span class="flag flag-jp" aria-hidden="true"></span>
+            <span>日本語</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <p>&copy; 2019 Guariní e-sport. Todos os direitos reservados.</p>
+      <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Conheça nossas redes sociais</a></p>
+      <p>Created by: Lobo & Shad</p>
+    </div>
+  </div>
+</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -154,14 +267,12 @@ function googleTranslateElementInit() {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  
+
   // Configuração do Google Provider
   const provider = new GoogleAuthProvider();
   provider.addScope('email');
   provider.addScope('profile');
-  provider.setCustomParameters({
-    prompt: 'select_account'
-  });
+  provider.setCustomParameters({ prompt: 'select_account' });
 
   // Elementos do DOM
   const email = document.getElementById("email");
@@ -173,13 +284,10 @@ function googleTranslateElementInit() {
   const successMessage = document.getElementById("successMessage");
   const loadingMessage = document.getElementById("loadingMessage");
 
-  // Função para mostrar mensagens
   function showMessage(element, message, duration = 5000) {
     element.textContent = message;
     element.style.display = "block";
-    setTimeout(() => {
-      element.style.display = "none";
-    }, duration);
+    setTimeout(() => { element.style.display = "none"; }, duration);
   }
 
   function hideAllMessages() {
@@ -191,138 +299,134 @@ function googleTranslateElementInit() {
   function setLoading(isLoading) {
     btnLogin.disabled = isLoading;
     btnGoogle.disabled = isLoading;
-    
-    if (isLoading) {
-      loadingMessage.style.display = "block";
-    } else {
-      loadingMessage.style.display = "none";
-    }
+    if (isLoading) loadingMessage.style.display = "block"; else loadingMessage.style.display = "none";
   }
 
-  // Função para login com Google (AGORA DEFINIDA CORRETAMENTE)
   async function signInWithGoogle() {
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("Usuário logado com Google:", user);
       return result;
     } catch (error) {
-      console.error("Erro detalhado do Google:", error);
+      console.error("Erro do Google:", error);
       throw error;
     }
   }
 
-  // Função para tratar erros do Firebase
   function getErrorMessage(errorCode) {
     switch (errorCode) {
-      case 'auth/user-not-found':
-        return 'Usuário não encontrado. Verifique o email ou crie uma conta.';
-      case 'auth/wrong-password':
-        return 'Senha incorreta. Tente novamente.';
-      case 'auth/invalid-email':
-        return 'Email inválido. Verifique o formato do email.';
-      case 'auth/too-many-requests':
-        return 'Muitas tentativas de login. Tente novamente mais tarde.';
-      case 'auth/network-request-failed':
-        return 'Erro de conexão. Verifique sua internet.';
-      case 'auth/invalid-credential':
-        return 'Email ou senha incorretos.';
-      case 'auth/popup-closed-by-user':
-        return 'Login cancelado pelo usuário.';
-      case 'auth/popup-blocked':
-        return 'Popup bloqueado pelo navegador. Permita popups para este site.';
-      case 'auth/cancelled-popup-request':
-        return 'Solicitação de popup cancelada.';
-      default:
-        return `Erro no login: ${errorCode}. Tente novamente.`;
+      case 'auth/user-not-found': return 'Usuário não encontrado. Verifique o email ou crie uma conta.';
+      case 'auth/wrong-password': return 'Senha incorreta. Tente novamente.';
+      case 'auth/invalid-email': return 'Email inválido. Verifique o formato do email.';
+      case 'auth/too-many-requests': return 'Muitas tentativas de login. Tente novamente mais tarde.';
+      case 'auth/network-request-failed': return 'Erro de conexão. Verifique sua internet.';
+      case 'auth/invalid-credential': return 'Email ou senha incorretos.';
+      case 'auth/popup-closed-by-user': return 'Login cancelado pelo usuário.';
+      case 'auth/popup-blocked': return 'Popup bloqueado pelo navegador. Permita popups para este site.';
+      default: return `Erro no login: ${errorCode}. Tente novamente.`;
     }
   }
 
-  // Verificar se usuário já está logado
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // Usuário já está logado, redirecionar
-      window.location.href = "index.html";
-    }
+    if (user) window.location.href = "index.html";
   });
 
-  // Login com email e senha
   btnLogin.addEventListener("click", async () => {
     hideAllMessages();
-    
     const emailValue = email.value.trim();
     const senhaValue = senha.value;
-
-    // Validações básicas
-    if (!emailValue || !senhaValue) {
-      showMessage(errorMessage, "Por favor, preencha todos os campos.");
-      return;
-    }
-
-    if (!emailValue.includes("@")) {
-      showMessage(errorMessage, "Por favor, digite um email válido.");
-      return;
-    }
-
+    if (!emailValue || !senhaValue) { showMessage(errorMessage, "Por favor, preencha todos os campos."); return; }
+    if (!emailValue.includes("@")) { showMessage(errorMessage, "Por favor, digite um email válido."); return; }
     setLoading(true);
-
-    try {
-      await signInWithEmailAndPassword(auth, emailValue, senhaValue);
-      showMessage(successMessage, "Login realizado com sucesso!");
-      
-      // Redirecionar após um breve delay
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1000);
-      
-    } catch (error) {
-      console.error("Erro no login:", error);
-      showMessage(errorMessage, getErrorMessage(error.code));
-    } finally {
-      setLoading(false);
-    }
+    try { await signInWithEmailAndPassword(auth, emailValue, senhaValue); showMessage(successMessage, "Login realizado com sucesso!"); setTimeout(()=> window.location.href = "index.html", 800); }
+    catch (error) { console.error(error); showMessage(errorMessage, getErrorMessage(error.code)); }
+    finally { setLoading(false); }
   });
 
-  // Login com Google (CORRIGIDO)
   btnGoogle.addEventListener("click", async () => {
-    hideAllMessages();
-    setLoading(true);
-
-    try {
-      const result = await signInWithGoogle();
-      showMessage(successMessage, "Login com Google realizado com sucesso!");
-      
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1000);
-      
-    } catch (error) {
-      console.error("Erro no login com Google:", error);
-      
-      // Tratamento específico para erros do Google
-      if (error.code === 'auth/popup-closed-by-user') {
-        showMessage(errorMessage, "Login cancelado. Tente novamente.");
-      } else if (error.code === 'auth/popup-blocked') {
-        showMessage(errorMessage, "Popup bloqueado. Permita popups neste site.");
-      } else {
-        showMessage(errorMessage, getErrorMessage(error.code));
-      }
-    } finally {
-      setLoading(false);
-    }
+    hideAllMessages(); setLoading(true);
+    try { await signInWithGoogle(); showMessage(successMessage, "Login com Google realizado com sucesso!"); setTimeout(()=> window.location.href = "index.html", 800); }
+    catch (error) { console.error(error); if (error.code === 'auth/popup-closed-by-user') showMessage(errorMessage, "Login cancelado. Tente novamente."); else if (error.code === 'auth/popup-blocked') showMessage(errorMessage, "Popup bloqueado. Permita popups neste site."); else showMessage(errorMessage, getErrorMessage(error.code)); }
+    finally { setLoading(false); }
   });
 
-  // Redirecionar para registro
-  btnRegistrar.addEventListener("click", () => {
-    window.location.href = "registro.html";
-  });
+  btnRegistrar.addEventListener("click", () => window.location.href = "registro.html");
 
-  // Enter para fazer login
-  document.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && !btnLogin.disabled) {
-      btnLogin.click();
-    }
-  });
+  document.addEventListener("keypress", (e) => { if (e.key === "Enter" && !btnLogin.disabled) btnLogin.click(); });
+
 </script>
+
+<script>
+  /* PWA - Botão de instalação + seletor de idioma */
+  (function(){
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+    const languageBtn = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const currentLang = document.getElementById('currentLang');
+    const languageOptions = document.querySelectorAll('.language-option');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+        console.log('Usuário respondeu:', outcome);
+      });
+    }
+
+    // Toggle dropdown
+    if (languageBtn) {
+      languageBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const isOpen = languageDropdown.classList.toggle('show');
+        languageBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        languageDropdown.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      });
+    }
+
+    document.addEventListener('click', function(e){
+      if (!languageBtn.contains(e.target)) {
+        languageDropdown.classList.remove('show');
+        languageBtn.setAttribute('aria-expanded','false');
+        languageDropdown.setAttribute('aria-hidden','true');
+      }
+    });
+
+    languageOptions.forEach(option => {
+      option.addEventListener('click', function(){
+        const lang = this.dataset.lang;
+        const flag = this.dataset.flag;
+        const name = this.dataset.name;
+        const flagElement = languageBtn.querySelector('.flag');
+        flagElement.className = 'flag ' + flag;
+        currentLang.textContent = name;
+        languageDropdown.classList.remove('show');
+        languageBtn.setAttribute('aria-expanded','false');
+        languageDropdown.setAttribute('aria-hidden','true');
+
+        // Tenta usar o seletor do Google Translate (se existir)
+        const translateElement = document.querySelector('.goog-te-combo');
+        if (translateElement) {
+          translateElement.value = lang;
+          translateElement.dispatchEvent(new Event('change'));
+        } else {
+          setTimeout(() => {
+            const translateElement2 = document.querySelector('.goog-te-combo');
+            if (translateElement2) { translateElement2.value = lang; translateElement2.dispatchEvent(new Event('change')); }
+          }, 800);
+        }
+      });
+    });
+  })();
+</script>
+
 </body>
 </html>
