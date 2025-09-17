@@ -28,59 +28,6 @@ pokemons.forEach(p => {
 
 let season = {}, total = {};
 
-// Função para calcular pontos por partida com buffs
-function calcularPontosPorPartida() {
-  const battleCard = document.getElementById("buff-battle-card").checked;
-  const retorno = document.getElementById("buff-retorno").checked;
-  const spray = document.getElementById("buff-spray").checked;
-
-  let pontosVitoria = 150;
-  let pontosDerrota = 100;
-
-  // Battle Point Card dobra os pontos base
-  if (battleCard) {
-    pontosVitoria = 300;
-    pontosDerrota = 200;
-  }
-
-  // Retorno do jogador adiciona 45
-  if (retorno) {
-    pontosVitoria += 45;
-    pontosDerrota += 45;
-  }
-
-  // Spray adiciona 30
-  if (spray) {
-    pontosVitoria += 30;
-    pontosDerrota += 30;
-  }
-
-  return { vitoria: pontosVitoria, derrota: pontosDerrota };
-}
-
-// Função para atualizar preview dos pontos
-function atualizarPreviewPontos() {
-  const pontos = calcularPontosPorPartida();
-  const preview = document.getElementById("pontos-preview");
-  
-  preview.innerHTML = `
-    <span class="pontos-vitoria">Vitória: <strong>${pontos.vitoria} pontos</strong></span>
-    <span class="pontos-derrota">Derrota: <strong>${pontos.derrota} pontos</strong></span>
-  `;
-}
-
-// Event listeners para os checkboxes
-document.addEventListener('DOMContentLoaded', function() {
-  const checkboxes = document.querySelectorAll('.buff-checkbox input[type="checkbox"]');
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', atualizarPreviewPontos);
-  });
-  
-  // Atualiza preview inicial
-  atualizarPreviewPontos();
-});
-
-// Carrega os dados do textarea (inglês ou português)
 function carregarDados() {
   const texto = document.getElementById("dadosTexto").value;
   if (!texto) {
@@ -88,7 +35,6 @@ function carregarDados() {
     return false;
   }
 
-  // Regex para dados em inglês
   const seasonBattlesEN = texto.match(/Season Battles\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const seasonWinsEN = texto.match(/Season Wins\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const seasonMVPEN = texto.match(/Season MVP\s*\*?\*?(\d+)\*?\*?/i)?.[1];
@@ -96,7 +42,6 @@ function carregarDados() {
   const totalWinsEN = texto.match(/(?:No\.\s*Of\s*Wins|Total Wins)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const totalMVPEN = texto.match(/Total MVP\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
-  // Regex para dados em português
   const seasonBattlesPT = texto.match(/Batalhas\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const seasonWinsPT = texto.match(/Vitórias\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const seasonMVPPT = texto.match(/MVP\s+da\s+Temporada\s*\*?\*?(\d+)\*?\*?/i)?.[1];
@@ -104,7 +49,6 @@ function carregarDados() {
   const totalWinsPT = texto.match(/(?:No\.\s*de\s*Vitórias|Vitórias\s+totais)\s*\*?\*?(\d+)\*?\*?/i)?.[1];
   const totalMVPPT = texto.match(/MVP\s+Total\s*\*?\*?(\d+)\*?\*?/i)?.[1];
 
-  // Usa dados em inglês se encontrados, senão usa português
   season = {
     battles: parseInt(seasonBattlesEN || seasonBattlesPT) || 0,
     wins: parseInt(seasonWinsEN || seasonWinsPT) || 0,
@@ -123,11 +67,9 @@ function carregarDados() {
     alert("Dados inválidos. Verifique o conteúdo colado.");
     return false;
   }
-
   return true;
 }
 
-// Avalia o desempenho baseado na role
 function avaliarDesempenho(role, desempenho) {
   if (["ADC", "JGL", "TOP"].includes(role)) {
     if (desempenho < 30) return "Fraco";
@@ -144,7 +86,6 @@ function avaliarDesempenho(role, desempenho) {
   }
 }
 
-// Calcula as porcentagens
 function calcularPorcentagens(stats) {
   const winRate = stats.battles ? (stats.wins / stats.battles) * 100 : 0;
   const mvpRate = stats.battles ? (stats.mvps / stats.battles) * 100 : 0;
@@ -156,14 +97,12 @@ function calcularPorcentagens(stats) {
   };
 }
 
-// Calcula desempenho combinado com multiplicador para SUP/TANK
 function calcularDesempenhoCombinado(winRate, mvpWinRate, role) {
   const win = parseFloat(winRate);
   let mvp = parseFloat(mvpWinRate);
 
-  // Aumenta o peso do MVP/Vitória para SUP e TANK
   if (role === "SUP" || role === "TANK") {
-    mvp *= 2.5; // Multiplicador SUP TANK
+    mvp *= 2.5;
   }
 
   return ((win + mvp) / 2).toFixed(2);
@@ -176,29 +115,29 @@ const niveisMaestria = [
   {nome: "Dourado", pontos: 165000, img: "./estatisticas-shad/images/icons/dourado.png"}
 ];
 
-// Função para calcular média de pontos por partida com buffs
 function calcularMediaPontos(totalBattles, totalWins) {
-  const pontos = calcularPontosPorPartida();
   const vitorias = totalWins;
   const derrotas = totalBattles - totalWins;
   
-  const pontosTotaisVitoria = vitorias * pontos.vitoria;
-  const pontosTotaisDerrota = derrotas * pontos.derrota;
+  // Usando valores padrão sem buffs para cálculo da média
+  const pontosTotaisVitoria = vitorias * 150;
+  const pontosTotaisDerrota = derrotas * 100;
   const pontosTotais = pontosTotaisVitoria + pontosTotaisDerrota;
   
   return totalBattles > 0 ? pontosTotais / totalBattles : 0;
 }
 
-// Função para calcular maestria em HTML
-function calcularMaestria(totalBattles, totalWins) {
+// Função para gerar maestria simples com informações de buffs adicionais
+function calcularMaestriaComBuffs(totalBattles, totalWins) {
   const mediaPontos = calcularMediaPontos(totalBattles, totalWins);
-  const pontosTotais = totalBattles * mediaPontos;
+  const pontosSemBuffs = totalBattles * mediaPontos;
+  const derrotas = totalBattles - totalWins;
 
   let nivelAtual = niveisMaestria[0];
   let proximoNivel = null;
 
   for (let i = 0; i < niveisMaestria.length; i++) {
-    if (pontosTotais >= niveisMaestria[i].pontos) {
+    if (pontosSemBuffs >= niveisMaestria[i].pontos) {
       nivelAtual = niveisMaestria[i];
       proximoNivel = niveisMaestria[i+1] || null;
     }
@@ -206,24 +145,27 @@ function calcularMaestria(totalBattles, totalWins) {
 
   let resultado = `
     <div class="stat-line">
-      <span class="stat-label">Média por partida:</span>
+      <span class="stat-label">Média por partida (sem buffs):</span>
       <span class="stat-value">${mediaPontos.toFixed(0)} pts</span>
     </div>
     <div class="stat-line">
-      <span class="stat-label">Pontos estimados:</span>
-      <span class="stat-value">${pontosTotais.toFixed(0)}</span>
+      <span class="stat-label">Pontos estimados (sem buffs):</span>
+      <span class="stat-value" id="maestria-pontos">
+        ${pontosSemBuffs.toFixed(0)}
+        <button id="editar-maestria" class="btn-editar" onclick="editarMaestria(${pontosSemBuffs.toFixed(0)})">✏️</button>
+      </span>
     </div>
     <div class="stat-line">
-      <span class="stat-label">Nível atual:</span>
+      <span class="stat-label">Nível atual (sem buffs):</span>
       <span class="stat-value">
-      <img src="${nivelAtual.img}" alt="${nivelAtual.nome}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
-      ${nivelAtual.nome}
-    </span>
+        <img src="${nivelAtual.img}" alt="${nivelAtual.nome}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+        ${nivelAtual.nome}
+      </span>
     </div>
   `;
 
   if (proximoNivel) {
-    const faltamPontos = proximoNivel.pontos - pontosTotais;
+    const faltamPontos = proximoNivel.pontos - pontosSemBuffs;
     const faltamPartidas = Math.ceil(faltamPontos / mediaPontos);
     resultado += `
       <div class="stat-line">
@@ -244,13 +186,173 @@ function calcularMaestria(totalBattles, totalWins) {
     `;
   }
 
+  // Adiciona informações dos buffs
+  resultado += `<div class="buffs-info-section">`;
+  
+  // Battle Point Card
+  const pontosBattle = (totalWins * 300) + (derrotas * 200);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/battlecard.png" alt="Battle Point Card" class="buff-icon-inline">Só Battle Point Card:
+      </span>
+      <span class="stat-value">${pontosBattle.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Spray
+  const pontosSpray = (totalWins * 180) + (derrotas * 130);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/spray.png" alt="Spray" class="buff-icon-inline">Só Spray:
+      </span>
+      <span class="stat-value">${pontosSpray.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Retorno do Jogador
+  const pontosRetorno = (totalWins * 195) + (derrotas * 145);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/returning.png" alt="Retorno do Jogador" class="buff-icon-inline">Só Retorno do Jogador:
+      </span>
+      <span class="stat-value">${pontosRetorno.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Battle + Spray
+  const pontosBattleSpray = (totalWins * 330) + (derrotas * 230);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/battlecard.png" alt="Battle Point Card" class="buff-icon-inline">
+        <img src="./img-site/spray.png" alt="Spray" class="buff-icon-inline"> Battle + Spray:
+      </span>
+      <span class="stat-value">${pontosBattleSpray.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Battle + Retorno
+  const pontosBattleRetorno = (totalWins * 345) + (derrotas * 245);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/battlecard.png" alt="Battle Point Card" class="buff-icon-inline">
+        <img src="./img-site/returning.png" alt="Retorno do Jogador" class="buff-icon-inline"> Battle + Retorno:
+      </span>
+      <span class="stat-value">${pontosBattleRetorno.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Spray + Retorno
+  const pontosSprayRetorno = (totalWins * 225) + (derrotas * 175);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/spray.png" alt="Spray" class="buff-icon-inline">
+        <img src="./img-site/returning.png" alt="Retorno do Jogador" class="buff-icon-inline"> Spray + Retorno:
+      </span>
+      <span class="stat-value">${pontosSprayRetorno.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  // Todos os buffs
+  const pontosTodos = (totalWins * 375) + (derrotas * 275);
+  resultado += `
+    <div class="stat-line buff-info">
+      <span class="stat-label">
+        <img src="./img-site/battlecard.png" alt="Battle Point Card" class="buff-icon-inline">
+        <img src="./img-site/returning.png" alt="Retorno do Jogador" class="buff-icon-inline">
+        <img src="./img-site/spray.png" alt="Spray" class="buff-icon-inline"> Todos os buffs:
+      </span>
+      <span class="stat-value">${pontosTodos.toLocaleString()} pts</span>
+    </div>
+  `;
+
+  resultado += `</div>`;
+
   return resultado;
 }
 
-// Função para calcular maestria em TEXTO (para copiar)
-function calcularMaestriaTexto(totalBattles, totalWins) {
+// --- Funções para edição manual ---
+function editarMaestria(valorAtual) {
+  const container = document.getElementById("maestria-pontos");
+  container.innerHTML = `
+    <input id="maestria-input" type="number" class="form-control pequeno" value="${valorAtual}">
+  `;
+  const input = document.getElementById("maestria-input");
+  input.focus();
+  input.select();
+  input.addEventListener("blur", () => confirmarMaestria(input.value));
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") confirmarMaestria(input.value);
+  });
+}
+
+function confirmarMaestria(valor) {
+  const pontosReais = parseInt(valor);
+  if (isNaN(pontosReais) || pontosReais <= 0) {
+    alert("Digite um valor válido.");
+    return;
+  }
+  atualizarMaestriaManualDireto(pontosReais);
+}
+
+function atualizarMaestriaManualDireto(pontosReais) {
+  let nivelAtual = niveisMaestria[0];
+  let proximoNivel = null;
+  for (let i = 0; i < niveisMaestria.length; i++) {
+    if (pontosReais >= niveisMaestria[i].pontos) {
+      nivelAtual = niveisMaestria[i];
+      proximoNivel = niveisMaestria[i+1] || null;
+    }
+  }
+  
+  let resultado = `
+    <div class="stat-line">
+      <span class="stat-label">Pontos reais:</span>
+      <span class="stat-value" id="maestria-pontos">${pontosReais}
+        <button id="editar-maestria" class="btn-editar" onclick="editarMaestria(${pontosReais})">✏️</button>
+      </span>
+    </div>
+    <div class="stat-line">
+      <span class="stat-label">Nível atual:</span>
+      <span class="stat-value">
+        <img src="${nivelAtual.img}" alt="${nivelAtual.nome}" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+        ${nivelAtual.nome}
+      </span>
+    </div>
+  `;
+  if (proximoNivel) {
+    const faltamPontos = proximoNivel.pontos - pontosReais;
+    resultado += `
+      <div class="stat-line">
+        <span class="stat-label">Próximo nível:</span>
+        <span class="stat-value">${proximoNivel.nome}</span>
+      </div>
+      <div class="stat-line">
+        <span class="stat-label">Faltam aproximadamente:</span>
+        <span class="stat-value">${faltamPontos} pts</span>
+      </div>
+    `;
+  } else {
+    resultado += `
+      <div class="stat-line">
+        <span class="stat-label">Status:</span>
+        <span class="stat-value">🎉 Nível máximo (Dourado)!</span>
+      </div>
+    `;
+  }
+  document.getElementById("dados-maestria").innerHTML = resultado;
+}
+
+// Função para calcular maestria em TEXTO básico (para copiar)
+function calcularMaestriaTextoBasico(totalBattles, totalWins) {
   const mediaPontos = calcularMediaPontos(totalBattles, totalWins);
   const pontosTotais = totalBattles * mediaPontos;
+  
   let nivelAtual = niveisMaestria[0];
   let proximoNivel = null;
 
@@ -261,20 +363,20 @@ function calcularMaestriaTexto(totalBattles, totalWins) {
     }
   }
 
-  let resultado = `⭐ Maestria
-- Média por partida: ${mediaPontos.toFixed(0)} pts
-- Pontos estimados: ${pontosTotais.toFixed(0)}
-- Nível atual: ${nivelAtual.nome}`;
+  let resultado = `⭐ Maestria (valores sem buffs)
+• Média por partida: ${mediaPontos.toFixed(0)} pts
+• Pontos estimados: ${pontosTotais.toFixed(0)}
+• Nível atual: ${nivelAtual.nome}`;
 
   if (proximoNivel) {
     const faltamPontos = proximoNivel.pontos - pontosTotais;
     const faltamPartidas = Math.ceil(faltamPontos / mediaPontos);
     resultado += `
-- Próximo nível: ${proximoNivel.nome}
-- Faltam: ${faltamPontos.toFixed(0)} pts (~${faltamPartidas} partidas)`;
+• Próximo nível: ${proximoNivel.nome}
+• Faltam: ${faltamPontos.toFixed(0)} pts (~${faltamPartidas} partidas)`;
   } else {
     resultado += `
-- Status: 🎉 Nível máximo (Dourado)!`;
+• Status: 🎉 Nível máximo (Dourado)!`;
   }
 
   return resultado;
@@ -356,7 +458,7 @@ function calcularDesempenho() {
       <span class="stat-value">${temp.mvpWinRate}%</span>
     </div>
     <div class="stat-line desempenho-line">
-      <span class="stat-label">🔍 Desempenho:</span>
+      <span class="stat-label">📊 Desempenho:</span>
       <span class="stat-value">${desempenhoTemporada}%</span>
     </div>
     <div class="avaliacao ${avaliacaoTemporada.toLowerCase().replace(' ', '-')}">
@@ -396,7 +498,7 @@ function calcularDesempenho() {
       <span class="stat-value">${tot.mvpWinRate}%</span>
     </div>
     <div class="stat-line desempenho-line">
-      <span class="stat-label">🔍 Desempenho:</span>
+      <span class="stat-label">📊 Desempenho:</span>
       <span class="stat-value">${desempenhoTotal}%</span>
     </div>
     <div class="avaliacao ${avaliacaoTotal.toLowerCase().replace(' ', '-')}">
@@ -405,7 +507,7 @@ function calcularDesempenho() {
   `;
 
   // --- Adiciona Maestria com buffs ---
-  const maestriaHTML = calcularMaestria(total.battles, total.wins);
+  const maestriaHTML = calcularMaestriaComBuffs(total.battles, total.wins);
 
   // Cria ou atualiza um bloco de Maestria
   let blocoMaestria = document.getElementById("dados-maestria");
@@ -415,7 +517,8 @@ function calcularDesempenho() {
     div.innerHTML = `<h3>⭐ Maestria</h3><div id="dados-maestria">${maestriaHTML}</div>`;
     colunaTotal.appendChild(div);
   } else {
-    blocoMaestria.innerHTML = maestriaHTML;
+    const parentDiv = blocoMaestria.parentElement;
+    parentDiv.innerHTML = `<h3>⭐ Maestria</h3><div id="dados-maestria">${maestriaHTML}</div>`;
   }
 
   // Mostra ou esconde info do multiplicador
@@ -447,7 +550,7 @@ Função: ${role}
 - Win Rate: ${temp.winRate}%
 - MVP/Partida: ${temp.mvpRate}%
 - MVP/Vitória: ${temp.mvpWinRate}%
-- 🔍 Desempenho da Temporada: ${desempenhoTemporada}%
+- 📊 Desempenho da Temporada: ${desempenhoTemporada}%
 - ✅ Avaliação: ${avaliacaoTemporada}
 
 🔸 Total:
@@ -458,7 +561,7 @@ Função: ${role}
 - Win Rate: ${tot.winRate}%
 - MVP/Partida: ${tot.mvpRate}%
 - MVP/Vitória: ${tot.mvpWinRate}%
-- 🔍 Desempenho Total: ${desempenhoTotal}%
+- 📊 Desempenho Total: ${desempenhoTotal}%
 - ✅ Avaliação: ${avaliacaoTotal}${mensagemMultiplicador}`;
 
   document.getElementById("resultado").innerText = resultadoFinal;
@@ -470,12 +573,6 @@ function limparCampos() {
   document.getElementById("pokemon").value = "";
   document.getElementById("role").value = "";
   document.getElementById("dadosTexto").value = "";
-  
-  // Reseta os buffs
-  document.getElementById("buff-battle-card").checked = false;
-  document.getElementById("buff-retorno").checked = false;
-  document.getElementById("buff-spray").checked = false;
-  atualizarPreviewPontos();
   
   document.getElementById("resultado-completo").style.display = "none";
   document.getElementById("multiplicador-info").style.display = "none";
@@ -508,23 +605,9 @@ function copiarResultado() {
     mensagemMultiplicador = "\n⚠️ No cálculo de desempenho de SUP e TANK é utilizado um multiplicador para o valor de MVP, pois essas roles têm menos MVPs por partida.";
   }
 
-  // Inclui maestria em texto com buffs
-  const maestriaTexto = calcularMaestriaTexto(total.battles, total.wins);
+  // Inclui maestria em texto básico (sem buffs)
+  const maestriaTexto = calcularMaestriaTextoBasico(total.battles, total.wins);
   
-  // Adiciona informações dos buffs utilizados
-  const pontos = calcularPontosPorPartida();
-  let buffsAtivos = [];
-  if (document.getElementById("buff-battle-card").checked) buffsAtivos.push("Battle Point Card");
-  if (document.getElementById("buff-retorno").checked) buffsAtivos.push("Retorno do Jogador");
-  if (document.getElementById("buff-spray").checked) buffsAtivos.push("Spray");
-  
-  let buffsInfo = "";
-  if (buffsAtivos.length > 0) {
-    buffsInfo = `\n🎯 Buffs utilizados: ${buffsAtivos.join(", ")}
-- Pontos por vitória: ${pontos.vitoria}
-- Pontos por derrota: ${pontos.derrota}`;
-  }
-
   const resultadoFinal = `🔥 RELATÓRIO DE DESEMPENHO - POKÉMON UNITE 🔥
 
 👤 Jogador: ${jogador}
@@ -539,7 +622,7 @@ function copiarResultado() {
 • Win Rate: ${temp.winRate}%
 • MVP/Partida: ${temp.mvpRate}%
 • MVP/Vitória: ${temp.mvpWinRate}%
-• 🔍 Desempenho da Temporada: ${desempenhoTemporada}%
+• 📊 Desempenho da Temporada: ${desempenhoTemporada}%
 • ✅ Avaliação: ${avaliacaoTemporada}
 
 🔸 DADOS TOTAIS:
@@ -550,12 +633,12 @@ function copiarResultado() {
 • Win Rate: ${tot.winRate}%
 • MVP/Partida: ${tot.mvpRate}%
 • MVP/Vitória: ${tot.mvpWinRate}%
-• 🔍 Desempenho Total: ${desempenhoTotal}%
+• 📊 Desempenho Total: ${desempenhoTotal}%
 • ✅ Avaliação: ${avaliacaoTotal}${mensagemMultiplicador}
 
-${maestriaTexto}${buffsInfo}
+${maestriaTexto}
 
-📊 Calculadora Guarinί e-sport`;
+📊 Calculadora Guarinî e-sport`;
 
   navigator.clipboard.writeText(resultadoFinal);
   alert("Resultado copiado para a área de transferência!");

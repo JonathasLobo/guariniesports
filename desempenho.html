@@ -92,54 +92,6 @@ function googleTranslateElementInit() {
       <label for="dadosTexto">Cole os dados do site aqui:</label>
       <textarea id="dadosTexto" rows="6" class="form-control" placeholder="Cole os dados brutos do seu Pokémon no seu Unite API em Inglês ou Português aqui...&#10;Exemplo:&#10;Season Battles&#10;0&#10;Season Wins&#10;0&#10;Season Loses&#10;0&#10;Season MVP&#10;0&#10;Total Battles&#10;0&#10;No. Of Wins&#10;0&#10;Total Loses&#10;0&#10;Total MVP&#10;0"></textarea>
 
-      <!-- Seção de Buffs de Maestria -->
-      <div class="buffs-maestria-container" style="margin: 20px 0;">
-        <h3 style="color: #fe8a01; margin-bottom: 15px; font-size: 18px;">🎯 Buffs de Maestria (opcional)</h3>
-        <p style="color: #ccc; font-size: 14px; margin-bottom: 15px;">
-          Selecione os buffs que você utiliza para um cálculo mais preciso da maestria:
-        </p>
-        
-        <div class="buffs-grid">
-          <div class="buff-option">
-            <label class="buff-checkbox">
-              <input type="checkbox" id="buff-battle-card" value="battle-card">
-              <span class="checkmark"></span>
-              <div class="buff-info">
-                <strong>Battle Point Card</strong>
-                <small>Dobra os pontos (Vitória: 300pts, Derrota: 200pts)</small>
-              </div>
-            </label>
-          </div>
-          
-          <div class="buff-option">
-            <label class="buff-checkbox">
-              <input type="checkbox" id="buff-retorno" value="retorno">
-              <span class="checkmark"></span>
-              <div class="buff-info">
-                <strong>Retorno do Jogador</strong>
-                <small>+45 pontos em ambos os casos</small>
-              </div>
-            </label>
-          </div>
-          
-          <div class="buff-option">
-            <label class="buff-checkbox">
-              <input type="checkbox" id="buff-spray" value="spray">
-              <span class="checkmark"></span>
-              <div class="buff-info">
-                <strong>Spray</strong>
-                <small>+30 pontos em ambos os casos</small>
-              </div>
-            </label>
-          </div>
-        </div>
-        
-        <div class="pontos-preview" id="pontos-preview">
-          <span class="pontos-vitoria">Vitória: <strong>150 pontos</strong></span>
-          <span class="pontos-derrota">Derrota: <strong>100 pontos</strong></span>
-        </div>
-      </div>
-
       <div class="botoes-calculadora">
         <button class="btn" onclick="calcularDesempenho()">Calcular Desempenho</button>
         <button class="btn" onclick="limparCampos()">Limpar</button>
