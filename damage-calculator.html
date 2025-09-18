@@ -150,157 +150,35 @@ function googleTranslateElementInit() {
         </label>
       </div>
 
-       <!-- Container dos Emblemas -->
-      <div id="emblemas-container" style="display: none; margin-top: 15px;">
-        <div class="campos-linha">
-          <div>
-            <label for="emblem-verde">
-              <span class="emblem-color-dot" style="background-color: #28a745;"></span>
-              Verde (Sp. ATK):
-            </label>
-            <select id="emblem-verde" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="2">Nível 2 (+1% Sp. ATK)</option>
-              <option value="4">Nível 4 (+2% Sp. ATK)</option>
-              <option value="6">Nível 6 (+4% Sp. ATK)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-vermelho">
-              <span class="emblem-color-dot" style="background-color: #dc3545;"></span>
-              Vermelho (Atk Speed):
-            </label>
-            <select id="emblem-vermelho" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (+2% Atk Speed)</option>
-              <option value="5">Nível 5 (+4% Atk Speed)</option>
-              <option value="7">Nível 7 (+8% Atk Speed)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-azul">
-              <span class="emblem-color-dot" style="background-color: #007bff;"></span>
-              Azul (DEF):
-            </label>
-            <select id="emblem-azul" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="2">Nível 2 (+2% DEF)</option>
-              <option value="4">Nível 4 (+4% DEF)</option>
-              <option value="6">Nível 6 (+8% DEF)</option>
-            </select>
-          </div>
+      <!-- Novo Seletor de Emblemas -->
+      <div class="emblems-selector-new" id="emblems-selector" style="display: none;">
+        <div class="emblems-title">Emblemas</div>
+        
+        <div class="emblems-grid" id="emblems-grid">
+          <!-- Os emblemas serão gerados dinamicamente pelo JavaScript -->
         </div>
-        <div class="campos-linha">
-          <div>
-            <label for="emblem-branco">
-              <span class="emblem-color-dot" style="background-color: #ffffff; border: 1px solid #ccc;"></span>
-              Branco (HP):
-            </label>
-            <select id="emblem-branco" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="2">Nível 2 (+1% HP)</option>
-              <option value="4">Nível 4 (+2% HP)</option>
-              <option value="6">Nível 6 (+4% HP)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-preto">
-              <span class="emblem-color-dot" style="background-color: #343a40;"></span>
-              Preto (CDR):
-            </label>
-            <select id="emblem-preto" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (+1% CDR)</option>
-              <option value="5">Nível 5 (+2% CDR)</option>
-              <option value="7">Nível 7 (+4% CDR)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-amarelo">
-              <span class="emblem-color-dot" style="background-color: #ffc107;"></span>
-              Amarelo (Speed):
-            </label>
-            <select id="emblem-amarelo" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (+4% Speed)</option>
-              <option value="5">Nível 5 (+6% Speed)</option>
-              <option value="7">Nível 7 (+12% Speed)</option>
-            </select>
-          </div>
-        </div>
-        <div class="campos-linha">
-          <div>
-            <label for="emblem-marrom">
-              <span class="emblem-color-dot" style="background-color: #8b4513;"></span>
-              Marrom (ATK):
-            </label>
-            <select id="emblem-marrom" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="2">Nível 2 (+1% ATK)</option>
-              <option value="4">Nível 4 (+2% ATK)</option>
-              <option value="6">Nível 6 (+4% ATK)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-roxo">
-              <span class="emblem-color-dot" style="background-color: #6f42c1;"></span>
-              Roxo (Sp. DEF):
-            </label>
-            <select id="emblem-roxo" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="2">Nível 2 (+2% Sp. DEF)</option>
-              <option value="4">Nível 4 (+4% Sp. DEF)</option>
-              <option value="6">Nível 6 (+8% Sp. DEF)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-rosa">
-              <span class="emblem-color-dot" style="background-color: #e83e8c;"></span>
-              Rosa (Hindrance Reduction):
-            </label>
-            <select id="emblem-rosa" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (+4% Hindrance Reduction)</option>
-              <option value="5">Nível 5 (+8% Hindrance Reduction)</option>
-              <option value="7">Nível 7 (+16% Hindrance Reduction)</option>
-            </select>
-          </div>
-        </div>
-        <div class="campos-linha">
-          <div>
-            <label for="emblem-azul-marinho">
-              <span class="emblem-color-dot" style="background-color: #1e3a8a;"></span>
-              Azul-Marinho (Ult Charge Rate):
-            </label>
-            <select id="emblem-azul-marinho" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (+1% Ult Charge Rate)</option>
-              <option value="5">Nível 5 (+2% Ult Charge Rate)</option>
-              <option value="7">Nível 7 (+4% Ult Charge Rate)</option>
-            </select>
-          </div>
-          <div>
-            <label for="emblem-cinza">
-              <span class="emblem-color-dot" style="background-color: #6c757d;"></span>
-              Cinza (Damage Taken):
-            </label>
-            <select id="emblem-cinza" class="form-control">
-              <option value="">Nenhum</option>
-              <option value="3">Nível 3 (-3 Damage Taken)</option>
-              <option value="5">Nível 5 (-6 Damage Taken)</option>
-              <option value="7">Nível 7 (-12 Damage Taken)</option>
-            </select>
-          </div>
+        
+        <div class="emblem-description empty" id="emblem-description">
+          Selecione um emblema e seu nível para ver a descrição do buff
         </div>
       </div>
 
-      <!-- Seletor de Nível com Slider (movido para cá) -->
-      <label for="nivel-final">Nível:</label>
-      <div class="nivel-container">
+      <!-- Seletor de Nível Circular -->
+      <div class="level-selector-container">
+        <div class="level-label-new">Nível:</div>
+        <div class="level-controls-new" id="level-controls-new">
+          <div class="level-button" id="level-decrease" title="Diminuir nível">−</div>
+          <div class="level-display" id="level-display">1</div>
+          <div class="level-button" id="level-increase" title="Aumentar nível">+</div>
+        </div>
+      </div>
+
+      <!-- Manter os elementos originais ocultos para compatibilidade -->
+      <div style="display: none;">
         <input type="range" id="nivel-final" min="1" max="15" value="1" step="1" class="slider">
         <span id="nivel-valor-final">1</span>
       </div>
-
+      
       <!-- Resultados -->
       <div id="resultado" class="resultado-container">
         <div class="resultado-dados">
@@ -318,6 +196,21 @@ function googleTranslateElementInit() {
       <div style="margin-top:20px; text-align:center;">
         <button id="btn-download" class="btn">📷 Baixar Resultado em Imagem</button>
       </div>
+
+          <!-- Footer com marca d'água -->
+    <footer style="text-align: center; padding: 20px; margin-top: 40px; color: #fe8a01; border-top: 1px solid #fe8a01;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <img src="./img-site/Guarini.png" alt="Logo Guarini" style="height: 40px;">
+        <div style="display: flex; gap: 20px;">
+          <a href="https://x.com/Shadtrader32" target="_blank" style="color: #fe8a01; text-decoration: none;">
+            @Shadtrader32
+          </a>
+          <a href="https://x.com/lobo_vgc" target="_blank" style="color: #fe8a01; text-decoration: none;">
+            @lobo_vgc
+          </a>
+        </div>
+      </div>
+    </footer>
 
     </section>
   </main>

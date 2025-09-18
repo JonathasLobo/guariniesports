@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Verificação de dependências
+  console.log("Verificando dados:", {
+    pokemonRoles: typeof pokemonRoles,
+    baseStats: typeof baseStats, 
+    gameHeldItens: typeof gameHeldItens,
+    skillDamage: typeof skillDamage
+  });
+
   // Elementos do seletor de Pokémon
   const pokemonCircle = document.getElementById("pokemon-circle");
   const pokemonGridPanel = document.getElementById("pokemon-grid-panel");
@@ -7,10 +15,92 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedPokemonName = document.getElementById("selected-pokemon-name");
   const pokemonPlaceholder = document.querySelector(".pokemon-placeholder");
   const compartilharContainer = document.getElementById("compartilhar-container");
-  const btnCompartilhar = document.getElementById("btn-compartilhar");
-
   
+  // Dados dos emblemas
+  const EMBLEM_DATA = {
+    verde: { 
+      name: "Verde", 
+      stat: "Sp. ATK", 
+      color: "#28a745",
+      levels: { 2: 1, 4: 2, 6: 4 },
+      description: "Aumenta o Sp. ATK"
+    },
+    vermelho: { 
+      name: "Vermelho", 
+      stat: "Atk Speed", 
+      color: "#dc3545",
+      levels: { 3: 2, 5: 4, 7: 8 },
+      description: "Aumenta a velocidade de ataque"
+    },
+    azul: { 
+      name: "Azul", 
+      stat: "DEF", 
+      color: "#007bff",
+      levels: { 2: 2, 4: 4, 6: 8 },
+      description: "Aumenta a defesa física"
+    },
+    branco: { 
+      name: "Branco", 
+      stat: "HP", 
+      color: "#ffffff",
+      levels: { 2: 1, 4: 2, 6: 4 },
+      description: "Aumenta os pontos de vida"
+    },
+    preto: { 
+      name: "Preto", 
+      stat: "CDR", 
+      color: "#343a40",
+      levels: { 3: 1, 5: 2, 7: 4 },
+      description: "Reduz o tempo de recarga das habilidades"
+    },
+    amarelo: { 
+      name: "Amarelo", 
+      stat: "Speed", 
+      color: "#ffc107",
+      levels: { 3: 4, 5: 6, 7: 12 },
+      description: "Aumenta a velocidade de movimento"
+    },
+    marrom: { 
+      name: "Marrom", 
+      stat: "ATK", 
+      color: "#8b4513",
+      levels: { 2: 1, 4: 2, 6: 4 },
+      description: "Aumenta o ATK físico"
+    },
+    roxo: { 
+      name: "Roxo", 
+      stat: "Sp. DEF", 
+      color: "#6f42c1",
+      levels: { 2: 2, 4: 4, 6: 8 },
+      description: "Aumenta a defesa especial"
+    },
+    rosa: { 
+      name: "Rosa", 
+      stat: "Hindrance Reduction", 
+      color: "#e83e8c",
+      levels: { 3: 4, 5: 8, 7: 16 },
+      description: "Reduz a duração dos efeitos de controle"
+    },
+    azulmarinho: { 
+      name: "Azul-Marinho", 
+      stat: "Ult Charge Rate", 
+      color: "#1e3a8a",
+      levels: { 3: 1, 5: 2, 7: 4 },
+      description: "Aumenta a velocidade de carregamento da ultimate"
+    },
+    cinza: { 
+      name: "Cinza", 
+      stat: "Damage Taken", 
+      color: "#6c757d",
+      levels: { 3: 3, 5: 6, 7: 12 },
+      description: "Reduz o dano recebido"
+    }
+  };
+
   // Elementos originais
+  const levelDisplay = document.getElementById("level-display");
+  const levelDecrease = document.getElementById("level-decrease");
+  const levelIncrease = document.getElementById("level-increase");
   const levelSelect = document.getElementById("nivel-final");
   const levelValor = document.getElementById("nivel-valor-final");
   const statusFinalDiv = document.getElementById("status-final");
@@ -18,28 +108,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultado = document.getElementById("resultado");
   const battleRadios = document.querySelectorAll("input[name='battle']");
   const emblemasRadios = document.querySelectorAll("input[name='emblemas']");
-  const emblemasContainer = document.getElementById("emblemas-container");
-  const emblemaSelects = {
-    verde: document.getElementById("emblem-verde"),
-    vermelho: document.getElementById("emblem-vermelho"),
-    azul: document.getElementById("emblem-azul"),
-    branco: document.getElementById("emblem-branco"),
-    preto: document.getElementById("emblem-preto"),
-    amarelo: document.getElementById("emblem-amarelo"),
-    marrom: document.getElementById("emblem-marrom"),
-    roxo: document.getElementById("emblem-roxo"),
-    rosa: document.getElementById("emblem-rosa"),
-    azulMarinho: document.getElementById("emblem-azul-marinho"),
-    cinza: document.getElementById("emblem-cinza")
-  };
-
+  const emblemasContainer = document.getElementById("emblems-selector");
+  
   // Variáveis globais
   let selectedPokemon = "";
   let selectedHeldItems = [];
+  let selectedEmblems = {};
   const maxHeldItems = 3;
   let activePassives = {};
   let activeItemPassives = {};
   let currentRoleFilter = "All";
+  let currentLevel = 1;
+  let currentDamageTypeFilter = null;
 
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
@@ -58,17 +138,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Função para calcular cooldown com CDR
   const calculateCooldown = (baseCooldown, cdrPercent) => {
     if (!baseCooldown || baseCooldown <= 0) return null;
-    
-    // CDR funciona como redução percentual
     const effectiveCooldown = baseCooldown * (1 - (cdrPercent / 100));
-    
-    // Mínimo de 0.5 segundos
     return Math.max(0.5, effectiveCooldown);
   };
 
   const formatCooldown = (cooldown) => {
     if (cooldown === null || cooldown === undefined) return "";
-    return `🕐 ${cooldown.toFixed(1)}s`;
+    return `🕒 ${cooldown.toFixed(1)}s`;
   };
 
   // Configuração de atributos
@@ -77,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
     "HPRegen","EnergyRate", "Shield", "DmgTaken", "HindRed",
     "SpDEFPen"
-
   ];
 
   const STAT_LABELS = {
@@ -134,46 +209,46 @@ document.addEventListener("DOMContentLoaded", () => {
     return gameHeldItensPassive;
   };
 
-const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
-  const passives = getItemPassivesSource();
-  let result = ensureAllStats({ ...modifiedStats });
+  const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
+    const passives = getItemPassivesSource();
+    let result = ensureAllStats({ ...modifiedStats });
 
-  selectedItems.forEach(itemKey => {
-    if (!activeItemPassives[itemKey]) return;
-    
-    const passive = passives[itemKey];
-    if (!passive) return;
+    selectedItems.forEach(itemKey => {
+      if (!activeItemPassives[itemKey]) return;
+      
+      const passive = passives[itemKey];
+      if (!passive) return;
 
-    if (typeof passive.formula === "function") {
-      const targetStat = passive.target || "SpATK";
-      // Use baseStats for formula calculations to avoid order dependency
-      result[targetStat] += passive.formula(baseStats);
-      return;
-    }
+      if (itemKey === "razorclaw") return;
 
-    Object.entries(passive).forEach(([stat, rawVal]) => {
-      if (!STAT_KEYS.includes(stat)) return;
-
-      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-      const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
-      if (!Number.isFinite(numeric)) return;
-
-      if (PERCENT_KEYS.has(stat)) {
-        result[stat] += numeric;
-      } else {
-        if (isPercentString) {
-          // Use baseStats for percentage calculations to avoid order dependency
-          const baseForBuff = Number(baseStats[stat]) || 0;
-          result[stat] += baseForBuff * (numeric / 100);
-        } else {
-          result[stat] += numeric;
-        }
+      if (typeof passive.formula === "function") {
+        const targetStat = passive.target || "SpATK";
+        result[targetStat] += passive.formula(baseStats);
+        return;
       }
-    });
-  });
 
-  return ensureAllStats(result);
-};
+      Object.entries(passive).forEach(([stat, rawVal]) => {
+        if (!STAT_KEYS.includes(stat)) return;
+
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
+        if (!Number.isFinite(numeric)) return;
+
+        if (PERCENT_KEYS.has(stat)) {
+          result[stat] += numeric;
+        } else {
+          if (isPercentString) {
+            const baseForBuff = Number(baseStats[stat]) || 0;
+            result[stat] += baseForBuff * (numeric / 100);
+          } else {
+            result[stat] += numeric;
+          }
+        }
+      });
+    });
+
+    return ensureAllStats(result);
+  };
 
   // Emblemas
   const EMBLEM_BONUSES = {
@@ -188,6 +263,153 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } },
     rosa: { stat: "HindRed", values: { 3: 4, 5: 8, 7: 16 } },
   };
+
+  // Funções para o novo sistema de emblemas
+  const createEmblemsGrid = () => {
+    const grid = document.getElementById("emblems-grid");
+    if (!grid) return;
+    
+    grid.innerHTML = "";
+
+    Object.keys(EMBLEM_DATA).forEach(emblemKey => {
+      const emblem = EMBLEM_DATA[emblemKey];
+      
+      const emblemDiv = document.createElement("div");
+      emblemDiv.className = "emblem-item-new";
+      
+      const circle = document.createElement("div");
+      circle.className = `emblem-color-circle emblem-${emblemKey}`;
+      circle.dataset.emblem = emblemKey;
+      
+      if (selectedEmblems[emblemKey]) {
+        circle.classList.add("selected-level");
+        circle.dataset.level = selectedEmblems[emblemKey];
+      }
+      
+      const name = document.createElement("div");
+      name.className = "emblem-name";
+      name.textContent = emblem.name;
+      
+      const levelsContainer = document.createElement("div");
+      levelsContainer.className = "emblem-levels";
+      
+      Object.keys(emblem.levels).forEach(level => {
+        const levelBtn = document.createElement("div");
+        levelBtn.className = "emblem-level-btn";
+        levelBtn.textContent = level;
+        levelBtn.dataset.emblem = emblemKey;
+        levelBtn.dataset.level = level;
+        
+        if (selectedEmblems[emblemKey] == level) {
+          levelBtn.classList.add("active");
+          circle.classList.add("active");
+        }
+        
+        levelBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectEmblemLevel(emblemKey, level);
+        });
+        
+        levelsContainer.appendChild(levelBtn);
+      });
+      
+      circle.addEventListener("click", () => {
+        if (selectedEmblems[emblemKey]) {
+          deselectEmblem(emblemKey);
+        }
+      });
+      
+      emblemDiv.appendChild(circle);
+      emblemDiv.appendChild(name);
+      emblemDiv.appendChild(levelsContainer);
+      grid.appendChild(emblemDiv);
+    });
+  };
+
+  const selectEmblemLevel = (emblemKey, level) => {
+    if (selectedEmblems[emblemKey] == level) {
+      deselectEmblem(emblemKey);
+      return;
+    }
+    
+    selectedEmblems[emblemKey] = level;
+    updateEmblemDescription();
+    createEmblemsGrid();
+    calcular();
+  };
+
+  const deselectEmblem = (emblemKey) => {
+    delete selectedEmblems[emblemKey];
+    updateEmblemDescription();
+    createEmblemsGrid();
+    calcular();
+  };
+
+  const updateEmblemDescription = () => {
+    const descContainer = document.getElementById("emblem-description");
+    if (!descContainer) return;
+    
+    const selectedKeys = Object.keys(selectedEmblems);
+    
+    if (selectedKeys.length === 0) {
+      descContainer.className = "emblem-description empty";
+      descContainer.innerHTML = "Selecione um emblema e seu nível para ver a descrição do buff";
+      return;
+    }
+    
+    descContainer.className = "emblem-description active";
+    
+    // Cria cada linha de emblema separadamente
+    const emblemLines = selectedKeys.map(emblemKey => {
+      const emblem = EMBLEM_DATA[emblemKey];
+      const level = selectedEmblems[emblemKey];
+      const bonus = emblem.levels[level];
+      
+      const indicator = `<span class="emblem-color-indicator" style="background-color: ${emblem.color}; ${emblem.color === '#ffffff' ? 'border: 1px solid #ccc;' : ''}"></span>`;
+      
+      // Cada emblema em sua própria linha com estrutura organizada
+      if (emblemKey === "cinza") {
+        return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> -${bonus} Dmg Taken</span></div>`;
+      } else {
+        return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> +${bonus}% ${emblem.stat}</span></div>`;
+      }
+    }).join("");
+    
+    descContainer.innerHTML = emblemLines;
+  };
+
+  // Função para atualizar o display e botões do nível
+  const updateLevelDisplay = () => {
+    levelDisplay.textContent = currentLevel;
+    levelDecrease.classList.toggle("disabled", currentLevel <= 1);
+    levelIncrease.classList.toggle("disabled", currentLevel >= 15);
+    
+    levelSelect.value = currentLevel;
+    levelValor.textContent = currentLevel;
+    
+    levelDisplay.classList.add("highlighted");
+    setTimeout(() => levelDisplay.classList.remove("highlighted"), 300);
+  };
+
+  // Event listeners para os botões de nível
+  levelDecrease.addEventListener("click", () => {
+    if (currentLevel > 1) {
+      currentLevel--;
+      updateLevelDisplay();
+      calcular();
+    }
+  });
+
+  levelIncrease.addEventListener("click", () => {
+    if (currentLevel < 15) {
+      currentLevel++;
+      updateLevelDisplay();
+      calcular();
+    }
+  });
+
+  // Inicializar estado dos botões
+  updateLevelDisplay();
 
   // Função para aplicar buff da passiva (do Pokémon)
   const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
@@ -311,9 +533,8 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
               } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
                 modifiedStats.HindRed += modifiedVal;
               } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
-                modifiedStats.HindRed += modifiedVal;
+                modifiedStats.SpDEFPen += modifiedVal;
               }
-              
             }
           }
         });
@@ -323,114 +544,168 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     return modifiedStats;
   };
 
-      // CRIAÇÃO DOS FILTROS DE ROLE
-    const createRoleFilters = () => {
-      const filterContainer = document.createElement("div");
-      filterContainer.className = "role-filters-container";
-      filterContainer.style.cssText = `
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-        padding: 0 10px;
+  // CRIAÇÃO DOS FILTROS DE ROLE E TIPO DE DANO
+  const createRoleFilters = () => {
+    const filterContainer = document.createElement("div");
+    filterContainer.className = "role-filters-container";
+    filterContainer.style.cssText = `
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      padding: 0 10px;
+    `;
+
+    const roles = ["All", "Attacker", "All Rounder", "Speedster", "Defender", "Support"];
+    const roleColors = {
+      "All": "#666666",
+      "Attacker": "#f16c38", 
+      "All Rounder": "#ce5fd3",
+      "Speedster": "#2492c9",
+      "Defender": "#9bd652",
+      "Support": "#e1b448"
+    };
+
+    roles.forEach(role => {
+      const button = document.createElement("button");
+      button.className = "role-filter-btn";
+      button.dataset.role = role;
+      button.textContent = role;
+      
+      const isActive = currentRoleFilter === role;
+      const color = roleColors[role] || "#666";
+      
+      button.style.cssText = `
+        background: ${isActive ? color : 'transparent'};
+        color: ${isActive ? '#fff' : color};
+        border: 2px solid ${color};
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       `;
 
-      const roles = ["All", "Attacker", "All Rounder", "Speedster", "Defender", "Support"];
-      const roleColors = {
-        "All": "#666666",
-        "Attacker": "#f16c38", 
-        "All Rounder": "#ce5fd3",  // Note: espaço ao invés de hífen
-        "Speedster": "#2492c9",
-        "Defender": "#9bd652",
-        "Support": "#e1b448"       // Note: "Support" ao invés de "Supporter"
-      };
-
-      roles.forEach(role => {
-        const button = document.createElement("button");
-        button.className = "role-filter-btn";
-        button.dataset.role = role;
-        button.textContent = role;
-        
-        const isActive = currentRoleFilter === role;
-        const color = roleColors[role] || "#666";
-        
-        button.style.cssText = `
-          background: ${isActive ? color : 'transparent'};
-          color: ${isActive ? '#fff' : color};
-          border: 2px solid ${color};
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        `;
-
-        button.addEventListener("click", () => {
-          currentRoleFilter = role;
-          updateRoleFilters();
-          filterPokemonGrid();
-        });
-
-        button.addEventListener("mouseenter", () => {
-          if (currentRoleFilter !== role) {
-            button.style.background = color;
-            button.style.color = "#fff";
-          }
-        });
-
-        button.addEventListener("mouseleave", () => {
-          if (currentRoleFilter !== role) {
-            button.style.background = "transparent";
-            button.style.color = color;
-          }
-        });
-
-        filterContainer.appendChild(button);
+      button.addEventListener("click", () => {
+        currentRoleFilter = role;
+        updateRoleFilters();
+        filterPokemonGrid();
       });
 
-      // Inserir os filtros antes do grid, mas dentro do painel
-      pokemonGrid.parentNode.insertBefore(filterContainer, pokemonGrid);
-    };
-
-        // Atualizar visual dos botões de filtro
-    const updateRoleFilters = () => {
-      const filterButtons = document.querySelectorAll(".role-filter-btn");
-      const roleColors = {
-        "All": "#666666",
-        "Attacker": "#f16c38", 
-        "All Rounder": "#ce5fd3",  // Note: espaço ao invés de hífen
-        "Speedster": "#2492c9",
-        "Defender": "#9bd652",
-        "Support": "#e1b448"       // Mesmo ajuste aqui
-      };
-
-      filterButtons.forEach(button => {
-        const role = button.dataset.role;
-        const color = roleColors[role] || "#666";
-        const isActive = currentRoleFilter === role;
-
-        button.style.background = isActive ? color : 'transparent';
-        button.style.color = isActive ? '#fff' : color;
-        button.style.border = `2px solid ${color}`;
+      button.addEventListener("mouseenter", () => {
+        if (currentRoleFilter !== role) {
+          button.style.background = color;
+          button.style.color = "#fff";
+        }
       });
+
+      button.addEventListener("mouseleave", () => {
+        if (currentRoleFilter !== role) {
+          button.style.background = "transparent";
+          button.style.color = color;
+        }
+      });
+
+      filterContainer.appendChild(button);
+    });
+
+    // Criar filtros de tipo de dano
+    const damageTypeContainer = document.createElement("div");
+    damageTypeContainer.className = "damage-type-filters";
+
+    const damageTypes = ["ATK", "SpATK"];
+    damageTypes.forEach(type => {
+      const button = document.createElement("button");
+      button.className = "damage-type-btn";
+      button.dataset.type = type;
+      button.textContent = type === "ATK" ? "FÍSICOS" : "ESPECIAIS";
+      
+      const isActive = currentDamageTypeFilter === type;
+      if (isActive) {
+        button.classList.add("active");
+      }
+
+      button.addEventListener("click", () => {
+        if (currentDamageTypeFilter === type) {
+          currentDamageTypeFilter = null;
+        } else {
+          currentDamageTypeFilter = type;
+        }
+        updateDamageTypeFilters();
+        filterPokemonGrid();
+      });
+
+      damageTypeContainer.appendChild(button);
+    });
+
+    // Inserir os filtros antes do grid
+    pokemonGrid.parentNode.insertBefore(filterContainer, pokemonGrid);
+    pokemonGrid.parentNode.insertBefore(damageTypeContainer, pokemonGrid);
+  };
+
+  // Atualizar visual dos botões de filtro de tipo de dano
+  const updateDamageTypeFilters = () => {
+    const filterButtons = document.querySelectorAll(".damage-type-btn");
+    
+    filterButtons.forEach(button => {
+      const type = button.dataset.type;
+      const isActive = currentDamageTypeFilter === type;
+      
+      if (isActive) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+  };
+
+  // Atualizar visual dos botões de filtro
+  const updateRoleFilters = () => {
+    const filterButtons = document.querySelectorAll(".role-filter-btn");
+    const roleColors = {
+      "All": "#666666",
+      "Attacker": "#f16c38", 
+      "All Rounder": "#ce5fd3",
+      "Speedster": "#2492c9",
+      "Defender": "#9bd652",
+      "Support": "#e1b448"
     };
 
-    // CRIAÇÃO DO GRID DE POKÉMON
+    filterButtons.forEach(button => {
+      const role = button.dataset.role;
+      const color = roleColors[role] || "#666";
+      const isActive = currentRoleFilter === role;
+
+      button.style.background = isActive ? color : 'transparent';
+      button.style.color = isActive ? '#fff' : color;
+      button.style.border = `2px solid ${color}`;
+    });
+  };
+
+  // CRIAÇÃO DO GRID DE POKÉMON
   const createPokemonGrid = () => {
     pokemonGrid.innerHTML = "";
     
+    // Verificar se pokemonRoles existe
+    if (typeof pokemonRoles === 'undefined') {
+      console.error("pokemonRoles não encontrado - verifique se util.js está carregando");
+      return;
+    }
+    
     Object.keys(pokemonRoles).forEach(poke => {
       const role = pokemonRoles[poke] || 'Unknown';
+      const damageType = pokemonBasedType[poke] || 'Unknown';
       const roleClass = role.toLowerCase().replace(' ', '');
       
       const gridItem = document.createElement("div");
       gridItem.className = "pokemon-grid-item";
       gridItem.dataset.pokemon = poke;
-      gridItem.dataset.role = role; // Adicione esta linha
+      gridItem.dataset.role = role;
+      gridItem.dataset.damageType = damageType;
       
       if (poke === selectedPokemon) {
         gridItem.classList.add("selected");
@@ -464,16 +739,13 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
 
   // FUNÇÃO PARA SELECIONAR POKÉMON
   const selectPokemon = (poke) => {
-    // Atualizar seleção
     selectedPokemon = poke;
     
-    // Atualizar interface do círculo
     selectedPokemonImage.src = `./estatisticas-shad/images/backgrounds/${poke}-left-bg.png`;
     selectedPokemonImage.style.display = "block";
     selectedPokemonName.textContent = safeCap(poke);
     pokemonPlaceholder.style.display = "none";
     
-    // Atualizar grid
     const gridItems = pokemonGrid.querySelectorAll(".pokemon-grid-item");
     gridItems.forEach(item => {
       if (item.dataset.pokemon === poke) {
@@ -483,15 +755,12 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
       }
     });
     
-    // Fechar painel
     closePokemonPanel();
     
-    // Limpar itens e aplicar configurações do novo Pokémon
     selectedHeldItems = [];
     activeItemPassives = {};
     inicializarBloqueioItens();
     
-    // Inicializar passivas do pokémon se ainda não existirem
     if (!activePassives.hasOwnProperty(poke)) {
       activePassives[poke] = {};
       if (skillDamage[poke]) {
@@ -506,13 +775,18 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     calcular();
   };
 
-    // Filtrar Pokémon por role
+  // Filtrar Pokémon por role e tipo de dano
   const filterPokemonGrid = () => {
     const gridItems = pokemonGrid.querySelectorAll(".pokemon-grid-item");
     
     gridItems.forEach(item => {
       const pokemonRole = item.dataset.role;
-      const shouldShow = currentRoleFilter === "All" || pokemonRole === currentRoleFilter;
+      const pokemonDamageType = item.dataset.damageType;
+      
+      const roleMatch = currentRoleFilter === "All" || pokemonRole === currentRoleFilter;
+      const damageTypeMatch = currentDamageTypeFilter === null || pokemonDamageType === currentDamageTypeFilter;
+      
+      const shouldShow = roleMatch && damageTypeMatch;
       
       if (shouldShow) {
         item.style.display = "flex";
@@ -536,7 +810,6 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
   const openPokemonPanel = () => {
     pokemonGridPanel.classList.add("show");
     
-    // Criar overlay
     const overlay = document.createElement("div");
     overlay.className = "pokemon-overlay show";
     overlay.id = "pokemon-overlay";
@@ -548,7 +821,6 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
   const closePokemonPanel = () => {
     pokemonGridPanel.classList.remove("show");
     
-    // Remover overlay
     const overlay = document.getElementById("pokemon-overlay");
     if (overlay) {
       overlay.remove();
@@ -558,9 +830,14 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
   // SISTEMA DE HELD ITEMS
   const createHeldItemsGrid = () => {
     const grid = document.getElementById("held-items-grid");
-    const selectedDisplay = document.getElementById("selected-items-display");
     
     grid.innerHTML = "";
+    
+    // Verificar se gameHeldItens existe
+    if (typeof gameHeldItens === 'undefined') {
+      console.error("gameHeldItens não encontrado - verifique se util.js está carregando");
+      return;
+    }
     
     Object.keys(gameHeldItens).forEach(itemKey => {
       const itemDiv = document.createElement("div");
@@ -708,36 +985,60 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
       
       if (STACKABLE_ITEMS[item.name] && !isFixedItemForCurrentPokemon(item.key)) {
         const config = STACKABLE_ITEMS[item.name];
+        
+        const stackLabel = document.createElement("div");
+        stackLabel.className = "stack-label-new";
+        stackLabel.textContent = "Stacks:";
+        
         const stackControls = document.createElement("div");
-        stackControls.className = "stack-controls";
+        stackControls.className = "stack-controls-new";
         
-        const label = document.createElement("label");
-        label.textContent = "Stacks:";
-        label.style.fontSize = "10px";
-        label.style.color = "#fff";
+        const decreaseBtn = document.createElement("div");
+        decreaseBtn.className = "stack-button";
+        decreaseBtn.textContent = "−";
+        decreaseBtn.title = "Diminuir stacks";
         
-        const slider = document.createElement("input");
-        slider.type = "range";
-        slider.min = "0";
-        slider.max = config.max;
-        slider.value = item.stacks;
-        slider.className = "slider";
-        slider.style.width = "60px";
+        const stackDisplay = document.createElement("div");
+        stackDisplay.className = "stack-display";
+        stackDisplay.textContent = item.stacks;
         
-        const value = document.createElement("span");
-        value.textContent = item.stacks;
-        value.style.fontSize = "10px";
-        value.style.color = "#fff";
+        const increaseBtn = document.createElement("div");
+        increaseBtn.className = "stack-button";
+        increaseBtn.textContent = "+";
+        increaseBtn.title = "Aumentar stacks";
         
-        slider.addEventListener("input", () => {
-          item.stacks = parseInt(slider.value, 10);
-          value.textContent = item.stacks;
-          calcular();
+        const updateButtons = () => {
+          decreaseBtn.classList.toggle("disabled", item.stacks <= 0);
+          increaseBtn.classList.toggle("disabled", item.stacks >= config.max);
+          stackDisplay.textContent = item.stacks;
+          
+          stackDisplay.classList.add("highlighted");
+          setTimeout(() => stackDisplay.classList.remove("highlighted"), 300);
+        };
+        
+        decreaseBtn.addEventListener("click", () => {
+          if (item.stacks > 0) {
+            item.stacks--;
+            updateButtons();
+            calcular();
+          }
         });
         
-        stackControls.appendChild(label);
-        stackControls.appendChild(slider);
-        stackControls.appendChild(value);
+        increaseBtn.addEventListener("click", () => {
+          if (item.stacks < config.max) {
+            item.stacks++;
+            updateButtons();
+            calcular();
+          }
+        });
+        
+        updateButtons();
+        
+        stackControls.appendChild(decreaseBtn);
+        stackControls.appendChild(stackDisplay);
+        stackControls.appendChild(increaseBtn);
+        
+        slotDiv.appendChild(stackLabel);
         slotDiv.appendChild(stackControls);
       }
       
@@ -745,73 +1046,52 @@ const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
     });
   };
 
-const resetHeldItems = () => {
-  // Salvar itens fixos antes de limpar
-  const fixedItems = [];
-  if (selectedPokemon && pokemonFixedItems[selectedPokemon]) {
-    const fixedItem = pokemonFixedItems[selectedPokemon];
-    fixedItems.push({
-      key: fixedItem,
-      name: gameHeldItens[fixedItem],
-      stacks: 0
-    });
-  }
-  
-  // Limpar todos os itens selecionados
-  selectedHeldItems = [];
-  
-  // Restaurar apenas os itens fixos
-  selectedHeldItems = [...fixedItems];
-  
-  // Limpar passivas ativas dos itens
-  activeItemPassives = {};
-  
-  // Atualizar displays
-  updateGridDisplay();
-  updateSelectedItemsDisplay();
-  
-  // Recalcular com os itens resetados
-  calcular();
-};
+  const resetHeldItems = () => {
+    const fixedItems = [];
+    if (selectedPokemon && pokemonFixedItems[selectedPokemon]) {
+      const fixedItem = pokemonFixedItems[selectedPokemon];
+      fixedItems.push({
+        key: fixedItem,
+        name: gameHeldItens[fixedItem],
+        stacks: 0
+      });
+    }
+    
+    selectedHeldItems = [];
+    selectedHeldItems = [...fixedItems];
+    activeItemPassives = {};
+    
+    updateGridDisplay();
+    updateSelectedItemsDisplay();
+    calcular();
+  };
 
-// Adicione esta função após createHeldItemsGrid()
-
-const createResetButton = () => {
-  // Verificar se já existe um botão de reset
-  const existingButton = document.getElementById("reset-held-items-btn");
-  if (existingButton) {
-    return; // Botão já existe
-  }
-  
-  // Criar o botão de reset
-  const resetButton = document.createElement("button");
-  resetButton.id = "reset-held-items-btn";
-  resetButton.className = "reset-held-items-button";
-  resetButton.textContent = "🗑️ Resetar Held Itens";
-  resetButton.title = "Limpar todos os held items selecionados";
-  
-  // Adicionar event listener
-  resetButton.addEventListener("click", () => {
-    if (selectedHeldItems.length === 0) {
-      alert("Nenhum item para resetar.");
+  const createResetButton = () => {
+    const existingButton = document.getElementById("reset-held-items-btn");
+    if (existingButton) {
       return;
     }
     
-    // Confirmar ação se houver itens selecionados
-    const hasNonFixedItems = selectedHeldItems.some(item => 
-      !isFixedItemForCurrentPokemon(item.key)
-    );
+    const resetButton = document.createElement("button");
+    resetButton.id = "reset-held-items-btn";
+    resetButton.className = "reset-held-items-button";
+    resetButton.textContent = "🗑️ Resetar Held Itens";
+    resetButton.title = "Limpar todos os held items selecionados";
     
-    resetHeldItems();
-  });
-  
-  // Encontrar onde inserir o botão (após o grid de held items)
-  const heldItemsGrid = document.getElementById("held-items-grid");
-  if (heldItemsGrid && heldItemsGrid.parentNode) {
-    heldItemsGrid.parentNode.insertBefore(resetButton, heldItemsGrid.nextSibling);
-  }
-};
-
+    resetButton.addEventListener("click", () => {
+      if (selectedHeldItems.length === 0) {
+        alert("Nenhum item para resetar.");
+        return;
+      }
+      
+      resetHeldItems();
+    });
+    
+    const heldItemsGrid = document.getElementById("held-items-grid");
+    if (heldItemsGrid && heldItemsGrid.parentNode) {
+      heldItemsGrid.parentNode.insertBefore(resetButton, heldItemsGrid.nextSibling);
+    }
+  };
 
   const inicializarBloqueioItens = () => {
     selectedHeldItems = [];
@@ -877,52 +1157,6 @@ const createResetButton = () => {
               style="border: none;">
           <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
           <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
-          
-          <!-- Marca d'água da equipe -->
-          <div class="team-watermark" style="
-          position: absolute;
-          bottom: -550px;
-          left: 50%;
-          transform: translateX(-50%);
-          text-align: center;
-          opacity: 0.8;
-          font-size: 9px;
-          color: #000000ff;
-          z-index: 10;
-          padding: 6px 10px;
-          max-width: 180px;
-          white-space: nowrap;
-        ">
-            <div style="margin-bottom: 2px;">
-            <img src="./estatisticas-shad/images/logo-team.png" alt="Logo" 
-                style="width: 16px; height: 16px; border: none;"
-                onerror="this.style.display='none'">
-          </div>
-          <div style="font-size: 14px; margin-bottom: 2px; font-weight: 500;">
-            desenvolvido por:
-          </div>
-          <div style="display: flex; justify-content: center; gap: 4px; align-items: center;">
-            <a href="https://x.com/Shadtrader32" target="_blank" style="
-              color: #fff; 
-              text-decoration: none; 
-              font-size: 12px; 
-              font-weight: bold;
-              transition: color 0.2s ease;
-            " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#fff'">
-              @Shadtrader32
-            </a>
-            <span style="color: #ccc; font-size: 7px;">|</span>
-            <a href="https://x.com/lobo_vgc" target="_blank" style="
-              color: #fff; 
-              text-decoration: none; 
-              font-size: 12px; 
-              font-weight: bold;
-              transition: color 0.2s ease;
-            " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#fff'">
-              @lobo_vgc
-            </a>
-          </div>
-          </div>
         </div>
       `);
       return;
@@ -939,7 +1173,6 @@ const createResetButton = () => {
     const selectedItems = selectedHeldItems.map(item => item.key);
 
     // 1) Aplicar bônus normais dos itens e stacks
-    // Primeiro: calcular somatório de todos os bônus "flat" por stat (vindo de gameHeldItensStatus)
     const flatBonusesByStat = {};
     selectedHeldItems.forEach(selectedItem => {
       const itemKey = selectedItem.key;
@@ -964,8 +1197,7 @@ const createResetButton = () => {
       });
     });
 
-    // Agora aplicar: começamos com base e adicionamos os bônus flat. Depois aplicamos stacks (percentuais) usando base + flatBonusesByStat.
-    modified = { ...base }; // reinicia modified a partir da base para garantir consistência
+    modified = { ...base };
 
     selectedHeldItems.forEach(selectedItem => {
       const itemKey = selectedItem.key;
@@ -996,23 +1228,19 @@ const createResetButton = () => {
         const stacks = selectedItem.stacks || 0;
 
         if (itemName === "Charging Charm") {
-          // Charging Charm: tem fixedBonus + parte percentual — aplicamos a parte percentual sobre base + flats
           const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
           const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
           modified[config.stat] += (config.fixedBonus || 0) + bonusPercent;
         } else if (config.percent) {
-          // itens percentuais (ex: Accel Bracer) -> aplicar percent sobre (base + todos os bônus flat deste stat)
           const totalPercentage = config.perStack * stacks;
           const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
           const bonusAmount = baseForPercent * (totalPercentage / 100);
           modified[config.stat] += bonusAmount;
         } else {
-          // itens de incremento flat por stack
           modified[config.stat] += config.perStack * stacks;
         }
       }
     });
-
 
     // 2) Aplicar passivos dos itens
     modified = applyItemPassiveEffects(base, modified, selectedItems);
@@ -1037,25 +1265,22 @@ const createResetButton = () => {
     // 4) Emblemas
     let incluirEmblemas = "";
     emblemasRadios.forEach(r => { if (r.checked) incluirEmblemas = r.value; });
-    
+
     if (incluirEmblemas === "sim") {
-      Object.keys(emblemaSelects).forEach(cor => {
-        const select = emblemaSelects[cor];
-        if (select && select.value) {
-          const nivel = parseInt(select.value, 10);
-          const emblemConfig = EMBLEM_BONUSES[cor];
-          if (emblemConfig) {
-            const bonus = emblemConfig.values[nivel];
-            if (bonus) {
-              if (cor === "cinza") {
-                modified.DmgTaken += 0;
-                if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
-                modified._fixedDmgTaken += bonus;
-              } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
-                modified[emblemConfig.stat] += bonus;
-              } else {
-                modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
-              }
+      Object.keys(selectedEmblems).forEach(emblemKey => {
+        const level = selectedEmblems[emblemKey];
+        const emblemConfig = EMBLEM_BONUSES[emblemKey];
+        if (emblemConfig) {
+          const bonus = emblemConfig.values[level];
+          if (bonus) {
+            if (emblemKey === "cinza") {
+              modified.DmgTaken += 0;
+              if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
+              modified._fixedDmgTaken += bonus;
+            } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
+              modified[emblemConfig.stat] += bonus;
+            } else {
+              modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
             }
           }
         }
@@ -1077,52 +1302,6 @@ const createResetButton = () => {
           onerror="this.style.display='none'" style="border: none;">
       <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
       <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
-      
-      <!-- Marca d'água da equipe -->
-        <div class="team-watermark" style="
-        position: absolute;
-        bottom: -550px;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
-        opacity: 0.8;
-        font-size: 9px;
-        color: #000000ff;
-        z-index: 10;
-        padding: 6px 10px;
-        max-width: 180px;
-        white-space: nowrap;
-      ">
-        <div style="margin-bottom: 2px;">
-          <img src="./estatisticas-shad/images/logos/Guarini.png" alt="Logo" 
-              style="width: 54px; height: 54px; border: none;"
-              onerror="this.style.display='none'">
-        </div>
-        <div style="font-size: 14px; margin-bottom: 2px; font-weight: 500;">
-          desenvolvido por:
-        </div>
-        <div style="display: flex; justify-content: center; gap: 4px; align-items: center;">
-          <a href="https://x.com/Shadtrader32" target="_blank" style="
-            color: #000000ff; 
-            text-decoration: none; 
-            font-size: 12px; 
-            font-weight: bold;
-            transition: color 0.2s ease;
-          " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#000000ff'">
-            @Shadtrader32
-          </a>
-          <span style="color: #ccc; font-size: 7px;">|</span>
-          <a href="https://x.com/lobo_vgc" target="_blank" style="
-            color: #000000ff; 
-            text-decoration: none; 
-            font-size: 12px; 
-            font-weight: bold;
-            transition: color 0.2s ease;
-          " onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='#000000ff'">
-            @lobo_vgc
-          </a>
-        </div>
-      </div>
     </div>
   `);
 
@@ -1172,59 +1351,33 @@ const createResetButton = () => {
 
     // Mostrar emblemas ativos
     if (incluirEmblemas === "sim") {
-      const activeEmblems = [];
-      
-      const emblemColors = {
-        verde: "#28a745", vermelho: "#dc3545", azul: "#007bff", branco: "#ffffff",
-        preto: "#343a40", amarelo: "#ffc107", marrom: "#8b4513", roxo: "#6f42c1",
-        rosa: "#e83e8c", azulMarinho: "#1e3a8a", cinza: "#6c757d"
-      };
-
-      const emblemNames = {
-        verde: "Verde", vermelho: "Vermelho", azul: "Azul", branco: "Branco",
-        preto: "Preto", amarelo: "Amarelo", marrom: "Marrom", roxo: "Roxo",
-        rosa: "Rosa", azulMarinho: "Azul-Marinho", cinza: "Cinza"
-      };
-
-      Object.keys(emblemaSelects).forEach(cor => {
-        const select = emblemaSelects[cor];
-        if (select && select.value) {
-          const nivel = parseInt(select.value, 10);
-          const emblemConfig = EMBLEM_BONUSES[cor];
-          const color = emblemColors[cor] || "#666";
-          const name = emblemNames[cor] || cor;
+      const selectedEmblemKeys = Object.keys(selectedEmblems);
+      if (selectedEmblemKeys.length > 0) {
+        const activeEmblems = selectedEmblemKeys.map(emblemKey => {
+          const emblem = EMBLEM_DATA[emblemKey];
+          const level = selectedEmblems[emblemKey];
+          const bonus = emblem.levels[level];
           
-          const borderStyle = cor === "branco" ? "border: 1px solid #ccc;" : "";
+          const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #ccc;" : "";
           
-          if (emblemConfig) {
-            const bonus = emblemConfig.values[nivel];
-            if (bonus) {
-              if (cor === "cinza") {
-                activeEmblems.push(
-                  `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-                    ${name} Lv.${nivel} (-${bonus})
-                  </span>`
-                );
-              } else {
-                activeEmblems.push(
-                  `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; margin-right: 4px; ${borderStyle}"></span>
-                    ${name} Lv.${nivel} (+${bonus}%)
-                  </span>`
-                );
-              }
-            }
+          if (emblemKey === "cinza") {
+            return `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 4px; ${borderStyle}"></span>
+              ${emblem.name} Lv.${level} (-${bonus})
+            </span>`;
+          } else {
+            return `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 4px; ${borderStyle}"></span>
+              ${emblem.name} Lv.${level} (+${bonus}%)
+            </span>`;
           }
-        }
-      });
+        }).join("");
 
-      if (activeEmblems.length > 0) {
         statusFinalDiv.insertAdjacentHTML("beforeend", `
           <div class="stat-line">
             <span class="stat-label">Emblemas</span>
             <span class="stat-value" style="display: flex; flex-wrap: wrap; align-items: center;">
-              ${activeEmblems.join("")}
+              ${activeEmblems}
             </span>
           </div>
         `);
@@ -1350,8 +1503,7 @@ const createResetButton = () => {
                   baseAttribute = base.HP;
                   modifiedAttribute = modified.HP;
                   break;
-               case "heal":
-                  // Verificar se há um atributo específico definido para heal
+                case "heal":
                   if (f.healAttribute) {
                     const healAttr = f.healAttribute.toUpperCase();
                     if (healAttr === "ATK") {
@@ -1364,19 +1516,16 @@ const createResetButton = () => {
                       baseAttribute = base.HP;
                       modifiedAttribute = modified.HP;
                     } else {
-                      // Fallback para SpATK se não reconhecer o atributo
                       baseAttribute = base.SpATK;
                       modifiedAttribute = modified.SpATK;
                     }
                   } else {
-                    // Comportamento padrão: usar SpATK
                     baseAttribute = base.SpATK;
                     modifiedAttribute = modified.SpATK;
                   }
                   break;
                 case "shield":
-                  // Para shield, usa o atributo base da fórmula mas aplica multiplicador de Shield
-                  baseAttribute = base.SpATK; // ou outro atributo conforme definido
+                  baseAttribute = base.SpATK;
                   modifiedAttribute = modified.SpATK;
                   break;
                 case "physical":
@@ -1388,6 +1537,16 @@ const createResetButton = () => {
               
               baseVal = f.formula(baseAttribute, targetLevel, base.HP);
               modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+
+              // Aplicar bônus do Razor Claw apenas para ataques básicos e boosted
+              if (selectedItems.includes("razorclaw") && activeItemPassives["razorclaw"]) {
+                const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
+                if (basicAttackKeys.includes(key)) {
+                  const razorClawBonus = 20 + (base.ATK * 0.5);
+                  baseVal += razorClawBonus;
+                  modifiedVal += razorClawBonus;
+                }
+              }
               
               // Aplicar multiplicadores para heal e shield
               if (f.type === "heal") {
@@ -1539,8 +1698,9 @@ const createResetButton = () => {
     });
 
     resultado.style.display = "flex";
-    compartilharContainer.style.display = "block";
-
+    if (compartilharContainer) {
+      compartilharContainer.style.display = "block";
+    }
   };
 
   // EVENT LISTENERS PRINCIPAIS
@@ -1558,9 +1718,11 @@ const createResetButton = () => {
     }
   });
 
-  // Level slider
+  // Level slider (mantido para compatibilidade, mas sincronizado)
   levelSelect.addEventListener("input", () => {
+    currentLevel = parseInt(levelSelect.value, 10);
     levelValor.textContent = levelSelect.value;
+    updateLevelDisplay();
     calcular();
   });
 
@@ -1572,17 +1734,14 @@ const createResetButton = () => {
     r.addEventListener("change", () => {
       if (r.value === "sim") {
         emblemasContainer.style.display = "block";
+        createEmblemsGrid(); // Criar o grid quando mostrar
       } else {
         emblemasContainer.style.display = "none";
+        selectedEmblems = {}; // Limpar seleções quando ocultar
+        updateEmblemDescription();
       }
       calcular();
     });
-  });
-
-  Object.values(emblemaSelects).forEach(select => {
-    if (select) {
-      select.addEventListener("change", calcular);
-    }
   });
 
   // INICIALIZAÇÃO
@@ -1592,36 +1751,34 @@ const createResetButton = () => {
   createHeldItemsGrid();
   calcular();
   
-// Botão de download como imagem
-const btnDownload = document.getElementById("btn-download");
-if (btnDownload) {
-  btnDownload.addEventListener("click", () => {
-    const resultado = document.getElementById("resultado");
-    if (!resultado || resultado.style.display === "none") {
-      alert("Nenhum resultado para capturar ainda!");
-      return;
-    }
+  // Botão de download como imagem
+  const btnDownload = document.getElementById("btn-download");
+  if (btnDownload) {
+    btnDownload.addEventListener("click", () => {
+      const resultado = document.getElementById("resultado");
+      if (!resultado || resultado.style.display === "none") {
+        alert("Nenhum resultado para capturar ainda!");
+        return;
+      }
 
-    if (!selectedPokemon) {
-      alert("Selecione um Pokémon primeiro!");
-      return;
-    }
+      if (!selectedPokemon) {
+        alert("Selecione um Pokémon primeiro!");
+        return;
+      }
 
-    html2canvas(resultado, {
-      useCORS: true,
-      scale: 2 // melhora a qualidade
-    }).then(canvas => {
-      const link = document.createElement("a");
-      const pokemonName = safeCap(selectedPokemon);
-      link.download = `resultado-${pokemonName}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    }).catch(err => {
-      console.error("Erro ao gerar imagem:", err);
-      alert("Não foi possível gerar a imagem.");
+      html2canvas(resultado, {
+        useCORS: true,
+        scale: 2 // melhora a qualidade
+      }).then(canvas => {
+        const link = document.createElement("a");
+        const pokemonName = safeCap(selectedPokemon);
+        link.download = `resultado-${pokemonName}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }).catch(err => {
+        console.error("Erro ao gerar imagem:", err);
+        alert("Não foi possível gerar a imagem.");
+      });
     });
-  });
-}
-
-  
+  }
 });
