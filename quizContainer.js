@@ -1,6 +1,6 @@
 const quizQuestions = [
 {
-  question: "Em que ano Pokémon UNITE foi lançado para Android e iOS?",
+  question: "Em que ano Pokémon UNITE foi lançado globalmente?",
   answers: { a: "2020", b: "2021", c: "2022" },
   correctAnswer: "b"
 },
@@ -41,7 +41,7 @@ const quizQuestions = [
 },
 {
   question: "Qual Pokémon é classificado como Speedster?",
-  answers: { a: "Gengar", b: "Talonflame", c: "Blastoise" },
+  answers: { a: "Mew", b: "Talonflame", c: "Blastoise" },
   correctAnswer: "b"
 },
 {
@@ -121,7 +121,7 @@ const quizQuestions = [
 },
 {
   question: "Qual é o mapa padrão mais usado em partidas ranqueadas?",
-  answers: { a: "Remoat Stadium", b: "Mer Stadium", c: "Shivre City" },
+  answers: { a: "Theia Sky Ruins", b: "Remoat Stadium", c: "Shivre City" },
   correctAnswer: "a"
 }
 ];
