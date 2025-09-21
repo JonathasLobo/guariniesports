@@ -174,6 +174,15 @@ function googleTranslateElementInit() {
         <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
+      <!-- Quizsouls -->
+      <article class="ferramenta">
+        <img src="./img-site/quizsouls.png" alt="Build Maker" />
+        <h3>Quiz Unite</h3>
+        <p class="descricao">Teste seus conhecimentos no Quiz do Pokémon Unite</p>
+        <button type="button" class="btn-comprar" id="buildBtn">Acessar</button>
+        <div id="quizAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>      
+
       <!-- Slot vazio para futura ferramenta -->
       <article class="ferramenta" style="opacity: 0.3;">
         <img src="./img-site/embreve.png" alt="Em Breve" />
@@ -271,6 +280,7 @@ function googleTranslateElementInit() {
     const calcWinrateMessage = document.getElementById("calcWinrateMessage");
     const analiseAccessMessage = document.getElementById("analiseAccessMessage");
     const buildAccessMessage = document.getElementById("buildAccessMessage");
+    const quizAccessMessage = document.getElementById("quizAccessMessage");    
 
     // Função para lidar com login
     async function handleLogin() {
@@ -333,6 +343,12 @@ function googleTranslateElementInit() {
       buildAccessMessage.style.display = 'none';
     }
 
+    // Configura acesso ao Quiz Unite (sempre liberado)
+    function setupQuizAccess() {
+      quizBtn.onclick = () => window.location.href = 'quiz.html';
+      quizAccessMessage.style.display = 'none';
+    }    
+
     // Verifica permissões do usuário para estatísticas
     async function checkStatsPermissions(user) {
       if (!user) {
@@ -385,6 +401,7 @@ function googleTranslateElementInit() {
       setupWinrateAccess();
       setupAnaliseAccess();
       setupBuildAccess();
+      setupQuizAccess();      
       
       await checkStatsPermissions(user);
     });
