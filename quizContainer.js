@@ -123,7 +123,12 @@ const quizQuestions = [
   question: "Qual é o mapa padrão mais usado em partidas ranqueadas?",
   answers: { a: "Theia Sky Ruins", b: "Remoat Stadium", c: "Shivre City" },
   correctAnswer: "a"
-}
+},
+{
+  question: "Qual foi o primeiro Pokémon lançado como Licença Unite?",
+  answers: { a: "Pikachu", b: "Charizard", c: "Zeraora" },
+  correctAnswer: "b"
+},
 ];
 
 let shuffledQuestions = [];
