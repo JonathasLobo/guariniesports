@@ -129,6 +129,86 @@ const quizQuestions = [
   answers: { a: "Pikachu", b: "Charizard", c: "Zeraora" },
   correctAnswer: "b"
 },
+{
+  question: "Qual time ganhou o Pokémon UNITE World Championship em 2022?",
+  answers: { a: "Luminosity Gaming", b: "BLVKHVND", c: "Peru Unite" },
+  correctAnswer: "b"
+},
+{
+  question: "Quem se tornou campeão mundial de Pokémon UNITE em 2025?",
+  answers: { a: "Luminosity Gaming", b: "ZETA Division", c: "Peru Unite" },
+  correctAnswer: "c"
+},
+{
+  question: "Qual time foi bicampeão mundial de Pokémon UNITE até 2023?",
+  answers: { a: "Peru Unite", b: "BLVKHVND", c: "Luminosity Gaming" },
+  correctAnswer: "c"
+},
+{
+  question: "Qual o valor aproximado do prize pool nos World Championships de Pokémon UNITE?",
+  answers: { a: "US$ 100.000", b: "US$ 500.000", c: "US$ 1.000.000" },
+  correctAnswer: "b"
+},
+{
+  question: "Qual time latino-americano venceu o Pokémon UNITE World Championship pela primeira vez em 2025?",
+  answers: { a: "Santos Laguna", b: "Infamous Gaming", c: "Peru Unite" },
+  correctAnswer: "c"
+},
+{
+  question: "Qual time ficou em 2º lugar no World Championship 2025?",
+  answers: { a: "Luminosity Gaming", b: "ZETA Division", c: "BLVKHVND" },
+  correctAnswer: "b"
+},
+{
+  question: "Qual é o valor total de premiação da Série de Campeonatos Pokémon UNITE em 2025?",
+  answers: { a: "US$ 500.000", b: "US$ 1.000.000", c: "US$ 2.000.000" },
+  correctAnswer: "b"
+},
+{
+  question: "Qual torneio oficial permite equipes ganharem convites para o World Championships em UNITE?",
+  answers: { a: "Série de Campeonatos", b: "Eventos de Comunidade", c: "Rankeds Globais" },
+  correctAnswer: "a"
+},
+{
+  question: "Quais regiões fazem parte das Zonas Regionais da Série de Campeonatos UNITE 2025?",
+  answers: { a: "Europa, Brasil, América Latina, Oceania", b: "Somente América Latina e América do Norte", c: "Ásia, África, Europa" },
+  correctAnswer: "a"
+},
+{
+  question: "Quem foi um dos narradores do Brazil Championship UNITE 2024?",
+  answers: { a: "Bruno Monkey", b: "Zynga", c: "Nobru" },
+  correctAnswer: "a"
+},
+{
+  question: "Qual destes comentadores participou do North America Championship Series 2024?",
+  answers: { a: "Warss", b: "Doobsnax", c: "Bruno Monkey" },
+  correctAnswer: "b"
+},
+{
+  question: "Qual formato é frequentemente usado em finais regionais de Pokémon UNITE?",
+  answers: { a: "Round Robin + Eliminação dupla", b: "Só partidas rápidas de 3 minutos", c: "Melhor de 1 (BO1) apenas" },
+  correctAnswer: "a"
+},
+{
+  question: "Quando começam os torneios online abertos da Série de Campeonatos Pokémon UNITE 2025?",
+  answers: { a: "Novembro de 2024", b: "Janeiro de 2025", c: "Março de 2025" },
+  correctAnswer: "a"
+},
+{
+  question: "Qual dessas regiões NÃO é parte da Série de Campeonatos Pokémon UNITE 2025?",
+  answers: { a: "Oceania", b: "Brasil", c: "Ásia Central" },
+  correctAnswer: "c"
+},
+{
+  question: "Quantas equipes aproximadamente participaram do Brazil Championship UNITE 2023?",
+  answers: { a: "33", b: "44", c: "60" },
+  correctAnswer: "b"
+},
+{
+  question: "Quem foi host do Brazil Championship UNITE 2023?",
+  answers: { a: "Mari Ayrez", b: "Bruno Monkey", c: "Warss" },
+  correctAnswer: "a"
+}
 ];
 
 let shuffledQuestions = [];
@@ -188,9 +268,9 @@ function checkAnswer() {
 function endGame(victory) {
   let message = victory 
     ? `🔥 Parabéns! Você zerou o Quizsouls!`
-    : `☠️ Você errou e voltou ao começo...`;
+    : `☠️ Você errou no Quizsouls e voltou ao começo...`;
 
-  const shareText = `🎮 Joguei o Quiz Pokémon Unite da Guariní!\nAcertei ${score} de ${quizQuestions.length} perguntas.\n\nMe mostre que você sabe mais que eu: ${window.location.href}`;
+  const shareText = `🎮 Joguei o Quizsouls Pokémon Unite da Guariní!\nAcertei ${score} de ${quizQuestions.length} perguntas.\n\nMe mostre que você sabe mais que eu: ${window.location.href}`;
 
   gameDiv.innerHTML = `
     <div class="results">
