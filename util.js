@@ -34,6 +34,7 @@ const pokemonBaseImages = {
     dragonite: 'dragonite-left-bg',
     duraludon: 'duraludon-left-bg',
     eldegoss: 'eldegoss-left-bg',
+    empoleon: 'empoleon-left-bg',
     espeon: 'espeon-left-bg',
 	falinks: 'falinks-left-bg',
     garchomp: 'garchomp-left-bg',
@@ -113,6 +114,7 @@ const pokemonRoles = {
     dragonite: 'All Rounder',
     duraludon: 'Attacker',
     eldegoss: 'Support',
+    empoleon: 'All Rounder',
     espeon: 'Attacker',
 	falinks: 'All Rounder',
     garchomp: 'All Rounder',
@@ -195,6 +197,7 @@ const pokemonLanes = {
     dragonite: 'Jungle',
     duraludon: 'Bot',
     eldegoss: 'Top',
+    empoleon: 'Top',
     espeon: 'Bot',
 	falinks: 'Top',
     garchomp: 'Top',
@@ -276,6 +279,7 @@ const pokemonBasedType  = {
     dragonite: 'ATK',
     duraludon: 'ATK',
     eldegoss: 'SpATK',
+    empoleon: 'SpATK',
     espeon: 'SpATK',
 	falinks: 'ATK',
     garchomp: 'ATK',
@@ -506,6 +510,12 @@ const pokemonSkills = {
 		"s12": "Leaf Tornado",
 		"s21": "Cotton Guard",
 		"s22": "Cotton Spore"
+    },
+    "empoleon": {
+		"s11": "Hydro Cannon",
+		"s12": "Whirlpool",
+		"s21": "Metal Claw",
+		"s22": "Aqua Jet"
     },
     "espeon": {
 		"s11": "Psyshock",
@@ -954,6 +964,7 @@ const defaultHeldItems = {
     dragonite: ['muscleband','focusband','weaknesspolice'],
     duraludon: ['muscleband','rapidscarf','accelbracer'],
     eldegoss: ['expshare','buddybarrier','curseincense'],
+    empoleon: ['wiseglasses','choicespecs','slickspoon'],
     espeon: ['wiseglasses','choicespecs','slickspoon'],
 	falinks: ['muscleband','attackweight','razorclaw'],
     garchomp: ['muscleband','rapidscarf','razorclaw'],
@@ -1371,6 +1382,20 @@ const baseStats = {
 		"HPRegen": 0,
 		"EnergyRate": 0,
 		"Speed": 4400,
+		"CritDmg": 0,
+	},
+  "empoleon": {
+		"HP": 8500,
+		"ATK": 115,
+		"DEF": 520,
+		"SpATK": 670,
+		"SpDEF": 400,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 45,
+		"HPRegen": 0,
+		"EnergyRate": 0,
+		"Speed": 4300,
 		"CritDmg": 0,
 	},
 	"espeon": {
@@ -2163,6 +2188,7 @@ const pokemonKillsRate = {
 	"dragonite": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"duraludon": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"eldegoss": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
+  "empoleon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"espeon": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"falinks": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"garchomp": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2243,6 +2269,7 @@ const pokemonAssistRate = {
 	"dragonite": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"duraludon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"eldegoss": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
+  "empoleon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"espeon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"falinks": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"garchomp": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2323,6 +2350,7 @@ const pokemonDamageDoneRate = {
 	"dragonite": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"duraludon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"eldegoss": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
+  "empoleon": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"espeon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"falinks": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"garchomp": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
@@ -2403,6 +2431,7 @@ const pokemonDamageTakenRate = {
 	"dragonite": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"duraludon": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"eldegoss": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
+  "empoleon": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"espeon": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"falinks": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"garchomp": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2483,6 +2512,7 @@ const pokemonDamageHealedRate = {
 	"dragonite": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"duraludon": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"eldegoss": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
+  "empoleon": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"espeon": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"falinks": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"garchomp": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
@@ -2563,6 +2593,7 @@ const pokemonTierListUDB = {
     dragonite: 'B',
     duraludon: 'C',
     eldegoss: 'A+',
+    empoleon: 'TBD',
     espeon: 'B+',
 	falinks: 'C',
     garchomp: 'A',
@@ -3059,6 +3090,24 @@ const levelStats = {
     13: { HP: 6794, ATK: 264, DEF: 159, SpATK: 509, SpDEF: 119, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 17.43 , Speed: 4400 },
     14: { HP: 7356, ATK: 285, DEF: 178, SpATK: 584, SpDEF: 133, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.62 , Speed: 4400 },
     15: { HP: 8002, ATK: 310, DEF: 200, SpATK: 670, SpDEF: 149, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 19.99 , Speed: 4400 }
+  },
+
+    "empoleon": {
+    1: { HP: 3250, ATK: 20, DEF: 80, SpATK: 80, SpDEF: 65, CritRate: 0 , CDR: 0 , Lifesteal: 25 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3325, ATK: 21, DEF: 86, SpATK: 88, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 25 , AtkSPD: 10.5 , Speed: 3700 },
+    3: { HP: 3415, ATK: 23, DEF: 94, SpATK: 98, SpDEF: 76, CritRate: 0 , CDR: 0 , Lifesteal: 25 , AtkSPD: 11.1 , Speed: 3700 },
+    4: { HP: 3523, ATK: 25, DEF: 103, SpATK: 110, SpDEF: 83, CritRate: 0 , CDR: 0 , Lifesteal: 25 , AtkSPD: 11.82 , Speed: 3700 },
+    5: { HP: 4047, ATK: 34, DEF: 147, SpATK: 169, SpDEF: 116, CritRate: 10 , CDR: 0 , Lifesteal: 25 , AtkSPD: 15.31 , Speed: 3850 },
+    6: { HP: 4204, ATK: 37, DEF: 160, SpATK: 187, SpDEF: 126, CritRate: 10 , CDR: 0 , Lifesteal: 25 , AtkSPD: 16.35 , Speed: 3850 },
+    7: { HP: 4786, ATK: 48, DEF: 209, SpATK: 252, SpDEF: 163, CritRate: 10 , CDR: 0 , Lifesteal: 25 , AtkSPD: 20.23 , Speed: 4000 },
+    8: { HP: 5011, ATK: 52, DEF: 228, SpATK: 277, SpDEF: 177, CritRate: 10 , CDR: 0 , Lifesteal: 25 , AtkSPD: 21.73 , Speed: 4000 },
+    9: { HP: 5281, ATK: 57, DEF: 251, SpATK: 307, SpDEF: 194, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 23.53 , Speed: 4150 },
+    10: { HP: 5605, ATK: 63, DEF: 278, SpATK: 343, SpDEF: 215, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 25.69 , Speed: 4150 },
+    11: { HP: 5994, ATK: 70, DEF: 311, SpATK: 387, SpDEF: 240, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 28.29 , Speed: 4300 },
+    12: { HP: 6461, ATK: 78, DEF: 350, SpATK: 440, SpDEF: 270, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 31.4 , Speed: 4300 },
+    13: { HP: 7021, ATK: 88, DEF: 397, SpATK: 503, SpDEF: 306, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 35.14 , Speed: 4300 },
+    14: { HP: 7693, ATK: 100, DEF: 453, SpATK: 579, SpDEF: 349, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 39.62 , Speed: 4300 },
+    15: { HP: 8500, ATK: 115, DEF: 520, SpATK: 670, SpDEF: 400, CritRate: 20 , CDR: 0 , Lifesteal: 25 , AtkSPD: 45.00 , Speed: 4300 },
   },
 
     "espeon": {
@@ -4034,6 +4083,12 @@ const skillDamage = {
     },
 	"atkboosted": {
 	  name: "Ataque Básico",
+      debuffs: {
+        DEF: 15
+      },
+      debuffLabels: {
+        DEF: "(DEBUFF) DEF Reduction"
+      },
       formulas: [
         {
           label: "Damage - Basic",
@@ -4052,10 +4107,24 @@ const skillDamage = {
         }
       ]
 	},
-
     "s11": {
       name: "Psycho Cut",
       cooldown: 7,
+      debuffs: {
+        Speed: 90
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buff: {
+        CritRate: 15
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          Speed: "20%"
+        },
+      },
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -4077,6 +4146,17 @@ const skillDamage = {
     "s12": {
       name: "Pursuit",
       cooldown: 5.5,
+      buff: {
+      },
+      selfBuff: {
+        CDR: 80
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          Speed: "35%"
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -4093,6 +4173,16 @@ const skillDamage = {
     "s21": {
       name: "Night Slash",
       cooldown: 5.5,
+        buff: {
+          AtkSPD: 60,
+          CritRate: 30,
+        },
+        buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          HPRegen: 50
+        },
+      },
       formulas: [
         {
           label: "Damage First Hit",
@@ -4109,6 +4199,21 @@ const skillDamage = {
     "s22": {
       name: "Sucker Punch",
       cooldown: 5,
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buff: {
+        CritRate: -20
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          AtkSPD: 40
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -4125,6 +4230,10 @@ const skillDamage = {
 	"ult": {
 		name: "Midnight Slash",
     cooldown: 100,
+    buff: {
+        Speed: "80%",
+        Shield: 20
+      },
 		formulas: [
         {
           label: "Damage - Full (6 Hits)",
@@ -6936,6 +7045,134 @@ const skillDamage = {
           formula: (attribute, Level) => 3.06 * attribute + 13 * (Level - 1) + 636,
           type: "heal",
           healAttribute: "SpATK"
+        }
+	]
+	}
+  },
+
+  	"empoleon": {
+      "passive": {
+          name: "Torrent",
+          description: "Dealing damage or over time fills a Torrent gauge; using a move above 50% gauge consumes it to empower the move, with faster filling at lower HP.",
+          buff: {
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.6 * SPATK + 0 * (Level - 1) + 120,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.9 * SPATK + 0 * (Level - 1) + 180,
+          type: "special"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Hydro Cannon",
+      cooldown: 5,
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 2.66 * SPATK + 15 * (Level - 1) + 400,
+          type: "special"
+        },
+		{
+          label: "Damage - Whirlpool (Torrent) [6 hits]",
+          formula: (SPATK, Level) => 0.53 * SPATK + 3 * (Level - 1) + 80,
+          type: "special"
+        },
+		{
+          label: "Healing - Whirlpool (Torrent)",
+          formula: (attribute, Level) => 0.59 * attribute + 0 * (Level - 1) + 160,
+          type: "heal",
+          healAttribute: "SpATK"
+        }
+      ]
+    },
+    "s12": {
+      name: "Whirlpool",
+      cooldown: 5.5,
+      formulas: [
+        {
+          label: "Damage (4 hits)",
+          formula: (SPATK, Level) => 0.7 * SPATK + 4 * (Level - 1) + 106,
+          type: "special"
+        },
+		{
+          label: "Damage (Torrent) [4 hits]",
+          formula: (SPATK, Level) => 0.85 * SPATK + 4 * (Level - 1) + 126,
+          type: "special" 
+        },
+        	{
+          label: "Damage - Slash (Torrent)",
+          formula: (SPATK, Level) => 0.85 * SPATK + 4 * (Level - 1) + 126,
+          type: "special" 
+        },
+                {
+          label: "Damage (4 hits) Skill Plus",
+          formula: (SPATK, Level) => 0.85 * SPATK + 4 * (Level - 1) + 126,
+          type: "special"
+        },
+		{
+          label: "Damage (Torrent) [4 hits] Skill Plus",
+          formula: (SPATK, Level) => 1.02 * SPATK + 5 * (Level - 1) + 154,
+          type: "special" 
+        },
+        	{
+          label: "Damage - Slash (Torrent) Skill Plus",
+          formula: (SPATK, Level) => 1.02 * SPATK + 5 * (Level - 1) + 154,
+          type: "special" 
+        },
+      ]
+    },
+    "s21": {
+      name: "Metal Claw",
+      cooldown: 5.5,
+      formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 2.3 * SPATK + 12 * (Level - 1) + 345,
+          type: "special"
+        },
+        {
+          label: "Shield (Torrent)",
+          formula: (SPATK, Level) => 1.8 * SPATK + 19 * (Level - 1) + 470,
+          type: "shield"
+        },
+                {
+          label: "Shield (Torrent) Skill Plus",
+          formula: (SPATK, Level) => 2.16 * SPATK + 23 * (Level - 1) + 564,
+          type: "shield"
+        },
+      ]
+    },
+    "s22": {
+      name: "Aqua Jet",
+      cooldown: 6,
+      formulas: [
+		{
+		  label: "Damage",
+          formula: (SPATK, Level) => 2 * SPATK + 11 * (Level - 1) + 300,
+          type: "special"
+		}
+      ]
+    },
+	"ult": {
+		name: "Sovereign Slide",
+    cooldown: 112,
+		formulas: [
+        {
+          label: "Damage",
+          formula: (SPATK, Level) => 4.7 * SPATK + 25 * (Level - 1) + 705,
+          type: "special"
         }
 	]
 	}

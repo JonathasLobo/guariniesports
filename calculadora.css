@@ -365,7 +365,25 @@ textarea.form-control {
   padding: 10px;
   border-radius: 8px;
   gap: 12px;
+  position: relative;
 }
+
+.skill-box.activatable {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.skill-box.activatable:hover {
+  background: rgba(255, 203, 5, 0.1);
+  border-color: rgba(255, 203, 5, 0.5);
+}
+
+.skill-box.activatable.active {
+  background: rgba(255, 203, 5, 0.15);
+  border-color: #ffcb05;
+  box-shadow: 0 2px 8px rgba(255, 203, 5, 0.3);
+}
+
 .skill-icon {
   width: 40px;
   height: 40px;
@@ -400,11 +418,34 @@ textarea.form-control {
   gap: 2px;
 }
 
+/* Skill Status (similar à passiva mas amarela) */
+.skill-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.skill-box.activatable.active .skill-status {
+  background-color: #ffcb05;
+}
+
 @media (max-width: 576px) {
   .skill-box { padding: 8px; gap: 10px; }
   .skill-icon { width: 35px; height: 35px; }
   .skill-info h4 { font-size: 13px; }
   .skill-info ul { font-size: 11px; }
+
+  .skill-status {
+  width: 6px;
+  height: 6px;
+  top: 6px;
+  right: 6px;
+}
 }
 
 /* Ultimate */
@@ -2302,5 +2343,368 @@ textarea.form-control {
   
   .emblems-selector-new {
     padding: 15px;
+  }
+}
+
+/* Debuff styling */
+.debuff-indicator {
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+.debuff-value {
+  color: #dc3545;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.debuff-icon {
+  color: #dc3545;
+  margin-right: 4px;
+  font-size: 12px;
+}
+
+/* Responsividade para debuffs */
+@media (max-width: 768px) {
+  .debuff-indicator {
+    font-size: 12px;
+  }
+  
+  .stat-value span {
+    margin-right: 10px !important;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .debuff-indicator {
+    font-size: 11px;
+  }
+  
+  .stat-value span {
+    margin-right: 8px !important;
+  }
+}
+/* Skill Build Selector - Integrado no resultado */
+.skill-build-in-result {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.skill-build-slots {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.skill-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-slot-label {
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.skill-selector-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.skill-selector-circle:hover {
+  border-color: #ffcb05;
+  transform: scale(1.05);
+}
+
+.skill-selector-circle.has-selection {
+  border-color: #666;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.skill-selector-circle.empty {
+  color: #666;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.skill-selector-circle img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  background: none;
+}
+
+.skill-selection-name {
+  font-size: 11px;
+  color: #000;
+  font-weight: 500;
+  text-align: center;
+  min-height: 14px;
+  max-width: 80px;
+  word-wrap: break-word;
+}
+
+.skill-selection-name.selected {
+  color: #000;
+  font-weight: bold;
+}
+
+/* Painel de seleção - Simples e posicionado abaixo */
+.skill-selection-panel {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid #ffcb05;
+  border-radius: 12px;
+  padding: 15px;
+  z-index: 1000;
+  min-width: 280px;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  display: none;
+}
+
+.skill-selection-panel.show {
+  display: block;
+}
+
+.skill-selection-title {
+  color: #ffcb05;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.skill-options {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.skill-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  min-width: 100px;
+}
+
+.skill-option:hover {
+  border-color: #ffcb05;
+  background: rgba(255, 203, 5, 0.1);
+}
+
+.skill-option img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.skill-option-name {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .skill-selector-circle {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .skill-selector-circle img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .skill-selection-name {
+    font-size: 10px;
+    max-width: 70px;
+  }
+  
+  .skill-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .skill-option {
+    min-width: 100px;
+    padding: 12px;
+  }
+  
+  .skill-option img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 576px) {
+  .skill-build-slots {
+    gap: 15px;
+  }
+  
+  .skill-selector-circle {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .skill-selector-circle img {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .skill-selector-circle.empty {
+    font-size: 20px;
+  }
+  
+  .skill-selection-name {
+    font-size: 9px;
+    max-width: 60px;
+  }
+  
+  .skill-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .skill-option {
+    min-width: 80px;
+    padding: 8px;
+  }
+  
+  .skill-option img {
+    width: 40px;
+    height: 40px;
+  }
+}
+/* Skills Plus - Indicação visual inline */
+.skill-plus-indicator {
+  display: inline-block;
+  background: linear-gradient(45deg, #ff6b00, #ff8c42);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(255, 107, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.skill-plus-indicator.active {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.skill-plus-indicator.inactive {
+  background: #666;
+  color: #ccc;
+  box-shadow: 0 2px 4px rgba(102, 102, 102, 0.3);
+}
+
+/* Separador visual para buffs plus */
+.skill-plus-separator {
+  margin: 8px 0;
+  border-top: 1px dashed #ffcb05;
+  padding-top: 8px;
+}
+
+.skill-plus-buffs {
+  color: #ff8c42;
+  font-style: italic;
+}
+
+.skill-plus-buffs.inactive {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.skill-plus-buffs.active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .skill-plus-indicator {
+    font-size: 9px;
+    padding: 1px 4px;
+    margin-left: 6px;
+  }
+}
+
+@media (max-width: 576px) {
+  .skill-plus-indicator {
+    font-size: 8px;
+    padding: 1px 3px;
+    margin-left: 4px;
+  }
+}
+/* Ultimate */
+.skill-box.ultimate {
+  border: 2px solid #ff8c42;
+  background: rgba(255, 140, 66, 0.1);
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3);
+}
+.skill-box.ultimate .skill-info h4 { color: #ff6b00; }
+
+/* Ultimate Status (bolinha indicadora) */
+.skill-box.ultimate .skill-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.skill-box.ultimate.activatable.active .skill-status {
+  background-color: #ffcb05;
+}
+
+@media (max-width: 576px) {
+  .skill-box.ultimate .skill-status {
+    width: 6px;
+    height: 6px;
+    top: 6px;
+    right: 6px;
   }
 }
