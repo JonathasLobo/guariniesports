@@ -4230,9 +4230,14 @@ const skillDamage = {
 	"ult": {
 		name: "Midnight Slash",
     cooldown: 100,
-    buff: {
-        Speed: "80%",
-        Shield: 20
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        buffs: {
+          Speed: "80%",
+          Shield: 20
+        }
       },
 		formulas: [
         {
@@ -4246,13 +4251,29 @@ const skillDamage = {
 
    "aegislash": {
       "passive": {
-      name: "Stance Change",
-      description: "Changes form between Attack and Defense stances. + 15% Speed and Atk Speed",
+      name: "Stance Change - Sword Forme",
+      description: "Switches to Sword Forme when using blade moves, boosting Attack, movement speed, and attack speed.",
       buff: {
-        Speed: "15%",
+        Speed: "5%",
         AtkSPD: "15%"
+
       },
       formulas: [
+        {
+          label: "Attack - Increase (Sword Stance)",
+          formula: (ATK, level) => 0 * ATK + 15 * (level - 1) + 40,
+          type: "physical",
+          affects: "ATK"
+        },
+      ]
+    },
+    "passive1": {
+    name: "Stance Change - Shield Forme",
+    description: "Switches to Shield Forme when using shield moves, boosting defenses but reducing attack speed.",
+    buff: {
+      AtkSPD: "-20%"
+    },
+    formulas: [
         {
           label: "Defense - Increase (Shield Stance)",
           formula: (ATK, level) => 0 * ATK + 25 * (level - 1) + 80,
@@ -4260,19 +4281,14 @@ const skillDamage = {
           affects: "DEF"
         },
         {
-          label: "Attack - Increase (Sword Stance)",
-          formula: (ATK, level) => 0 * ATK + 15 * (level - 1) + 40,
-          type: "physical",
-          affects: "ATK"
-        },
-        {
           label: "Special Defense - Increase (Shield Stance)",
           formula: (ATK, level) => 0 * ATK + 20 * (level - 1) + 40,
           type: "physical",
           affects: "SPDEF"
-        },
-      ]
-    },
+        }
+    ]
+  },
+
 	"atkboosted": {
 	  name: "Ataque Básico",
       formulas: [
@@ -4282,17 +4298,17 @@ const skillDamage = {
           type: "physical"
         },
         {
-          label: "Damage - Boosted",
+          label: "Damage - Boosted (Shield Stance)",
           formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
         {
-          label: "Healing - Boosted",
+          label: "Healing - Boosted (Shield Stance)",
           formula: (ATK, Level) => 1.5 * ATK + 12 * (Level - 1) + 72,
-          type: "physical"
+          type: "ATK",
         },
-		{
-          label: "Damage - Boosted",
+		    {
+          label: "Damage - Boosted (Sword Stance)",
           formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         }
@@ -4302,6 +4318,15 @@ const skillDamage = {
     "s11": {
       name: "Sacred Sword",
       cooldown: 6.5,
+      buff: {
+        DEFPen: 25
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          ATK: 50
+        }
+      },
       formulas: [
         {
           label: "Damage - Triangle Attack",
@@ -4318,6 +4343,14 @@ const skillDamage = {
     "s12": {
       name: "Shadow Claw",
       cooldown: 5.5,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CritRate: 20
+        }
+      },
       formulas: [
         {
           label: "Damage - First 2 Hits Damage",
@@ -4334,17 +4367,42 @@ const skillDamage = {
     "s21": {
       name: "Wide Guard",
       cooldown: 8,
+      debuffs: {
+        Speed: 45
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Shield",
           formula: (ATK, Level) => 1.7 * ATK + 0 * (Level - 1) + 340,
           type: "physical"
+        },
+        {
+          label: "Shield - Additional",
+          formula: (HP) => 0.085 * HP,
+          type: "hp"
         }
       ]
     },
     "s22": {
       name: "Iron Head",
       cooldown: 6,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          ATK: "10%"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -4356,12 +4414,27 @@ const skillDamage = {
 	"ult": {
 		name: "Coup de Grace",
     cooldown: 100,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage",
           formula: (ATK, Level) => 2.82 * ATK + 13 * (Level - 1) + 640,
           type: "physical"
         },
+        {
+          label: "Additional Damage",
+          type: "text-only",
+          additionalText: "12% of opponent's missing HP as additional damage"
+        }
 	]
 	}
   },
@@ -4401,6 +4474,9 @@ const skillDamage = {
     "s11": {
       name: "Fire Spin",
       cooldown: 8,
+      buff: {
+        Speed: "30%"
+      },
       formulas: [
         {
           label: "Damage - per Tick",
@@ -4417,6 +4493,10 @@ const skillDamage = {
     "s12": {
       name: "Armor Cannon",
       cooldown: 7,
+      buff: {
+        DEF: "-5%",
+        SpDEF: "-5%"
+      },
       formulas: [
         {
           label: "Damage - Explosion",
@@ -4433,6 +4513,16 @@ const skillDamage = {
     "s21": {
       name: "Flame Charge",
       cooldown: 8,
+      buff:{},
+      selfBuff: {
+        CooldownPercent: 20
+      },
+      buffPlus:{
+        levelRequired: 13,
+        buffs: {
+          DmgTaken: 20
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -4449,6 +4539,9 @@ const skillDamage = {
     "s22": {
       name: "Psychock",
       cooldown: 7,
+      buff: {
+        SpDEFPen: 35
+      },
       formulas: [
         {
           label: "Damage",
@@ -4460,6 +4553,16 @@ const skillDamage = {
 	"ult": {
 		name: "Psykaboom",
     cooldown: 112,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage",
@@ -4494,6 +4597,9 @@ const skillDamage = {
     "s11": {
       name: "Recover",
       cooldown: 7,
+      buff:{
+        Speed: "40%"
+      },
       formulas: [
         {
           label: "Healing - Basic",
@@ -4524,6 +4630,12 @@ const skillDamage = {
     "s12": {
       name: "Sweet Scent",
       cooldown: 8,
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - Explosion",
@@ -4540,6 +4652,8 @@ const skillDamage = {
     "s21": {
       name: "Decorate",
       cooldown: 8.5,
+      buff: {
+      },
       formulas: [
         {
           label: "Shield",
@@ -4566,6 +4680,12 @@ const skillDamage = {
     "s22": {
       name: "Dazzling Gleam",
       cooldown: 6,
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -4582,6 +4702,17 @@ const skillDamage = {
 	"ult": {
 		name: "Fluffy Cream Supreme",
     cooldown: 100,
+      buff: {
+        Shield: 60
+      },
+      buffPlus: {
+        levelRequired: 8,
+        buffs: {
+          Speed: "40%",
+          CDR: 30,
+          Shield: 30
+        }
+      },
 		formulas: [
         {
           label: "Healing - per Cream (48 max)",
@@ -4603,6 +4734,7 @@ const skillDamage = {
           name: "Huge Power",
           description: "Always crits on single targets, but never on multiple targets. Critical hits deal increased damage at 170% instead of 200%.",
           buff: {
+            CritDmg: 170
           },
           formulas: [
           ]
@@ -4626,6 +4758,16 @@ const skillDamage = {
     "s11": {
       name: "Play Rough",
       cooldown: 5,
+      buff: {
+        Speed: "30%"
+      },
+      buffPlus: {
+        levelRequired: 12,
+        buffs: {
+          Speed: "5%",
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage - per Hit (3 hits)",
@@ -4637,6 +4779,12 @@ const skillDamage = {
     "s12": {
       name: "Water Pulse",
       cooldown: 5,
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -4648,6 +4796,13 @@ const skillDamage = {
     "s21": {
       name: "Whirlpool",
       cooldown: 9,
+      buff:{},
+      selfBuffPlus: {
+        levelRequired: 10,
+        buffs: {
+          CooldownFlat: 2
+        }
+      },
       formulas: [
         {
           label: "Damage - per Hit",
@@ -4679,6 +4834,15 @@ const skillDamage = {
     "s22": {
       name: "Aqua Tail",
       cooldown: 7,
+      buff:{
+        AtkSPD: 20
+      },
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          CDR: 0.8
+        }
+      },
       formulas: [
         {
           label: "Damage - Basic (Close Range)",
@@ -4710,6 +4874,19 @@ const skillDamage = {
 	"ult": {
 		name: "Belly Bash",
     cooldown: 89,
+      buff:{
+        HP: "-5%",
+        Shield: 6.5,
+        ATK: 60
+      },
+      buffPlus: {
+        levelRequired: 8,
+        buffs: {
+          Speed: 30,
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage",
@@ -4725,7 +4902,7 @@ const skillDamage = {
 	}
   },
 
-    "blastoise": {
+  "blastoise": {
       "passive": {
           name: "Torrent",
           description: "While at 50% max HP or below: increases Attack and Sp. Atk by 20%.",
@@ -4738,6 +4915,15 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Ataque Básico",
+    buff:{
+      FlatCDR: 1
+    },
+    debuffs: {
+      Speed: 50
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -4760,6 +4946,15 @@ const skillDamage = {
     "s11": {
       name: "Water Spout",
       cooldown: 7.5,
+      buff: {
+        Speed: "30%"
+      },
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
       formulas: [
         {
           label: "Damage - Area (6 Hits)",
@@ -4786,6 +4981,9 @@ const skillDamage = {
     "s12": {
       name: "Hydro Pump",
       cooldown: 6,
+      buff: {
+        Speed: "30%"
+      },
       formulas: [
         {
           label: "Damage (3 Hits)",
@@ -4812,6 +5010,7 @@ const skillDamage = {
     "s21": {
       name: "Surf",
       cooldown: 7.5,
+      buff:{},
       formulas: [
         {
           label: "Damage",
@@ -4828,6 +5027,7 @@ const skillDamage = {
     "s22": {
       name: "Rapid Spin",
       cooldown: 10,
+      buff: {},
       formulas: [
         {
           label: "Damage (10 hits)",
@@ -4844,6 +5044,15 @@ const skillDamage = {
 	"ult": {
 		name: "Hydro Typhoon",
     cooldown: 89,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          Shield: 40
+        }
+      },
 		formulas: [
         {
           label: "Damage",

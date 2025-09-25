@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     azulmarinho: { 
       name: "Azul-Marinho", 
-      stat: "Ult Charge Rate", 
+      stat: "Energy Rate", 
       color: "#1e3a8a",
       levels: { 3: 1, 5: 2, 7: 4 },
       description: "Aumenta a velocidade de carregamento da ultimate"
@@ -444,30 +444,62 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
     return selectedPokemon && pokemonFixedItems[selectedPokemon] === itemKey;
   };
   
-  // Função para calcular cooldown com CDR global e self-CDR específico da skill
-  const calculateCooldownForSkill = (baseCooldown, globalCDR, skillKey, modifiedStats) => {
-    if (!baseCooldown || baseCooldown <= 0) return null;
+const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, skillKey, modifiedStats, pokemon) => {
+  if (!baseCooldown || baseCooldown <= 0) return null;
+  
+  let totalCDR = 0;
+  let totalFlatCDR = 0;
+  let specificCooldownReduction = 0;
+  let specificCooldownReductionPercent = 0;
+  
+  const isUltimate = skillKey === "ult" || skillKey === "ult1" || skillKey === "ult2";
+  
+  if (isUltimate) {
+    totalCDR = globalEnergyRate || 0;
+    // FlatCDR NÃO afeta ultimates - deixar totalFlatCDR = 0
+  } else {
+    totalCDR = globalCDR || 0;
+    // NOVO: Obter FlatCDR global dos stats modificados APENAS para skills normais
+    totalFlatCDR = modifiedStats.FlatCDR || 0;
+  }
+  
+  // Verificar reduções específicas da skill nos self-buffs
+  if (modifiedStats._selfBuffs && modifiedStats._selfBuffs[skillKey]) {
+    const skillSelfBuffs = modifiedStats._selfBuffs[skillKey];
     
-    let totalCDR = globalCDR || 0;
-    
-    // Adicionar self-CDR específico da skill, se existir
-    if (modifiedStats._selfBuffs && modifiedStats._selfBuffs[skillKey] && modifiedStats._selfBuffs[skillKey].CDR) {
-      totalCDR += modifiedStats._selfBuffs[skillKey].CDR;
+    // Redução em segundos fixos
+    if (skillSelfBuffs.CooldownFlat !== undefined && skillSelfBuffs.CooldownFlat !== null) {
+      specificCooldownReduction = Number(skillSelfBuffs.CooldownFlat);
     }
     
-    // Limitar CDR a 90% para evitar cooldowns muito baixos
-    totalCDR = Math.min(totalCDR, 90);
+    // FlatCDR específico da skill (também não afeta ultimates)
+    if (!isUltimate && skillSelfBuffs.FlatCDR !== undefined && skillSelfBuffs.FlatCDR !== null) {
+      totalFlatCDR += Number(skillSelfBuffs.FlatCDR);
+    }
     
-    const effectiveCooldown = baseCooldown * (1 - (totalCDR / 100));
-    return Math.max(0.5, effectiveCooldown);
-  };
-
-  // Função para calcular cooldown com CDR
-  const calculateCooldown = (baseCooldown, cdrPercent) => {
-    if (!baseCooldown || baseCooldown <= 0) return null;
-    const effectiveCooldown = baseCooldown * (1 - (cdrPercent / 100));
-    return Math.max(0.5, effectiveCooldown);
-  };
+    // Redução em porcentagem (específica da skill)
+    if (skillSelfBuffs.CooldownPercent !== undefined && skillSelfBuffs.CooldownPercent !== null) {
+      specificCooldownReductionPercent = Number(skillSelfBuffs.CooldownPercent);
+    }
+  }
+  
+  // 1. Aplicar CDR/EnergyRate GLOBAL primeiro (limitado a 90%)
+  totalCDR = Math.min(totalCDR, 90);
+  const afterGlobalCDR = baseCooldown * (1 - (totalCDR / 100));
+  
+  // 2. Aplicar FlatCDR GLOBAL (apenas para skills normais)
+  const afterFlatCDR = Math.max(0.5, afterGlobalCDR - totalFlatCDR);
+  
+  // 3. Aplicar redução FIXA em segundos específica da skill
+  const afterFlatReduction = Math.max(0.5, afterFlatCDR - specificCooldownReduction);
+  
+  // 4. Aplicar redução percentual ESPECÍFICA da skill
+  const effectiveCooldown = afterFlatReduction * (1 - (specificCooldownReductionPercent / 100));
+  
+  const finalCooldown = Math.max(0.5, effectiveCooldown);
+  
+  return finalCooldown;
+};
 
   const formatCooldown = (cooldown) => {
     if (cooldown === null || cooldown === undefined) return "";
@@ -479,7 +511,7 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
     "HP","ATK","DEF","SpATK","SpDEF","Speed",
     "AtkSPD","CDR","CritRate","CritDmg","Lifesteal",
     "HPRegen","EnergyRate", "Shield", "DmgTaken", "HindRed",
-    "SpDEFPen"
+    "SpDEFPen", "DEFPen"
   ];
 
   const STAT_LABELS = {
@@ -490,10 +522,10 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
     Lifesteal: "Lifesteal", HPRegen: "HP Regen",
     EnergyRate: "Energy Rate", Shield: "Shield", 
     DmgTaken: "Dmg Taken Reduction", HindRed: "Hindrance Reduction",
-    SpDEFPen: "Sp. DEF Penetration"
+    SpDEFPen: "Sp. DEF Penetration", DEFPen: "Defense Penetration",
   };
 
-  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed", "SpDEFPen"]);
+  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed", "SpDEFPen", "DEFPen"]);
 
   const ensureAllStats = (obj) => {
     const out = { ...obj };
@@ -595,6 +627,7 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
     roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } },
     cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } },
     rosa: { stat: "HindRed", values: { 3: 4, 5: 8, 7: 16 } },
+    azulmarinho: { stat: "EnergyRate", values: { 3: 1, 5: 2, 7: 4 } },
   };
 
   // Funções para o novo sistema de emblemas
@@ -768,33 +801,52 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
     if (!skill) return;
 
     // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
-    if (skill.buff) {
-      Object.keys(skill.buff).forEach(stat => {
-        if (modifiedStats.hasOwnProperty(stat)) {
-          const rawVal = skill.buff[stat];
-          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-          const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-
-          if (!Number.isFinite(numeric)) return;
-
-          if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
-            modifiedStats[stat] += numeric;
-          } else if (stat === "DmgTaken") {
-            if (isPercentString) {
-              modifiedStats[stat] += numeric;
-            } else {
-              modifiedStats[stat] += numeric;
-            }
-          } else {
-            if (isPercentString) {
-              modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-            } else {
-              modifiedStats[stat] += numeric;
-            }
-          }
-        }
-      });
+if (skill.buff) {
+  Object.keys(skill.buff).forEach(stat => {
+    // Condição especial: Water Spout (s11) só aplica buff se Rapid Spin (s22) estiver ativa
+    if (
+      pokemon === "blastoise" &&
+      skillKey === "s11" &&
+      !(activeSkills[pokemon]?.s22)
+    ) {
+      return; // ← só ignora este buff, mas continua os outros
     }
+    if (
+      pokemon === "blastoise" &&
+      skillKey === "s12" &&
+      stat === "Speed" &&
+      !(activeSkills[pokemon]?.s22)
+    ) {
+      return; // ignora apenas o buff de Speed do Hydro Pump
+    }
+
+    // Permitir FlatCDR mesmo não estando em STAT_KEYS
+    if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+      const rawVal = skill.buff[stat];
+      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+      const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+      if (!Number.isFinite(numeric)) return;
+
+      if (stat === "FlatCDR") {
+        if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+        modifiedStats[stat] += numeric;
+      }
+      else if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+        modifiedStats[stat] += numeric;
+      } else if (stat === "DmgTaken") {
+        modifiedStats[stat] += numeric;
+      } else {
+        if (isPercentString) {
+          modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+        } else {
+          modifiedStats[stat] += numeric;
+        }
+      }
+    }
+  });
+}
+
 
     // Aplicar SELF-BUFFS básicos (afetam apenas a skill específica)
     if (skill.selfBuff) {
@@ -995,7 +1047,15 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
                 label: f.label
               };
             } else if (f.affects) {
-              const statKey = f.affects.toUpperCase();
+              const map = {
+                HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
+                ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
+                LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate",
+                SHIELD:"Shield", DMGTAKEN:"DmgTaken", HINDRED:"HindRed", SPDEFPEN:"SpDEFPen",
+                DEFPen: "DEFPen"
+              };
+              const statKey = map[f.affects.toUpperCase()] || f.affects;
+
               if (modifiedStats.hasOwnProperty(statKey)) {
                 modifiedStats[statKey] += modifiedVal;
               }
@@ -1030,6 +1090,8 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
                 modifiedStats.HindRed += modifiedVal;
               } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
                 modifiedStats.SpDEFPen += modifiedVal;
+              }else if (label.includes("defpen") || label.includes("def penetration")) {
+                modifiedStats.DEFPen += modifiedVal;
               }
             }
           }
@@ -1702,7 +1764,7 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
           HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
           ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
           LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
-          HindRed: "HindRed", SPDEFPEN: "SpDEFPen"
+          HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
         };
         const prop = map[key];
         if (!prop) return;
@@ -1729,7 +1791,7 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
           HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
           ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
           LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
-          HindRed: "HindRed", SPDEFPEN: "SpDEFPen"
+          HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
         };
         const prop = map[key];
         if (!prop) return;
@@ -2000,41 +2062,40 @@ const deactivateOtherSkillsInSlot = (pokemon, currentSkillKey) => {
         skillsDiv.insertAdjacentHTML("beforeend", passiveHtml);
       });
 
-      // Renderizar outras skills (dentro da função calcular)
-// Na função calcular, na parte de renderização das skills:
+  // Renderizar outras skills (substitua toda a seção Object.keys(skills).forEach na função calcular)
+  Object.keys(skills).forEach(key => {
+    if (key === "passive" || key === "passive1" || key === "passive2") return;
+    
+    const s = skills[key];
+    const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
+    const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
-// Renderizar outras skills (substitua toda a seção Object.keys(skills).forEach na função calcular)
-Object.keys(skills).forEach(key => {
-  if (key === "passive" || key === "passive1" || key === "passive2") return;
-  
-  const s = skills[key];
-  const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
-  const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
+    const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
+    const ultimateClass = isUltimate ? " ultimate" : "";
+    
+    // Verificar se a skill é ativável
+    const isActivatable = activeSkills[selectedPokemon] && activeSkills[selectedPokemon].hasOwnProperty(key);
+    const isActiveSkill = isActivatable && activeSkills[selectedPokemon][key];
+    const activatableClass = isActivatable ? " activatable" : "";
+    const activeClass = isActiveSkill ? " active" : "";
+    
+    // Verificar se tem skill plus
+    const hasSkillPlus = (s.buffPlus && s.buffPlus.levelRequired) || (s.selfBuffPlus && s.selfBuffPlus.levelRequired);
+    
+    // Verificar se o skill plus está ativo
+    const buffPlusActive = s.buffPlus && currentLevel >= s.buffPlus.levelRequired;
+    const selfBuffPlusActive = s.selfBuffPlus && currentLevel >= s.selfBuffPlus.levelRequired;
+    const isPlusActive = buffPlusActive || selfBuffPlusActive;
 
-  const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
-  const ultimateClass = isUltimate ? " ultimate" : "";
-  
-  // Verificar se a skill é ativável
-  const isActivatable = activeSkills[selectedPokemon] && activeSkills[selectedPokemon].hasOwnProperty(key);
-  const isActiveSkill = isActivatable && activeSkills[selectedPokemon][key];
-  const activatableClass = isActivatable ? " activatable" : "";
-  const activeClass = isActiveSkill ? " active" : "";
-  
-  // Verificar se tem skill plus
-  const hasSkillPlus = (s.buffPlus && s.buffPlus.levelRequired) || (s.selfBuffPlus && s.selfBuffPlus.levelRequired);
-  
-  // Verificar se o skill plus está ativo
-  const buffPlusActive = s.buffPlus && currentLevel >= s.buffPlus.levelRequired;
-  const selfBuffPlusActive = s.selfBuffPlus && currentLevel >= s.selfBuffPlus.levelRequired;
-  const isPlusActive = buffPlusActive || selfBuffPlusActive;
+    // Calcular cooldown da skill com CDR específico
+    const baseCooldown = s.cooldown || null;
+    const globalCDR = modified.CDR || 0;
+    const globalEnergyRate = modified.EnergyRate || 0;
+    const effectiveCooldown = calculateCooldownForSkill(baseCooldown, globalCDR, globalEnergyRate, key, modified, selectedPokemon);
+    const cooldownDisplay = formatCooldown(effectiveCooldown);
+    
 
-  // Calcular cooldown da skill com CDR específico
-  const baseCooldown = s.cooldown || null;
-  const globalCDR = modified.CDR || 0;
-  const effectiveCooldown = calculateCooldownForSkill(baseCooldown, globalCDR, key, modified);
-  const cooldownDisplay = formatCooldown(effectiveCooldown);
-
-  const calculatedValues = [];
+    const calculatedValues = [];
   
   // Primeiro passe: calcular valores não dependentes
   s.formulas.forEach((f, index) => {
@@ -2329,17 +2390,42 @@ if (s.selfBuff && isActiveSkill) {
 });
 
       // Event listeners para passivas clicáveis
+      // Event listeners para passivas clicáveis (substitua o bloco original por este)
       const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
       passiveBoxes.forEach(box => {
         box.addEventListener("click", () => {
           const pokemon = box.dataset.pokemon;
           const passiveKey = box.dataset.passiveKey;
-          
+
           if (!activePassives[pokemon]) {
             activePassives[pokemon] = {};
           }
-          
-          activePassives[pokemon][passiveKey] = !activePassives[pokemon][passiveKey];
+
+          // Comportamento exclusivo para o Aegislash: somente 1 passiva ativa por vez
+          if (pokemon === "aegislash") {
+            const currentlyActive = !!activePassives[pokemon][passiveKey];
+
+            // Desativa todas as passivas conhecidas antes
+            ["passive", "passive1", "passive2"].forEach(k => {
+              activePassives[pokemon][k] = false;
+            });
+
+            // Se a que foi clicada não estava ativa, ativa-a (caso contrário, fica tudo desativado)
+            activePassives[pokemon][passiveKey] = !currentlyActive;
+
+            // Atualiza classe visual nos cards imediatamente (opcional — calcular() também re-renderiza)
+            passiveBoxes.forEach(b => {
+              const pk = b.dataset.passiveKey;
+              const isActiveNow = !!activePassives[pokemon][pk];
+              b.classList.toggle("active", isActiveNow);
+            });
+
+          } else {
+            // comportamento padrão para os outros pokemons (toggle independente)
+            activePassives[pokemon][passiveKey] = !activePassives[pokemon][passiveKey];
+            box.classList.toggle("active", activePassives[pokemon][passiveKey]); // feedback imediato
+          }
+
           calcular();
         });
       });
