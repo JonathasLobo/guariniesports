@@ -5094,6 +5094,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Ataque Básico",
+    buff: {
+      AtkSPD: 40
+    },
       formulas: [
         {
           label: "Damage - Punch Style",
@@ -5111,6 +5114,7 @@ const skillDamage = {
     "s11": {
       name: "Fire Punch",
       cooldown: 6,
+      buff: {},
       formulas: [
         {
           label: "Damage - Per Punch (2x)",
@@ -5127,6 +5131,9 @@ const skillDamage = {
     "s12": {
       name: "Overheat",
       cooldown: 7.5,
+      buff:{
+        DmgTaken: 25
+      },
       formulas: [
         {
           label: "Damage - Low Charge",
@@ -5163,6 +5170,19 @@ const skillDamage = {
     "s21": {
       name: "Focus Blast",
       cooldown: 8,
+      buff: {},
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
+      buffPlus:{
+       levelRequired: 13,
+        debuffs: {
+          Speed: 25
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -5174,6 +5194,19 @@ const skillDamage = {
     "s22": {
       name: "Blaze Kick",
       cooldown: 9.5,
+      buff: {},
+      debuffs: {
+        Speed: "25%"
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
+      buffPlus:{
+       levelRequired: 13,
+        buffs: {
+          Speed: "25%",
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -5185,6 +5218,21 @@ const skillDamage = {
 	"ult": {
 		name: "Spinning Flame Fist",
     cooldown: 4.7,
+      buff: {
+        Speed: "20%"
+      },
+      debuffs: {
+        Speed: "25%"
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
+      buffPlus:{
+       levelRequired: 8,
+        buffs: {
+          Shield: 9,
+        }
+      },
 		formulas: [
         {
           label: "Damage (2x)",
@@ -5192,10 +5240,36 @@ const skillDamage = {
           type: "physical"
         }
 	 ]
+	},
+  	"ult1": {
+		name: "Spinning Flame Kick",
+    cooldown: 4.7,
+      buff: {
+        ATK: "30%"
+      },
+      debuffs: {
+        Speed: "25%"
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
+      buffPlus:{
+       levelRequired: 8,
+        buffs: {
+          Shield: 9,
+        }
+      },
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1 * ATK + 7 * (Level - 1) + 200,
+          type: "physical"
+        }
+	 ]
 	}
   },
 
-    "blissey": {
+  "blissey": {
       "passive": {
           name: "Natural Cure",
           description: "Automatically cleanses this Pokémon every 6s, even if there are no effects to cleanse.",
@@ -5223,6 +5297,13 @@ const skillDamage = {
     "s11": {
       name: "Egg Bomb",
       cooldown: 9,
+      buff: {},
+      buffPlus:{
+       levelRequired: 12,
+        buffs: {
+          Speed: 40
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -5234,6 +5315,14 @@ const skillDamage = {
     "s12": {
       name: "Helping Hand",
       cooldown: 9,
+      buff: {
+        AtkSPD: 30,
+        Speed: 30
+      },
+      buffPlus: {
+        levelRequired: 12,
+        nextBasicAttackPercent: 15
+      },
 	  formulas: [
       ]
     },

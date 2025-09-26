@@ -777,8 +777,7 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   // Inicializar estado dos botões
   updateLevelDisplay();
 
-  // Substitua a função applyActiveSkillBuffs pela versão melhorada
-  const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
+const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   if (!skillDamage[pokemon] || !activeSkills[pokemon]) {
     return stats;
   }
@@ -800,143 +799,190 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
     const skill = skills[skillKey];
     if (!skill) return;
 
-    // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
-if (skill.buff) {
-  Object.keys(skill.buff).forEach(stat => {
-    // Condição especial: Water Spout (s11) só aplica buff se Rapid Spin (s22) estiver ativa
-    if (
-      pokemon === "blastoise" &&
-      skillKey === "s11" &&
-      !(activeSkills[pokemon]?.s22)
-    ) {
-      return; // ← só ignora este buff, mas continua os outros
-    }
-    if (
-      pokemon === "blastoise" &&
-      skillKey === "s12" &&
-      stat === "Speed" &&
-      !(activeSkills[pokemon]?.s22)
-    ) {
-      return; // ignora apenas o buff de Speed do Hydro Pump
-    }
+    try {
+      // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
+      if (skill.buff && typeof skill.buff === 'object') {
+        Object.keys(skill.buff).forEach(stat => {
+          // Condições especiais para Blastoise
+          if (
+            pokemon === "blastoise" &&
+            skillKey === "s11" &&
+            !(activeSkills[pokemon]?.s22)
+          ) {
+            return;
+          }
+          if (
+            pokemon === "blastoise" &&
+            skillKey === "s12" &&
+            stat === "Speed" &&
+            !(activeSkills[pokemon]?.s22)
+          ) {
+            return;
+          }
 
-    // Permitir FlatCDR mesmo não estando em STAT_KEYS
-    if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
-      const rawVal = skill.buff[stat];
-      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-      const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+          // Permitir FlatCDR mesmo não estando em STAT_KEYS
+          if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+            const rawVal = skill.buff[stat];
+            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
 
-      if (!Number.isFinite(numeric)) return;
+            if (!Number.isFinite(numeric)) return;
 
-      if (stat === "FlatCDR") {
-        if (!modifiedStats[stat]) modifiedStats[stat] = 0;
-        modifiedStats[stat] += numeric;
+            if (stat === "FlatCDR") {
+              if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+              modifiedStats[stat] += numeric;
+            }
+            else if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+              modifiedStats[stat] += numeric;
+            } else if (stat === "DmgTaken") {
+              modifiedStats[stat] += numeric;
+            } else {
+              if (isPercentString) {
+                modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+              } else {
+                modifiedStats[stat] += numeric;
+              }
+            }
+          }
+        });
       }
-      else if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
-        modifiedStats[stat] += numeric;
-      } else if (stat === "DmgTaken") {
-        modifiedStats[stat] += numeric;
-      } else {
-        if (isPercentString) {
-          modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-        } else {
-          modifiedStats[stat] += numeric;
+
+      // Aplicar SELF-BUFFS básicos (afetam apenas a skill específica)
+      if (skill.selfBuff && typeof skill.selfBuff === 'object') {
+        if (!modifiedStats._selfBuffs[skillKey]) {
+          modifiedStats._selfBuffs[skillKey] = {};
         }
-      }
-    }
-  });
-}
-
-
-    // Aplicar SELF-BUFFS básicos (afetam apenas a skill específica)
-    if (skill.selfBuff) {
-      if (!modifiedStats._selfBuffs[skillKey]) {
-        modifiedStats._selfBuffs[skillKey] = {};
-      }
-      
-      Object.keys(skill.selfBuff).forEach(stat => {
-        const rawVal = skill.selfBuff[stat];
-        const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
         
-        if (Number.isFinite(numeric)) {
-          modifiedStats._selfBuffs[skillKey][stat] = numeric;
-        }
-      });
-    }
-
-    // Aplicar buffs Plus GLOBAIS (baseado no nível atual)
-    if (skill.buffPlus && currentLevel >= skill.buffPlus.levelRequired) {
-      Object.keys(skill.buffPlus.buffs).forEach(stat => {
-        if (modifiedStats.hasOwnProperty(stat)) {
-          const rawVal = skill.buffPlus.buffs[stat];
-          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        Object.keys(skill.selfBuff).forEach(stat => {
+          const rawVal = skill.selfBuff[stat];
           const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-
-          if (!Number.isFinite(numeric)) return;
-
-          if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
-            modifiedStats[stat] += numeric;
-          } else if (stat === "DmgTaken") {
-            if (isPercentString) {
-              modifiedStats[stat] += numeric;
-            } else {
-              modifiedStats[stat] += numeric;
-            }
-          } else {
-            if (isPercentString) {
-              modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-            } else {
-              modifiedStats[stat] += numeric;
-            }
+          
+          if (Number.isFinite(numeric)) {
+            modifiedStats._selfBuffs[skillKey][stat] = numeric;
           }
-        }
-      });
-    }
-
-    // Aplicar SELF-BUFFS Plus (baseado no nível atual, afetam apenas a skill específica)
-    if (skill.selfBuffPlus && currentLevel >= skill.selfBuffPlus.levelRequired) {
-      if (!modifiedStats._selfBuffs[skillKey]) {
-        modifiedStats._selfBuffs[skillKey] = {};
+        });
       }
-      
-      Object.keys(skill.selfBuffPlus.buffs).forEach(stat => {
-        const rawVal = skill.selfBuffPlus.buffs[stat];
-        const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-        
-        if (Number.isFinite(numeric)) {
-          if (!modifiedStats._selfBuffs[skillKey][stat]) {
-            modifiedStats._selfBuffs[skillKey][stat] = 0;
-          }
-          modifiedStats._selfBuffs[skillKey][stat] += numeric;
-        }
-      });
-    }
 
-    // Aplicar efeitos especiais da skill
-    if (skill.activeEffect) {
-      if (typeof skill.activeEffect === "function") {
+      // Aplicar buffs Plus GLOBAIS (baseado no nível atual)
+      if (skill.buffPlus && typeof skill.buffPlus === 'object' && 
+          currentLevel >= (skill.buffPlus.levelRequired || 11)) {
+        
+        // Processar buffs normais do buffPlus
+        if (skill.buffPlus.buffs && typeof skill.buffPlus.buffs === 'object') {
+          Object.keys(skill.buffPlus.buffs).forEach(stat => {
+            if (modifiedStats.hasOwnProperty(stat)) {
+              const rawVal = skill.buffPlus.buffs[stat];
+              const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+              const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+              if (!Number.isFinite(numeric)) return;
+
+              if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+                modifiedStats[stat] += numeric;
+              } else if (stat === "DmgTaken") {
+                if (isPercentString) {
+                  modifiedStats[stat] += numeric;
+                } else {
+                  modifiedStats[stat] += numeric;
+                }
+              } else {
+                if (isPercentString) {
+                  modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+                } else {
+                  modifiedStats[stat] += numeric;
+                }
+              }
+            }
+          });
+        }
+        // ADICIONE ESTA SEÇÃO AQUI (posição correta):
+        if (skill.buffPlus.nextBasicAttackPercent) {
+          if (!modifiedStats._nextBasicAttackPercents) {
+            modifiedStats._nextBasicAttackPercents = [];
+          }
+          
+          modifiedStats._nextBasicAttackPercents.push({
+            value: skill.buffPlus.nextBasicAttackPercent,
+            source: skill.name + " (Plus)"
+          });
+        }
+
+        // Processar debuffs do buffPlus
+        if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
+          Object.keys(skill.buffPlus.debuffs).forEach(debuffStat => {
+            const debuffValue = parseFloat(skill.buffPlus.debuffs[debuffStat]);
+            
+            if (!Number.isFinite(debuffValue)) return;
+            
+            if (!debuffsAcumulados[debuffStat]) {
+              debuffsAcumulados[debuffStat] = {
+                total: 0,
+                skills: []
+              };
+            }
+            
+            debuffsAcumulados[debuffStat].total += debuffValue;
+            debuffsAcumulados[debuffStat].skills.push({
+              name: skill.name + " (Plus)",
+              value: debuffValue
+            });
+          });
+        }
+      }
+
+      // Aplicar SELF-BUFFS Plus (baseado no nível atual, afetam apenas a skill específica)
+      if (skill.selfBuffPlus && typeof skill.selfBuffPlus === 'object' && 
+          currentLevel >= (skill.selfBuffPlus.levelRequired || 11)) {
+        
+        if (skill.selfBuffPlus.buffs && typeof skill.selfBuffPlus.buffs === 'object') {
+          if (!modifiedStats._selfBuffs[skillKey]) {
+            modifiedStats._selfBuffs[skillKey] = {};
+          }
+          
+          Object.keys(skill.selfBuffPlus.buffs).forEach(stat => {
+            const rawVal = skill.selfBuffPlus.buffs[stat];
+            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+            
+            if (Number.isFinite(numeric)) {
+              if (!modifiedStats._selfBuffs[skillKey][stat]) {
+                modifiedStats._selfBuffs[skillKey][stat] = 0;
+              }
+              modifiedStats._selfBuffs[skillKey][stat] += numeric;
+            }
+          });
+        }
+      }
+
+      // Aplicar efeitos especiais da skill
+      if (skill.activeEffect && typeof skill.activeEffect === "function") {
         modifiedStats = skill.activeEffect(modifiedStats, baseStats);
       }
-    }
 
-    // Acumular debuffs
-    if (skill.debuffs) {
-      Object.keys(skill.debuffs).forEach(debuffStat => {
-        const debuffValue = skill.debuffs[debuffStat];
-        
-        if (!debuffsAcumulados[debuffStat]) {
-          debuffsAcumulados[debuffStat] = {
-            total: 0,
-            skills: []
-          };
-        }
-        
-        debuffsAcumulados[debuffStat].total += debuffValue;
-        debuffsAcumulados[debuffStat].skills.push({
-          name: skill.name,
-          value: debuffValue
+      // Acumular debuffs básicos da skill
+      if (skill.debuffs && typeof skill.debuffs === 'object') {
+        Object.keys(skill.debuffs).forEach(debuffStat => {
+          const debuffValue = parseFloat(skill.debuffs[debuffStat]);
+          
+          if (!Number.isFinite(debuffValue)) return;
+          
+          if (!debuffsAcumulados[debuffStat]) {
+            debuffsAcumulados[debuffStat] = {
+              total: 0,
+              skills: []
+            };
+          }
+          
+          debuffsAcumulados[debuffStat].total += debuffValue;
+          debuffsAcumulados[debuffStat].skills.push({
+            name: skill.name,
+            value: debuffValue
+          });
         });
-      });
+      }
+
+    } catch (error) {
+      console.error(`Erro ao processar skill ${skillKey} do pokemon ${pokemon}:`, error);
+      console.log('Dados da skill:', skill);
     }
   });
 
@@ -2166,6 +2212,21 @@ if (skill.buff) {
             modifiedVal += razorClawBonus;
           }
         }
+
+        // Aplicar multiplicadores de nextBasicAttackPercent para ataques básicos
+        if (modified._nextBasicAttackPercents && modified._nextBasicAttackPercents.length > 0) {
+          const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
+          if (basicAttackKeys.includes(key)) {
+            // Somar todos os percentuais de nextBasicAttackPercent
+            const totalPercentIncrease = modified._nextBasicAttackPercents.reduce((total, buff) => {
+              return total + buff.value;
+            }, 0);
+            
+            // Aplicar o multiplicador
+            const multiplier = 1 + (totalPercentIncrease / 100);
+            modifiedVal *= multiplier;
+          }
+        }
         
         // Aplicar multiplicadores para heal e shield
         if (f.type === "heal") {
@@ -2258,44 +2319,68 @@ if (hasSkillPlus && isActiveSkill) {
   
   // Buffs globais plus
   if (s.buffPlus && buffPlusActive) {
-    Object.keys(s.buffPlus.buffs).forEach(stat => {
-      const value = s.buffPlus.buffs[stat];
-      const label = STAT_LABELS[stat] || stat;
-      
-      let formattedValue, colorClass;
-      if (value >= 0) {
-        // Buff positivo
-        formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
-        colorClass = "limegreen";
-      } else {
-        // Debuff negativo
-        formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
-        colorClass = "red";
+    // Processar buffs normais
+    if (s.buffPlus.buffs) {
+      Object.keys(s.buffPlus.buffs).forEach(stat => {
+        const value = s.buffPlus.buffs[stat];
+        const label = STAT_LABELS[stat] || stat;
+        
+        let formattedValue, colorClass;
+        if (value >= 0) {
+          // Buff positivo
+          formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
+          colorClass = "limegreen";
+        } else {
+          // Debuff negativo
+          formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
+          colorClass = "red";
+        }
+        
+        plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span>`);
+      });
+    }
+
+      // AQUI você adiciona o segundo bloco:
+      if (s.buffPlus.nextBasicAttackPercent) {
+        plusBuffsList.push(`<span style="color:limegreen;">Basic Attack: +${s.buffPlus.nextBasicAttackPercent}%</span>`);
       }
-      
-      plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span>`);
-    });
+    
+    // NOVO: Processar debuffs do buffPlus
+    if (s.buffPlus.debuffs) {
+      Object.keys(s.buffPlus.debuffs).forEach(stat => {
+        const value = s.buffPlus.debuffs[stat];
+        const label = STAT_LABELS[stat] || stat;
+        
+        // Debuffs são sempre mostrados como positivos na interface (representam redução aplicada)
+        const formattedValue = `+${value}%`;
+        const colorClass = "orange"; // Cor diferente para distinguir de buffs normais
+        
+        plusBuffsList.push(`<span style="color:${colorClass};">${label} Debuff: ${formattedValue}</span>`);
+      });
+    }
   }
   
   // Self-buffs plus
   if (s.selfBuffPlus && selfBuffPlusActive) {
-    Object.keys(s.selfBuffPlus.buffs).forEach(stat => {
-      const value = s.selfBuffPlus.buffs[stat];
-      const label = STAT_LABELS[stat] || stat;
-      
-      let formattedValue, colorClass;
-      if (value >= 0) {
-        // Buff positivo
-        formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
-        colorClass = "limegreen";
-      } else {
-        // Debuff negativo
-        formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
-        colorClass = "red";
-      }
-      
-      plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span> (Self)`);
-    });
+    if (s.selfBuffPlus.buffs) {
+      Object.keys(s.selfBuffPlus.buffs).forEach(stat => {
+        const value = s.selfBuffPlus.buffs[stat];
+        const label = STAT_LABELS[stat] || stat;
+        
+        let formattedValue, colorClass;
+        if (value >= 0) {
+          // Buff positivo
+          formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
+          colorClass = "limegreen";
+        } else {
+          // Debuff negativo
+          formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
+          colorClass = "red";
+        }
+        
+        plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span> (Self)`);
+      });
+    }
   }
   
   if (plusBuffsList.length > 0) {
