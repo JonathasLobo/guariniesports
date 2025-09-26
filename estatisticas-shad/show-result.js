@@ -59,7 +59,7 @@ fetch('./results.json')
     
     const getTitle = () => {
         if (infoType === 'allyTeam') {
-            return 'GUARINÍ E-SPORTS'
+            return 'VASCO E-SPORTS'
         } else if (infoType === 'enemyTeam') {
             return 'ADVERSÁRIOS'
         } else {
