@@ -409,7 +409,7 @@ textarea.form-control {
 
 /* Cooldown styling */
 .skill-cooldown {
-  color: #a30404;
+  color: #ffffff;
   font-size: 15px;
   font-weight: normal;
   margin-left: 8px;
@@ -1628,12 +1628,12 @@ textarea.form-control {
 }
 
 .buff-info strong {
-  color: #ffcb05;
+  color: #ff0505;
   font-size: 16px;
 }
 
 .buff-info small {
-  color: #bbb;
+  color: #0720ac;
   font-size: 12px;
   line-height: 1.3;
 }
@@ -2531,7 +2531,7 @@ textarea.form-control {
 
 .skill-option-name {
   font-size: 12px;
-  color: #fff;
+  color: #ffffff;
   font-weight: 500;
   text-align: center;
 }
@@ -2706,5 +2706,515 @@ textarea.form-control {
     height: 6px;
     top: 6px;
     right: 6px;
+  }
+}
+/* Novo design de Skills - Versão compacta com largura total */
+.skill-box {
+  background: linear-gradient(135deg, rgba(88, 101, 242, 0.15) 0%, rgba(88, 101, 242, 0.05) 100%);
+  border: 2px solid rgba(88, 101, 242, 0.3);
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skill-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(88, 101, 242, 0.3);
+  border-color: rgba(88, 101, 242, 0.5);
+}
+
+/* Container principal - layout em coluna */
+.skill-box-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Header da skill */
+.skill-header-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+  color: #000;
+}
+
+/* Cabeçalho da skill */
+.skill-box .skill-info h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Ícone da skill */
+.skill-box .skill-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+/* Section de informações - largura total */
+.skill-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container de valores destacados - largura total */
+.skill-damage-value {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.15) 0%, rgba(67, 233, 123, 0.15) 100%);
+  border: 2px solid rgba(76, 201, 240, 0.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skill-damage-value:hover {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.25) 0%, rgba(67, 233, 123, 0.25) 100%);
+  border-color: rgba(76, 201, 240, 0.5);
+  transform: scale(1.01);
+}
+
+.skill-damage-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+  max-width: 50%;
+  word-wrap: break-word;
+}
+
+.skill-damage-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1d1dd1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.skill-damage-percent {
+  font-size: 11px;
+  font-weight: 600;
+  color: #007b29;
+  margin-left: 4px;
+}
+
+/* Info text */
+.skill-info-text {
+  font-size: 11px;
+  color: #000000;
+  margin: 4px 0;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skill-info-text strong {
+  color: #000000;
+  font-size: 11px;
+}
+
+
+/* Upgrade indicators */
+.skill-upgrade-indicator {
+  display: inline-block;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: rgb(0, 0, 0);
+  font-size: 9px;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(240, 147, 251, 0.4);
+  transition: all 0.3s ease;
+}
+
+/* Skill plus active - verde quando o nível necessário foi atingido */
+.skill-box .skill-upgrade-indicator.plus-active {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.4);
+}
+
+/* Cooldown destacado */
+.skill-cooldown-badge {
+  background: rgba(220, 53, 69, 0.2);
+  border: 2px solid rgba(220, 53, 69, 0.4);
+  color: #000000;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Buffs section */
+.skill-buffs-section {
+  background: rgba(255, 193, 7, 0.12);
+  border-left: 3px solid #ffc107;
+  padding: 6px 8px;
+  margin: 6px 0;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #000000;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skill-buffs-section strong {
+  color: #ffc107;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-right: 4px;
+}
+
+/* Passive skills */
+.skill-box.passive {
+  background: linear-gradient(135deg, rgba(123, 97, 255, 0.2) 0%, rgba(123, 97, 255, 0.05) 100%);
+  border: 2px solid rgba(123, 97, 255, 0.5);
+}
+
+.skill-box.passive .skill-info h4 {
+  color: #000000;
+}
+
+.skill-box.passive .passive-subtitle {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  margin-top: 3px;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.4);
+}
+
+/* Ultimate skills */
+.skill-box.ultimate {
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.25) 0%, rgba(255, 140, 66, 0.1) 100%);
+  border: 3px solid #ff8c42;
+  box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+}
+
+.skill-box.ultimate .skill-info h4 {
+  color: #000000;
+  font-size: 15px;
+}
+
+.skill-box.ultimate .skill-damage-number {
+  color: #ffb347;
+  font-size: 20px;
+}
+
+/* Status indicator */
+.skill-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.skill-box.activatable.active .skill-status {
+  background-color: #ffcb05;
+}
+
+.skill-box.ultimate .skill-status {
+  background-color: #ccc;
+}
+
+.skill-box.ultimate.activatable.active .skill-status {
+  background-color: #ffcb05;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .skill-damage-number {
+    font-size: 16px;
+  }
+  
+  .skill-damage-label {
+    font-size: 9px;
+    max-width: 45%;
+  }
+  
+  .skill-box .skill-icon {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .skill-box .skill-info h4 {
+    font-size: 13px;
+  }
+  
+  .skill-buffs-section {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .skill-damage-number {
+    font-size: 15px;
+  }
+  
+  .skill-damage-label {
+    font-size: 9px;
+    max-width: 40%;
+  }
+  
+  .skill-box .skill-info h4 {
+    font-size: 12px;
+  }
+  
+  .skill-box {
+    padding: 10px;
+  }
+  
+  .skill-damage-value {
+    padding: 6px 10px;
+  }
+}
+/* ===== NOVO DESIGN PARA STATUS FINAL ===== */
+
+/* Container principal dos stats */
+.stat-line {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.12) 0%, rgba(67, 233, 123, 0.12) 100%);
+  border-left: 4px solid #4ce9f4;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  border-bottom: none;
+  min-height: 40px;
+}
+
+.stat-line:hover {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.18) 0%, rgba(67, 233, 123, 0.18) 100%);
+  transform: translateX(3px);
+}
+
+/* Label do stat - SEM TRUNCAR */
+.stat-line .stat-label {
+  color: #000;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  min-width: 180px;
+  flex-shrink: 0;
+  white-space: normal;
+  line-height: 1.3;
+}
+
+/* Container dos valores */
+.stat-line .stat-value {
+  font-weight: 700;
+  color: #1d1dd1;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Valor base (cortado) */
+.stat-value .base-value {
+  color: #888;
+  font-size: 11px;
+  text-decoration: line-through;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Seta de aumento */
+.stat-value .arrow-up {
+  color: #28a745;
+  font-size: 11px;
+  margin: 0 1px;
+}
+
+/* Seta de diminuição */
+.stat-value .arrow-down {
+  color: #dc3545;
+  font-size: 11px;
+  margin: 0 1px;
+}
+
+/* Valor modificado (aumentado) */
+.stat-value .modified-up {
+  color: #1d1dd1;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Valor modificado (diminuído) */
+.stat-value .modified-down {
+  color: #1d1dd1;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Porcentagem de aumento */
+.stat-value .percent-increase {
+  color: #007b29;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Porcentagem de diminuição */
+.stat-value .percent-decrease {
+  color: #dc3545;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Stats especiais (Itens, Emblemas, Battle Item) */
+.stat-line.special-stat {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.12) 0%, rgba(255, 152, 0, 0.12) 100%);
+  border-left-color: #ffc107;
+  min-height: auto;
+}
+
+/* Container de ícones dos itens - SEM BARRA DE ROLAGEM */
+.stat-line .stat-value.item-icons-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow: visible;
+}
+
+/* Cada container de item */
+.stat-line .item-icon-container {
+  flex-shrink: 0;
+}
+
+/* Tamanho dos ícones dos itens */
+.stat-line .item-icon-container img {
+  width: 32px !important;
+  height: 32px !important;
+  margin: 0 2px !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .stat-line {
+    padding: 8px 10px;
+  }
+  
+  .stat-line .stat-label {
+    min-width: 150px;
+    font-size: 10px;
+  }
+  
+  .stat-line .stat-value {
+    font-size: 12px;
+    gap: 4px;
+  }
+  
+  .stat-value .modified-up,
+  .stat-value .modified-down {
+    font-size: 12px;
+  }
+  
+  .stat-value .base-value {
+    font-size: 10px;
+  }
+  
+  .stat-line .item-icon-container img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-line {
+    padding: 7px 9px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .stat-line .stat-label {
+    min-width: auto;
+    font-size: 9px;
+  }
+  
+  .stat-line .stat-value {
+    font-size: 11px;
+    gap: 3px;
+    justify-content: flex-start;
+  }
+  
+  .stat-value .modified-up,
+  .stat-value .modified-down {
+    font-size: 11px;
+  }
+  
+  .stat-value .percent-increase,
+  .stat-value .percent-decrease {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+  
+  .stat-line .item-icon-container img {
+    width: 24px !important;
+    height: 24px !important;
   }
 }

@@ -54,6 +54,7 @@ const pokemonBaseImages = {
     lucario: 'lucario-left-bg',
     machamp: 'machamp-left-bg',
     mamoswine: 'mamoswine-left-bg',
+    megalucario: 'megalucario-left-bg',
 	meowscara: 'meowscara-left-bg',
 	metagross: 'metagross-left-bg',
     mew: 'mew-left-bg',
@@ -135,6 +136,7 @@ const pokemonRoles = {
     lucario: 'All Rounder',
     machamp: 'All Rounder',
     mamoswine: 'Defender',
+    megalucario: 'All Rounder',
 	meowscara: 'Speedster',
 	metagross: 'All Rounder',
     mew: 'Attacker',
@@ -218,6 +220,7 @@ const pokemonLanes = {
     lucario: 'Top',
     machamp: 'Top',
     mamoswine: 'Bot',
+    megalucario: 'Top',
 	meowscara: 'Jungle',
 	metagross: 'Top',
     mew: 'Bot',
@@ -300,6 +303,7 @@ const pokemonBasedType  = {
     lucario: 'ATK',
     machamp: 'ATK',
     mamoswine: 'ATK',
+    megalucario: 'ATK',
 	meowscara: 'ATK',
 	metagross: 'ATK',
     mew: 'SpATK',
@@ -631,6 +635,10 @@ const pokemonSkills = {
 		"s21": "High Horsepower",
 		"s22": "Earthquake"
     },
+    "megalucario": {
+		"s11": "Power Up Punch",
+		"U11": "Close Combat"
+    },
 	"meowscara": {
 		"s11": "Flower Trick",
 		"s12": "Night Slash",
@@ -859,6 +867,7 @@ const gameHeldItens = {
 	"floatstone": 'Float Stone',
 	"focusband": 'Focus Band',
 	"leftovers": 'Leftovers',
+  "lucarionite": 'Lucarionite',
   "mewtwonitex": 'Mewtwonite X',
   "mewtwonitey": 'Mewtwonite Y',
 	"muscleband": 'Muscle Band',
@@ -896,6 +905,7 @@ const gameHeldItensStatus = {
 	"floatstone": ['ATK +24','Speed +150'],
 	"focusband": ['DEF +30','SpDEF +30'],
 	"leftovers": ['HP +360','HPRegen +9'],
+  "lucarionite": [],
   "mewtwonitex": [],
   "mewtwonitey": [],
 	"muscleband": ['ATK +15','AtkSPD +7.5%'],
@@ -985,6 +995,7 @@ const defaultHeldItems = {
     lucario: ['muscleband','attackweight','weaknesspolice'],
     machamp: ['muscleband','attackweight','razorclaw'],
     mamoswine: ['focusband','expshare','weaknesspolice'],
+    megalucario: ['lucarionite','attackweight','weaknesspolice'],
 	meowscara: ['scopelens','attackweight','razorclaw'],
 	metagross: ['muscleband','attackweight','weaknesspolice'],
     mew: ['slickspoon','wiseglasses','choicespecs'],
@@ -1694,6 +1705,20 @@ const baseStats = {
 		"Speed": 4200,
 		"CritDmg": 0,
 	},
+  "megalucario": {
+		"HP": 7249,
+		"ATK": 429,
+		"DEF": 390,
+		"SpATK": 115,
+		"SpDEF": 300,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 40,
+		"HPRegen": 0,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
 	"meowscara": {
 		"HP": 6300,
 		"ATK": 630,
@@ -2209,6 +2234,7 @@ const pokemonKillsRate = {
 	"lucario": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"machamp": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"mamoswine": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
+  "megalucario": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2290,6 +2316,7 @@ const pokemonAssistRate = {
 	"lucario": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"machamp": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"mamoswine": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
+  "megalucario": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2371,6 +2398,7 @@ const pokemonDamageDoneRate = {
 	"lucario": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"machamp": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"mamoswine": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
+  "megalucario": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
@@ -2452,6 +2480,7 @@ const pokemonDamageTakenRate = {
 	"lucario": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"machamp": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"mamoswine": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
+  "megalucario": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"meowscara": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"metagross": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"mew": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
@@ -2533,6 +2562,7 @@ const pokemonDamageHealedRate = {
 	"lucario": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"machamp": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"mamoswine": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
+  "megalucario": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
@@ -2614,6 +2644,7 @@ const pokemonTierListUDB = {
     lucario: 'B+',
     machamp: 'C',
     mamoswine: 'B+',
+    megalucario: 'TBD',
 	meowscara: 'B',
 	metagross: 'B+',
     mew: 'A+',
@@ -3470,6 +3501,24 @@ const levelStats = {
     15: { HP: 9648, ATK: 325, DEF: 510, SpATK: 116, SpDEF: 379, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4200 }
   },
 
+  "megalucario": {
+    1: { HP: 3250, ATK: 160, DEF: 78, SpATK: 20, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3392, ATK: 170, DEF: 89, SpATK: 23, SpDEF: 69, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.07 , Speed: 3700 },
+    3: { HP: 3549, ATK: 180, DEF: 101, SpATK: 27, SpDEF: 78, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.24 , Speed: 3700 },
+    4: { HP: 3721, ATK: 192, DEF: 114, SpATK: 31, SpDEF: 88, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.53 , Speed: 3700 },
+    5: { HP: 3910, ATK: 205, DEF: 129, SpATK: 35, SpDEF: 99, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.95 , Speed: 3850 },
+    6: { HP: 4118, ATK: 219, DEF: 145, SpATK: 40, SpDEF: 112, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.51 , Speed: 3850 },
+    7: { HP: 4347, ATK: 234, DEF: 163, SpATK: 45, SpDEF: 126, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 18.23 , Speed: 4000 },
+    8: { HP: 4599, ATK: 251, DEF: 183, SpATK: 51, SpDEF: 141, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 20.12 , Speed: 4000 },
+    9: { HP: 4877, ATK: 270, DEF: 205, SpATK: 58, SpDEF: 158, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 22.21 , Speed: 4150 },
+    10: { HP: 5184, ATK: 291, DEF: 229, SpATK: 65, SpDEF: 176, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 24.51 , Speed: 4150 },
+    11: { HP: 5522, ATK: 314, DEF: 255, SpATK: 73, SpDEF: 196, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 27.04 , Speed: 4300 },
+    12: { HP: 5894, ATK: 339, DEF: 284, SpATK: 82, SpDEF: 218, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 29.83 , Speed: 4300 },
+    13: { HP: 6303, ATK: 366, DEF: 316, SpATK: 92, SpDEF: 243, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 32.9 , Speed: 4300 },
+    14: { HP: 6753, ATK: 396, DEF: 351, SpATK: 103, SpDEF: 270, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 36.28 , Speed: 4300 },
+    15: { HP: 7249, ATK: 429, DEF: 390, SpATK: 115, SpDEF: 300, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 40.00 , Speed: 4300 },
+  },
+
   "meowscara": {
     1: { HP: 3100, ATK: 160, DEF: 50, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
     2: { HP: 3149, ATK: 167, DEF: 54, SpATK: 21, SpDEF: 43, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.43 , Speed: 3650 },
@@ -4149,7 +4198,7 @@ const skillDamage = {
       buff: {
       },
       selfBuff: {
-        CDR: 80
+        CooldownPercent: 70
       },
       buffPlus: {
         levelRequired: 11,
@@ -4206,7 +4255,8 @@ const skillDamage = {
         Speed: "(DEBUFF) MoveSpeed Reduction"
       },
       buff: {
-        CritRate: -20
+        CritRate: -20,
+        Unstoppable: 1.0
       },
       buffPlus: {
         levelRequired: 13,
@@ -4235,6 +4285,7 @@ const skillDamage = {
       buffPlus: {
         levelRequired: 9,
         buffs: {
+          Unstoppable: 1.15,
           Speed: "80%",
           Shield: 20
         }
@@ -4367,6 +4418,9 @@ const skillDamage = {
     "s21": {
       name: "Wide Guard",
       cooldown: 8,
+      buff:{
+        Unstoppable: 1.2
+      },
       debuffs: {
         Speed: 45
       },
@@ -4558,6 +4612,7 @@ const skillDamage = {
       buffPlus: {
         levelRequired: 9,
         buffs: {
+          Unstoppable: 1.85,
           Speed: "30%",
           CDR: 30,
           Shield: 20
@@ -4703,14 +4758,14 @@ const skillDamage = {
 		name: "Fluffy Cream Supreme",
     cooldown: 100,
       buff: {
-        Shield: 60
       },
       buffPlus: {
         levelRequired: 8,
         buffs: {
+          Unstoppable: 6.0,
           Speed: "40%",
           CDR: 30,
-          Shield: 30
+          Shield: 90
         }
       },
 		formulas: [
@@ -4875,16 +4930,15 @@ const skillDamage = {
 		name: "Belly Bash",
     cooldown: 89,
       buff:{
-        HP: "-5%",
-        Shield: 6.5,
-        ATK: 60
       },
       buffPlus: {
         levelRequired: 8,
         buffs: {
+          HP: "-5%",
+          ATK: 60,
           Speed: 30,
           CDR: 30,
-          Shield: 20
+          Shield: 26.5
         }
       },
 		formulas: [
@@ -5010,7 +5064,9 @@ const skillDamage = {
     "s21": {
       name: "Surf",
       cooldown: 7.5,
-      buff:{},
+      buff:{
+        Unstoppable: 1.6
+      },
       formulas: [
         {
           label: "Damage",
@@ -5049,6 +5105,7 @@ const skillDamage = {
       buffPlus: {
         levelRequired: 9,
         buffs: {
+          Unstoppable: 2.0, 
           Speed: "30%",
           Shield: 40
         }
@@ -5219,18 +5276,18 @@ const skillDamage = {
 		name: "Spinning Flame Fist",
     cooldown: 4.7,
       buff: {
-        Speed: "20%"
       },
+      buffPlus:{
+       levelRequired: 8,
       debuffs: {
         Speed: "25%"
       },
       debuffLabels:{
         Speed: "(DEBUFF) MoveSpeed Reduction",
       },
-      buffPlus:{
-       levelRequired: 8,
         buffs: {
           Shield: 9,
+          Speed: "20%"
         }
       },
 		formulas: [
@@ -5244,19 +5301,19 @@ const skillDamage = {
   	"ult1": {
 		name: "Spinning Flame Kick",
     cooldown: 4.7,
-      buff: {
-        ATK: "30%"
+      buff: { 
       },
+      buffPlus:{
+       levelRequired: 8,
       debuffs: {
         Speed: "25%"
       },
       debuffLabels:{
         Speed: "(DEBUFF) MoveSpeed Reduction",
       },
-      buffPlus:{
-       levelRequired: 8,
         buffs: {
-          Shield: 9,
+          ATK: "30%",
+          Shield: 9
         }
       },
 		formulas: [
@@ -5317,7 +5374,7 @@ const skillDamage = {
       cooldown: 9,
       buff: {
         AtkSPD: 30,
-        Speed: 30
+        Speed: "30%"
       },
       buffPlus: {
         levelRequired: 12,
@@ -5329,6 +5386,7 @@ const skillDamage = {
     "s21": {
       name: "Soft-Boiled",
       cooldown: 12,
+      buff:{},
       formulas: [
         {
           label: "Healing",
@@ -5347,6 +5405,15 @@ const skillDamage = {
     "s22": {
       name: "Safeguard",
       cooldown: 10,
+      buff:{
+        Unstoppable: 4.0
+      },
+      debuffs: {
+        Unstoppable: 4.0
+      },
+      debuffLabels: {
+        Unstoppable: "(BUFF) Unstoppable",
+      },
       formulas: [
         {
           label: "Shield",
@@ -5363,6 +5430,23 @@ const skillDamage = {
 	"ult": {
 		name: "Bliss Assistance",
     cooldown: 112,
+    buff:{},
+      buffPlus:{
+       levelRequired: 8,
+      debuffs: {
+        ATK: "20%",
+        SpATK: "20%"
+      },
+      debuffLabels: {
+        ATK: "(BUFF) Attack Increase",
+        SpATK: "(BUFF) Special Attack Increase"
+      },
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage",
@@ -5380,11 +5464,21 @@ const skillDamage = {
 
     "buzzwole": {
         "passive": {
-          name: "Beast Boost",
-          description: "Gains massive move and attack speed on knockouts/assists. Building its Muscle Gauge through combat enables its strengths, but the gauge decays when out of combat.",
+          name: "Beast Boost - Kill",
+          description: "Gains massive move and attack speed on knockouts. Building its Muscle Gauge through combat enables its strengths, but the gauge decays when out of combat.",
           buff: {
             Speed: "100%",
             AtkSPD: "50%"
+          },
+          formulas: [
+          ]
+        },
+        "passive1": {
+          name: "Beast Boost - Assists",
+          description: "Gains massive move and attack speed on assists. Building its Muscle Gauge through combat enables its strengths, but the gauge decays when out of combat.",
+          buff: {
+            Speed: "50%",
+            AtkSPD: "25%"
           },
           formulas: [
           ]
@@ -5413,6 +5507,23 @@ const skillDamage = {
     "s11": {
       name: "Lunge",
       cooldown: 6.5,
+      buff:{
+        AtkSPD: 30
+      },
+      debuffs: {
+        ATK: "30%",
+        Speed: "30%"
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus:{
+       levelRequired: 13,
+        buffs: {
+          ATK: "10%"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -5443,8 +5554,13 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - per Tick",
-          formula: (ATK, Level) => 0.76 * ATK + 3 * (Level - 1) + 120,
-          type: "physical"
+          formula: (ATK, Level, HP, gauge) => {
+          const baseDamage = 0.76 * ATK + 3 * (Level - 1) + 120;
+          const muscleBoost = gauge ? (1 + (gauge * 0.015)) : 1; // 1.5% por stack
+          return baseDamage * muscleBoost;
+        },
+        type: "physical",
+        usesMuscleGauge: true
         },
 		{
           label: "Damage - Unstoppable Target",
@@ -5472,11 +5588,30 @@ const skillDamage = {
           formula: (ATK, Level) => 2.3 * ATK + 8 * (Level - 1) + 350,
           type: "physical"
         },
+        {
+          label: "Shield",
+          formula: (ATK, Level, HP, gauge) => {
+            const baseShield = HP * 0.2; // 20% do HP base
+            const muscleBonus = gauge ? (HP * 0.02 * gauge) : 0; // 2% HP por stack
+            return baseShield + muscleBonus;
+          },
+          type: "physical",
+          usesMuscleGauge: true
+        },
       ]
     },
 	"ult": {
 		name: "Ultra Swole Slam",
     cooldown: 112,
+    buff:{},
+      buffPlus:{
+       levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage - Sweep",
@@ -5487,7 +5622,13 @@ const skillDamage = {
           label: "Damage - Seek",
           formula: (ATK, Level) => 2.13 * ATK + 4 * (Level - 1) + 210,
           type: "physical"
+        },
+        {
+          label: "Damage - Execute",
+          type: "text-only",
+		      additionalText: "50% of enemy missing HP"
         }
+        
 	 ]
 	}
   },
@@ -5499,21 +5640,26 @@ const skillDamage = {
           buff: {
             Speed: "10%"
           },
+          skillDamageMultiplier: 1.15, // 15% de aumento
+          affectsBasicAttack: true,
           formulas: [
             {
               label: "Damage - Flame Body",
               formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
-              type: "physical"
+              type: "physical",
             },
             {
               label: "Damage - First Stack",
               formula: (ATK, Level) => 0.075 * ATK + 0 * (Level - 1) + 0,
-              type: "physical"
+              type: "physical",
             }
           ]
         },
 	"atkboosted": {
 	  name: "Ataque Básico",
+    buff: {
+      Lifesteal: 20
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -5541,12 +5687,34 @@ const skillDamage = {
           label: "Damage",
           formula: (ATK, Level) => 2.42 * ATK + 33 * (Level - 1) + 330,
           type: "physical"
-        }
+        },
+        {
+          label: "Heal",
+          formula: (firstHitDamage, Level) => 0.5 * firstHitDamage, // 50% do primeiro hit
+		      type: "dependent",
+		      dependsOn: 0
+        },
+        {
+          label: "Heal Skill Plus",
+          formula: (firstHitDamage, Level) => 0.7 * firstHitDamage, // 70% do primeiro hit
+		      type: "dependent",
+		      dependsOn: 0
+        },
       ]
     },
     "s12": {
-      name: "Pyscho Cut",
+      name: "Psycho Cut",
       cooldown: 6.5,
+      buff: {},
+      selfBuff: {
+        CooldownFlat: 0.5
+      },
+      debuffs:{
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -5568,17 +5736,43 @@ const skillDamage = {
     "s21": {
       name: "Phantom Force",
       cooldown: 10,
+      buff:{
+        DEFPen: 100,
+      },
+      selfBuff:{
+        CooldownPercent: 40
+      },
+      debuffs:{
+        Speed: 60
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+       selfBuffPlus: {
+        levelRequired: 13,
+        buffs: { 
+          CooldownFlat: 2
+        }
+      },
       formulas: [
         {
           label: "Damage",
           formula: (ATK, Level) => 1.25 * ATK + 8 * (Level - 1) + 312,
           type: "physical"
-        }
+        },
+        {
+          label: "Skill type",
+          type: "text-only",
+		      additionalText: "True Damage"
+        },
       ]
     },
     "s22": {
       name: "Flame Charge",
       cooldown: 8,
+      buff:{
+        AtkSPD: 30
+      },
       formulas: [
         {
           label: "Damage",
@@ -5590,6 +5784,16 @@ const skillDamage = {
 	"ult": {
 		name: "Revenant Rend",
     cooldown: 112,
+    buff:{},
+      buffPlus:{
+       levelRequired: 9,
+        buffs: {
+          DmgTaken: 70,
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
 		formulas: [
         {
           label: "Damage (x3)",
@@ -9732,6 +9936,111 @@ const skillDamage = {
 		{
           label: "Damage - Final Stomp",
           formula: (ATK, Level) => 2.04 * ATK + 12 * (Level - 1) + 560,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "megalucario": {
+    "passive": {
+          name: "Justified",
+          description: "When damaged, Attack increases by 12.5% for 4s, stacking up to 4 times.",
+          buff: {
+            ATK: "12.5%",
+          },
+          formulas: [
+          ]
+        },
+        "passive1": {
+          name: "Adaptability",
+          description: "Mega Evolution grants Adaptability, stacking Attack by 7% per move hit (up to 10 times).",
+          buff: {
+            ATK: "7%",
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Ataque Básico",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted (2nd Hit)",
+          formula: (ATK, Level) => 0.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Power Up Punch",
+      cooldown: 7,
+      buff: {
+        DmgTaken: 30,
+        Speed: "-15%",
+        CooldownFlat: 1
+      },
+      formulas: [
+        {
+          label: "Damage - Uncharged",
+          formula: (ATK, Level) => 2.0916 * ATK + 3 * (Level - 1) + 88,
+          type: "physical"
+        },
+		{
+          label: "Damage - Fully Charged",
+          formula: (ATK, Level) => 3.818 * ATK + 5 * (Level - 1) + 161,
+          type: "physical"
+        }
+      ]
+    },
+    "U11": {
+      name: "Close Combat",
+      cooldown: 6.5,
+      formulas: [
+		{
+          label: "Damage - per Hit (11 Hits)",
+          formula: (ATK, Level) => 0.5 * ATK + 2 * (Level - 1) + 60,
+          type: "physical"
+        },
+        {
+          label: "Heal - First Hit",
+          formula: (ATK, Level) => 1.38 * ATK + 0 * (Level - 1) + 276,
+          type: "physical"
+        },
+        {
+          label: "Heal - per Hit (Subsequent Hits)",
+          formula: (ATK, Level) => 0.115 * ATK + 0 * (Level - 1) + 23,
+          type: "physical"
+        },
+        {
+          label: "Damage - per Hit (11 Hits) Skill Plus",
+          formula: (ATK, Level) => 0.56 * ATK + 2 * (Level - 1) + 69,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Aura Cannon",
+    cooldown: 112,
+      buff: { 
+      },
+      buffPlus:{
+       levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        }
+      },
+		formulas: [
+        {
+          label: "Damage - per Tick",
+          formula: (ATK, Level) => 1.74 * ATK + 4 * (Level - 1) + 210,
           type: "physical"
         }
 	 ]

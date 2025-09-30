@@ -123,11 +123,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentDamageTypeFilter = null;
   let selectedSkills = {};
   let currentSkillSlot = null;
+  let muscleGauge = 0; // Exclusivo para Buzzwole (0-6)
+  let selectedRoute = null;
 
   const CUSTOM_SKILL_MAPPING = {
   absol: {
-    s1: ["s12", "s21"], // Slot 1: Pursuit e Night Slash
-    s2: ["s11", "s22"]  // Slot 2: Psycho Cut e Sucker Punch
+    s1: ["s12", "s21"],
+    s2: ["s11", "s22"] 
+  },
+  megalucario: {
+    s1: ["s11"],
+    s2: ["U11"] 
   },
   }
 
@@ -135,7 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const pokemonFixedItems = {
     "zacian": "rustedsword",
     "mewtwox": "mewtwonitex",
-    "mewtwoy": "mewtwonitey"
+    "mewtwoy": "mewtwonitey",
+    "megalucario": "lucarionite"
   };
 
 // Função para criar o seletor de skills dentro do resultado
@@ -158,7 +165,7 @@ const createSkillBuildInResult = () => {
   
   // Verificar se existem skills s11/s12 e s21/s22
   const hasS1Skills = skills.s11 || skills.s12;
-  const hasS2Skills = skills.s21 || skills.s22;
+  const hasS2Skills = skills.s21 || skills.s22 || (selectedPokemon === "megalucario" && skills.U11);
   
   if (!hasS1Skills && !hasS2Skills) return;
   
@@ -166,24 +173,27 @@ const createSkillBuildInResult = () => {
   const skillSelector = document.createElement("div");
   skillSelector.className = "skill-build-in-result";
   
-  // Container dos slots
+  // Container dos slots de skills
   const slotsContainer = document.createElement("div");
   slotsContainer.className = "skill-build-slots";
-  
+
   // Criar slot 1 (s11/s12) se existir
   if (hasS1Skills) {
     const slot1 = createSkillSlot("S1", "s1", selectedPokemon);
     slotsContainer.appendChild(slot1);
   }
-  
+
   // Criar slot 2 (s21/s22) se existir
   if (hasS2Skills) {
     const slot2 = createSkillSlot("S2", "s2", selectedPokemon);
     slotsContainer.appendChild(slot2);
   }
-  
+
   skillSelector.appendChild(slotsContainer);
-  
+
+  // Adicionar seletor de Route ABAIXO e CENTRALIZADO
+  const routeSelector = createRouteSelector();
+  skillSelector.appendChild(routeSelector);
   // Inserir o seletor após a role badge
   const roleBadge = resultImage.querySelector(".role-badge");
   if (roleBadge) {
@@ -191,6 +201,61 @@ const createSkillBuildInResult = () => {
   } else {
     resultImage.appendChild(skillSelector);
   }
+};
+// Controle de Muscle Gauge para Buzzwole
+const createMuscleGaugeControl = () => {
+  if (selectedPokemon !== "buzzwole") return;
+  
+  const skillsDiv = document.getElementById("skills-column");
+  if (!skillsDiv) return;
+  
+  // Remover controle existente
+  const existing = skillsDiv.querySelector(".muscle-gauge-control");
+  if (existing) existing.remove();
+  
+  const gaugeHTML = `
+    <div class="muscle-gauge-control" style="background: rgba(220, 53, 69, 0.1); border: 2px solid #dc3545; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center;">
+      <div style="color: #dc3545; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Muscle Gauge</div>
+      <div class="stack-label-new" style="color: #030303ff">Gauge Level:</div>
+      <div class="stack-controls-new" style="justify-content: center;">
+        <div class="stack-button muscle-decrease" style="border-color: #dc3545; color: #dc3545; background: rgba(220, 53, 69, 0.1);">−</div>
+        <div class="stack-display muscle-display" style="border-color: #dc3545; background: rgba(220, 53, 69, 0.15);">${muscleGauge}</div>
+        <div class="stack-button muscle-increase" style="border-color: #dc3545; color: #dc3545; background: rgba(220, 53, 69, 0.1);">+</div>
+      </div>
+    </div>
+  `;
+  
+  skillsDiv.insertAdjacentHTML("afterbegin", gaugeHTML);
+  
+  const decreaseBtn = skillsDiv.querySelector(".muscle-decrease");
+  const increaseBtn = skillsDiv.querySelector(".muscle-increase");
+  const display = skillsDiv.querySelector(".muscle-display");
+  
+  const updateDisplay = () => {
+    display.textContent = muscleGauge;
+    decreaseBtn.classList.toggle("disabled", muscleGauge <= 0);
+    increaseBtn.classList.toggle("disabled", muscleGauge >= 6);
+    display.classList.add("highlighted");
+    setTimeout(() => display.classList.remove("highlighted"), 300);
+  };
+  
+  decreaseBtn.addEventListener("click", () => {
+    if (muscleGauge > 0) {
+      muscleGauge--;
+      updateDisplay();
+      calcular();
+    }
+  });
+  
+  increaseBtn.addEventListener("click", () => {
+    if (muscleGauge < 6) {
+      muscleGauge++;
+      updateDisplay();
+      calcular();
+    }
+  });
+  
+  updateDisplay();
 };
 
 // Função para criar um slot de skill
@@ -252,10 +317,166 @@ const createSkillSlot = (label, slotKey, pokemon) => {
   return slotContainer;
 };
 
+// Função para criar o seletor de Route
+const createRouteSelector = () => {
+  const routeContainer = document.createElement("div");
+  routeContainer.className = "route-selector";
+  routeContainer.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+  `;
+  
+  const routeLabel = document.createElement("div");
+  routeLabel.className = "skill-slot-label";
+  routeLabel.textContent = "Route";
+  routeLabel.style.cssText = "color: #000; font-size: 12px; font-weight: bold;";
+  
+  const circle = document.createElement("div");
+  circle.className = "skill-selector-circle route-circle";
+  circle.style.cssText = "position: relative;";
+  
+  const routeName = document.createElement("div");
+  routeName.className = "skill-selection-name";
+  routeName.id = "selected-route-name";
+  
+  if (selectedRoute) {
+    circle.classList.add("has-selection");
+    
+    const img = document.createElement("img");
+    img.src = `./estatisticas-shad/images/lanes/${selectedRoute}.png`;
+    img.alt = selectedRoute;
+    img.style.cssText = "border: none !important; box-shadow: none !important; outline: none !important; margin: 0 !important; padding: 0 !important; width: 48px; height: 48px; border-radius: 50%; object-fit: cover;";
+    img.onerror = function() {
+      this.style.display = "none";
+    };
+    
+    circle.appendChild(img);
+    routeName.textContent = selectedRoute.charAt(0).toUpperCase() + selectedRoute.slice(1);
+    routeName.classList.add("selected");
+  } else {
+    circle.classList.add("empty");
+    circle.textContent = "+";
+  }
+  
+  circle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openRouteSelectionPanel(routeContainer);
+  });
+  
+  routeContainer.appendChild(routeLabel);
+  routeContainer.appendChild(circle);
+  routeContainer.appendChild(routeName);
+  
+  return routeContainer;
+};
+
+// Função para abrir painel de seleção de rota
+const openRouteSelectionPanel = (routeContainer) => {
+  closeAllSelectionPanels();
+  closeRouteSelectionPanel();
+  const routes = ["top", "jungle", "bot"];
+  showRouteSelectionPanel(routes, routeContainer);
+};
+
+// Função para mostrar o painel de rotas
+const showRouteSelectionPanel = (routes, routeContainer) => {
+  const panel = document.createElement("div");
+  panel.className = "skill-selection-panel show";
+  panel.id = "route-selection-panel";
+  
+  const title = document.createElement("div");
+  title.className = "skill-selection-title";
+  title.textContent = "Choose Route";
+  panel.appendChild(title);
+  
+  const optionsContainer = document.createElement("div");
+  optionsContainer.className = "skill-options";
+  
+  routes.forEach(route => {
+    const optionDiv = document.createElement("div");
+    optionDiv.className = "skill-option";
+    optionDiv.dataset.route = route;
+    
+    const img = document.createElement("img");
+    img.src = `./estatisticas-shad/images/lanes/${route}.png`;
+    img.alt = route;
+    img.onerror = function() {
+      this.style.display = "none";
+    };
+    
+    const name = document.createElement("div");
+    name.className = "skill-option-name";
+    name.textContent = route.charAt(0).toUpperCase() + route.slice(1);
+    
+    optionDiv.appendChild(img);
+    optionDiv.appendChild(name);
+    
+    optionDiv.addEventListener("click", () => {
+      selectRoute(route);
+    });
+    
+    optionsContainer.appendChild(optionDiv);
+  });
+  
+  panel.appendChild(optionsContainer);
+  routeContainer.appendChild(panel);
+  
+  setTimeout(() => {
+    document.addEventListener("click", handleRouteClickOutside);
+  }, 100);
+};
+
+// Função para selecionar rota
+const selectRoute = (route) => {
+  selectedRoute = route;
+  closeRouteSelectionPanel();
+  createSkillBuildInResult();
+};
+
+// Função para fechar painel de rota
+const closeRouteSelectionPanel = () => {
+  const panel = document.getElementById("route-selection-panel");
+  if (panel) {
+    panel.remove();
+  }
+  document.removeEventListener("click", handleRouteClickOutside);
+};
+
+// Handler para clique fora do painel de rota
+const handleRouteClickOutside = (e) => {
+  const panel = document.getElementById("route-selection-panel");
+  const routeSelector = document.querySelector(".route-selector");
+  
+  if (panel && !panel.contains(e.target) && (!routeSelector || !routeSelector.contains(e.target))) {
+    closeRouteSelectionPanel();
+  }
+};
+
+// Função para fechar TODOS os painéis abertos
+const closeAllSelectionPanels = () => {
+  // Fechar painel de skills
+  const skillPanel = document.getElementById("skill-selection-panel");
+  if (skillPanel) {
+    skillPanel.remove();
+    document.removeEventListener("click", handleClickOutside);
+  }
+  
+  // Fechar painel de route
+  const routePanel = document.getElementById("route-selection-panel");
+  if (routePanel) {
+    routePanel.remove();
+    document.removeEventListener("click", handleRouteClickOutside);
+  }
+};
+
 // Função para abrir painel de seleção de skill
 const openSkillSelectionPanel = (pokemon, slotKey, slotContainer) => {
   // Fechar qualquer painel existente
   closeSkillSelectionPanel();
+  closeAllSelectionPanels();
   
   const skills = skillDamage[pokemon];
   if (!skills) return;
@@ -517,12 +738,12 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   const STAT_LABELS = {
     HP: "HP", ATK: "ATK", DEF: "DEF",
     SpATK: "Sp. ATK", SpDEF: "Sp. DEF", Speed: "Speed",
-    AtkSPD: "Atk Speed", CDR: "Cooldown Reduction",
+    AtkSPD: "Atk Speed", CDR: "CDR",
     CritRate: "Crit Rate", CritDmg: "Crit Dmg",
     Lifesteal: "Lifesteal", HPRegen: "HP Regen",
     EnergyRate: "Energy Rate", Shield: "Shield", 
     DmgTaken: "Dmg Taken Reduction", HindRed: "Hindrance Reduction",
-    SpDEFPen: "Sp. DEF Penetration", DEFPen: "Defense Penetration",
+    SpDEFPen: "Sp. DEF Penetration", DEFPen: "Defense Penetration"
   };
 
   const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed", "SpDEFPen", "DEFPen"]);
@@ -535,6 +756,11 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
 
   const formatValue = (key, val, extraFixed = null) => {
     if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
+    
+    // Tratar Unstoppable em segundos
+    if (key === "Unstoppable") {
+      return `${Number(val).toFixed(1)}s`;
+    }
     
     // Tratar debuffs como porcentagem
     const DEBUFF_KEYS = new Set(["DEF", "SpDEF", "Speed", "ATK", "SpATK", "HP"]);
@@ -907,27 +1133,32 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           });
         }
 
-        // Processar debuffs do buffPlus
-        if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
-          Object.keys(skill.buffPlus.debuffs).forEach(debuffStat => {
-            const debuffValue = parseFloat(skill.buffPlus.debuffs[debuffStat]);
-            
-            if (!Number.isFinite(debuffValue)) return;
-            
-            if (!debuffsAcumulados[debuffStat]) {
-              debuffsAcumulados[debuffStat] = {
-                total: 0,
-                skills: []
-              };
-            }
-            
-            debuffsAcumulados[debuffStat].total += debuffValue;
-            debuffsAcumulados[debuffStat].skills.push({
-              name: skill.name + " (Plus)",
-              value: debuffValue
-            });
+      if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
+        Object.keys(skill.buffPlus.debuffs).forEach(debuffStat => {
+          const debuffValue = parseFloat(skill.buffPlus.debuffs[debuffStat]);
+          
+          if (!Number.isFinite(debuffValue)) return;
+          
+          if (!debuffsAcumulados[debuffStat]) {
+            debuffsAcumulados[debuffStat] = {
+              total: 0,
+              skills: [],
+              customLabel: null
+            };
+          }
+          
+          debuffsAcumulados[debuffStat].total += debuffValue;
+          debuffsAcumulados[debuffStat].skills.push({
+            name: skill.name + " (Plus)",
+            value: debuffValue
           });
-        }
+          
+          // NOVO: Usar debuffLabels se disponível (também para buffPlus)
+          if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
+            debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
+          }
+        });
+      }
       }
 
       // Aplicar SELF-BUFFS Plus (baseado no nível atual, afetam apenas a skill específica)
@@ -958,7 +1189,6 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         modifiedStats = skill.activeEffect(modifiedStats, baseStats);
       }
 
-      // Acumular debuffs básicos da skill
       if (skill.debuffs && typeof skill.debuffs === 'object') {
         Object.keys(skill.debuffs).forEach(debuffStat => {
           const debuffValue = parseFloat(skill.debuffs[debuffStat]);
@@ -968,7 +1198,8 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           if (!debuffsAcumulados[debuffStat]) {
             debuffsAcumulados[debuffStat] = {
               total: 0,
-              skills: []
+              skills: [],
+              customLabel: null // NOVO: para armazenar o label customizado
             };
           }
           
@@ -977,6 +1208,11 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             name: skill.name,
             value: debuffValue
           });
+          
+          // NOVO: Usar debuffLabels se disponível
+          if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
+            debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
+          }
         });
       }
 
@@ -992,7 +1228,9 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     
     Object.keys(debuffsAcumulados).forEach(debuffStat => {
       const debuffData = debuffsAcumulados[debuffStat];
-      const debuffLabel = `(DEBUFF) ${debuffStat} Reduction`;
+      
+      // NOVO: Usar customLabel se disponível, senão usar o padrão
+      const debuffLabel = debuffData.customLabel || `(DEBUFF) ${debuffStat} Reduction`;
       
       modifiedStats._debuffsAcumulados[debuffStat] = {
         label: debuffLabel,
@@ -1005,148 +1243,193 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
 
   return modifiedStats;
 };
-  // Função para aplicar buff da passiva (do Pokémon)
-  const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
-    if (!skillDamage[pokemon]) {
-      return stats;
+ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
+  if (!skillDamage[pokemon]) {
+    return stats;
+  }
+
+  let modifiedStats = { ...stats };
+  const skills = skillDamage[pokemon];
+
+  const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
+  
+  passiveKeys.forEach(passiveKey => {
+    if (!activePassives[pokemon] || !activePassives[pokemon][passiveKey]) {
+      return;
     }
 
-    let modifiedStats = { ...stats };
-    const skills = skillDamage[pokemon];
+    const passive = skills[passiveKey];
 
-    const passiveKeys = ['passive', 'passive1', 'passive2'].filter(key => skills[key]);
-    
-    passiveKeys.forEach(passiveKey => {
-      if (!activePassives[pokemon] || !activePassives[pokemon][passiveKey]) {
-        return;
-      }
+    if (passive.buff) {
+      Object.keys(passive.buff).forEach(stat => {
+        if (modifiedStats.hasOwnProperty(stat)) {
+          const rawVal = passive.buff[stat];
+          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+          const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
 
-      const passive = skills[passiveKey];
+          if (!Number.isFinite(numeric)) return;
 
-      if (passive.buff) {
-        Object.keys(passive.buff).forEach(stat => {
-          if (modifiedStats.hasOwnProperty(stat)) {
-            const rawVal = passive.buff[stat];
-            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-
-            if (!Number.isFinite(numeric)) return;
-
-            if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+          if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+            modifiedStats[stat] += numeric;
+          } else if (stat === "DmgTaken") {
+            if (isPercentString) {
               modifiedStats[stat] += numeric;
-            } else if (stat === "DmgTaken") {
-              if (isPercentString) {
-                modifiedStats[stat] += numeric;
-              } else {
-                modifiedStats[stat] += numeric;
-              }
             } else {
-              if (isPercentString) {
-                modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-              } else {
-                modifiedStats[stat] += numeric;
-              }
+              modifiedStats[stat] += numeric;
+            }
+          } else {
+            if (isPercentString) {
+              modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+            } else {
+              modifiedStats[stat] += numeric;
             }
           }
-        });
-      }
+        }
+      });
+    }
 
-      if (passive.formulas && passive.formulas.length > 0) {
-        passive.formulas.forEach((f, index) => {
-          if (f.type !== "text-only" && f.type !== "dependent") {
-            let baseVal, modifiedVal;
+    if (passive.formulas && passive.formulas.length > 0) {
+      passive.formulas.forEach((f, index) => {
+        if (f.type === "text-only" || f.type === "dependent") {
+          return;
+        }
+        
+        // NOVA VERIFICAÇÃO: Ignorar fórmulas que não devem afetar stats
+        if (f.displayOnly === true || f.affects === null || f.affects === undefined) {
+          // Apenas calcular os valores para display, sem modificar stats
+          let baseVal, modifiedVal;
+          
+          if (f.type === "multi" || f.useAllStats) {
+            baseVal = f.formula(baseStats, targetLevel);
+            modifiedVal = f.formula(modifiedStats, targetLevel);
+          } else {
+            let baseAttribute, modifiedAttribute;
             
-            if (f.type === "multi" || f.useAllStats) {
-              baseVal = f.formula(baseStats, targetLevel);
-              modifiedVal = f.formula(modifiedStats, targetLevel);
-            } else {
-              let baseAttribute, modifiedAttribute;
-              
-              switch(f.type) {
-                case "special":
-                  baseAttribute = baseStats.SpATK;
-                  modifiedAttribute = modifiedStats.SpATK;
-                  break;
-                case "hp":
-                  baseAttribute = baseStats.HP;
-                  modifiedAttribute = modifiedStats.HP;
-                  break;
-                case "physical":
-                default:
-                  baseAttribute = baseStats.ATK;
-                  modifiedAttribute = modifiedStats.ATK;
-                  break;
-              }
-              
-              baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
-              modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
+            switch(f.type) {
+              case "special":
+                baseAttribute = baseStats.SpATK;
+                modifiedAttribute = modifiedStats.SpATK;
+                break;
+              case "hp":
+                baseAttribute = baseStats.HP;
+                modifiedAttribute = modifiedStats.HP;
+                break;
+              case "physical":
+              default:
+                baseAttribute = baseStats.ATK;
+                modifiedAttribute = modifiedStats.ATK;
+                break;
             }
             
-            if (!passive.calculatedValues) passive.calculatedValues = {};
-            passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
-            
-            if (f.affects === "nextBasicAttack") {
-              if (!passive.nextBasicAttackBonus) passive.nextBasicAttackBonus = {};
-              passive.nextBasicAttackBonus = {
-                base: baseVal,
-                modified: modifiedVal,
-                label: f.label
-              };
-            } else if (f.affects) {
-              const map = {
-                HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
-                ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
-                LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate",
-                SHIELD:"Shield", DMGTAKEN:"DmgTaken", HINDRED:"HindRed", SPDEFPEN:"SpDEFPen",
-                DEFPen: "DEFPen"
-              };
-              const statKey = map[f.affects.toUpperCase()] || f.affects;
-
-              if (modifiedStats.hasOwnProperty(statKey)) {
-                modifiedStats[statKey] += modifiedVal;
-              }
-            } else {
-              const label = f.label.toLowerCase();
-              
-              if (label.includes("defense") && !label.includes("special")) {
-                modifiedStats.DEF += modifiedVal;
-              } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
-                modifiedStats.SpDEF += modifiedVal;
-              } else if (label.includes("attack") && !label.includes("special")) {
-                modifiedStats.ATK += modifiedVal;
-              } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
-                modifiedStats.SpATK += modifiedVal;
-              } else if (label.includes("hp") || label.includes("health")) {
-                modifiedStats.HP += modifiedVal;
-              } else if (label.includes("speed")) {
-                modifiedStats.Speed += modifiedVal;
-              } else if (label.includes("crit") && label.includes("rate")) {
-                modifiedStats.CritRate += modifiedVal;
-              } else if (label.includes("crit") && label.includes("dmg")) {
-                modifiedStats.CritDmg += modifiedVal;
-              } else if (label.includes("lifesteal")) {
-                modifiedStats.Lifesteal += modifiedVal;
-              } else if (label.includes("cdr") || label.includes("cooldown")) {
-                modifiedStats.CDR += modifiedVal;
-              } else if (label.includes("atkspd") || label.includes("attack speed")) {
-                modifiedStats.AtkSPD += modifiedVal;
-              } else if (label.includes("dmgtaken") || label.includes("dmg taken")) {
-                modifiedStats.DmgTaken += modifiedVal;
-              } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
-                modifiedStats.HindRed += modifiedVal;
-              } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
-                modifiedStats.SpDEFPen += modifiedVal;
-              }else if (label.includes("defpen") || label.includes("def penetration")) {
-                modifiedStats.DEFPen += modifiedVal;
-              }
-            }
+            baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
+            modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
           }
-        });
-      }
-    });
+          
+          // Armazenar apenas para display
+          if (!passive.calculatedValues) passive.calculatedValues = {};
+          passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+          
+          return; // Não continuar para a aplicação de buffs
+        }
+        
+        // RESTO DO CÓDIGO ORIGINAL (para fórmulas que DEVEM afetar stats)
+        let baseVal, modifiedVal;
+        
+        if (f.type === "multi" || f.useAllStats) {
+          baseVal = f.formula(baseStats, targetLevel);
+          modifiedVal = f.formula(modifiedStats, targetLevel);
+        } else {
+          let baseAttribute, modifiedAttribute;
+          
+          switch(f.type) {
+            case "special":
+              baseAttribute = baseStats.SpATK;
+              modifiedAttribute = modifiedStats.SpATK;
+              break;
+            case "hp":
+              baseAttribute = baseStats.HP;
+              modifiedAttribute = modifiedStats.HP;
+              break;
+            case "physical":
+            default:
+              baseAttribute = baseStats.ATK;
+              modifiedAttribute = modifiedStats.ATK;
+              break;
+          }
+          
+          if (f.usesMuscleGauge && pokemon === "buzzwole") {
+            baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP, muscleGauge);
+            modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP, muscleGauge);
+          } else {
+            baseVal = f.formula(baseAttribute, targetLevel, baseStats.HP);
+            modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
+          }
+        }
+        
+        if (!passive.calculatedValues) passive.calculatedValues = {};
+        passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+        
+        if (f.affects === "nextBasicAttack") {
+          if (!passive.nextBasicAttackBonus) passive.nextBasicAttackBonus = {};
+          passive.nextBasicAttackBonus = {
+            base: baseVal,
+            modified: modifiedVal,
+            label: f.label
+          };
+        } else if (f.affects) {
+          const map = {
+            HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
+            ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
+            LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate",
+            SHIELD:"Shield", DMGTAKEN:"DmgTaken", HINDRED:"HindRed", SPDEFPEN:"SpDEFPen",
+            DEFPen: "DEFPen"
+          };
+          const statKey = map[f.affects.toUpperCase()] || f.affects;
 
-    return modifiedStats;
-  };
+          if (modifiedStats.hasOwnProperty(statKey)) {
+            modifiedStats[statKey] += modifiedVal;
+          }
+        } else {
+          const label = f.label.toLowerCase();
+          
+          if (label.includes("defense") && !label.includes("special")) {
+            modifiedStats.DEF += modifiedVal;
+          } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
+            modifiedStats.SpDEF += modifiedVal;
+          } else if (label.includes("attack") && !label.includes("special")) {
+            modifiedStats.ATK += modifiedVal;
+          } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
+            modifiedStats.SpATK += modifiedVal;
+          } else if (label.includes("hp") || label.includes("health")) {
+            modifiedStats.HP += modifiedVal;
+          } else if (label.includes("speed")) {
+            modifiedStats.Speed += modifiedVal;
+          } else if (label.includes("crit") && label.includes("rate")) {
+            modifiedStats.CritRate += modifiedVal;
+          } else if (label.includes("crit") && label.includes("dmg")) {
+            modifiedStats.CritDmg += modifiedVal;
+          } else if (label.includes("lifesteal")) {
+            modifiedStats.Lifesteal += modifiedVal;
+          } else if (label.includes("cdr") || label.includes("cooldown")) {
+            modifiedStats.CDR += modifiedVal;
+          } else if (label.includes("atkspd") || label.includes("attack speed")) {
+            modifiedStats.AtkSPD += modifiedVal;
+          } else if (label.includes("dmgtaken") || label.includes("dmg taken")) {
+            modifiedStats.DmgTaken += modifiedVal;
+          } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
+            modifiedStats.HindRed += modifiedVal;
+          } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
+            modifiedStats.SpDEFPen += modifiedVal;
+          } else if (label.includes("defpen") || label.includes("def penetration")) {
+            modifiedStats.DEFPen += modifiedVal;
+          }
+        }
+      });
+    }
+  });
+
+  return modifiedStats;
+};
 
   // CRIAÇÃO DOS FILTROS DE ROLE E TIPO DE DANO
   const createRoleFilters = () => {
@@ -1360,7 +1643,8 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     });
     
     closePokemonPanel();
-    
+
+    muscleGauge = 0;
     selectedHeldItems = [];
     activeItemPassives = {};
     inicializarBloqueioItens();
@@ -1934,38 +2218,87 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   `);
   createSkillBuildInResult();
 
-    // Status Final
-    statusFinalDiv.innerHTML = STAT_KEYS
-      .map(k => {
-        const b = Number(base[k]) || 0;
-        const m = Number(modified[k]) || 0;
-        const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
+    // Status Final - Novo Design
+statusFinalDiv.innerHTML = STAT_KEYS
+  .map(k => {
+    const b = Number(base[k]) || 0;
+    const m = Number(modified[k]) || 0;
+    const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
 
-        // Se o valor modificado é maior que o base (buff)
-        if (m > b) {
-          return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:limegreen;">▲ ${formatValue(k, m, extraFixed)}</span>`);
-        }
-        // Se o valor modificado é menor que o base (debuff/redução)
-        else if (m < b) {
-          return statLine(STAT_LABELS[k], `${formatValue(k, b)} → <span style="color:red;">▼ ${formatValue(k, m, extraFixed)}</span>`);
-        }
-        // Se são iguais (sem modificação)
-        return statLine(STAT_LABELS[k], formatValue(k, m, extraFixed));
-      }).join("");
+    // Calcular porcentagem de mudança
+    const percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+    
+    // Se o valor modificado é maior que o base (buff)
+    if (m > b) {
+      return `
+        <div class="stat-line">
+          <span class="stat-label">${STAT_LABELS[k]}</span>
+          <span class="stat-value">
+            <span class="base-value">${formatValue(k, b)}</span>
+            <span class="arrow-up">▲</span>
+            <span class="modified-up">${formatValue(k, m, extraFixed)}</span>
+            ${percentChange > 0 ? `<span class="percent-increase">+${percentChange}%</span>` : ''}
+          </span>
+        </div>
+      `;
+    }
+    // Se o valor modificado é menor que o base (debuff)
+    else if (m < b) {
+      return `
+        <div class="stat-line">
+          <span class="stat-label">${STAT_LABELS[k]}</span>
+          <span class="stat-value">
+            <span class="base-value">${formatValue(k, b)}</span>
+            <span class="arrow-down">▼</span>
+            <span class="modified-down">${formatValue(k, m, extraFixed)}</span>
+            ${percentChange < 0 ? `<span class="percent-decrease">${percentChange}%</span>` : ''}
+          </span>
+        </div>
+      `;
+    }
+    // Se são iguais (sem modificação)
+    return `
+      <div class="stat-line">
+        <span class="stat-label">${STAT_LABELS[k]}</span>
+        <span class="stat-value">${formatValue(k, m, extraFixed)}</span>
+      </div>
+    `;
+  }).join("");
 
-      // Mostrar debuffs ativos (com padrão de incremento)
-      if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
+    // Mostrar debuffs ativos
+    if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
       Object.values(modified._debuffsAcumulados).forEach(debuff => {
         const baseValue = 0;
         const modifiedValue = debuff.value;
         
-        const valueHtml = `${baseValue}% → <span style="color:limegreen;">▲ ${modifiedValue}%</span>`;
-        
-        statusFinalDiv.insertAdjacentHTML("beforeend", 
-          statLine(`${debuff.label}`, valueHtml)
-        );
+        // Tratamento especial para Unstoppable - exibir em segundos (BUFF positivo)
+        if (debuff.stat === "Unstoppable") {
+          statusFinalDiv.insertAdjacentHTML("beforeend", `
+            <div class="stat-line">
+              <span class="stat-label">${debuff.label}</span>
+              <span class="stat-value">
+                <span class="base-value">${baseValue}s</span>
+                <span class="arrow-up">▲</span>
+                <span class="modified-up">${modifiedValue}s</span>
+                <span class="percent-increase">+100%</span>
+              </span>
+            </div>
+          `);
+        } else {
+          // DEBUFFS (reduções) - mostrar em vermelho
+          statusFinalDiv.insertAdjacentHTML("beforeend", `
+            <div class="stat-line">
+              <span class="stat-label">${debuff.label}</span>
+              <span class="stat-value">
+                <span class="base-value">${baseValue}%</span>
+                <span class="arrow-down">▼</span>
+                <span class="modified-down">-${modifiedValue}%</span>
+              </span>
+            </div>
+          `);
+        }
       });
-     }
+    }
 
     // Mostrar ícones dos itens
     if (selectedHeldItems.length > 0) {
@@ -1982,16 +2315,16 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             <img src="./estatisticas-shad/images/held-itens/${it}.png" 
                  alt="${gameHeldItens[it]}" 
                  title="${gameHeldItens[it]}" 
-                 style="width:40px; height:40px; margin:0 5px;">
+                 style="width:30px; height:30px; margin:0 5px;">
             ${hasPassive ? '<div class="item-passive-dot"></div>' : ''}
           </div>
         `;
       }).join("");
       
       statusFinalDiv.insertAdjacentHTML("beforeend", `
-        <div class="stat-line">
+        <div class="stat-line special-stat">
           <span class="stat-label">Itens</span>
-          <span class="stat-value" style="display: flex; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <span class="stat-value item-icons-wrapper">
             ${itensHtml}
           </span>
         </div>
@@ -1999,39 +2332,39 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     }
 
     // Mostrar emblemas ativos
-    if (incluirEmblemas === "sim") {
-      const selectedEmblemKeys = Object.keys(selectedEmblems);
-      if (selectedEmblemKeys.length > 0) {
-        const activeEmblems = selectedEmblemKeys.map(emblemKey => {
-          const emblem = EMBLEM_DATA[emblemKey];
-          const level = selectedEmblems[emblemKey];
-          const bonus = emblem.levels[level];
-          
-          const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #ccc;" : "";
-          
-          if (emblemKey === "cinza") {
-            return `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 4px; ${borderStyle}"></span>
-              ${emblem.name} Lv.${level} (-${bonus})
-            </span>`;
-          } else {
-            return `<span style="display: inline-flex; align-items: center; margin-right: 12px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 4px; ${borderStyle}"></span>
-              ${emblem.name} Lv.${level} (+${bonus}%)
-            </span>`;
-          }
-        }).join("");
-
-        statusFinalDiv.insertAdjacentHTML("beforeend", `
-          <div class="stat-line">
-            <span class="stat-label">Emblemas</span>
-            <span class="stat-value" style="display: flex; flex-wrap: wrap; align-items: center;">
-              ${activeEmblems}
-            </span>
-          </div>
-        `);
+if (incluirEmblemas === "sim") {
+  const selectedEmblemKeys = Object.keys(selectedEmblems);
+  if (selectedEmblemKeys.length > 0) {
+    const activeEmblems = selectedEmblemKeys.map(emblemKey => {
+      const emblem = EMBLEM_DATA[emblemKey];
+      const level = selectedEmblems[emblemKey];
+      const bonus = emblem.levels[level];
+      
+      const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #333;" : "";
+      
+      if (emblemKey === "cinza") {
+        return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
+          <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 8px; flex-shrink: 0; ${borderStyle}"></span>
+          <span style="color: #000; font-size: 12px; font-weight: 500;">${emblem.name} Lv.${level} (-${bonus})</span>
+        </div>`;
+      } else {
+        return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
+          <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 8px; flex-shrink: 0; ${borderStyle}"></span>
+          <span style="color: #000; font-size: 12px; font-weight: 500;">${emblem.name} Lv.${level} (+${bonus}%)</span>
+        </div>`;
       }
-    }
+    }).join("");
+
+    statusFinalDiv.insertAdjacentHTML("beforeend", `
+      <div class="stat-line special-stat" style="flex-direction: column; align-items: flex-start;">
+        <span class="stat-label" style="margin-bottom: 8px;">Emblemas</span>
+        <div style="display: flex; flex-direction: column; width: 100%; padding-left: 10px;">
+          ${activeEmblems}
+        </div>
+      </div>
+    `);
+  }
+}
 
     // Mostrar Battle Item
     const selectedBattleNow = Array.from(battleRadios).find(r => r.checked)?.value;
@@ -2043,7 +2376,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
                           title="${battleItemName}" 
                           style="width:40px; height:40px;">`;
       statusFinalDiv.insertAdjacentHTML("beforeend", `
-        <div class="stat-line">
+        <div class="stat-line special-stat">
           <span class="stat-label">Battle Item</span>
           <span class="stat-value">${battleImg}</span>
         </div>
@@ -2052,6 +2385,11 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
 
     // Cálculo das skills
     skillsDiv.innerHTML = "";
+
+    // Muscle Gauge para Buzzwole
+    if (selectedPokemon === "buzzwole") {
+      createMuscleGaugeControl();
+    }
 
     if (typeof skillDamage !== "undefined" && skillDamage[selectedPokemon]) {
       const skills = skillDamage[selectedPokemon];
@@ -2109,39 +2447,36 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
       });
 
   // Renderizar outras skills (substitua toda a seção Object.keys(skills).forEach na função calcular)
-  Object.keys(skills).forEach(key => {
-    if (key === "passive" || key === "passive1" || key === "passive2") return;
-    
-    const s = skills[key];
-    const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
-    const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
+Object.keys(skills).forEach(key => {
+  if (key === "passive" || key === "passive1" || key === "passive2") return;
+  
+  const s = skills[key];
+  const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
+  const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
-    const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
-    const ultimateClass = isUltimate ? " ultimate" : "";
-    
-    // Verificar se a skill é ativável
-    const isActivatable = activeSkills[selectedPokemon] && activeSkills[selectedPokemon].hasOwnProperty(key);
-    const isActiveSkill = isActivatable && activeSkills[selectedPokemon][key];
-    const activatableClass = isActivatable ? " activatable" : "";
-    const activeClass = isActiveSkill ? " active" : "";
-    
-    // Verificar se tem skill plus
-    const hasSkillPlus = (s.buffPlus && s.buffPlus.levelRequired) || (s.selfBuffPlus && s.selfBuffPlus.levelRequired);
-    
-    // Verificar se o skill plus está ativo
-    const buffPlusActive = s.buffPlus && currentLevel >= s.buffPlus.levelRequired;
-    const selfBuffPlusActive = s.selfBuffPlus && currentLevel >= s.selfBuffPlus.levelRequired;
-    const isPlusActive = buffPlusActive || selfBuffPlusActive;
+  const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
+  const ultimateClass = isUltimate ? " ultimate" : "";
+  
+  const isActivatable = activeSkills[selectedPokemon] && activeSkills[selectedPokemon].hasOwnProperty(key);
+  const isActiveSkill = isActivatable && activeSkills[selectedPokemon][key];
+  const activatableClass = isActivatable ? " activatable" : "";
+  const activeClass = isActiveSkill ? " active" : "";
+  
+  const hasSkillPlus = (s.buffPlus && s.buffPlus.levelRequired) || (s.selfBuffPlus && s.selfBuffPlus.levelRequired);
+  const buffPlusActive = s.buffPlus && currentLevel >= s.buffPlus.levelRequired;
+  const selfBuffPlusActive = s.selfBuffPlus && currentLevel >= s.selfBuffPlus.levelRequired;
+  const isPlusActive = buffPlusActive || selfBuffPlusActive;
 
-    // Calcular cooldown da skill com CDR específico
-    const baseCooldown = s.cooldown || null;
-    const globalCDR = modified.CDR || 0;
-    const globalEnergyRate = modified.EnergyRate || 0;
-    const effectiveCooldown = calculateCooldownForSkill(baseCooldown, globalCDR, globalEnergyRate, key, modified, selectedPokemon);
-    const cooldownDisplay = formatCooldown(effectiveCooldown);
-    
+  const baseCooldown = s.cooldown || null;
+  const globalCDR = modified.CDR || 0;
+  const globalEnergyRate = modified.EnergyRate || 0;
+  const effectiveCooldown = calculateCooldownForSkill(baseCooldown, globalCDR, globalEnergyRate, key, modified, selectedPokemon);
+  
+  // Criar badge de cooldown se existir
+  const cooldownBadge = effectiveCooldown ? 
+    `<span class="skill-cooldown-badge">⏱️ ${effectiveCooldown.toFixed(1)}s</span>` : "";
 
-    const calculatedValues = [];
+  const calculatedValues = [];
   
   // Primeiro passe: calcular valores não dependentes
   s.formulas.forEach((f, index) => {
@@ -2202,6 +2537,14 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         
         baseVal = f.formula(baseAttribute, targetLevel, base.HP);
         modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+
+        if (f.usesMuscleGauge && selectedPokemon === "buzzwole") {
+          baseVal = f.formula(baseAttribute, targetLevel, base.HP, muscleGauge);
+          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP, muscleGauge);
+        } else {
+          baseVal = f.formula(baseAttribute, targetLevel, base.HP);
+          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+        }
 
         // Aplicar bônus do Razor Claw apenas para ataques básicos e boosted
         if (selectedItems.includes("razorclaw") && activeItemPassives["razorclaw"]) {
@@ -2304,177 +2647,121 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   });
 
   // Criar indicador de skill plus INLINE (para ir no cabeçalho)
-  let skillPlusIndicatorInline = "";
-  if (hasSkillPlus) {
-    const plusStatus = isPlusActive ? "active" : "inactive";
-    const levelReq = s.buffPlus?.levelRequired || s.selfBuffPlus?.levelRequired || 11;
-    const plusText = isPlusActive ? "PLUS" : `LV${levelReq}+`;
-    skillPlusIndicatorInline = `<span class="skill-plus-indicator ${plusStatus}">${plusText}</span>`;
-  }
-  
-// Criar seção de buffs plus para exibir na descrição
-let skillPlusBuffsHtml = "";
-if (hasSkillPlus && isActiveSkill) {
-  let plusBuffsList = [];
-  
-  // Buffs globais plus
-  if (s.buffPlus && buffPlusActive) {
-    // Processar buffs normais
-    if (s.buffPlus.buffs) {
-      Object.keys(s.buffPlus.buffs).forEach(stat => {
-        const value = s.buffPlus.buffs[stat];
-        const label = STAT_LABELS[stat] || stat;
-        
-        let formattedValue, colorClass;
-        if (value >= 0) {
-          // Buff positivo
-          formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
-          colorClass = "limegreen";
-        } else {
-          // Debuff negativo
-          formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
-          colorClass = "red";
-        }
-        
-        plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span>`);
-      });
-    }
+// Criar indicador de skill plus
+let skillPlusIndicator = "";
+if (hasSkillPlus) {
+  const levelReq = s.buffPlus?.levelRequired || s.selfBuffPlus?.levelRequired || 11;
+  const plusText = isPlusActive ? "PLUS ACTIVE" : `PLUS LV ${levelReq} ACTIVATION`;
+  skillPlusIndicator = `<span class="skill-upgrade-indicator">${plusText}</span>`;
+}
 
-      // AQUI você adiciona o segundo bloco:
-      if (s.buffPlus.nextBasicAttackPercent) {
-        plusBuffsList.push(`<span style="color:limegreen;">Basic Attack: +${s.buffPlus.nextBasicAttackPercent}%</span>`);
-      }
-    
-    // NOVO: Processar debuffs do buffPlus
-    if (s.buffPlus.debuffs) {
-      Object.keys(s.buffPlus.debuffs).forEach(stat => {
-        const value = s.buffPlus.debuffs[stat];
-        const label = STAT_LABELS[stat] || stat;
-        
-        // Debuffs são sempre mostrados como positivos na interface (representam redução aplicada)
-        const formattedValue = `+${value}%`;
-        const colorClass = "orange"; // Cor diferente para distinguir de buffs normais
-        
-        plusBuffsList.push(`<span style="color:${colorClass};">${label} Debuff: ${formattedValue}</span>`);
-      });
-    }
+// Criar HTML dos valores de dano destacados
+const damageValuesHtml = s.formulas.map((f, index) => {
+  if (f.type === "text-only") {
+    return `<div class="skill-info-text"><strong>${f.label}:</strong> <span style="color:#000; font-style:italic;">${f.additionalText}</span></div>`;
   }
   
-  // Self-buffs plus
-  if (s.selfBuffPlus && selfBuffPlusActive) {
-    if (s.selfBuffPlus.buffs) {
-      Object.keys(s.selfBuffPlus.buffs).forEach(stat => {
-        const value = s.selfBuffPlus.buffs[stat];
-        const label = STAT_LABELS[stat] || stat;
-        
-        let formattedValue, colorClass;
-        if (value >= 0) {
-          // Buff positivo
-          formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
-          colorClass = "limegreen";
-        } else {
-          // Debuff negativo
-          formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
-          colorClass = "red";
+  const values = calculatedValues[index];
+  if (!values) return "";
+  
+  const baseVal = Math.round(values.base);
+  const modVal = Math.round(values.modified);
+  const hasIncrease = modVal > baseVal;
+  const percentIncrease = baseVal > 0 ? (((modVal - baseVal) / baseVal) * 100).toFixed(1) : 0;
+  
+  return `
+    <div class="skill-damage-value">
+      <span class="skill-damage-label">${f.label}</span>
+      <div>
+        ${hasIncrease ? 
+          `<span class="skill-damage-number">
+            <span style="color: #888; font-size: 16px; text-decoration: line-through;">${baseVal}</span>
+            ${modVal}
+            <span class="skill-damage-percent">+${percentIncrease}%</span>
+          </span>` :
+          `<span class="skill-damage-number">${modVal}</span>`
         }
-        
-        plusBuffsList.push(`<span style="color:${colorClass};">${label}: ${formattedValue}</span> (Self)`);
-      });
-    }
+        ${f.additionalText ? `<div style="color:#888; font-size:12px; font-style:italic; margin-top:4px;">${f.additionalText}</div>` : ""}
+      </div>
+    </div>
+  `;
+}).join("");
+
+// Criar seção de buffs - SEMPRE mostrar quando a skill está ativa
+let buffsHtml = "";
+if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs)) {
+  let buffsList = [];
+  
+  // Buffs globais básicos
+  if (s.buff) {
+    Object.keys(s.buff).forEach(stat => {
+      const value = s.buff[stat];
+      const label = STAT_LABELS[stat] || stat;
+      buffsList.push(`<span style="color:#000000;">+${value} ${label}</span>`);
+    });
   }
   
-  if (plusBuffsList.length > 0) {
-    const plusActiveClass = isPlusActive ? "active" : "inactive";
-    const levelReq = s.buffPlus?.levelRequired || s.selfBuffPlus?.levelRequired || 11;
-    
-    skillPlusBuffsHtml = `
-      <div class="skill-plus-separator">
-        <li class="skill-plus-buffs ${plusActiveClass}">
-          <strong>Skill Plus (Lv${levelReq}+):</strong> ${plusBuffsList.join(", ")}
-        </li>
+  // Self-buffs (afetam apenas a skill)
+  if (s.selfBuff) {
+    Object.keys(s.selfBuff).forEach(stat => {
+      const value = s.selfBuff[stat];
+      const label = STAT_LABELS[stat] || stat;
+      buffsList.push(`<span style="color:#000000;">+${value} ${label} (Self)</span>`);
+    });
+  }
+  
+  // Buffs do Plus (se ativo)
+  if (isPlusActive && s.buffPlus?.buffs) {
+    Object.keys(s.buffPlus.buffs).forEach(stat => {
+      const value = s.buffPlus.buffs[stat];
+      const label = STAT_LABELS[stat] || stat;
+      buffsList.push(`<span style="color:#000000;">+${value} ${label}</span>`);
+    });
+  }
+  
+  // Debuffs
+  if (s.debuffs) {
+    Object.keys(s.debuffs).forEach(stat => {
+      const value = s.debuffs[stat];
+      const label = s.debuffLabels?.[stat] || `${stat} Reduction`;
+      buffsList.push(`<span style="color:#000000;">-${value}% ${label}</span>`);
+    });
+  }
+  
+  if (buffsList.length > 0) {
+    buffsHtml = `
+      <div class="skill-buffs-section">
+        <strong>Active Effects:</strong> ${buffsList.join(" / ")}
       </div>
     `;
   }
 }
 
-// E também para os self-buffs básicos:
-let selfBuffsHtml = "";
-if (s.selfBuff && isActiveSkill) {
-  const selfBuffsList = Object.keys(s.selfBuff).map(stat => {
-    const value = s.selfBuff[stat];
-    const label = STAT_LABELS[stat] || stat;
-    
-    let formattedValue, colorClass;
-    if (value >= 0) {
-      // Buff positivo
-      formattedValue = PERCENT_KEYS.has(stat) ? `+${value}%` : `+${value}`;
-      colorClass = "limegreen";
-    } else {
-      // Debuff negativo
-      formattedValue = PERCENT_KEYS.has(stat) ? `${value}%` : `${value}`;
-      colorClass = "red";
-    }
-    
-    return `<span style="color:${colorClass};">${label}: ${formattedValue}</span>`;
-  }).join(", ");
-  
-  selfBuffsHtml = `
-    <li style="color: #2cb7f7ff; font-style: italic;">
-      <strong>Self Buffs:</strong> ${selfBuffsList}
-    </li>
-  `;
-}
-
-  const skillHtml = `
-    <div class="skill-box${ultimateClass}${activatableClass}${activeClass}" data-pokemon="${selectedPokemon}" data-skill-key="${key}" style="margin-bottom: 15px;">
-      <img src="${imgPath}" alt="${s.name}" class="skill-icon"
-          onerror="this.onerror=null;this.src='${fallbackImg}'">
-      <div class="skill-info">
-        <h4>${s.name}${cooldownDisplay ? `<span style="color:#a30404; font-size:12px; margin-left:8px;">${cooldownDisplay}</span>` : ""}${skillPlusIndicatorInline}</h4>
-        <ul>
-          ${s.formulas.map((f, index) => {
-            if (f.type === "text-only") {
-              return `<li><strong>${f.label}:</strong> <span style="color:#888; font-style:italic;">${f.additionalText}</span></li>`;
-            }
-            
-            const values = calculatedValues[index];
-            let displayText = "";
-            let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
-            
-            if (values?.hasPassiveBonus) {
-              if (Math.round(values.withPassive.modified) > Math.round(values.modified)) {
-                displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
-              } else {
-                displayText = `${Math.round(values.modified)} → <span style="color:limegreen;">▲ ${Math.round(values.withPassive.modified)}</span>`;
-              }
-            } else if (values) {
-              if (Math.round(values.modified) > Math.round(values.base)) {
-                displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
-              } else {
-                displayText = `${Math.round(values.modified)}`;
-              }
-            } else {
-              displayText = "0";
-            }
-            
-            if (hasAdditionalText) {
-              displayText += ` <span style="color:#888; font-style:italic;">+ ${f.additionalText}</span>`;
-            }
-            
-            return `<li><strong>${f.label}:</strong> ${displayText}</li>`;
-          }).join("")}
-          ${selfBuffsHtml}
-          ${skillPlusBuffsHtml}
-        </ul>
+const skillHtml = `
+  <div class="skill-box${ultimateClass}${activatableClass}${activeClass}" data-pokemon="${selectedPokemon}" data-skill-key="${key}">
+    <div class="skill-box-content">
+      <div class="skill-header-wrapper">
+        <img src="${imgPath}" alt="${s.name}" class="skill-icon"
+            onerror="this.onerror=null;this.src='${fallbackImg}'">
+        <div style="flex: 1;">
+          <h4>
+            ${s.name}
+            ${cooldownBadge}
+            ${skillPlusIndicator}
+          </h4>
+        </div>
+        ${isActivatable ? '<div class="skill-status"></div>' : ''}
       </div>
-      ${isActivatable ? '<div class="skill-status"></div>' : ''}
+      <div class="skill-info">
+        ${damageValuesHtml}
+        ${buffsHtml}
+      </div>
     </div>
-  `;
-  
-  skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
+  </div>
+`;
+skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
 });
 
-      // Event listeners para passivas clicáveis
       // Event listeners para passivas clicáveis (substitua o bloco original por este)
       const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
       passiveBoxes.forEach(box => {
@@ -2487,7 +2774,7 @@ if (s.selfBuff && isActiveSkill) {
           }
 
           // Comportamento exclusivo para o Aegislash: somente 1 passiva ativa por vez
-          if (pokemon === "aegislash") {
+          if (pokemon === "aegislash" || pokemon === "buzzwole") {
             const currentlyActive = !!activePassives[pokemon][passiveKey];
 
             // Desativa todas as passivas conhecidas antes
