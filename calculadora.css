@@ -3218,3 +3218,665 @@ textarea.form-control {
     height: 24px !important;
   }
 }
+/* Effect indicators na tabela de status */
+.stat-line.effect-indicator {
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.12) 0%, rgba(186, 85, 211, 0.12) 100%);
+  border-left: 4px solid #8a2be2;
+}
+
+.stat-line.effect-indicator .stat-label {
+  color: #8a2be2;
+  font-weight: 700;
+}
+
+.stat-line.effect-indicator .stat-value {
+  color: #9b59b6;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.effect-icon-inline {
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+/* Effect inativo (cinza) */
+.stat-line.effect-indicator.inactive {
+  opacity: 0.5;
+  background: linear-gradient(90deg, rgba(128, 128, 128, 0.12) 0%, rgba(158, 158, 158, 0.12) 100%);
+  border-left-color: #999;
+}
+
+.stat-line.effect-indicator.inactive .stat-label {
+  color: #999;
+}
+
+.stat-line.effect-indicator.inactive .stat-value {
+  color: #aaa;
+}
+/* Pokemon Ratings - Sistema de Avaliação */
+.pokemon-ratings-container {
+  margin-top: 15px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.ratings-title {
+  display: none; /* Remove o título */
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.rating-item:last-child {
+  margin-bottom: 0;
+}
+
+.rating-label {
+  min-width: 80px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.rating-bar-container {
+  flex: 1;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.rating-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  /* REMOVIDO: display: flex, justify-content, padding-right */
+}
+
+.rating-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+
+/* Cores específicas por categoria */
+.rating-bar-fill.attack {
+  background: linear-gradient(90deg, #fced65 0%, #fced65 100%);
+}
+
+.rating-bar-fill.endure {
+  background: linear-gradient(90deg, #fced65 0%, #fced65 100%);
+}
+
+.rating-bar-fill.mobility {
+  background: linear-gradient(90deg, #fced65 0%, #fced65 100%);
+}
+
+.rating-bar-fill.score {
+  background: linear-gradient(90deg, #fced65 0%, #fced65 100%);
+}
+
+.rating-bar-fill.support {
+  background: linear-gradient(90deg, #fced65 0%, #fced65 100%);
+}
+
+/* VALOR FORA DA BARRA */
+.rating-value {
+  min-width: 35px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+}
+
+/* Ícones das categorias */
+.rating-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .pokemon-ratings-container {
+    padding: 0;
+    margin-top: 12px;
+  }
+  
+  .ratings-title {
+    display: none;
+  }
+  
+  .rating-label {
+    min-width: 70px;
+    font-size: 11px;
+  }
+  
+  .rating-bar-container {
+    height: 18px;
+  }
+  
+  .rating-value {
+    min-width: 32px;
+    font-size: 12px;
+  }
+  
+  .rating-icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .pokemon-ratings-container {
+    padding: 0;
+  }
+  
+  .rating-item {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .rating-label {
+    min-width: 65px;
+    font-size: 10px;
+  }
+  
+  .rating-bar-container {
+    height: 16px;
+  }
+  
+  .rating-value {
+    min-width: 28px;
+    font-size: 11px;
+  }
+  
+  .rating-icon {
+    font-size: 13px;
+  }
+}
+
+
+/* ============================================
+   SISTEMA DE SKINS - VERSÃO COMPACTA
+   ============================================ */
+
+/* Fazer imagem clicável */
+.resultado-image img {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resultado-image img:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+/* Overlay escuro */
+.skins-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.skins-overlay.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal compacto */
+.skins-modal {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 3px solid #667eea;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+  animation: slideIn 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Header do modal */
+.skins-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #667eea;
+}
+
+.skins-modal-title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skins-modal-title::before {
+  content: "🎨";
+  font-size: 20px;
+}
+
+.skins-close-btn {
+  background: transparent;
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.skins-close-btn:hover {
+  background: #dc3545;
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Grid de skins - COMPACTO */
+.skins-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* Item de skin - REDUZIDO */
+.skin-item-compact {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.skin-item-compact:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  transform: translateY(-3px);
+}
+
+.skin-item-compact.selected {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.2);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.skin-item-compact.selected::after {
+  content: "✓";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #28a745;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Imagem da skin - PEQUENA */
+.skin-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Nome da skin - COMPACTO */
+.skin-name-compact {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.skin-item-compact.selected .skin-name-compact {
+  color: #28a745;
+}
+
+/* Badge default */
+.skin-default-badge {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Scrollbar customizada */
+.skins-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.skins-modal::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.skins-modal::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+.skins-modal::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .skins-modal {
+    max-width: 90vw;
+    padding: 15px;
+  }
+  
+  .skins-grid-compact {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .skin-thumb {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 576px) {
+  .skins-modal {
+    padding: 12px;
+  }
+  
+  .skins-modal-title {
+    font-size: 16px;
+  }
+  
+  .skin-thumb {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .skin-name-compact {
+    font-size: 10px;
+  }
+}
+
+/* ===== SISTEMA DE EXPANSÃO DE STATUS - VERSÃO SIMPLIFICADA ===== */
+
+/* Tornar stat-line clicável quando tem modificadores */
+.stat-line.expandable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.stat-line.expandable:hover {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.25) 0%, rgba(67, 233, 123, 0.25) 100%);
+  transform: translateX(5px);
+}
+
+/* Container dos detalhes expandidos - SIMPLIFICADO */
+.stat-details {
+  display: none;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+  border-left: 4px solid #4ce9f4;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 15px;
+  margin: 5px 0 5px 20px;
+  animation: slideDown 0.3s ease;
+}
+
+.stat-details.show {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Lista de modificadores - SEM HEADER */
+.modifiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Item de modificador */
+.modifier-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.modifier-item:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(3px);
+}
+
+/* Fonte do modificador */
+.modifier-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.modifier-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.modifier-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Valor do modificador */
+.modifier-value {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.modifier-value.positive {
+  color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.modifier-value.negative {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+/* Tipos de modificadores */
+.modifier-type-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: #666;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-left: 6px;
+}
+
+.modifier-type-badge.flat {
+  background: #007bff;
+}
+
+.modifier-type-badge.percent {
+  background: #28a745;
+}
+
+.modifier-type-badge.formula {
+  background: #ff8c42;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .stat-details {
+    padding: 10px 12px;
+    margin: 4px 0 4px 15px;
+  }
+  
+  .modifier-item {
+    padding: 6px 10px;
+  }
+  
+  .modifier-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .modifier-name {
+    font-size: 11px;
+  }
+  
+  .modifier-value {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-details {
+    padding: 8px 10px;
+    margin: 3px 0 3px 10px;
+  }
+  
+  .modifier-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+  
+  .modifier-value {
+    align-self: flex-end;
+  }
+}
+/* Custom icon para emblemas nos modificadores */
+.modifier-source .custom-emblem-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* Badge type específico para emblemas */
+.modifier-type-badge.emblem-percent {
+  background: #28a745;
+}
+
+.clear-skill-button {
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.clear-skill-button:hover {
+  background: linear-gradient(135deg, #ff5252, #d84a5f);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.clear-skill-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+}

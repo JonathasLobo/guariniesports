@@ -854,6 +854,7 @@ const gameHeldItens = {
 	"amuletcoin": 'Amulet Coin',
 	"assaultvest": 'Assault Vest',
 	"attackweight": 'Attack Weight',
+  "bigroot": 'Big Root',
 	"buddybarrier": 'Buddy Barrier',
 	"chargingcharm": 'Charging Charm',
 	"choicescarf": 'Choice Scarf',
@@ -892,6 +893,7 @@ const gameHeldItensStatus = {
 	"amuletcoin": ['HP +240','Speed +150'],
 	"assaultvest": ['HP +270','SpDEF +51'],
 	"attackweight": ['ATK +18'],
+  "bigroot": ['HP +450'],
 	"buddybarrier": ['HP +450'],
 	"chargingcharm": ['ATK +15','Speed +120'],
 	"choicescarf": ['AtkSPD +7.5%','Speed +150'],
@@ -934,7 +936,7 @@ const gameHeldItensPassive = {
   "draincrown": { Lifesteal: "+15%"},
   "energyamplifier": { ATK: "+21%", SpATK: "+21%"},
   "floatstone": { Speed: "+20%"},
-  "razorclaw": { formula: (stats) => 20 + (stats.ATK * 0.5), target: "ATK" }, // Corrigido: ATK em vez de SpATK
+  "razorclaw": { formula: (stats) => 20 + (stats.ATK * 0.5), target: "ATK" },
   "scoreshield": { Shield: "+10%"},
   "rapidscarf": { AtkSPD: "+25%"},
   "rescuehood": { Shield: "+17%", HPRegen: "+17%"},
@@ -944,7 +946,8 @@ const gameHeldItensPassive = {
   "buddybarrier": { Shield: "+25%"},
   "rockyhelmet": { ATK: "+1.8%" },
   "shellbell": { formula: (stats) => 80 + (stats.SpATK * 0.6), target: "HP" },
-  "slickspoon": { SpDEFPen: "+15%"}
+  "slickspoon": { SpDEFPen: "+15%"},
+  "bigroot": { HPRegen: "+20%" }
 };
 
 
@@ -4114,6 +4117,16 @@ const levelStats = {
   }
   // continue manualmente
 }
+
+const pokemonRatings = {
+  absol: {
+    Attack: 3.5,
+    Endure: 2,
+    Mobility: 4,
+    Score: 2.5,
+    Support: 0.5
+  },
+}
 const skillDamage = {
  "absol": {
   "passive": {
@@ -4256,8 +4269,8 @@ const skillDamage = {
       },
       buff: {
         CritRate: -20,
-        Unstoppable: 1.0
       },
+      effects: ["Unstoppable"],
       buffPlus: {
         levelRequired: 13,
         buffs: {
@@ -4284,8 +4297,8 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 9,
+        effects: ["Unstoppable"],
         buffs: {
-          Unstoppable: 1.15,
           Speed: "80%",
           Shield: 20
         }
@@ -4295,6 +4308,12 @@ const skillDamage = {
           label: "Damage - Full (6 Hits)",
           formula: (ATK, Level) => 0.91 * ATK + 4 * (Level - 1) + 200,
           type: "physical"
+        },
+        {
+          label: "Damage - Reduced (up to 3 Hits)",
+          formula: (firstHitDamage, Level) => 0.3 * firstHitDamage,
+		      type: "dependent",
+		      dependsOn: 0
         },
 	]
 	}
@@ -5809,13 +5828,25 @@ const skillDamage = {
           name: "Infiltrator",
           description: "Gains stacks that ignore a portion of the target's Special Defense with each damage dealt, refreshing duration on new stacks. Max stacks ignore 20% Sp. Def.",
           buff: {
-            SpDEFPen: "2.5%"
+            SpDEFPen: "20%"
           },
           formulas: [
+            {
+            label: "Stacks",
+            type: "text-only",
+            additionalText: "2.5% for each stack, 8 total"
+          },
           ]
         },
 	"atkboosted": {
 	  name: "Ataque Básico",
+    buff:{},
+    debuffs: {
+      Speed: 30
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -5838,6 +5869,17 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 7,
+      buff:{},
+      selfBuff:{
+        CooldownPercent: 65
+      },
+      buffPlus: {
+       levelRequired: 11,
+        buffs: {
+        },
+      skillDamageMultiplier: 1.20, // 15% de aumento
+      affectsBasicAttack: true,
+      },
       formulas: [
         {
           label: "Damage",
@@ -5859,6 +5901,13 @@ const skillDamage = {
     "s12": {
       name: "Overheat",
       cooldown: 7.5,
+      buff: {},
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -5889,12 +5938,33 @@ const skillDamage = {
           label: "Exploding Flame level 3",
           formula: (SPATK, Level) => 1.32 * SPATK + 0 * (Level - 1) + 560,
           type: "special"
-        }
+        },
+          {
+            label: "Heat Energy info",
+            type: "text-only",
+            additionalText: "0 = 75% CDR / 1 = 50% CDR / 2 = 30% CDR"
+          },
       ]
     },
     "s21": {
       name: "Poltergeist",
       cooldown: 7.5,
+      buff:{},
+      debuffs: {
+        Speed: 65
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus:{
+        levelRequired: 13,
+        debuffs: {
+          Speed: 15
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -5912,6 +5982,20 @@ const skillDamage = {
 	"ult": {
 		name: "Ignite Midnight",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+    debuffs: {
+      Vision: 30
+    },
+    debuffLabels: {
+      Vision: "(DEBUFF) Vision Reduction"
+    },
+    buffs: {
+      Speed: "30%",
+      Shield: 40
+    },
+  },
 		formulas: [
         {
           label: "Damage (6x)",
@@ -5939,6 +6023,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Ataque Básico",
+    buff: {
+      Speed: "-5%"
+    },
       formulas: [
         {
           label: "Damage - Basic (4x)",
@@ -5956,6 +6043,15 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 6,
+      buff: {
+        Speed: "40%"
+      },
+      debuffs: {
+        ATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -5982,6 +6078,20 @@ const skillDamage = {
     "s12": {
       name: "Fire Punch",
       cooldown: 5,
+      buff: {
+      },
+      debuffs: {
+        ATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1.6
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -5998,6 +6108,14 @@ const skillDamage = {
     "s21": {
       name: "Fire Blast",
       cooldown: 6.5,
+      buff: {
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -6024,6 +6142,16 @@ const skillDamage = {
     "s22": {
       name: "Flare Blitz",
       cooldown: 10,
+      buff:{},
+      buffPlus:{
+        levelRequired: 13,
+        debuffs: {
+          Speed: 40
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -6040,6 +6168,21 @@ const skillDamage = {
 	"ult": {
 		name: "Seismic Slam",
     cooldown: 134,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        HPRegen: 80,
+        Speed: "50%",
+        Shield: 20
+      },
+      debuffs: {
+        ATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      },
+    },
 		formulas: [
         {
           label: "Damage - Burning (2x)",
@@ -6050,7 +6193,12 @@ const skillDamage = {
           label: "Damage - Slam",
           formula: (ATK, Level) => 3.07 * ATK + 8 * (Level - 1) + 380,
           type: "physical"
-        }
+        },
+        {
+          label: "Damage - Slam Additional",
+          type: "text-only",
+		      additionalText: "8% of enemy max HP"
+        },
 	 ]
 	}
   },
@@ -6064,6 +6212,11 @@ const skillDamage = {
             AtkSPD: "20%"
           },
           formulas: [
+                    {
+          label: "Damage - Flare",
+          type: "text-only",
+		      additionalText: "90% Atk + 0.6% Enemy Max HP x (Level - 1) + 25"
+        },
           ]
         },
 	"atkboosted": {
@@ -6085,6 +6238,22 @@ const skillDamage = {
     "s11": {
       name: "Pyro Ball",
       cooldown: 5,
+      buff:{},
+      debuffs: {
+        ATK: 5,
+        SpATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        otherSkillsCooldownReduction: {
+          s21: 4,  // Flame Charge -4s
+          s22: 4   // Feint -4s
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -6101,6 +6270,9 @@ const skillDamage = {
     "s12": {
       name: "Blaze Kick",
       cooldown: 9.5,
+      buff: {
+      },
+      effects: ["Unstoppable"],
       formulas: [
         {
           label: "Damage",
@@ -14032,3 +14204,33 @@ const skillDamage = {
 	}
   },
   };
+  
+  const pokemonSkins = {
+  absol: {
+    default: "Default",
+    skin1: "Fashionable Style",
+    skin2: "Dark Suit Style",
+    skin3: "Explorer Style",
+    skin4: "Sweet Style",
+    skin5: "Fashionable Style (Magenta)",
+    skin6: "Sacred Style",
+    skin7: "Pokébuki Style"
+  },
+  pikachu: {
+    default: "Default",
+    skin1: "Festival Style",
+    skin2: "Fashionable Style",
+    skin3: "Cook Style",
+    skin4: "Circus Style"
+  },
+  charizard: {
+    default: "Default",
+    skin1: "Firefighter Style",
+    skin2: "Battle Style"
+  },
+  // Adicione mais pokémon aqui
+};
+
+if (typeof window !== 'undefined') {
+  window.pokemonSkins = pokemonSkins;
+}

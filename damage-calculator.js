@@ -125,6 +125,251 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSkillSlot = null;
   let muscleGauge = 0; // Exclusivo para Buzzwole (0-6)
   let selectedRoute = null;
+  let selectedSkins = {};
+  let statModifiers = {}; // Rastreia todos os modificadores de cada stat
+  let currentExpandedStat = null; // Controla qual stat está expandido
+
+// Tornar imagem clicável para abrir modal
+const makeImageClickable = () => {
+  const resultImage = document.querySelector(".resultado-image img");
+  if (!resultImage || !selectedPokemon) return;
+  
+  // Verificar se há skins disponíveis
+  if (!pokemonSkins || !pokemonSkins[selectedPokemon]) return;
+  
+  // Remover listener anterior se existir
+  const newImage = resultImage.cloneNode(true);
+  resultImage.parentNode.replaceChild(newImage, resultImage);
+  
+  // Adicionar novo listener
+  newImage.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openSkinsModal();
+  });
+  
+  // Adicionar título
+  newImage.title = "Clique para trocar de skin";
+  newImage.style.cursor = "pointer";
+};
+
+// Abrir modal de skins
+const openSkinsModal = () => {
+  if (!selectedPokemon || !pokemonSkins[selectedPokemon]) {
+    return;
+  }
+  
+  // Criar overlay
+  const overlay = document.createElement("div");
+  overlay.className = "skins-overlay show";
+  overlay.id = "skins-overlay";
+  
+  // Criar modal
+  const modal = document.createElement("div");
+  modal.className = "skins-modal";
+  modal.id = "skins-modal";
+  
+  // Header
+  const header = document.createElement("div");
+  header.className = "skins-modal-header";
+  
+  const title = document.createElement("div");
+  title.className = "skins-modal-title";
+  title.textContent = `Skins de ${safeCap(selectedPokemon)}`;
+  
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "skins-close-btn";
+  closeBtn.innerHTML = "×";
+  closeBtn.addEventListener("click", closeSkinsModal);
+  
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+  modal.appendChild(header);
+  
+  // Grid de skins
+  const grid = document.createElement("div");
+  grid.className = "skins-grid-compact";
+  
+  const skins = pokemonSkins[selectedPokemon];
+  const currentSkin = selectedSkins[selectedPokemon] || "default";
+  
+  Object.keys(skins).forEach(skinKey => {
+    const item = document.createElement("div");
+    item.className = "skin-item-compact";
+    item.dataset.skinKey = skinKey;
+    
+    if (skinKey === currentSkin) {
+      item.classList.add("selected");
+    }
+    
+    // Imagem da skin
+    const img = document.createElement("img");
+    img.className = "skin-thumb";
+    
+    // NOVO CAMINHO: ./estatisticas-shad/images/{pokemon}/skins/{skinKey}.png
+    if (skinKey === "default") {
+      img.src = `./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png`;
+    } else {
+      img.src = `./estatisticas-shad/images/skins/${selectedPokemon}/${skinKey}.png`;
+    }
+    
+    img.alt = skins[skinKey];
+    
+    /*img.onerror = function() {
+      this.src = `./estatisticas-shad/images/backgrounds/placeholder.png`;
+    };*/
+    
+    // Nome da skin
+    const name = document.createElement("div");
+    name.className = "skin-name-compact";
+    name.textContent = skins[skinKey];
+    
+    if (skinKey === "default") {
+      const badge = document.createElement("div");
+      badge.className = "skin-default-badge";
+      badge.textContent = "Default";
+      name.appendChild(badge);
+    }
+    
+    item.appendChild(img);
+    item.appendChild(name);
+    
+    // Selecionar ao clicar
+    item.addEventListener("click", () => {
+      selectSkin(skinKey);
+    });
+    
+    grid.appendChild(item);
+  });
+  
+  modal.appendChild(grid);
+  
+  // Adicionar ao DOM
+  document.body.appendChild(overlay);
+  overlay.appendChild(modal);
+  
+  // Fechar ao clicar no overlay
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closeSkinsModal();
+    }
+  });
+};
+
+// Fechar modal
+const closeSkinsModal = () => {
+  const overlay = document.getElementById("skins-overlay");
+  if (overlay) {
+    overlay.remove();
+  }
+};
+
+// Selecionar skin
+const selectSkin = (skinKey) => {
+  selectedSkins[selectedPokemon] = skinKey;
+  
+  // Atualizar visual no modal
+  const items = document.querySelectorAll(".skin-item-compact");
+  items.forEach(item => {
+    if (item.dataset.skinKey === skinKey) {
+      item.classList.add("selected");
+    } else {
+      item.classList.remove("selected");
+    }
+  });
+  
+  // Atualizar imagem
+  updatePokemonImage();
+  
+  // Fechar modal após 300ms
+  setTimeout(() => {
+    closeSkinsModal();
+  }, 300);
+};
+
+// Atualizar imagem do pokémon
+const updatePokemonImage = () => {
+  const resultImage = document.querySelector(".resultado-image img");
+  if (!resultImage || !selectedPokemon) return;
+  
+  const skinKey = selectedSkins[selectedPokemon] || "default";
+  
+  if (skinKey === "default") {
+    resultImage.src = `./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png`;
+  } else {
+    // NOVO CAMINHO
+    resultImage.src = `./estatisticas-shad/images/skins/${selectedPokemon}/${skinKey}.png`;
+    
+    resultImage.onerror = function() {
+      this.src = `./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png`;
+      this.onerror = null;
+    };
+  }
+};
+
+ const createPokemonRatings = (pokemon) => {
+  // Verificar se pokemonRatings existe (foi carregado do util.js)
+  if (typeof pokemonRatings === 'undefined' || !pokemonRatings[pokemon]) {
+    return ''; // Retorna vazio se não houver dados
+  }
+  
+  const ratings = pokemonRatings[pokemon];
+  const maxRating = 5; // Valor máximo possível
+  
+  // Ícones para cada categoria
+  const icons = {
+    Attack: '⚔️',
+    Endure: '🛡️',
+    Mobility: '⚡',
+    Score: '🎯',
+    Support: '💚'
+  };
+  
+  // Mapeamento de nomes para classes CSS
+  const categoryClasses = {
+    Attack: 'attack',
+    Endure: 'endure',
+    Mobility: 'mobility',
+    Score: 'score',
+    Support: 'support'
+  };
+  
+  const ratingsHtml = Object.entries(ratings).map(([category, value]) => {
+    // Calcula porcentagem: valor atual / máximo (5) * 100
+    const percentage = (value / maxRating) * 100;
+    const icon = icons[category] || '●';
+    const categoryClass = categoryClasses[category] || category.toLowerCase();
+    
+    return `
+      <div class="rating-item">
+        <div class="rating-label">
+          <span class="rating-icon">${icon}</span>
+          ${category}
+        </div>
+        <div class="rating-bar-container">
+          <div class="rating-bar-fill ${categoryClass}" style="width: ${percentage}%"></div>
+        </div>
+        <div class="rating-value">${value.toFixed(1)}</div>
+      </div>
+    `;
+  }).join('');
+  
+  return `
+    <div class="pokemon-ratings-container">
+      <div class="ratings-title">🌟 Pokemon Stats 🌟</div>
+      ${ratingsHtml}
+    </div>
+  `;
+};
+
+  const EFFECT_CONFIG = {
+  "Unstoppable": { icon: "🛡️", label: "Unstoppable" },
+  "Shield": { icon: "🛡️", label: "Shield Active" },
+  "Speed Boost": { icon: "⚡", label: "Speed Boost" },
+  "Damage Boost": { icon: "💥", label: "Damage Boost" },
+  "Invincible": { icon: "✨", label: "Invincible" },
+  "Heal": { icon: "💚", label: "Heal Active" },
+  "Stealth": { icon: "👁️", label: "Stealth" }
+};
 
   const CUSTOM_SKILL_MAPPING = {
   absol: {
@@ -146,6 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 // Função para criar o seletor de skills dentro do resultado
+// FunÃ§Ã£o para criar o seletor de skills dentro do resultado
 const createSkillBuildInResult = () => {
   // Remover seletor existente se houver
   const existingSelector = document.querySelector(".skill-build-in-result");
@@ -153,7 +399,13 @@ const createSkillBuildInResult = () => {
     existingSelector.remove();
   }
   
-  // Verificar se temos dados de skills para este Pokémon
+  // NOVO: Remover ratings existentes
+  const existingRatings = document.querySelector(".pokemon-ratings-container");
+  if (existingRatings) {
+    existingRatings.remove();
+  }
+  
+  // Verificar se temos dados de skills para este PokÃ©mon
   if (!selectedPokemon || !skillDamage[selectedPokemon]) {
     return;
   }
@@ -194,14 +446,31 @@ const createSkillBuildInResult = () => {
   // Adicionar seletor de Route ABAIXO e CENTRALIZADO
   const routeSelector = createRouteSelector();
   skillSelector.appendChild(routeSelector);
-  // Inserir o seletor após a role badge
+  
+  // Inserir o seletor apÃ³s a role badge
   const roleBadge = resultImage.querySelector(".role-badge");
   if (roleBadge) {
-    roleBadge.insertAdjacentElement("afterend", skillSelector);
+    // NOVO: Adicionar ratings ANTES do seletor de skills
+    const ratingsHtml = createPokemonRatings(selectedPokemon);
+    if (ratingsHtml) {
+      roleBadge.insertAdjacentHTML("afterend", ratingsHtml);
+      
+      // Agora inserir o skill selector após os ratings
+      const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
+      if (ratingsContainer) {
+        ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+      } else {
+        roleBadge.insertAdjacentElement("afterend", skillSelector);
+      }
+    } else {
+      roleBadge.insertAdjacentElement("afterend", skillSelector);
+    }
   } else {
     resultImage.appendChild(skillSelector);
   }
 };
+
+
 // Controle de Muscle Gauge para Buzzwole
 const createMuscleGaugeControl = () => {
   if (selectedPokemon !== "buzzwole") return;
@@ -510,7 +779,6 @@ const openSkillSelectionPanel = (pokemon, slotKey, slotContainer) => {
   showSkillSelectionPanel(options, slotContainer);
 };
 
-// Função para mostrar o painel
 const showSkillSelectionPanel = (options, slotContainer) => {
   // Criar painel
   const panel = document.createElement("div");
@@ -522,6 +790,15 @@ const showSkillSelectionPanel = (options, slotContainer) => {
   title.className = "skill-selection-title";
   title.textContent = `Escolher ${currentSkillSlot.slotKey === "s1" ? "Slot 1" : "Slot 2"}`;
   panel.appendChild(title);
+  
+  // NOVO: Botão de limpar
+  const clearButton = document.createElement("button");
+  clearButton.className = "clear-skill-button";
+  clearButton.textContent = "🗑️ Limpar Seleção";
+  clearButton.addEventListener("click", () => {
+    clearSkillSelection();
+  });
+  panel.appendChild(clearButton);
   
   // Opções
   const optionsContainer = document.createElement("div");
@@ -576,6 +853,29 @@ const selectSkill = (skillKey) => {
   
   // Recriar o seletor para mostrar a nova seleção
   createSkillBuildInResult();
+  
+  // IMPORTANTE: Recalcular para filtrar as skills exibidas
+  calcular();
+};
+
+// Função para limpar seleção de skill
+const clearSkillSelection = () => {
+  if (!currentSkillSlot) return;
+  
+  const { pokemon, slotKey } = currentSkillSlot;
+  
+  // Limpar a seleção do slot
+  if (selectedSkills[pokemon] && selectedSkills[pokemon][slotKey]) {
+    delete selectedSkills[pokemon][slotKey];
+  }
+  
+  closeSkillSelectionPanel();
+  
+  // Recriar o seletor para mostrar o estado vazio
+  createSkillBuildInResult();
+  
+  // Recalcular para mostrar todas as skills do slot novamente
+  calcular();
 };
 
 // Função para fechar painel
@@ -677,10 +977,8 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   
   if (isUltimate) {
     totalCDR = globalEnergyRate || 0;
-    // FlatCDR NÃO afeta ultimates - deixar totalFlatCDR = 0
   } else {
     totalCDR = globalCDR || 0;
-    // NOVO: Obter FlatCDR global dos stats modificados APENAS para skills normais
     totalFlatCDR = modifiedStats.FlatCDR || 0;
   }
   
@@ -688,20 +986,39 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   if (modifiedStats._selfBuffs && modifiedStats._selfBuffs[skillKey]) {
     const skillSelfBuffs = modifiedStats._selfBuffs[skillKey];
     
-    // Redução em segundos fixos
     if (skillSelfBuffs.CooldownFlat !== undefined && skillSelfBuffs.CooldownFlat !== null) {
       specificCooldownReduction = Number(skillSelfBuffs.CooldownFlat);
     }
     
-    // FlatCDR específico da skill (também não afeta ultimates)
     if (!isUltimate && skillSelfBuffs.FlatCDR !== undefined && skillSelfBuffs.FlatCDR !== null) {
       totalFlatCDR += Number(skillSelfBuffs.FlatCDR);
     }
     
-    // Redução em porcentagem (específica da skill)
     if (skillSelfBuffs.CooldownPercent !== undefined && skillSelfBuffs.CooldownPercent !== null) {
       specificCooldownReductionPercent = Number(skillSelfBuffs.CooldownPercent);
     }
+  }
+  
+  // **NOVO**: Verificar se outras skills ativas afetam o cooldown desta skill
+  if (activeSkills[pokemon] && skillDamage[pokemon]) {
+    Object.keys(activeSkills[pokemon]).forEach(activeSkillKey => {
+      // Verificar se a skill está ativa
+      if (activeSkills[pokemon][activeSkillKey]) {
+        const activeSkill = skillDamage[pokemon][activeSkillKey];
+        
+        // Verificar se tem buffPlus com otherSkillsCooldownReduction
+        if (activeSkill?.buffPlus && 
+            currentLevel >= (activeSkill.buffPlus.levelRequired || 11) &&
+            activeSkill.buffPlus.otherSkillsCooldownReduction) {
+          
+          // Verificar se esta skill (skillKey) está na lista de reduções
+          const reductionForThisSkill = activeSkill.buffPlus.otherSkillsCooldownReduction[skillKey];
+          if (reductionForThisSkill !== undefined) {
+            specificCooldownReduction += Number(reductionForThisSkill);
+          }
+        }
+      }
+    });
   }
   
   // 1. Aplicar CDR/EnergyRate GLOBAL primeiro (limitado a 90%)
@@ -711,7 +1028,7 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   // 2. Aplicar FlatCDR GLOBAL (apenas para skills normais)
   const afterFlatCDR = Math.max(0.5, afterGlobalCDR - totalFlatCDR);
   
-  // 3. Aplicar redução FIXA em segundos específica da skill
+  // 3. Aplicar redução FIXA em segundos específica da skill (incluindo cross-skill)
   const afterFlatReduction = Math.max(0.5, afterFlatCDR - specificCooldownReduction);
   
   // 4. Aplicar redução percentual ESPECÍFICA da skill
@@ -747,6 +1064,120 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   };
 
   const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "HPRegen", "Shield", "DmgTaken", "HindRed", "SpDEFPen", "DEFPen"]);
+
+  // Função para adicionar um modificador ao rastreamento
+  const addStatModifier = (stat, value, source, type = "flat", iconPath = null) => {
+    if (!statModifiers[stat]) {
+      statModifiers[stat] = { base: 0, modifications: [], total: 0 };
+    }
+    
+    // Evitar duplicatas da mesma fonte
+    const existingIndex = statModifiers[stat].modifications.findIndex(
+      mod => mod.source === source && mod.type === type
+    );
+    
+    if (existingIndex !== -1) {
+      // Atualizar valor existente
+      statModifiers[stat].modifications[existingIndex].value += value;
+    } else {
+      // Adicionar novo modificador
+      statModifiers[stat].modifications.push({
+        value: value,
+        source: source,
+        type: type,
+        iconPath: iconPath
+      });
+    }
+  };
+
+const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
+  const modifiers = statModifiers[stat];
+  if (!modifiers || modifiers.modifications.length === 0) {
+    return "";
+  }
+  
+  const isPercent = PERCENT_KEYS.has(stat);
+  
+  // Ordenar modificadores: flat primeiro, depois percent
+  const sortedMods = [...modifiers.modifications].sort((a, b) => {
+    const order = { flat: 1, percent: 2, "emblem-percent": 2.5, "speed-percent": 2.5, formula: 3 };
+    return (order[a.type] || 999) - (order[b.type] || 999);
+  });
+    
+  const modifiersHTML = sortedMods.map(mod => {
+  const isPositive = mod.value >= 0;
+  const valueClass = isPositive ? "positive" : "negative";
+  const sign = isPositive ? "+" : "";
+  
+  let displayValue = "";
+  
+  // CORREÇÃO ESPECIAL PARA SPEED PERCENTUAL
+    if (stat === "Speed" && mod.source.includes("(Plus)")) {
+      // Speed com buff percentual de skill: pegar valor da fonte original
+      const skillName = mod.source.replace(" (Plus)", "");
+      
+      // Buscar o valor percentual original nos dados da skill
+      if (selectedPokemon && skillDamage[selectedPokemon]) {
+        const skills = skillDamage[selectedPokemon];
+        Object.keys(skills).forEach(skillKey => {
+          const skill = skills[skillKey];
+          if (skill.name === skillName && skill.buffPlus?.buffs?.Speed) {
+            const originalValue = parseFloat(String(skill.buffPlus.buffs.Speed).replace("%", ""));
+            displayValue = `${sign}${originalValue.toFixed(1)}%`;
+          }
+        });
+      }
+      
+      // Fallback: se não encontrou, usar lógica padrão
+      if (!displayValue) {
+        displayValue = `${sign}${mod.value.toFixed(1)}%`;
+      }
+    }
+    // Tipo específico para emblemas que afetam stats não-percentuais
+    else if (mod.type === "emblem-percent") {
+      displayValue = `${sign}${mod.value.toFixed(1)}%`;
+    } else if (mod.type === "percent") {
+      displayValue = `${sign}${mod.value.toFixed(1)}%`;
+    } else if (isPercent && mod.type === "flat") {
+      displayValue = `${sign}${mod.value.toFixed(1)}%`;
+    } else {
+      displayValue = `${sign}${Math.round(mod.value)}`;
+    }
+    
+    const iconHTML = mod.customIcon 
+      ? mod.customIcon
+      : mod.iconPath 
+        ? `<img src="${mod.iconPath}" class="modifier-icon" alt="${mod.source}" onerror="this.style.display='none'">`
+        : `<div class="modifier-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px;"></div>`;
+    
+    // Badge do tipo - ajustado para emblemas
+    let typeBadgeText = mod.type;
+    if (mod.type === "emblem-percent" || mod.type === "speed-percent") {
+      typeBadgeText = "percent";
+    }
+    
+    return `
+      <div class="modifier-item">
+        <div class="modifier-source">
+          ${iconHTML}
+          <span class="modifier-name">${mod.source}</span>
+        </div>
+        <div class="modifier-value ${valueClass}">
+          ${displayValue}
+          <span class="modifier-type-badge ${mod.type === "emblem-percent" ? "percent" : mod.type}">${typeBadgeText}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+  
+  return `
+    <div class="stat-details" id="details-${stat}">
+      <div class="modifiers-list">
+        ${modifiersHTML}
+      </div>
+    </div>
+  `;
+};
 
   const ensureAllStats = (obj) => {
     const out = { ...obj };
@@ -1026,52 +1457,75 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     if (!skill) return;
 
     try {
-      // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
-      if (skill.buff && typeof skill.buff === 'object') {
-        Object.keys(skill.buff).forEach(stat => {
-          // Condições especiais para Blastoise
-          if (
-            pokemon === "blastoise" &&
-            skillKey === "s11" &&
-            !(activeSkills[pokemon]?.s22)
-          ) {
-            return;
+    // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
+    if (skill.buff && typeof skill.buff === 'object') {
+      Object.keys(skill.buff).forEach(stat => {
+        // Condições especiais para Blastoise
+        if (
+          pokemon === "blastoise" &&
+          skillKey === "s11" &&
+          !(activeSkills[pokemon]?.s22)
+        ) {
+          return;
+        }
+        if (
+          pokemon === "blastoise" &&
+          skillKey === "s12" &&
+          stat === "Speed" &&
+          !(activeSkills[pokemon]?.s22)
+        ) {
+          return;
+        }
+
+        const skillName = skill.name || skillKey;
+        const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+
+        if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+          const rawVal = skill.buff[stat];
+          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+          const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+          if (!Number.isFinite(numeric)) return;
+
+          if (stat === "FlatCDR") {
+            if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, skillName, "flat", iconPath);
           }
-          if (
-            pokemon === "blastoise" &&
-            skillKey === "s12" &&
-            stat === "Speed" &&
-            !(activeSkills[pokemon]?.s22)
-          ) {
-            return;
-          }
-
-          // Permitir FlatCDR mesmo não estando em STAT_KEYS
-          if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
-            const rawVal = skill.buff[stat];
-            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-
-            if (!Number.isFinite(numeric)) return;
-
-            if (stat === "FlatCDR") {
-              if (!modifiedStats[stat]) modifiedStats[stat] = 0;
-              modifiedStats[stat] += numeric;
-            }
-            else if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
-              modifiedStats[stat] += numeric;
-            } else if (stat === "DmgTaken") {
-              modifiedStats[stat] += numeric;
+          // Para stats percentuais (Speed, AtkSPD, CDR, etc.)
+          else if (PERCENT_KEYS.has(stat)) {
+            // SPEED é híbrido: pode ser flat OU percent
+            if (stat === "Speed" && isPercentString) {
+              // Speed com "%" = calcular baseado no valor base
+              const bonusValue = baseStats.Speed * (numeric / 100);
+              modifiedStats.Speed += bonusValue;
+              addStatModifier("Speed", numeric, skillName, "speed-percent", iconPath); // Tipo especial
             } else {
-              if (isPercentString) {
-                modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-              } else {
-                modifiedStats[stat] += numeric;
-              }
+              // Outros stats percentuais: adicionar diretamente
+              modifiedStats[stat] += numeric;
+              addStatModifier(stat, numeric, skillName, "flat", iconPath);
             }
           }
-        });
-      }
+                    else if (stat === "DmgTaken") {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, skillName, "flat", iconPath);
+          } 
+          // Para stats não-percentuais (HP, ATK, DEF, SpATK, SpDEF)
+          else {
+            if (isPercentString) {
+              // Se vier com %, calcular baseado no valor base
+              const bonusValue = baseStats[stat] * (numeric / 100);
+              modifiedStats[stat] += bonusValue;
+              addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
+            } else {
+              // Se for valor flat, adicionar diretamente
+              modifiedStats[stat] += numeric;
+              addStatModifier(stat, numeric, skillName, "flat", iconPath);
+            }
+          }
+        }
+      });
+    }
 
       // Aplicar SELF-BUFFS básicos (afetam apenas a skill específica)
       if (skill.selfBuff && typeof skill.selfBuff === 'object') {
@@ -1089,38 +1543,61 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         });
       }
 
-      // Aplicar buffs Plus GLOBAIS (baseado no nível atual)
-      if (skill.buffPlus && typeof skill.buffPlus === 'object' && 
-          currentLevel >= (skill.buffPlus.levelRequired || 11)) {
-        
-        // Processar buffs normais do buffPlus
-        if (skill.buffPlus.buffs && typeof skill.buffPlus.buffs === 'object') {
-          Object.keys(skill.buffPlus.buffs).forEach(stat => {
-            if (modifiedStats.hasOwnProperty(stat)) {
-              const rawVal = skill.buffPlus.buffs[stat];
-              const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-              const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+    // Aplicar buffs Plus GLOBAIS (baseado no nível atual)
+    if (skill.buffPlus && typeof skill.buffPlus === 'object' && 
+        currentLevel >= (skill.buffPlus.levelRequired || 11)) {
+      
+      // Processar buffs normais do buffPlus
+      if (skill.buffPlus.buffs && typeof skill.buffPlus.buffs === 'object') {
+        Object.keys(skill.buffPlus.buffs).forEach(stat => {
+          if (modifiedStats.hasOwnProperty(stat)) {
+            const rawVal = skill.buffPlus.buffs[stat];
+            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
 
-              if (!Number.isFinite(numeric)) return;
+            if (!Number.isFinite(numeric)) return;
 
-              if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
-                modifiedStats[stat] += numeric;
-              } else if (stat === "DmgTaken") {
-                if (isPercentString) {
-                  modifiedStats[stat] += numeric;
-                } else {
-                  modifiedStats[stat] += numeric;
-                }
+            const skillName = `${skill.name || skillKey} (Plus)`;
+            const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+
+            // Verificar se o stat é do tipo percentual (Speed, AtkSPD, CDR, etc.)
+            if (PERCENT_KEYS.has(stat)) {
+              // SPEED é híbrido: pode ser flat OU percent
+              if (stat === "Speed" && isPercentString) {
+                // Speed com "%" = calcular baseado no valor base
+                const bonusValue = baseStats.Speed * (numeric / 100);
+                modifiedStats.Speed += bonusValue;
+                addStatModifier("Speed", numeric, skillName, "speed-percent", iconPath); // Tipo especial
               } else {
-                if (isPercentString) {
-                  modifiedStats[stat] += baseStats[stat] * (numeric / 100);
-                } else {
-                  modifiedStats[stat] += numeric;
-                }
+                // Outros stats percentuais: adicionar diretamente
+                modifiedStats[stat] += numeric;
+                addStatModifier(stat, numeric, skillName, "flat", iconPath);
+              }
+            } else if (stat === "DmgTaken") {
+              // DmgTaken pode ser percentual ou flat
+              if (isPercentString) {
+                modifiedStats[stat] += numeric;
+                addStatModifier(stat, numeric, skillName, "flat", iconPath);
+              } else {
+                modifiedStats[stat] += numeric;
+                addStatModifier(stat, numeric, skillName, "flat", iconPath);
+              }
+            } else {
+              // Para stats não-percentuais (HP, ATK, DEF, SpATK, SpDEF)
+              if (isPercentString) {
+                // Se vier com %, calcular baseado no valor base
+                const bonusValue = baseStats[stat] * (numeric / 100);
+                modifiedStats[stat] += bonusValue;
+                addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
+              } else {
+                // Se for valor flat, adicionar diretamente
+                modifiedStats[stat] += numeric;
+                addStatModifier(stat, numeric, skillName, "flat", iconPath);
               }
             }
-          });
-        }
+          }
+        });
+      }
         // ADICIONE ESTA SEÇÃO AQUI (posição correta):
         if (skill.buffPlus.nextBasicAttackPercent) {
           if (!modifiedStats._nextBasicAttackPercents) {
@@ -1259,6 +1736,8 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     }
 
     const passive = skills[passiveKey];
+    const passiveName = passive.name || "Passive";
+    const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${passiveKey}.png`;
 
     if (passive.buff) {
       Object.keys(passive.buff).forEach(stat => {
@@ -1271,17 +1750,23 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
 
           if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
             modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, passiveName, "flat", iconPath);
           } else if (stat === "DmgTaken") {
             if (isPercentString) {
               modifiedStats[stat] += numeric;
+              addStatModifier(stat, numeric, passiveName, "flat", iconPath);
             } else {
               modifiedStats[stat] += numeric;
+              addStatModifier(stat, numeric, passiveName, "flat", iconPath);
             }
           } else {
             if (isPercentString) {
-              modifiedStats[stat] += baseStats[stat] * (numeric / 100);
+              const bonusValue = baseStats[stat] * (numeric / 100);
+              modifiedStats[stat] += bonusValue;
+              addStatModifier(stat, bonusValue, passiveName, "percent", iconPath);
             } else {
               modifiedStats[stat] += numeric;
+              addStatModifier(stat, numeric, passiveName, "flat", iconPath);
             }
           }
         }
@@ -1294,9 +1779,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           return;
         }
         
-        // NOVA VERIFICAÇÃO: Ignorar fórmulas que não devem afetar stats
         if (f.displayOnly === true || f.affects === null || f.affects === undefined) {
-          // Apenas calcular os valores para display, sem modificar stats
           let baseVal, modifiedVal;
           
           if (f.type === "multi" || f.useAllStats) {
@@ -1325,14 +1808,12 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             modifiedVal = f.formula(modifiedAttribute, targetLevel, modifiedStats.HP);
           }
           
-          // Armazenar apenas para display
           if (!passive.calculatedValues) passive.calculatedValues = {};
           passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
           
-          return; // Não continuar para a aplicação de buffs
+          return;
         }
         
-        // RESTO DO CÓDIGO ORIGINAL (para fórmulas que DEVEM afetar stats)
         let baseVal, modifiedVal;
         
         if (f.type === "multi" || f.useAllStats) {
@@ -1388,40 +1869,56 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
 
           if (modifiedStats.hasOwnProperty(statKey)) {
             modifiedStats[statKey] += modifiedVal;
+            addStatModifier(statKey, modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           }
         } else {
           const label = f.label.toLowerCase();
           
           if (label.includes("defense") && !label.includes("special")) {
             modifiedStats.DEF += modifiedVal;
+            addStatModifier("DEF", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("special defense") || label.includes("sp. defense") || label.includes("spdef")) {
             modifiedStats.SpDEF += modifiedVal;
+            addStatModifier("SpDEF", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("attack") && !label.includes("special")) {
             modifiedStats.ATK += modifiedVal;
+            addStatModifier("ATK", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("special attack") || label.includes("sp. attack") || label.includes("spatk")) {
             modifiedStats.SpATK += modifiedVal;
+            addStatModifier("SpATK", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("hp") || label.includes("health")) {
             modifiedStats.HP += modifiedVal;
+            addStatModifier("HP", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("speed")) {
             modifiedStats.Speed += modifiedVal;
+            addStatModifier("Speed", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("crit") && label.includes("rate")) {
             modifiedStats.CritRate += modifiedVal;
+            addStatModifier("CritRate", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("crit") && label.includes("dmg")) {
             modifiedStats.CritDmg += modifiedVal;
+            addStatModifier("CritDmg", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("lifesteal")) {
             modifiedStats.Lifesteal += modifiedVal;
+            addStatModifier("Lifesteal", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("cdr") || label.includes("cooldown")) {
             modifiedStats.CDR += modifiedVal;
+            addStatModifier("CDR", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("atkspd") || label.includes("attack speed")) {
             modifiedStats.AtkSPD += modifiedVal;
+            addStatModifier("AtkSPD", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("dmgtaken") || label.includes("dmg taken")) {
             modifiedStats.DmgTaken += modifiedVal;
+            addStatModifier("DmgTaken", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("hindred") || label.includes("hindrance reduction")) {
             modifiedStats.HindRed += modifiedVal;
+            addStatModifier("HindRed", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("spdefpen") || label.includes("spdef penetration")) {
             modifiedStats.SpDEFPen += modifiedVal;
+            addStatModifier("SpDEFPen", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           } else if (label.includes("defpen") || label.includes("def penetration")) {
             modifiedStats.DEFPen += modifiedVal;
+            addStatModifier("DEFPen", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           }
         }
       });
@@ -1430,7 +1927,6 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
 
   return modifiedStats;
 };
-
   // CRIAÇÃO DOS FILTROS DE ROLE E TIPO DE DANO
   const createRoleFilters = () => {
     const filterContainer = document.createElement("div");
@@ -1628,6 +2124,9 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   const selectPokemon = (poke) => {
     selectedPokemon = poke;
     
+  if (!selectedSkins[poke]) {
+    selectedSkins[poke] = "default";
+  }
     selectedPokemonImage.src = `./estatisticas-shad/images/backgrounds/${poke}-left-bg.png`;
     selectedPokemonImage.style.display = "block";
     selectedPokemonName.textContent = safeCap(poke);
@@ -2017,9 +2516,39 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     createResetButton();
   };
 
+  // Função para determinar se uma skill deve ser exibida
+  const shouldShowSkill = (pokemon, skillKey) => {
+    // Se não há seleção de skills para este pokémon, mostrar todas
+    if (!selectedSkills[pokemon]) return true;
+    
+    // Determinar qual slot esta skill pertence
+    const skillSlot = getSkillSlot(pokemon, skillKey);
+    
+    // Se a skill não pertence a nenhum slot (ex: unite), sempre mostrar
+    if (!skillSlot) return true;
+    
+    // Se há uma seleção para este slot
+    const selectedSkillForSlot = selectedSkills[pokemon][skillSlot];
+    if (selectedSkillForSlot) {
+      // Mostrar apenas se for a skill selecionada
+      return skillKey === selectedSkillForSlot;
+    }
+    
+    // Se não há seleção para este slot, mostrar todas do slot
+    return true;
+  };
+
   // FUNÇÃO DE CÁLCULO
   const calcular = () => {
     const targetLevel = parseInt(levelSelect.value, 10) || 1;
+    statModifiers = {};
+      STAT_KEYS.forEach(stat => {
+        statModifiers[stat] = {
+          base: 0,
+          modifications: [],
+          total: 0
+        };
+      });
     if (!selectedPokemon) {
       resultado.style.display = "none";
       return;
@@ -2081,120 +2610,243 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     const selectedItems = selectedHeldItems.map(item => item.key);
 
     // 1) Aplicar bônus normais dos itens e stacks
-    const flatBonusesByStat = {};
-    selectedHeldItems.forEach(selectedItem => {
-      const itemKey = selectedItem.key;
-      const bonuses = gameHeldItensStatus?.[itemKey] || [];
-      bonuses.forEach(b => {
-        const parts = String(b).split(" +");
-        const rawStat = parts[0] || "";
-        const valStr = parts[1] || "0";
-        const key = rawStat.replace(/[^a-z]/gi, "").toUpperCase();
-        const map = {
-          HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
-          ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
-          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
-          HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
-        };
-        const prop = map[key];
-        if (!prop) return;
-        const amount = parseFloat(valStr.replace(",", "."));
-        if (!isNaN(amount)) {
-          flatBonusesByStat[prop] = (flatBonusesByStat[prop] || 0) + amount;
-        }
-      });
-    });
+// 1) Aplicar bônus normais dos itens e stacks
+const flatBonusesByStat = {};
 
-    modified = { ...base };
+// Registrar valor base
+STAT_KEYS.forEach(stat => {
+  statModifiers[stat].base = base[stat] || 0;
+});
 
-    selectedHeldItems.forEach(selectedItem => {
-      const itemKey = selectedItem.key;
-      const itemName = selectedItem.name;
+selectedHeldItems.forEach(selectedItem => {
+  const itemKey = selectedItem.key;
+  const bonuses = gameHeldItensStatus?.[itemKey] || [];
+  bonuses.forEach(b => {
+    const parts = String(b).split(" +");
+    const rawStat = parts[0] || "";
+    const valStr = parts[1] || "0";
+    const key = rawStat.replace(/[^a-z]/gi, "").toUpperCase();
+    const map = {
+      HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
+      ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
+      LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
+      HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
+    };
+    const prop = map[key];
+    if (!prop) return;
+    const amount = parseFloat(valStr.replace(",", "."));
+    if (!isNaN(amount)) {
+      flatBonusesByStat[prop] = (flatBonusesByStat[prop] || 0) + amount;
+    }
+  });
+});
 
-      const bonuses = gameHeldItensStatus?.[itemKey] || [];
-      bonuses.forEach(b => {
-        const parts = String(b).split(" +");
-        const rawStat = parts[0] || "";
-        const valStr = parts[1] || "0";
-        const key = rawStat.replace(/[^a-z]/gi, "").toUpperCase();
-        const map = {
-          HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
-          ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
-          LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
-          HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
-        };
-        const prop = map[key];
-        if (!prop) return;
-        const amount = parseFloat(valStr.replace(",", "."));
-        if (!isNaN(amount)) {
-          modified[prop] += amount;
-        }
-      });
+modified = { ...base };
 
-      if (STACKABLE_ITEMS[itemName]) {
-        const config = STACKABLE_ITEMS[itemName];
-        const stacks = selectedItem.stacks || 0;
+selectedHeldItems.forEach(selectedItem => {
+  const itemKey = selectedItem.key;
+  const itemName = selectedItem.name;
+  const iconPath = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
 
-        if (itemName === "Charging Charm") {
-          const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
-          const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
-          modified[config.stat] += (config.fixedBonus || 0) + bonusPercent;
-        } else if (config.percent) {
-          const totalPercentage = config.perStack * stacks;
-          const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
-          const bonusAmount = baseForPercent * (totalPercentage / 100);
-          modified[config.stat] += bonusAmount;
-        } else {
-          modified[config.stat] += config.perStack * stacks;
-        }
+  const bonuses = gameHeldItensStatus?.[itemKey] || [];
+  bonuses.forEach(b => {
+    const parts = String(b).split(" +");
+    const rawStat = parts[0] || "";
+    const valStr = parts[1] || "0";
+    const key = rawStat.replace(/[^a-z]/gi, "").toUpperCase();
+    const map = {
+      HP:"HP",ATK:"ATK",DEF:"DEF",SPATK:"SpATK",SPDEF:"SpDEF",SPEED:"Speed",
+      ATKSPD:"AtkSPD",CDR:"CDR",CRITRATE:"CritRate",CRITDMG:"CritDmg",
+      LIFESTEAL:"Lifesteal",HPREGEN:"HPRegen",ENERGYRATE:"EnergyRate", SHIELD:"Shield", DMGTAKEN:"DmgTaken",
+      HindRed: "HindRed", SPDEFPEN: "SpDEFPen", DEFPen: "DEFPen"
+    };
+    const prop = map[key];
+    if (!prop) return;
+    const amount = parseFloat(valStr.replace(",", "."));
+    if (!isNaN(amount)) {
+      modified[prop] += amount;
+      // Rastrear modificador
+      addStatModifier(prop, amount, itemName, "flat", iconPath);
+    }
+  });
+
+  if (STACKABLE_ITEMS[itemName]) {
+    const config = STACKABLE_ITEMS[itemName];
+    const stacks = selectedItem.stacks || 0;
+
+    if (itemName === "Charging Charm") {
+      const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
+      const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
+      const fixedBonus = config.fixedBonus || 0;
+      modified[config.stat] += fixedBonus + bonusPercent;
+      
+      // Rastrear stacks
+      if (stacks > 0) {
+        addStatModifier(config.stat, fixedBonus + bonusPercent, `${itemName} (${stacks} stacks)`, "percent", iconPath);
       }
-    });
-
+    } else if (config.percent) {
+      const totalPercentage = config.perStack * stacks;
+      const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
+      const bonusAmount = baseForPercent * (totalPercentage / 100);
+      modified[config.stat] += bonusAmount;
+      
+      // Rastrear stacks
+      if (stacks > 0) {
+        addStatModifier(config.stat, bonusAmount, `${itemName} (${stacks} stacks)`, "percent", iconPath);
+      }
+    } else {
+      const bonusAmount = config.perStack * stacks;
+      modified[config.stat] += bonusAmount;
+      
+      // Rastrear stacks
+      if (stacks > 0) {
+        addStatModifier(config.stat, bonusAmount, `${itemName} (${stacks} stacks)`, "flat", iconPath);
+      }
+    }
+  }
+});
     // 2) Aplicar passivos dos itens
     modified = applyItemPassiveEffects(base, modified, selectedItems);
+    // Rastrear passivos dos itens ativos
+selectedItems.forEach(itemKey => {
+  if (!activeItemPassives[itemKey]) return;
+  
+  const passive = getItemPassivesSource()[itemKey];
+  if (!passive) return;
+  
+  const itemName = gameHeldItens[itemKey];
+  const iconPath = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
+  
+  if (itemKey === "razorclaw") return;
+
+  if (typeof passive.formula === "function") {
+    const targetStat = passive.target || "SpATK";
+    const bonusValue = passive.formula(base);
+    addStatModifier(targetStat, bonusValue, `${itemName} (Passive)`, "formula", iconPath);
+    return;
+  }
+
+  Object.entries(passive).forEach(([stat, rawVal]) => {
+    if (!STAT_KEYS.includes(stat)) return;
+
+    const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+    const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
+    if (!Number.isFinite(numeric)) return;
+
+    if (PERCENT_KEYS.has(stat)) {
+      addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
+    } else {
+      if (isPercentString) {
+        const baseForBuff = Number(base[stat]) || 0;
+        const bonusValue = baseForBuff * (numeric / 100);
+        addStatModifier(stat, bonusValue, `${itemName} (Passive)`, "percent", iconPath);
+      } else {
+        addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
+      }
+    }
+  });
+});
 
     // 3) Battle Items
-    let selectedBattle = "";
-    battleRadios.forEach(r => { if (r.checked) selectedBattle = r.value; });
+// 3) Battle Items
+let selectedBattle = "";
+battleRadios.forEach(r => { if (r.checked) selectedBattle = r.value; });
 
-    if (selectedBattle === "xattack") {
-      modified.ATK += base.ATK * 0.20;
-      modified.SpATK += base.SpATK * 0.20;
-      modified.AtkSPD += base.AtkSPD * 0.25;
-    }
-    if (selectedBattle === "xspeed") {
-      modified.Speed += base.Speed * 0.45;
-    }
-    if (selectedBattle === "potion") {
-      const potionHealing = 160 + (modified.HP * 0.20);
-      modified.HP += potionHealing;
-    }
+if (selectedBattle) {
+  const battleItemName = gameBattleItems[selectedBattle] || selectedBattle;
+  const iconPath = `./estatisticas-shad/images/battle-items/${selectedBattle}.png`;
+  
+  if (selectedBattle === "xattack") {
+    const atkBonus = base.ATK * 0.20;
+    const spatkBonus = base.SpATK * 0.20;
+    const aspdBonus = base.AtkSPD * 0.25;
+    
+    modified.ATK += atkBonus;
+    modified.SpATK += spatkBonus;
+    modified.AtkSPD += aspdBonus;
+    
+    addStatModifier("ATK", atkBonus, battleItemName, "percent", iconPath);
+    addStatModifier("SpATK", spatkBonus, battleItemName, "percent", iconPath);
+    addStatModifier("AtkSPD", aspdBonus, battleItemName, "percent", iconPath);
+  }
+  
+  if (selectedBattle === "xspeed") {
+    const speedBonus = base.Speed * 0.45;
+    modified.Speed += speedBonus;
+    addStatModifier("Speed", speedBonus, battleItemName, "percent", iconPath);
+  }
+  
+  if (selectedBattle === "potion") {
+    const potionHealing = 160 + (modified.HP * 0.20);
+    modified.HP += potionHealing;
+    addStatModifier("HP", potionHealing, battleItemName, "formula", iconPath);
+  }
+}
 
-    // 4) Emblemas
-    let incluirEmblemas = "";
-    emblemasRadios.forEach(r => { if (r.checked) incluirEmblemas = r.value; });
+// 4) Emblemas
+let incluirEmblemas = "";
+emblemasRadios.forEach(r => { if (r.checked) incluirEmblemas = r.value; });
 
-    if (incluirEmblemas === "sim") {
-      Object.keys(selectedEmblems).forEach(emblemKey => {
-        const level = selectedEmblems[emblemKey];
-        const emblemConfig = EMBLEM_BONUSES[emblemKey];
-        if (emblemConfig) {
-          const bonus = emblemConfig.values[level];
-          if (bonus) {
-            if (emblemKey === "cinza") {
-              modified.DmgTaken += 0;
-              if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
-              modified._fixedDmgTaken += bonus;
-            } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
-              modified[emblemConfig.stat] += bonus;
-            } else {
-              modified[emblemConfig.stat] += base[emblemConfig.stat] * (bonus / 100);
-            }
+if (incluirEmblemas === "sim") {
+  Object.keys(selectedEmblems).forEach(emblemKey => {
+    const level = selectedEmblems[emblemKey];
+    const emblemConfig = EMBLEM_BONUSES[emblemKey];
+    if (emblemConfig) {
+      const bonus = emblemConfig.values[level];
+      if (bonus) {
+        const emblemData = EMBLEM_DATA[emblemKey];
+        const emblemName = `${emblemData.name} Emblem Lv.${level}`;
+        
+        // Criar ícone customizado com a cor correta
+        const customIcon = `<span style="display: inline-block; width: 14px; height: 14px; border-radius: 50%; background-color: ${emblemData.color}; ${emblemData.color === '#ffffff' ? 'border: 1px solid #333;' : ''} margin-right: 8px; flex-shrink: 0;"></span>`;
+        
+        if (emblemKey === "cinza") {
+          modified.DmgTaken += 0;
+          if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
+          modified._fixedDmgTaken += bonus;
+          
+          // Adicionar com ícone customizado
+          if (!statModifiers["DmgTaken"]) {
+            statModifiers["DmgTaken"] = { base: 0, modifications: [], total: 0 };
           }
+          statModifiers["DmgTaken"].modifications.push({
+            value: bonus,
+            source: emblemName,
+            type: "flat",
+            customIcon: customIcon
+          });
+        } else if (PERCENT_KEYS.has(emblemConfig.stat)) {
+          modified[emblemConfig.stat] += bonus;
+          
+          // Adicionar com ícone customizado
+          if (!statModifiers[emblemConfig.stat]) {
+            statModifiers[emblemConfig.stat] = { base: 0, modifications: [], total: 0 };
+          }
+          statModifiers[emblemConfig.stat].modifications.push({
+            value: bonus,
+            source: emblemName,
+            type: "flat",
+            customIcon: customIcon
+          });
+        } else {
+          const bonusValue = base[emblemConfig.stat] * (bonus / 100);
+          modified[emblemConfig.stat] += bonusValue;
+          
+          // Adicionar com ícone customizado - tipo "percent" para mostrar corretamente
+          if (!statModifiers[emblemConfig.stat]) {
+            statModifiers[emblemConfig.stat] = { base: 0, modifications: [], total: 0 };
+          }
+          statModifiers[emblemConfig.stat].modifications.push({
+            value: bonus, // Valor percentual original (ex: 4 para 4%)
+            source: emblemName,
+            type: "emblem-percent", // Novo tipo específico para emblemas
+            customIcon: customIcon
+          });
         }
-      });
+      }
     }
-
+  });
+}
     // 5) Passiva do Pokémon
     modified = applyPassiveBuff(modified, selectedPokemon, base, targetLevel);
 
@@ -2209,29 +2861,68 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     const prevImg = document.querySelector(".resultado-image");
     if (prevImg) prevImg.remove();
     resultado.insertAdjacentHTML("afterbegin", `
-    <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
-      <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
-          onerror="this.style.display='none'" style="border: none;">
-      <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
-      <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
-    </div>
-  `);
+      <div class="resultado-image role-${pokemonRole.toLowerCase().replace(' ', '')}">
+        <img src="./estatisticas-shad/images/backgrounds/${selectedPokemon}-left-bg.png" alt="${safeCap(selectedPokemon)}"
+            onerror="this.style.display='none'" style="border: none;">
+        <div class="info-jogador">${safeCap(selectedPokemon)} (Lv. ${targetLevel})</div>
+        <div class="role-badge" style="background-color: ${roleColor};">${pokemonRole}</div>
+        ${createPokemonRatings(selectedPokemon)}
+      </div>
+    `);
+
+    updatePokemonImage();
+    makeImageClickable();
   createSkillBuildInResult();
 
-    // Status Final - Novo Design
+// Status Final - Novo Design com Sistema de Expansão
 statusFinalDiv.innerHTML = STAT_KEYS
   .map(k => {
     const b = Number(base[k]) || 0;
     const m = Number(modified[k]) || 0;
     const extraFixed = (k === "DmgTaken" && modified._fixedDmgTaken) ? modified._fixedDmgTaken : null;
 
-    // Calcular porcentagem de mudança
-    const percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+    // Verificar se há modificadores para este stat
+    const hasModifiers = statModifiers[k] && statModifiers[k].modifications.length > 0;
+    const expandableClass = hasModifiers ? " expandable" : "";
+    
+    // Calcular porcentagem de mudança CORRETAMENTE
+    let percentChange = 0;
+    if (k === "Speed") {
+      // Speed é híbrido - verificar tipo de modificador
+      if (hasModifiers && statModifiers[k].modifications.some(mod => mod.type === "speed-percent")) {
+        // Tem modificadores percentuais: somar apenas eles
+        percentChange = statModifiers[k].modifications
+          .filter(mod => mod.type === "speed-percent")
+          .reduce((sum, mod) => sum + mod.value, 0)
+          .toFixed(1);
+      } else if (b !== 0) {
+        // Modificadores flat: calcular percentual normal
+        percentChange = (((m - b) / b) * 100).toFixed(1);
+      } else {
+        percentChange = 0;
+      }
+    } else if (PERCENT_KEYS.has(k)) {
+      // Para stats percentuais, pegar o valor do modificador, não a diferença absoluta
+      if (hasModifiers && statModifiers[k].modifications.length > 0) {
+        // Somar apenas os valores dos modificadores "flat" (que são os valores percentuais diretos)
+        percentChange = statModifiers[k].modifications
+          .filter(mod => mod.type === "flat")
+          .reduce((sum, mod) => sum + mod.value, 0)
+          .toFixed(1);
+      } else {
+        percentChange = (m - b).toFixed(1);
+      }
+    } else {
+      // Para stats normais, calcular percentual de mudança tradicional
+      percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+    }
+    
+    let statLineHTML = "";
     
     // Se o valor modificado é maior que o base (buff)
     if (m > b) {
-      return `
-        <div class="stat-line">
+      statLineHTML = `
+        <div class="stat-line${expandableClass}" data-stat="${k}">
           <span class="stat-label">${STAT_LABELS[k]}</span>
           <span class="stat-value">
             <span class="base-value">${formatValue(k, b)}</span>
@@ -2244,8 +2935,8 @@ statusFinalDiv.innerHTML = STAT_KEYS
     }
     // Se o valor modificado é menor que o base (debuff)
     else if (m < b) {
-      return `
-        <div class="stat-line">
+      statLineHTML = `
+        <div class="stat-line${expandableClass}" data-stat="${k}">
           <span class="stat-label">${STAT_LABELS[k]}</span>
           <span class="stat-value">
             <span class="base-value">${formatValue(k, b)}</span>
@@ -2257,14 +2948,64 @@ statusFinalDiv.innerHTML = STAT_KEYS
       `;
     }
     // Se são iguais (sem modificação)
-    return `
-      <div class="stat-line">
-        <span class="stat-label">${STAT_LABELS[k]}</span>
-        <span class="stat-value">${formatValue(k, m, extraFixed)}</span>
-      </div>
-    `;
+    else {
+      statLineHTML = `
+        <div class="stat-line">
+          <span class="stat-label">${STAT_LABELS[k]}</span>
+          <span class="stat-value">${formatValue(k, m, extraFixed)}</span>
+        </div>
+      `;
+    }
+    
+    // Adicionar detalhes se houver modificadores
+    if (hasModifiers) {
+      statLineHTML += generateStatDetailsHTML(k, b, m);
+    }
+    
+    return statLineHTML;
   }).join("");
 
+  // Event listeners para expansão de stats
+const expandableStats = statusFinalDiv.querySelectorAll(".stat-line.expandable");
+expandableStats.forEach(statLine => {
+  statLine.addEventListener("click", (e) => {
+    // Evitar conflito com cliques em ícones de itens
+    if (e.target.closest(".item-icon-container")) {
+      return;
+    }
+    
+    const stat = statLine.dataset.stat;
+    const detailsDiv = document.getElementById(`details-${stat}`);
+    
+    if (!detailsDiv) return;
+    
+    // Fechar outros stats expandidos
+    if (currentExpandedStat && currentExpandedStat !== stat) {
+      const prevStatLine = statusFinalDiv.querySelector(`.stat-line[data-stat="${currentExpandedStat}"]`);
+      const prevDetails = document.getElementById(`details-${currentExpandedStat}`);
+      
+      if (prevStatLine) {
+        prevStatLine.classList.remove("expanded");
+      }
+      if (prevDetails) {
+        prevDetails.classList.remove("show");
+      }
+    }
+    
+    // Toggle atual
+    const isExpanded = statLine.classList.contains("expanded");
+    
+    if (isExpanded) {
+      statLine.classList.remove("expanded");
+      detailsDiv.classList.remove("show");
+      currentExpandedStat = null;
+    } else {
+      statLine.classList.add("expanded");
+      detailsDiv.classList.add("show");
+      currentExpandedStat = stat;
+    }
+  });
+});
     // Mostrar debuffs ativos
     if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
       Object.values(modified._debuffsAcumulados).forEach(debuff => {
@@ -2298,6 +3039,54 @@ statusFinalDiv.innerHTML = STAT_KEYS
           `);
         }
       });
+    }
+
+        if (skillDamage[selectedPokemon]) {
+      const skills = skillDamage[selectedPokemon];
+      const activeEffects = new Set(); // Usar Set para evitar duplicatas
+      
+      Object.keys(skills).forEach(skillKey => {
+        // Ignorar passivas
+        if (skillKey === "passive" || skillKey === "passive1" || skillKey === "passive2") return;
+        
+        const skill = skills[skillKey];
+        const isSkillActive = activeSkills[selectedPokemon] && activeSkills[selectedPokemon][skillKey];
+        
+        if (isSkillActive) {
+          // Effects básicos da skill
+          if (skill.effects && Array.isArray(skill.effects)) {
+            skill.effects.forEach(effectName => {
+              activeEffects.add(effectName);
+            });
+          }
+          
+          // Effects do buffPlus
+          if (skill.buffPlus && currentLevel >= (skill.buffPlus.levelRequired || 11)) {
+            if (skill.buffPlus.effects && Array.isArray(skill.buffPlus.effects)) {
+              skill.buffPlus.effects.forEach(effectName => {
+                activeEffects.add(effectName);
+              });
+            }
+          }
+        }
+      });
+      
+      // Renderizar effects ativos como linhas na tabela
+      if (activeEffects.size > 0) {
+        activeEffects.forEach(effectName => {
+          const config = EFFECT_CONFIG[effectName] || { icon: "⭐", label: effectName };
+          
+          statusFinalDiv.insertAdjacentHTML("beforeend", `
+            <div class="stat-line effect-indicator">
+              <span class="stat-label">
+                <span class="effect-icon-inline">${config.icon}</span>
+                ${config.label}
+              </span>
+              <span class="stat-value">ACTIVE</span>
+            </div>
+          `);
+        });
+      }
     }
 
     // Mostrar ícones dos itens
@@ -2449,6 +3238,7 @@ if (incluirEmblemas === "sim") {
   // Renderizar outras skills (substitua toda a seção Object.keys(skills).forEach na função calcular)
 Object.keys(skills).forEach(key => {
   if (key === "passive" || key === "passive1" || key === "passive2") return;
+  if (!shouldShowSkill(selectedPokemon, key)) return;
   
   const s = skills[key];
   const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
@@ -2478,152 +3268,172 @@ Object.keys(skills).forEach(key => {
 
   const calculatedValues = [];
   
-  // Primeiro passe: calcular valores não dependentes
-  s.formulas.forEach((f, index) => {
-    if (f.type === "text-only") {
-      calculatedValues[index] = { base: 0, modified: 0 };
-      return;
-    }
+// Primeiro passe: calcular valores não dependentes
+s.formulas.forEach((f, index) => {
+  if (f.type === "text-only") {
+    calculatedValues[index] = { base: 0, modified: 0 };
+    return;
+  }
+  
+  if (f.type !== "dependent") {
+    let baseVal, modifiedVal;
     
-    if (f.type !== "dependent") {
-      let baseVal, modifiedVal;
+    if (f.type === "multi" || f.useAllStats) {
+      baseVal = f.formula(base, targetLevel);
+      modifiedVal = f.formula(modified, targetLevel);
+    } else {
+      let baseAttribute, modifiedAttribute;
       
-      if (f.type === "multi" || f.useAllStats) {
-        baseVal = f.formula(base, targetLevel);
-        modifiedVal = f.formula(modified, targetLevel);
-      } else {
-        let baseAttribute, modifiedAttribute;
-        
-        switch(f.type) {
-          case "special":
-            baseAttribute = base.SpATK;
-            modifiedAttribute = modified.SpATK;
-            break;
-          case "hp":
-            baseAttribute = base.HP;
-            modifiedAttribute = modified.HP;
-            break;
-          case "heal":
-            if (f.healAttribute) {
-              const healAttr = f.healAttribute.toUpperCase();
-              if (healAttr === "ATK") {
-                baseAttribute = base.ATK;
-                modifiedAttribute = modified.ATK;
-              } else if (healAttr === "SPATK") {
-                baseAttribute = base.SpATK;
-                modifiedAttribute = modified.SpATK;
-              } else if (healAttr === "HP") {
-                baseAttribute = base.HP;
-                modifiedAttribute = modified.HP;
-              } else {
-                baseAttribute = base.SpATK;
-                modifiedAttribute = modified.SpATK;
-              }
+      switch(f.type) {
+        case "special":
+          baseAttribute = base.SpATK;
+          modifiedAttribute = modified.SpATK;
+          break;
+        case "hp":
+          baseAttribute = base.HP;
+          modifiedAttribute = modified.HP;
+          break;
+        case "heal":
+          if (f.healAttribute) {
+            const healAttr = f.healAttribute.toUpperCase();
+            if (healAttr === "ATK") {
+              baseAttribute = base.ATK;
+              modifiedAttribute = modified.ATK;
+            } else if (healAttr === "SPATK") {
+              baseAttribute = base.SpATK;
+              modifiedAttribute = modified.SpATK;
+            } else if (healAttr === "HP") {
+              baseAttribute = base.HP;
+              modifiedAttribute = modified.HP;
             } else {
               baseAttribute = base.SpATK;
               modifiedAttribute = modified.SpATK;
             }
-            break;
-          case "shield":
+          } else {
             baseAttribute = base.SpATK;
             modifiedAttribute = modified.SpATK;
-            break;
-          case "physical":
-          default:
-            baseAttribute = base.ATK;
-            modifiedAttribute = modified.ATK;
-            break;
-        }
-        
+          }
+          break;
+        case "shield":
+          baseAttribute = base.SpATK;
+          modifiedAttribute = modified.SpATK;
+          break;
+        case "physical":
+        default:
+          baseAttribute = base.ATK;
+          modifiedAttribute = modified.ATK;
+          break;
+      }
+      
+      if (f.usesMuscleGauge && selectedPokemon === "buzzwole") {
+        baseVal = f.formula(baseAttribute, targetLevel, base.HP, muscleGauge);
+        modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP, muscleGauge);
+      } else {
         baseVal = f.formula(baseAttribute, targetLevel, base.HP);
         modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
+      }
 
-        if (f.usesMuscleGauge && selectedPokemon === "buzzwole") {
-          baseVal = f.formula(baseAttribute, targetLevel, base.HP, muscleGauge);
-          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP, muscleGauge);
-        } else {
-          baseVal = f.formula(baseAttribute, targetLevel, base.HP);
-          modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
-        }
-
-        // Aplicar bônus do Razor Claw apenas para ataques básicos e boosted
-        if (selectedItems.includes("razorclaw") && activeItemPassives["razorclaw"]) {
-          const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
-          if (basicAttackKeys.includes(key)) {
-            const razorClawBonus = 20 + (base.ATK * 0.5);
-            baseVal += razorClawBonus;
-            modifiedVal += razorClawBonus;
-          }
-        }
-
-        // Aplicar multiplicadores de nextBasicAttackPercent para ataques básicos
-        if (modified._nextBasicAttackPercents && modified._nextBasicAttackPercents.length > 0) {
-          const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
-          if (basicAttackKeys.includes(key)) {
-            // Somar todos os percentuais de nextBasicAttackPercent
-            const totalPercentIncrease = modified._nextBasicAttackPercents.reduce((total, buff) => {
-              return total + buff.value;
-            }, 0);
-            
-            // Aplicar o multiplicador
-            const multiplier = 1 + (totalPercentIncrease / 100);
-            modifiedVal *= multiplier;
-          }
-        }
-        
-        // Aplicar multiplicadores para heal e shield
-        if (f.type === "heal") {
-          const healMultiplier = 1 + (modified.HPRegen / 100);
-          modifiedVal *= healMultiplier;
-        } else if (f.type === "shield") {
-          const shieldMultiplier = 1 + (modified.Shield / 100);
-          modifiedVal *= shieldMultiplier;
+      // Aplicar bônus do Razor Claw apenas para ataques básicos e boosted
+      if (selectedItems.includes("razorclaw") && activeItemPassives["razorclaw"]) {
+        const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
+        if (basicAttackKeys.includes(key)) {
+          const razorClawBonus = 20 + (base.ATK * 0.5);
+          baseVal += razorClawBonus;
+          modifiedVal += razorClawBonus;
         }
       }
 
-      if (skills.passive) {
-        const passive = skills.passive;
-        const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon]['passive'];
-        
-        if (isPassiveActive && passive.skillDamageMultiplier) {
-          const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+      // Aplicar multiplicadores de nextBasicAttackPercent para ataques básicos
+      if (modified._nextBasicAttackPercents && modified._nextBasicAttackPercents.length > 0) {
+        const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
+        if (basicAttackKeys.includes(key)) {
+          const totalPercentIncrease = modified._nextBasicAttackPercents.reduce((total, buff) => {
+            return total + buff.value;
+          }, 0);
           
-          if (!isBasicAttack || passive.affectsBasicAttack === true) {
-            modifiedVal *= passive.skillDamageMultiplier;
-          }
+          const multiplier = 1 + (totalPercentIncrease / 100);
+          modifiedVal *= multiplier;
         }
       }
       
-      if ((key === "atkboosted" || key === "basic" || key === "basicattack")) {
-        let totalPassiveBonus = { base: 0, modified: 0 };
-        const passiveKeys = ['passive', 'passive1', 'passive2'];
-        
-        passiveKeys.forEach(passiveKey => {
-          if (skills[passiveKey]?.nextBasicAttackBonus && 
-              activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey]) {
-            const passiveBonus = skills[passiveKey].nextBasicAttackBonus;
-            totalPassiveBonus.base += passiveBonus.base;
-            totalPassiveBonus.modified += passiveBonus.modified;
-          }
-        });
-        
-        baseVal += totalPassiveBonus.base;
-        modifiedVal += totalPassiveBonus.modified;
+      // Aplicar multiplicadores para heal e shield
+      if (f.type === "heal") {
+        const healMultiplier = 1 + (modified.HPRegen / 100);
+        modifiedVal *= healMultiplier;
+      } else if (f.type === "shield") {
+        const shieldMultiplier = 1 + (modified.Shield / 100);
+        modifiedVal *= shieldMultiplier;
       }
-      
-      if (selectedPokemon === "decidueye" && activePassives[selectedPokemon]) {
-        const hasAnyPassiveActive = ['passive', 'passive1', 'passive2'].some(passiveKey => 
-          skills[passiveKey] && activePassives[selectedPokemon][passiveKey]);
-        
-        if (hasAnyPassiveActive) {
-          modifiedVal *= 1.20;
-        }
-      }
-      
-      calculatedValues[index] = { base: baseVal, modified: modifiedVal };
     }
-  });
-  
+
+    // Aplicar skillDamageMultiplier da passiva
+    if (skills.passive) {
+      const passive = skills.passive;
+      const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon]['passive'];
+      
+      if (isPassiveActive && passive.skillDamageMultiplier) {
+        const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+        
+        if (!isBasicAttack || passive.affectsBasicAttack === true) {
+          modifiedVal *= passive.skillDamageMultiplier;
+        }
+      }
+    }
+
+    // NOVO: Aplicar skillDamageMultiplier GLOBAL de QUALQUER skill com buffPlus ativo
+    if (activeSkills[selectedPokemon]) {
+      Object.keys(activeSkills[selectedPokemon]).forEach(skillKey => {
+        // Verificar se a skill está ativa
+        if (activeSkills[selectedPokemon][skillKey]) {
+          const activeSkill = skills[skillKey];
+          
+          // Verificar se tem buffPlus com skillDamageMultiplier
+          if (activeSkill?.buffPlus && 
+              currentLevel >= (activeSkill.buffPlus.levelRequired || 11) &&
+              activeSkill.buffPlus.skillDamageMultiplier) {
+            
+            const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+            
+            // Aplicar multiplicador globalmente
+            if (!isBasicAttack || activeSkill.buffPlus.affectsBasicAttack === true) {
+              modifiedVal *= activeSkill.buffPlus.skillDamageMultiplier;
+            }
+          }
+        }
+      });
+    }
+    
+    // Aplicar bônus de passiva para ataques básicos
+    if ((key === "atkboosted" || key === "basic" || key === "basicattack")) {
+      let totalPassiveBonus = { base: 0, modified: 0 };
+      const passiveKeys = ['passive', 'passive1', 'passive2'];
+      
+      passiveKeys.forEach(passiveKey => {
+        if (skills[passiveKey]?.nextBasicAttackBonus && 
+            activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey]) {
+          const passiveBonus = skills[passiveKey].nextBasicAttackBonus;
+          totalPassiveBonus.base += passiveBonus.base;
+          totalPassiveBonus.modified += passiveBonus.modified;
+        }
+      });
+      
+      baseVal += totalPassiveBonus.base;
+      modifiedVal += totalPassiveBonus.modified;
+    }
+    
+    // Caso especial para Decidueye
+    if (selectedPokemon === "decidueye" && activePassives[selectedPokemon]) {
+      const hasAnyPassiveActive = ['passive', 'passive1', 'passive2'].some(passiveKey => 
+        skills[passiveKey] && activePassives[selectedPokemon][passiveKey]);
+      
+      if (hasAnyPassiveActive) {
+        modifiedVal *= 1.20;
+      }
+    }
+    
+    calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+  }
+});
   // Segundo passe: calcular valores dependentes
   s.formulas.forEach((f, index) => {
     if (f.type === "dependent") {
@@ -2736,6 +3546,7 @@ if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.
     `;
   }
 }
+
 
 const skillHtml = `
   <div class="skill-box${ultimateClass}${activatableClass}${activeClass}" data-pokemon="${selectedPokemon}" data-skill-key="${key}">
