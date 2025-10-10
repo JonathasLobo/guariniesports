@@ -4133,6 +4133,13 @@ const pokemonRatings = {
     Score: 2.5,
     Support: 0.5
   },
+  alcremie: {
+    Attack: 1.5,
+    Endure: 2,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 4
+  },
 }
 const skillDamage = {
  "absol": {
@@ -4275,7 +4282,7 @@ const skillDamage = {
         Speed: "(DEBUFF) MoveSpeed Reduction"
       },
       buff: {
-        CritRate: -20,
+        Speed: "-50%",
       },
       effects: ["Unstoppable"],
       buffPlus: {
@@ -4461,8 +4468,8 @@ const skillDamage = {
       name: "Wide Guard",
       cooldown: 8.5,
       buff:{
-        effects: ["Unstoppable"]
       },
+      effects: ["Unstoppable"],
       debuffs: {
         Speed: 45
       },
@@ -4514,10 +4521,10 @@ const skillDamage = {
 		name: "Coup de Grace",
     cooldown: 100,
       buff: {
-        effects: ["Unstoppable"]
       },
       buffPlus: {
         levelRequired: 9,
+        effects: ["Unstoppable"],
         buffs: {
           Speed: "30%",
           CDR: 30,
@@ -4685,7 +4692,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -4698,8 +4705,13 @@ const skillDamage = {
     "s11": {
       name: "Recover",
       cooldown: 7,
-      buff:{
-        Speed: "40%"
+      conditionalBuffs: {
+        notFull: {
+          Speed: "15%",
+        },
+        full: {
+          Speed: "40%",
+        }
       },
       formulas: [
         {
@@ -4747,6 +4759,11 @@ const skillDamage = {
           label: "Damage - Outer Ring",
           formula: (SPATK, Level) => 1.05 * SPATK + 12 * (Level - 1) + 345,
           type: "special"
+        },
+        {
+          label: "Outer Ring Area",
+          type: "text-only",
+          additionalText: "100% slow who touch the ring for 0.5s"
         }
       ]
     },
@@ -4781,12 +4798,10 @@ const skillDamage = {
     "s22": {
       name: "Dazzling Gleam",
       cooldown: 6,
-      debuffs: {
-        Speed: 20
+      buff:{
+        Speed: "-20%"
       },
-      debuffLabels: {
-        Speed: "(DEBUFF) MoveSpeed Reduction"
-      },
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -4807,8 +4822,8 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 8,
+        effects: ["Unstoppable"],
         buffs: {
-          Unstoppable: 6.0,
           Speed: "40%",
           CDR: 30,
           Shield: 90
@@ -14251,10 +14266,9 @@ const skillDamage = {
     skin4: "Purple Unite Style",
     skin5: "Regal Style"
   },
-  charizard: {
+  alcremie: {
     default: "Default",
-    skin1: "Firefighter Style",
-    skin2: "Battle Style"
+    skin1: "Tea Party Style",
   },
   // Adicione mais pokémon aqui
 };
