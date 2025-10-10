@@ -4126,6 +4126,13 @@ const pokemonRatings = {
     Score: 2.5,
     Support: 0.5
   },
+  aegislash: {
+    Attack: 3.5,
+    Endure: 2,
+    Mobility: 4,
+    Score: 2.5,
+    Support: 0.5
+  },
 }
 const skillDamage = {
  "absol": {
@@ -4144,7 +4151,7 @@ const skillDamage = {
       ]
     },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       debuffs: {
         DEF: 15
       },
@@ -4359,8 +4366,19 @@ const skillDamage = {
     ]
   },
 
+  "passive2": {
+    name: "Stance Change - Switch",
+    description: "Switching stances grants 15% increased movement and attack speed for 3.5s.",
+    buff: {
+      AtkSPD: "15%",
+      Speed: "15%"
+    },
+    formulas: [
+    ]
+  },
+
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -4381,6 +4399,11 @@ const skillDamage = {
           label: "Damage - Boosted (Sword Stance)",
           formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
+        },
+        {
+          label: "Damage - Boosted (Additional) (Sword Stance)",
+          type: "text-only",
+          additionalText: "8.5% of the enemies Max HP as damage."
         }
       ]
 	},
@@ -4436,9 +4459,9 @@ const skillDamage = {
     },
     "s21": {
       name: "Wide Guard",
-      cooldown: 8,
+      cooldown: 8.5,
       buff:{
-        Unstoppable: 1.2
+        effects: ["Unstoppable"]
       },
       debuffs: {
         Speed: 45
@@ -4470,6 +4493,9 @@ const skillDamage = {
       cooldown: 6,
       buff: {
       },
+      selfBuff: {
+        CooldownFlat: 3
+      },
       buffPlus: {
         levelRequired: 13,
         buffs: {
@@ -4488,6 +4514,7 @@ const skillDamage = {
 		name: "Coup de Grace",
     cooldown: 100,
       buff: {
+        effects: ["Unstoppable"]
       },
       buffPlus: {
         levelRequired: 9,
@@ -14216,12 +14243,13 @@ const skillDamage = {
     skin6: "Sacred Style",
     skin7: "Pokébuki Style"
   },
-  pikachu: {
+  aegislash: {
     default: "Default",
-    skin1: "Festival Style",
-    skin2: "Fashionable Style",
-    skin3: "Cook Style",
-    skin4: "Circus Style"
+    skin1: "Beach Style",
+    skin2: "Noble Style",
+    skin3: "Orange Unite Style",
+    skin4: "Purple Unite Style",
+    skin5: "Regal Style"
   },
   charizard: {
     default: "Default",

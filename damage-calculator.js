@@ -1105,42 +1105,34 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
   });
     
   const modifiersHTML = sortedMods.map(mod => {
-  const isPositive = mod.value >= 0;
-  const valueClass = isPositive ? "positive" : "negative";
-  const sign = isPositive ? "+" : "";
-  
-  let displayValue = "";
-  
-  // CORREÇÃO ESPECIAL PARA SPEED PERCENTUAL
-    if (stat === "Speed" && mod.source.includes("(Plus)")) {
-      // Speed com buff percentual de skill: pegar valor da fonte original
-      const skillName = mod.source.replace(" (Plus)", "");
-      
-      // Buscar o valor percentual original nos dados da skill
-      if (selectedPokemon && skillDamage[selectedPokemon]) {
-        const skills = skillDamage[selectedPokemon];
-        Object.keys(skills).forEach(skillKey => {
-          const skill = skills[skillKey];
-          if (skill.name === skillName && skill.buffPlus?.buffs?.Speed) {
-            const originalValue = parseFloat(String(skill.buffPlus.buffs.Speed).replace("%", ""));
-            displayValue = `${sign}${originalValue.toFixed(1)}%`;
-          }
-        });
+    const isPositive = mod.value >= 0;
+    const valueClass = isPositive ? "positive" : "negative";
+    const sign = isPositive ? "+" : "";
+    
+    let displayValue = "";
+    
+    // CORREÇÃO: Calcular displayValue baseado no tipo de stat e tipo de modificador
+    if (mod.type === "percent") {
+      // Modificador percentual em stat numérico (ex: +10% ATK)
+      // Calcular o percentual original baseado no valor base
+      const baseStatValue = statModifiers[stat].base || 0;
+      if (baseStatValue !== 0) {
+        const originalPercent = (mod.value / baseStatValue) * 100;
+        displayValue = `${sign}${originalPercent.toFixed(1)}%`;
+      } else {
+        displayValue = `${sign}${mod.value.toFixed(1)}`;
       }
-      
-      // Fallback: se não encontrou, usar lógica padrão
-      if (!displayValue) {
-        displayValue = `${sign}${mod.value.toFixed(1)}%`;
-      }
-    }
-    // Tipo específico para emblemas que afetam stats não-percentuais
-    else if (mod.type === "emblem-percent") {
+    } else if (mod.type === "emblem-percent") {
+      // Emblemas que afetam stats não-percentuais: valor JÁ É percentual
       displayValue = `${sign}${mod.value.toFixed(1)}%`;
-    } else if (mod.type === "percent") {
+    } else if (mod.type === "speed-percent") {
+      // Speed com buff percentual: valor JÁ É percentual
       displayValue = `${sign}${mod.value.toFixed(1)}%`;
     } else if (isPercent && mod.type === "flat") {
+      // Stats percentuais (CDR, CritRate, etc) com modificador flat
       displayValue = `${sign}${mod.value.toFixed(1)}%`;
     } else {
+      // Modificadores flat em stats numéricos (ex: +50 ATK)
       displayValue = `${sign}${Math.round(mod.value)}`;
     }
     
@@ -2885,8 +2877,10 @@ statusFinalDiv.innerHTML = STAT_KEYS
     const hasModifiers = statModifiers[k] && statModifiers[k].modifications.length > 0;
     const expandableClass = hasModifiers ? " expandable" : "";
     
-    // Calcular porcentagem de mudança CORRETAMENTE
+  // Calcular porcentagem de mudança CORRETAMENTE
     let percentChange = 0;
+    
+    // CORREÇÃO: Verificar tipo de modificadores para calcular corretamente
     if (k === "Speed") {
       // Speed é híbrido - verificar tipo de modificador
       if (hasModifiers && statModifiers[k].modifications.some(mod => mod.type === "speed-percent")) {
@@ -2902,21 +2896,33 @@ statusFinalDiv.innerHTML = STAT_KEYS
         percentChange = 0;
       }
     } else if (PERCENT_KEYS.has(k)) {
-      // Para stats percentuais, pegar o valor do modificador, não a diferença absoluta
-      if (hasModifiers && statModifiers[k].modifications.length > 0) {
-        // Somar apenas os valores dos modificadores "flat" (que são os valores percentuais diretos)
-        percentChange = statModifiers[k].modifications
-          .filter(mod => mod.type === "flat")
-          .reduce((sum, mod) => sum + mod.value, 0)
-          .toFixed(1);
-      } else {
-        percentChange = (m - b).toFixed(1);
-      }
+      // Para stats percentuais (CDR, CritRate, etc): diferença direta
+      percentChange = (m - b).toFixed(1);
     } else {
-      // Para stats normais, calcular percentual de mudança tradicional
-      percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
-    }
-    
+      // Para stats numéricos (ATK, HP, DEF, etc): verificar se tem modificadores percentuais
+      if (hasModifiers) {
+        const percentMods = statModifiers[k].modifications.filter(mod => mod.type === "percent" || mod.type === "emblem-percent");
+        
+        if (percentMods.length > 0) {
+          // Se tem modificadores percentuais, somar os valores percentuais originais
+          percentChange = percentMods.reduce((sum, mod) => {
+            // Para emblemas, pegar o valor percentual original
+            if (mod.type === "emblem-percent") {
+              return sum + mod.value;
+            }
+            // Para outros percentuais, calcular baseado no valor modificado vs base
+            const modPercent = b !== 0 ? (mod.value / b) * 100 : 0;
+            return sum + modPercent;
+          }, 0).toFixed(1);
+        } else {
+          // Sem modificadores percentuais, cálculo normal
+          percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+        }
+      } else {
+        // Sem modificadores, cálculo normal
+        percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+      }
+    }  
     let statLineHTML = "";
     
     // Se o valor modificado é maior que o base (buff)
@@ -3573,45 +3579,83 @@ const skillHtml = `
 skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
 });
 
-      // Event listeners para passivas clicáveis (substitua o bloco original por este)
-      const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
-      passiveBoxes.forEach(box => {
-        box.addEventListener("click", () => {
-          const pokemon = box.dataset.pokemon;
-          const passiveKey = box.dataset.passiveKey;
+    // Event listeners para passivas clicáveis
+    const passiveBoxes = skillsDiv.querySelectorAll(".skill-box.passive");
+    passiveBoxes.forEach(box => {
+      box.addEventListener("click", () => {
+        const pokemon = box.dataset.pokemon;
+        const passiveKey = box.dataset.passiveKey;
 
-          if (!activePassives[pokemon]) {
-            activePassives[pokemon] = {};
+        if (!activePassives[pokemon]) {
+          activePassives[pokemon] = {};
+        }
+
+        // Comportamento especial para Aegislash
+        if (pokemon === "aegislash") {
+          const currentlyActive = !!activePassives[pokemon][passiveKey];
+          
+          if (passiveKey === "passive") {
+            // Se clicar em Sword Stance
+            if (currentlyActive) {
+              // Desativar Sword
+              activePassives[pokemon]["passive"] = false;
+            } else {
+              // Ativar Sword e desativar Shield (mas manter Switch se estiver ativa)
+              activePassives[pokemon]["passive"] = true;
+              activePassives[pokemon]["passive1"] = false;
+            }
+          } else if (passiveKey === "passive1") {
+            // Se clicar em Shield Stance
+            if (currentlyActive) {
+              // Desativar Shield
+              activePassives[pokemon]["passive1"] = false;
+            } else {
+              // Ativar Shield e desativar Sword (mas manter Switch se estiver ativa)
+              activePassives[pokemon]["passive1"] = true;
+              activePassives[pokemon]["passive"] = false;
+            }
+          } else if (passiveKey === "passive2") {
+            // Se clicar em Switch - apenas toggle, não afeta as outras
+            activePassives[pokemon]["passive2"] = !currentlyActive;
           }
 
-          // Comportamento exclusivo para o Aegislash: somente 1 passiva ativa por vez
-          if (pokemon === "aegislash" || pokemon === "buzzwole") {
-            const currentlyActive = !!activePassives[pokemon][passiveKey];
+          // Atualizar classes visuais
+          passiveBoxes.forEach(b => {
+            const pk = b.dataset.passiveKey;
+            const isActiveNow = !!activePassives[pokemon][pk];
+            b.classList.toggle("active", isActiveNow);
+          });
 
-            // Desativa todas as passivas conhecidas antes
-            ["passive", "passive1", "passive2"].forEach(k => {
-              activePassives[pokemon][k] = false;
-            });
+        } 
+        // Comportamento exclusivo para Buzzwole (somente 1 passiva ativa por vez)
+        else if (pokemon === "buzzwole") {
+          const currentlyActive = !!activePassives[pokemon][passiveKey];
 
-            // Se a que foi clicada não estava ativa, ativa-a (caso contrário, fica tudo desativado)
-            activePassives[pokemon][passiveKey] = !currentlyActive;
+          // Desativa todas as passivas conhecidas antes
+          ["passive", "passive1", "passive2"].forEach(k => {
+            activePassives[pokemon][k] = false;
+          });
 
-            // Atualiza classe visual nos cards imediatamente (opcional — calcular() também re-renderiza)
-            passiveBoxes.forEach(b => {
-              const pk = b.dataset.passiveKey;
-              const isActiveNow = !!activePassives[pokemon][pk];
-              b.classList.toggle("active", isActiveNow);
-            });
+          // Se a que foi clicada não estava ativa, ativa-a (caso contrário, fica tudo desativado)
+          activePassives[pokemon][passiveKey] = !currentlyActive;
 
-          } else {
-            // comportamento padrão para os outros pokemons (toggle independente)
-            activePassives[pokemon][passiveKey] = !activePassives[pokemon][passiveKey];
-            box.classList.toggle("active", activePassives[pokemon][passiveKey]); // feedback imediato
-          }
+          // Atualiza classe visual nos cards imediatamente
+          passiveBoxes.forEach(b => {
+            const pk = b.dataset.passiveKey;
+            const isActiveNow = !!activePassives[pokemon][pk];
+            b.classList.toggle("active", isActiveNow);
+          });
 
-          calcular();
-        });
+        } 
+        // Comportamento padrão para os outros pokémons (toggle independente)
+        else {
+          activePassives[pokemon][passiveKey] = !activePassives[pokemon][passiveKey];
+          box.classList.toggle("active", activePassives[pokemon][passiveKey]);
+        }
+
+        calcular();
       });
+    });
 
     } else {
       skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
