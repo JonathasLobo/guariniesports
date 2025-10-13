@@ -367,11 +367,11 @@ const updatePokemonImage = () => {
   "Stun": { icon: "🌀", label: "Stun" },
   "Bound": { icon: "🪢", label: "Bound"},
   "Invincible": { icon: "💎", label: "Invincible" },
-  "Speed Boost": { icon: "⚡", label: "Speed Boost" },
+  "Burned": { icon: "🔥", label: "Burned" },
   "True Damage": { icon: "💥", label: "True Damage" },
   "Cleanses": { icon: "✨", label: "Cleanses" },
-  "Heal": { icon: "💚", label: "Heal Active" },
-  "Stealth": { icon: "👁️", label: "Stealth" }
+  "Immobilized": { icon: "🛑", label: "Immobilized" },
+  "Vision Reduction": { icon: "👁️", label: "Vision Reduction" }
 };
 
   const CUSTOM_SKILL_MAPPING = {

@@ -6403,12 +6403,7 @@ const skillDamage = {
           label: "Damage",
           formula: (ATK, Level) => 1.25 * ATK + 8 * (Level - 1) + 312,
           type: "physical"
-        },
-        {
-          label: "Skill type",
-          type: "text-only",
-		      additionalText: "True Damage"
-        },
+        }
       ]
     },
     "s22": {
@@ -6495,6 +6490,7 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 7,
+      effects: ["Burned"],
       buff:{},
       selfBuff:{
         CooldownPercent: 65
@@ -6503,7 +6499,7 @@ const skillDamage = {
        levelRequired: 11,
         buffs: {
         },
-      skillDamageMultiplier: 1.20, // 15% de aumento
+      skillDamageMultiplier: 1.20, // 20% de aumento
       affectsBasicAttack: true,
       },
       formulas: [
@@ -6527,6 +6523,7 @@ const skillDamage = {
     "s12": {
       name: "Overheat",
       cooldown: 7.5,
+      effects: ["Burned"],
       buff: {},
       selfBuffPlus: {
         levelRequired: 11,
@@ -6602,6 +6599,8 @@ const skillDamage = {
     "s22": {
       name: "Imprison",
       cooldown: 9.5,
+      effects: ["Immobilized"],
+      buff:{},
       formulas: [
       ]
     },
@@ -6611,6 +6610,7 @@ const skillDamage = {
     buff: {},
     buffPlus: {
       levelRequired: 9,
+      effects: ["Vision Reduction"],
     debuffs: {
       Vision: 30
     },
@@ -14913,6 +14913,13 @@ const skillDamage = {
     default: "Default",
     skin1: "Noble Style",
     skin2: "Neo Street Style"
+  },
+  chandelure: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Magician Style",
+    skin4: "Dainty Style"
   },
   // Adicione mais pokémon aqui
 };
