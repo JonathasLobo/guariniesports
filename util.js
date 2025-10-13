@@ -4140,6 +4140,13 @@ const pokemonRatings = {
     Score: 2.5,
     Support: 4
   },
+  armarouge: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 0.5
+  },
 }
 const skillDamage = {
  "absol": {
@@ -4563,7 +4570,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -4574,6 +4581,11 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (SPATK, Level) => 0.40 * SPATK + 5 * (Level - 1) + 220,
           type: "special"
+        },
+        {
+          label: "Additional Damage - marked enemys",
+          type: "text-only",
+          additionalText: "10% of opponent's max HP as additional damage"
         }
       ]
 	},
@@ -4664,8 +4676,8 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 9,
+        effects: ["Unstoppable", "Stun"],
         buffs: {
-          Unstoppable: 1.85,
           Speed: "30%",
           CDR: 30,
           Shield: 20
