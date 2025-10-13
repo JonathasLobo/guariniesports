@@ -3793,8 +3793,23 @@ const damageValuesHtml = s.formulas.map((f, index) => {
 
 // Criar seção de buffs - SEMPRE mostrar quando a skill está ativa
 let buffsHtml = "";
-if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs)) {
+if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs || s.conditionalBuffs)) {
   let buffsList = [];
+  
+  // ✅ NOVO: Processar conditionalBuffs (Alcremie)
+  if (selectedPokemon === "alcremie" && s.conditionalBuffs) {
+    const gaugeState = sweetGauge ? "full" : "notFull";
+    const conditionalBuffsToApply = s.conditionalBuffs[gaugeState];
+    
+    if (conditionalBuffsToApply) {
+      Object.keys(conditionalBuffsToApply).forEach(stat => {
+        const value = conditionalBuffsToApply[stat];
+        const label = STAT_LABELS[stat] || stat;
+        const gaugeLabel = gaugeState === "full" ? " (Full Gauge)" : " (Not Full)";
+        buffsList.push(`<span style="color:#000000;">+${value} ${label}${gaugeLabel}</span>`);
+      });
+    }
+  }
   
   // Buffs globais básicos
   if (s.buff) {
