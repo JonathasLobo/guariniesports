@@ -6669,6 +6669,7 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 6,
+      effects: ["Burned"],
       buff: {
         Speed: "40%"
       },
@@ -6704,6 +6705,7 @@ const skillDamage = {
     "s12": {
       name: "Fire Punch",
       cooldown: 5,
+      effects: ["Burned"],
       buff: {
       },
       debuffs: {
@@ -6797,8 +6799,10 @@ const skillDamage = {
     buff:{},
     buffPlus: {
       levelRequired: 9,
+      effects: ["Unstoppable", "Bound", "Invincible", "Burned"],
       buffs: {
-        HPRegen: 80,
+        HindRed: 100,
+        Lifesteal: 80,
         Speed: "50%",
         Shield: 20
       },
@@ -14920,6 +14924,22 @@ const skillDamage = {
     skin2: "Purple Unite Style",
     skin3: "Magician Style",
     skin4: "Dainty Style"
+  },
+  charizard: {
+    default: "Default",
+    skin1: "Captain Style",
+    skin2: "Orange Unite Style",
+    skin3: "Purple Unite Style",
+    skin4: "Bonfire Style",
+    skin5: "Adept Style",
+    skin6: "Armor Style",
+    skin7: "Ninja Style",
+    skin8: "Knight Style",
+    skin9: "Red Unite Style",
+    skin10: "Explorer Style",
+    skin11: "Dark Lord Style",
+    skin12: "Punk Style",
+    skin13: "Super Suit Style"
   },
   // Adicione mais pokémon aqui
 };
