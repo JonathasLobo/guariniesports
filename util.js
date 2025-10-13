@@ -4147,6 +4147,538 @@ const pokemonRatings = {
     Score: 2,
     Support: 0.5
   },
+  azumarill: {
+    Attack: 3,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 0.5
+  },
+  blastoise: {
+    Attack: 2,
+    Endure: 3.5,
+    Mobility: 2,
+    Score: 2,
+    Support: 3
+  },
+  blaziken: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 4,
+    Score: 1,
+    Support: 0.5
+  },
+  blissey: {
+    Attack: 1,
+    Endure: 3.5,
+    Mobility: 1.5,
+    Score: 1.5,
+    Support: 4.5
+  },
+  buzzwole: {
+    Attack: 4,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 2
+  },
+  ceruledge: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 0.5
+  },
+  chandelure: {
+    Attack: 5,
+    Endure: 1,
+    Mobility: 1,
+    Score: 2,
+    Support: 3
+  },
+  charizard: {
+    Attack: 3.5,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 3,
+    Support: 0.5
+  },
+  cinderace: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 3,
+    Score: 2.5,
+    Support: 0.5
+  },
+  clefable: {
+    Attack: 2,
+    Endure: 3,
+    Mobility: 1.5,
+    Score: 1.5,
+    Support: 4.5
+  },
+  comfey: {
+    Attack: 2,
+    Endure: 2.5,
+    Mobility: 3.5,
+    Score: 2.5,
+    Support: 5
+  },
+  cramorant: {
+    Attack: 4,
+    Endure: 3,
+    Mobility: 3,
+    Score: 1.5,
+    Support: 1
+  },
+  crustle: {
+    Attack: 1.5,
+    Endure: 4,
+    Mobility: 1.5,
+    Score: 2,
+    Support: 3
+  },
+  darkrai: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 3,
+    Score: 2,
+    Support: 2
+  },
+  decidueye: {
+    Attack: 3.5,
+    Endure: 1.5,
+    Mobility: 1.5,
+    Score: 3.5,
+    Support: 3.5
+  },
+  delphox: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 3,
+    Score: 2.5,
+    Support: 0.5
+  },
+  dodrio: {
+    Attack: 3,
+    Endure: 2,
+    Mobility: 4,
+    Score: 4,
+    Support: 0.5
+  },
+  dragapult: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 2.5,
+    Support: 0.5
+  },
+  dragonite: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 3,
+    Support: 0.5
+  }, 
+  duraludon: {
+    Attack: 4.5,
+    Endure: 2,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 1.5
+  },  
+  eldegoss: {
+    Attack: 1.5,
+    Endure: 2,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 4
+  }, 
+  empoleon: {
+    Attack: 3.5,
+    Endure: 3.5,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 1.5
+  },
+  espeon: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 1.5,
+    Score: 2,
+    Support: 3
+  },
+  falinks: {
+    Attack: 3.5,
+    Endure: 4.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 1
+  }, 
+  garchomp: {
+    Attack: 3.5,
+    Endure: 3.5,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 0.5
+  },
+  gardevoir: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 1.5,
+    Score: 3,
+    Support: 1.5
+  },
+  gengar: {
+    Attack: 3.5,
+    Endure: 2,
+    Mobility: 4,
+    Score: 3,
+    Support: 0.5
+  },
+  glaceon: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 3,
+    Score: 1,
+    Support: 0.5
+  }, 
+  goodra: {
+    Attack: 2.5,
+    Endure: 4,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 2
+  }, 
+  greedent: {
+    Attack: 1.5,
+    Endure: 5,
+    Mobility: 2,
+    Score: 1,
+    Support: 3.5
+  },
+  greninja: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 3,
+    Score: 3,
+    Support: 0.5
+  },
+  gyarados: {
+    Attack: 4,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 1
+  },
+  hooh: {
+    Attack: 3,
+    Endure: 4,
+    Mobility: 2,
+    Score: 1,
+    Support: 3
+  },
+  hoopa: {
+    Attack: 3,
+    Endure: 2,
+    Mobility: 3,
+    Score: 2,
+    Support: 3.5
+  }, 
+  inteleon: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 3.5,
+    Score: 1.5,
+    Support: 0.5
+  }, 
+  lapras: {
+    Attack: 3,
+    Endure: 3.5,
+    Mobility: 2,
+    Score: 2,
+    Support: 3
+  },
+  latias: {
+    Attack: 3.5,
+    Endure: 2.5,
+    Mobility: 4,
+    Score: 2.5,
+    Support: 3
+  },
+  latios: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 2.5,
+    Support: 0.5
+  },
+  leafeon: {
+    Attack: 3.5,
+    Endure: 1.5,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 2.5
+  },
+  lucario: {
+    Attack: 3,
+    Endure: 2.5,
+    Mobility: 3.5,
+    Score: 3,
+    Support: 0.5
+  },
+  megalucario: {
+    Attack: 4.5,
+    Endure: 2,
+    Mobility: 3.5,
+    Score: 3,
+    Support: 0.5
+  },
+  machamp: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 1
+  },
+  mamoswine: {
+    Attack: 2.5,
+    Endure: 4,
+    Mobility: 2,
+    Score: 1.5,
+    Support: 2.5
+  },
+  meowscara: {
+    Attack: 4.5,
+    Endure: 1,
+    Mobility: 3,
+    Score: 2.5,
+    Support: 0.5
+  },
+  metagross: {
+    Attack: 3.5,
+    Endure: 4,
+    Mobility: 2.5,
+    Score: 1,
+    Support: 1
+  },
+  mew: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 3,
+    Score: 2,
+    Support: 3
+  },
+  mewtwox: {
+    Attack: 3,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 2
+  },
+  mewtwoy: {
+    Attack: 4,
+    Endure: 2,
+    Mobility: 3,
+    Score: 2,
+    Support: 2
+  },
+  mimikyu: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 3.5,
+    Score: 1,
+    Support: 1
+  },
+  miraidon: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 2,
+    Support: 2
+  },
+  mrmime: {
+    Attack: 1.5,
+    Endure: 4,
+    Mobility: 1,
+    Score: 1.5,
+    Support: 4
+  },
+  ninetales: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 1.5,
+    Score: 2.5,
+    Support: 3
+  },
+  pawmot: {
+    Attack: 3.5,
+    Endure: 2,
+    Mobility: 3,
+    Score: 2,
+    Support: 2
+  },
+  pikachu: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 1.5
+  },
+  psyduck: {
+    Attack: 4,
+    Endure: 1,
+    Mobility: 2,
+    Score: 1,
+    Support: 3
+  },
+  raichu: {
+    Attack: 4,
+    Endure: 1.5,
+    Mobility: 3.5,
+    Score: 3,
+    Support: 1
+  },
+  rapidash: {
+    Attack: 4,
+    Endure: 4,
+    Mobility: 4,
+    Score: 2,
+    Support: 1
+  },
+  sableye: {
+    Attack: 1,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 3.5,
+    Support: 3.5
+  },
+  scizor: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 4,
+    Score: 2,
+    Support: 1
+  },
+  scyther: {
+    Attack: 4,
+    Endure: 2.5,
+    Mobility: 4,
+    Score: 2,
+    Support: 1
+  },
+  slowbro: {
+    Attack: 1.5,
+    Endure: 4,
+    Mobility: 1.5,
+    Score: 1.5,
+    Support: 4
+  },
+  snorlax: {
+    Attack: 1.5,
+    Endure: 5,
+    Mobility: 2,
+    Score: 1.5,
+    Support: 2.5
+  },
+  suicune: {
+    Attack: 5,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 2
+  },
+  sylveon: {
+    Attack: 3.5,
+    Endure: 1.5,
+    Mobility: 1.5,
+    Score: 3.5,
+    Support: 3.5
+  },
+  talonflame: {
+    Attack: 2.5,
+    Endure: 1.5,
+    Mobility: 5,
+    Score: 3.5,
+    Support: 0.5
+  },
+  tinkaton: {
+    Attack: 4,
+    Endure: 3.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 1
+  },
+  trevenant: {
+    Attack: 2,
+    Endure: 4,
+    Mobility: 2,
+    Score: 2.5,
+    Support: 2.5
+  },
+  tsareena: {
+    Attack: 3.5,
+    Endure: 3,
+    Mobility: 3,
+    Score: 1.5,
+    Support: 0.5
+  },
+  tyranitar: {
+    Attack: 4,
+    Endure: 4,
+    Mobility: 2,
+    Score: 1.5,
+    Support: 1
+  },
+  umbreon: {
+    Attack: 1.5,
+    Endure: 4,
+    Mobility: 1.5,
+    Score: 1.5,
+    Support: 4
+  },
+  urshifu: {
+    Attack: 4.5,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2.5,
+    Support: 1
+  },
+  venusaur: {
+    Attack: 4.5,
+    Endure: 2,
+    Mobility: 2,
+    Score: 2.5,
+    Support: 1
+  },
+  wigglytuff: {
+    Attack: 1,
+    Endure: 2.5,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 4.5
+  },
+  zacian: {
+    Attack: 5,
+    Endure: 4,
+    Mobility: 3,
+    Score: 1,
+    Support: 2
+  },
+  zeraora: {
+    Attack: 3.5,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 3,
+    Support: 0.5
+  },
+  zoroark: {
+    Attack: 3.5,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 2,
+    Support: 0.5
+  },
 }
 const skillDamage = {
  "absol": {
@@ -4868,7 +5400,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -4886,6 +5418,7 @@ const skillDamage = {
     "s11": {
       name: "Play Rough",
       cooldown: 5,
+      effects: ["Stun"],
       buff: {
         Speed: "30%"
       },
@@ -5006,6 +5539,7 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 8,
+        effects: ["Unstoppable"],
         buffs: {
           HP: "-5%",
           ATK: 60,
@@ -5041,7 +5575,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
     buff:{
       FlatCDR: 1
     },
