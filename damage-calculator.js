@@ -366,10 +366,10 @@ const updatePokemonImage = () => {
   "Unstoppable": { icon: "🛡️", label: "Unstoppable" },
   "Stun": { icon: "🌀", label: "Stun" },
   "Bound": { icon: "🪢", label: "Bound"},
-  "Shield": { icon: "🛡️", label: "Shield Active" },
+  "Invincible": { icon: "💎", label: "Invincible" },
   "Speed Boost": { icon: "⚡", label: "Speed Boost" },
-  "Damage Boost": { icon: "💥", label: "Damage Boost" },
-  "Invincible": { icon: "✨", label: "Invincible" },
+  "True Damage": { icon: "💥", label: "True Damage" },
+  "Cleanses": { icon: "✨", label: "Cleanses" },
   "Heal": { icon: "💚", label: "Heal Active" },
   "Stealth": { icon: "👁️", label: "Stealth" }
 };
@@ -1476,6 +1476,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   
   // Objeto para acumular debuffs por tipo de stat
   const debuffsAcumulados = {};
+  const allyBuffsAcumulados = {};
   
   // Objeto para armazenar self-buffs por skill (não afetam stats globais)
   if (!modifiedStats._selfBuffs) {
@@ -1493,7 +1494,6 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     if (pokemon === "alcremie" && skill.conditionalBuffs) {
       const gaugeState = sweetGauge ? "full" : "notFull";
       const conditionalBuffsToApply = skill.conditionalBuffs[gaugeState];
-      
       if (conditionalBuffsToApply) {
         Object.keys(conditionalBuffsToApply).forEach(stat => {
           const skillName = skill.name || skillKey;
@@ -1539,6 +1539,25 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         });
       }
     }
+
+    if (pokemon === "buzzwole" && skill.conditionalGaugeBuffs && muscleGauge in skill.conditionalGaugeBuffs) {
+        const gaugeBuffs = skill.conditionalGaugeBuffs[muscleGauge];
+        
+        if (gaugeBuffs && currentLevel >= 11) { // Só aplica no Level 11+
+          if (!modifiedStats._selfBuffs[skillKey]) {
+            modifiedStats._selfBuffs[skillKey] = {};
+          }
+          
+          Object.keys(gaugeBuffs).forEach(stat => {
+            const value = gaugeBuffs[stat];
+            if (!modifiedStats._selfBuffs[skillKey][stat]) {
+              modifiedStats._selfBuffs[skillKey][stat] = 0;
+            }
+            modifiedStats._selfBuffs[skillKey][stat] += value;
+          });
+        }
+      }
+      
 
     // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
     if (skill.buff && typeof skill.buff === 'object') {
@@ -1698,7 +1717,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           });
         }
 
-      if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
+if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
         Object.keys(skill.buffPlus.debuffs).forEach(debuffStat => {
           const debuffValue = parseFloat(skill.buffPlus.debuffs[debuffStat]);
           
@@ -1718,13 +1737,39 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             value: debuffValue
           });
           
-          // NOVO: Usar debuffLabels se disponível (também para buffPlus)
           if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
             debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
           }
         });
       }
+      
+      // ✅ ADICIONE ESTE BLOCO COMPLETO AQUI (LOGO APÓS O FECHAMENTO ACIMA)
+      if (skill.buffPlus.allyBuffs && typeof skill.buffPlus.allyBuffs === 'object') {
+        Object.keys(skill.buffPlus.allyBuffs).forEach(buffStat => {
+          const buffValue = parseFloat(skill.buffPlus.allyBuffs[buffStat]);
+          
+          if (!Number.isFinite(buffValue)) return;
+          
+          if (!allyBuffsAcumulados[buffStat]) {
+            allyBuffsAcumulados[buffStat] = {
+              total: 0,
+              skills: [],
+              customLabel: null
+            };
+          }
+          
+          allyBuffsAcumulados[buffStat].total += buffValue;
+          allyBuffsAcumulados[buffStat].skills.push({
+            name: skill.name + " (Plus)",
+            value: buffValue
+          });
+          
+          if (skill.buffPlus.allyBuffLabels && skill.buffPlus.allyBuffLabels[buffStat]) {
+            allyBuffsAcumulados[buffStat].customLabel = skill.buffPlus.allyBuffLabels[buffStat];
+          }
+        });
       }
+      } // ← Este fecha o bloco do skill.buffPlus
 
       // Aplicar SELF-BUFFS Plus (baseado no nível atual, afetam apenas a skill específica)
       if (skill.selfBuffPlus && typeof skill.selfBuffPlus === 'object' && 
@@ -1751,7 +1796,26 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             }
           });
         }
-      }
+        
+        // ✅ ADICIONE ESTE BLOCO AQUI (ÚNICA VEZ, LUGAR CORRETO):
+        if (pokemon === "buzzwole" && skill.selfBuffPlus.conditionalGaugeBuffs) {
+          const gaugeBuffs = skill.selfBuffPlus.conditionalGaugeBuffs[muscleGauge];
+          
+          if (gaugeBuffs) {
+            if (!modifiedStats._selfBuffs[skillKey]) {
+              modifiedStats._selfBuffs[skillKey] = {};
+            }
+            
+            Object.keys(gaugeBuffs).forEach(stat => {
+              const value = gaugeBuffs[stat];
+              if (!modifiedStats._selfBuffs[skillKey][stat]) {
+                modifiedStats._selfBuffs[skillKey][stat] = 0;
+              }
+              modifiedStats._selfBuffs[skillKey][stat] += value;
+            });
+          }
+        }
+      } // ← Fechamento do if (skill.selfBuffPlus...)
 
       // Aplicar efeitos especiais da skill
       if (skill.activeEffect && typeof skill.activeEffect === "function") {
@@ -1785,6 +1849,32 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         });
       }
 
+      if (skill.allyBuffs && typeof skill.allyBuffs === 'object') {
+        Object.keys(skill.allyBuffs).forEach(buffStat => {
+          const buffValue = parseFloat(skill.allyBuffs[buffStat]);
+          
+          if (!Number.isFinite(buffValue)) return;
+          
+          if (!allyBuffsAcumulados[buffStat]) {
+            allyBuffsAcumulados[buffStat] = {
+              total: 0,
+              skills: [],
+              customLabel: null
+            };
+          }
+          
+          allyBuffsAcumulados[buffStat].total += buffValue;
+          allyBuffsAcumulados[buffStat].skills.push({
+            name: skill.name,
+            value: buffValue
+          });
+          
+          if (skill.allyBuffLabels && skill.allyBuffLabels[buffStat]) {
+            allyBuffsAcumulados[buffStat].customLabel = skill.allyBuffLabels[buffStat];
+          }
+        });
+      }
+
     } catch (error) {
       console.error(`Erro ao processar skill ${skillKey} do pokemon ${pokemon}:`, error);
       console.log('Dados da skill:', skill);
@@ -1809,6 +1899,23 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
       };
     });
   }
+
+  if (Object.keys(allyBuffsAcumulados).length > 0) {
+    modifiedStats._allyBuffsAcumulados = {};
+    
+    Object.keys(allyBuffsAcumulados).forEach(buffStat => {
+      const buffData = allyBuffsAcumulados[buffStat];
+      const buffLabel = buffData.customLabel || `(ALLY BUFF) ${buffStat} Increase`;
+      
+      modifiedStats._allyBuffsAcumulados[buffStat] = {
+        label: buffLabel,
+        value: buffData.total,
+        stat: buffStat,
+        skills: buffData.skills
+      };
+    });
+  }
+
 
   return modifiedStats;
 };
@@ -2012,6 +2119,29 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
             modifiedStats.DEFPen += modifiedVal;
             addStatModifier("DEFPen", modifiedVal, `${passiveName} (${f.label})`, "formula", iconPath);
           }
+        }
+      });
+        passive.formulas.forEach((f, index) => {
+        if (f.type !== "dependent") {
+          return; // Pular não-dependentes
+        }
+        
+        const dependsOnIndex = f.dependsOn;
+        
+        if (passive.calculatedValues && passive.calculatedValues[dependsOnIndex]) {
+          const dependentBase = passive.calculatedValues[dependsOnIndex].base;
+          const dependentModified = passive.calculatedValues[dependsOnIndex].modified;
+          
+          // Calcular valores dependentes
+          const baseVal = f.formula(dependentBase, targetLevel);
+          const modifiedVal = f.formula(dependentModified, targetLevel);
+          
+          if (!passive.calculatedValues) passive.calculatedValues = {};
+          passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
+        } else {
+          // Se não encontrou a dependência, zerar
+          if (!passive.calculatedValues) passive.calculatedValues = {};
+          passive.calculatedValues[index] = { base: 0, modified: 0 };
         }
       });
     }
@@ -3155,13 +3285,46 @@ expandableStats.forEach(statLine => {
         }
       });
     }
+    // NOVO: Mostrar ally buffs ativos (buffs para aliados)
+    if (modified._allyBuffsAcumulados && Object.keys(modified._allyBuffsAcumulados).length > 0) {
+      Object.values(modified._allyBuffsAcumulados).forEach(allyBuff => {
+        const baseValue = 0;
+        const modifiedValue = allyBuff.value;
+        
+        // ALLY BUFFS - mostrar em verde (positivo)
+        statusFinalDiv.insertAdjacentHTML("beforeend", `
+          <div class="stat-line">
+            <span class="stat-label">${allyBuff.label}</span>
+            <span class="stat-value">
+              <span class="base-value">${baseValue}%</span>
+              <span class="arrow-up">▲</span>
+              <span class="modified-up">+${modifiedValue}%</span>
+            </span>
+          </div>
+        `);
+      });
+    }
 
-        if (skillDamage[selectedPokemon]) {
+if (skillDamage[selectedPokemon]) {
       const skills = skillDamage[selectedPokemon];
       const activeEffects = new Set(); // Usar Set para evitar duplicatas
       
+      // ✅ VERIFICAR EFFECTS DE PASSIVAS ATIVAS
+      ['passive', 'passive1', 'passive2'].forEach(passiveKey => {
+        if (skills[passiveKey]) {
+          const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey];
+          
+          if (isPassiveActive && skills[passiveKey].effects && Array.isArray(skills[passiveKey].effects)) {
+            skills[passiveKey].effects.forEach(effectName => {
+              activeEffects.add(effectName);
+            });
+          }
+        }
+      });
+      
+      // ✅ VERIFICAR EFFECTS DE SKILLS ATIVAS
       Object.keys(skills).forEach(skillKey => {
-        // Ignorar passivas
+        // Ignorar passivas (já foram processadas acima)
         if (skillKey === "passive" || skillKey === "passive1" || skillKey === "passive2") return;
         
         const skill = skills[skillKey];
@@ -3554,30 +3717,41 @@ s.formulas.forEach((f, index) => {
     calculatedValues[index] = { base: baseVal, modified: modifiedVal };
   }
 });
-  // Segundo passe: calcular valores dependentes
-  s.formulas.forEach((f, index) => {
-    if (f.type === "dependent") {
-      const dependsOnIndex = f.dependsOn;
-      if (calculatedValues[dependsOnIndex]) {
-        let dependentBase = calculatedValues[dependsOnIndex].base;
-        let dependentModified = calculatedValues[dependsOnIndex].modified;
-        
-        if (calculatedValues[dependsOnIndex].hasPassiveBonus) {
-          dependentBase = calculatedValues[dependsOnIndex].withPassive.base;
-          dependentModified = calculatedValues[dependsOnIndex].withPassive.modified;
-        }
-        
-        const baseVal = f.formula(dependentBase, targetLevel);
-        const modifiedVal = f.formula(dependentModified, targetLevel);
-        calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
-      } else {
-        calculatedValues[index] = { base: 0, modified: 0, hasPassiveBonus: false };
+
+// Segundo passe: calcular valores dependentes
+s.formulas.forEach((f, index) => {
+  if (f.type === "dependent") {
+    const dependsOnIndex = f.dependsOn;
+    if (calculatedValues[dependsOnIndex]) {
+      let dependentBase = calculatedValues[dependsOnIndex].base;
+      let dependentModified = calculatedValues[dependsOnIndex].modified;
+      
+      if (calculatedValues[dependsOnIndex].hasPassiveBonus) {
+        dependentBase = calculatedValues[dependsOnIndex].withPassive.base;
+        dependentModified = calculatedValues[dependsOnIndex].withPassive.modified;
       }
+      
+      // ✅ CORREÇÃO: Verificar se usa muscle gauge e passar os parâmetros corretos
+      let baseVal, modifiedVal;
+      
+      if (f.usesMuscleGauge && selectedPokemon === "buzzwole") {
+        // Passar: dependentValue, Level, HP, muscleGauge
+        baseVal = f.formula(dependentBase, targetLevel, base.HP, muscleGauge);
+        modifiedVal = f.formula(dependentModified, targetLevel, modified.HP, muscleGauge);
+      } else {
+        // Comportamento padrão (sem gauge)
+        baseVal = f.formula(dependentBase, targetLevel);
+        modifiedVal = f.formula(dependentModified, targetLevel);
+      }
+      
+      calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
+    } else {
+      calculatedValues[index] = { base: 0, modified: 0, hasPassiveBonus: false };
     }
-  });
+  }
+});
 
   // Criar indicador de skill plus INLINE (para ir no cabeçalho)
-// Criar indicador de skill plus
 let skillPlusIndicator = "";
 if (hasSkillPlus) {
   const levelReq = s.buffPlus?.levelRequired || s.selfBuffPlus?.levelRequired || 11;
@@ -3786,15 +3960,45 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
           activeSkills[pokemon] = {};
         }
         
-        // Se a skill está sendo ativada
-        if (!activeSkills[pokemon][skillKey]) {
-          // Desativar outras skills do mesmo slot primeiro
-          deactivateOtherSkillsInSlot(pokemon, skillKey);
-          // Ativar a skill atual
-          activeSkills[pokemon][skillKey] = true;
-        } else {
-          // Se está sendo desativada, apenas desativar
-          activeSkills[pokemon][skillKey] = false;
+        // Comportamento especial para Blaziken - ults mutuamente exclusivas
+        if (pokemon === "blaziken" && (skillKey === "ult" || skillKey === "ult1")) {
+          const currentlyActive = !!activeSkills[pokemon][skillKey];
+          
+          if (!currentlyActive) {
+            // Desativar a outra ult
+            if (skillKey === "ult") {
+              activeSkills[pokemon]["ult1"] = false;
+            } else {
+              activeSkills[pokemon]["ult"] = false;
+            }
+            // Ativar a ult clicada
+            activeSkills[pokemon][skillKey] = true;
+          } else {
+            // Se clicar na mesma ult ativa, desativa
+            activeSkills[pokemon][skillKey] = false;
+          }
+          
+          // Atualizar classes visuais imediatamente
+          activatableSkills.forEach(b => {
+            const pk = b.dataset.skillKey;
+            if (b.dataset.pokemon === pokemon && (pk === "ult" || pk === "ult1")) {
+              const isActiveNow = !!activeSkills[pokemon][pk];
+              b.classList.toggle("active", isActiveNow);
+            }
+          });
+        } 
+        // Comportamento padrão para outros pokémons
+        else {
+          // Se a skill estÃ¡ sendo ativada
+          if (!activeSkills[pokemon][skillKey]) {
+            // Desativar outras skills do mesmo slot primeiro
+            deactivateOtherSkillsInSlot(pokemon, skillKey);
+            // Ativar a skill atual
+            activeSkills[pokemon][skillKey] = true;
+          } else {
+            // Se estÃ¡ sendo desativada, apenas desativar
+            activeSkills[pokemon][skillKey] = false;
+          }
         }
         
         calcular();

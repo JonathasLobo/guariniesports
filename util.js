@@ -5587,17 +5587,17 @@ const skillDamage = {
     },
       formulas: [
         {
-          label: "Damage - Basic",
+          label: "Damage - Basic/Rapid Spin Basic",
           formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
-          label: "Damage - Basic (2x)",
+          label: "Damage - Basic [Fully Evolved] (2x)",
           formula: (ATK, Level) => 0.5 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
-          label: "Damage - Boosted (3x)",
+          label: "Damage - Boosted/Rapid Spin Boosted (3x)",
           formula: (SPATK, Level) => 0.24 * SPATK + 6 * (Level - 1) + 110,
           type: "special"
         },
@@ -5642,6 +5642,7 @@ const skillDamage = {
     "s12": {
       name: "Hydro Pump",
       cooldown: 6,
+      effects: ["Stun"],
       buff: {
         Speed: "30%"
       },
@@ -5671,8 +5672,8 @@ const skillDamage = {
     "s21": {
       name: "Surf",
       cooldown: 7.5,
+      effects: ["Unstoppable"],
       buff:{
-        Unstoppable: 1.6
       },
       formulas: [
         {
@@ -5711,8 +5712,8 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 9,
-        buffs: {
-          Unstoppable: 2.0, 
+        effects: ["Unstoppable"],
+        buffs: { 
           Speed: "30%",
           Shield: 40
         }
@@ -5757,7 +5758,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
     buff: {
       AtkSPD: 40
     },
@@ -5795,6 +5796,7 @@ const skillDamage = {
     "s12": {
       name: "Overheat",
       cooldown: 7.5,
+      effects: ["Unstoppable"],
       buff:{
         DmgTaken: 25
       },
@@ -5858,17 +5860,21 @@ const skillDamage = {
     "s22": {
       name: "Blaze Kick",
       cooldown: 9.5,
+      effects: ["Unstoppable", "Stun"],
       buff: {},
       debuffs: {
-        Speed: "25%"
+        Speed: 25
       },
       debuffLabels:{
         Speed: "(DEBUFF) MoveSpeed Reduction",
       },
       buffPlus:{
        levelRequired: 13,
-        buffs: {
-          Speed: "25%",
+        debuffs: {
+          Speed: 25,
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
         }
       },
       formulas: [
@@ -5886,12 +5892,6 @@ const skillDamage = {
       },
       buffPlus:{
        levelRequired: 8,
-      debuffs: {
-        Speed: "25%"
-      },
-      debuffLabels:{
-        Speed: "(DEBUFF) MoveSpeed Reduction",
-      },
         buffs: {
           Shield: 9,
           Speed: "20%"
@@ -5902,6 +5902,11 @@ const skillDamage = {
           label: "Damage (2x)",
           formula: (ATK, Level) => 0.5 * ATK + 4 * (Level - 1) + 100,
           type: "physical"
+        },
+        {
+          label: "Internal cooldowns",
+          type: "text-only",
+		      additionalText: "Energy Amplifier = 30s CD / Buddy Barrier = 60s CD"
         }
 	 ]
 	},
@@ -5912,12 +5917,6 @@ const skillDamage = {
       },
       buffPlus:{
        levelRequired: 8,
-      debuffs: {
-        Speed: "25%"
-      },
-      debuffLabels:{
-        Speed: "(DEBUFF) MoveSpeed Reduction",
-      },
         buffs: {
           ATK: "30%",
           Shield: 9
@@ -5928,6 +5927,11 @@ const skillDamage = {
           label: "Damage",
           formula: (ATK, Level) => 1 * ATK + 7 * (Level - 1) + 200,
           type: "physical"
+        },
+        {
+          label: "Internal cooldowns",
+          type: "text-only",
+		      additionalText: "Energy Amplifier = 30s CD / Buddy Barrier = 60s CD"
         }
 	 ]
 	}
@@ -5937,13 +5941,14 @@ const skillDamage = {
       "passive": {
           name: "Natural Cure",
           description: "Automatically cleanses this Pokémon every 6s, even if there are no effects to cleanse.",
+          effects: ["Cleanses"],
           buff: {
           },
           formulas: [
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -5964,8 +5969,11 @@ const skillDamage = {
       buff: {},
       buffPlus:{
        levelRequired: 12,
-        buffs: {
+        debuffs: {
           Speed: 40
+        },
+        debuffLabels: {
+          Speed: "MoveSpeed Reduction"
         }
       },
       formulas: [
@@ -6012,14 +6020,8 @@ const skillDamage = {
     "s22": {
       name: "Safeguard",
       cooldown: 10,
+      effects: ["Cleanses", "Unstoppable"],
       buff:{
-        Unstoppable: 4.0
-      },
-      debuffs: {
-        Unstoppable: 4.0
-      },
-      debuffLabels: {
-        Unstoppable: "(BUFF) Unstoppable",
       },
       formulas: [
         {
@@ -6040,13 +6042,14 @@ const skillDamage = {
     buff:{},
       buffPlus:{
        levelRequired: 8,
-      debuffs: {
-        ATK: "20%",
-        SpATK: "20%"
+       effects: ["Unstoppable"],
+       allyBuffs: {
+          ATK: "20",
+          SpATK: "20"
       },
-      debuffLabels: {
-        ATK: "(BUFF) Attack Increase",
-        SpATK: "(BUFF) Special Attack Increase"
+       allyBuffLabels: {
+          ATK: "(ALLY BUFF) Attack Increase",
+          SpATK: "(ALLY BUFF) Special Attack Increase"
       },
         buffs: {
           Speed: "30%",
@@ -6091,7 +6094,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -6158,6 +6161,7 @@ const skillDamage = {
     "s21": {
       name: "Leech Life",
       cooldown: 5,
+      effects: ["Unstoppable"],
       formulas: [
         {
           label: "Damage - per Tick",
@@ -6184,6 +6188,16 @@ const skillDamage = {
     "s22": {
       name: "Superpower",
       cooldown: 8,
+      effects: ["Unstoppable"],
+      buff: {},
+      selfBuffPlus: {
+          levelRequired: 11,
+          conditionalGaugeBuffs: {
+            6: {
+              CooldownFlat: 3
+            }
+          }
+        },
       formulas: [
         {
           label: "Damage - Initial",
@@ -6194,6 +6208,15 @@ const skillDamage = {
           label: "Damage - Slam",
           formula: (ATK, Level) => 2.3 * ATK + 8 * (Level - 1) + 350,
           type: "physical"
+        },
+        {
+          label: "Damage - Additional (Muscle Gauge Bonus)",
+          formula: (initialDamage, Level, HP, gauge) => {
+            return gauge ? (initialDamage * 0.125 * gauge) : 0;
+          },
+          type: "dependent",
+          dependsOn: 0,
+          usesMuscleGauge: true
         },
         {
           label: "Shield",
@@ -6213,6 +6236,7 @@ const skillDamage = {
     buff:{},
       buffPlus:{
        levelRequired: 9,
+       effects: ["Unstoppable"],
         buffs: {
           Speed: "30%",
           CDR: 30,
@@ -6259,11 +6283,23 @@ const skillDamage = {
               label: "Damage - First Stack",
               formula: (ATK, Level) => 0.075 * ATK + 0 * (Level - 1) + 0,
               type: "physical",
+            },
+            {
+              label: "Damage - Stack Value 2-6",
+              formula: (firstHitDamage, Level) => 0.5 * firstHitDamage,
+              type: "dependent",
+              dependsOn: 1
+            },
+            {
+              label: "Damage - Total 6 Stacks",
+              formula: (firstHitDamage, Level) => firstHitDamage + (0.5 * firstHitDamage * 5),
+              type: "dependent",
+              dependsOn: 1
             }
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
     buff: {
       Lifesteal: 20
     },
@@ -6343,6 +6379,7 @@ const skillDamage = {
     "s21": {
       name: "Phantom Force",
       cooldown: 10,
+      effects: ["Invincible", "True Damage"],
       buff:{
         DEFPen: 100,
       },
@@ -6394,6 +6431,7 @@ const skillDamage = {
     buff:{},
       buffPlus:{
        levelRequired: 9,
+       effects: ["Unstoppable", "Stun"],
         buffs: {
           DmgTaken: 70,
           Speed: "30%",
@@ -6427,7 +6465,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
     buff:{},
     debuffs: {
       Speed: 30
@@ -6610,7 +6648,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
     buff: {
       Speed: "-5%"
     },
@@ -6808,7 +6846,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -6914,7 +6952,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7038,7 +7076,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7164,7 +7202,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7271,7 +7309,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7383,7 +7421,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7525,7 +7563,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7647,7 +7685,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7750,7 +7788,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7857,7 +7895,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -7980,7 +8018,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8077,7 +8115,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8212,7 +8250,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8322,7 +8360,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8456,7 +8494,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8556,7 +8594,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8699,7 +8737,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8836,7 +8874,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -8949,7 +8987,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9063,7 +9101,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9161,7 +9199,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9292,7 +9330,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9386,7 +9424,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9486,7 +9524,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9635,7 +9673,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9739,7 +9777,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9848,7 +9886,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -9936,7 +9974,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10040,7 +10078,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -10148,7 +10186,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -10236,7 +10274,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10385,7 +10423,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10493,7 +10531,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10590,7 +10628,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10722,7 +10760,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10820,7 +10858,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -10923,7 +10961,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11075,7 +11113,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11194,7 +11232,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11291,7 +11329,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11386,7 +11424,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11496,7 +11534,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11605,7 +11643,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11729,7 +11767,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -11864,7 +11902,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12011,7 +12049,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12115,7 +12153,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12212,7 +12250,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12326,7 +12364,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12404,7 +12442,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12493,7 +12531,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12591,7 +12629,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12699,7 +12737,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -12782,7 +12820,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -12978,7 +13016,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -13087,7 +13125,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -13185,7 +13223,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -13285,7 +13323,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -13403,7 +13441,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -13573,7 +13611,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -13778,7 +13816,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -13914,7 +13952,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -14024,7 +14062,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -14183,7 +14221,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -14290,7 +14328,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
 		{
           label: "Damage - Basic",
@@ -14372,7 +14410,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Stage One",
@@ -14550,7 +14588,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -14690,7 +14728,7 @@ const skillDamage = {
           ]
         },
 	"atkboosted": {
-	  name: "Ataque Básico",
+	  name: "Basic Attack",
       formulas: [
         {
           label: "Damage - Basic",
@@ -14802,7 +14840,8 @@ const skillDamage = {
     skin4: "Sweet Style",
     skin5: "Fashionable Style (Magenta)",
     skin6: "Sacred Style",
-    skin7: "Pokébuki Style"
+    skin7: "Pokébuki Style",
+    skin8: "Beach Style"
   },
   aegislash: {
     default: "Default",
@@ -14815,6 +14854,65 @@ const skillDamage = {
   alcremie: {
     default: "Default",
     skin1: "Tea Party Style",
+  },
+  armarouge: {
+    default: "Default",
+    skin1: "Noble Style",
+    skin2: "Fiesta Style"
+  },
+  azumarill: {
+    default: "Default",
+    skin1: "Punk Style",
+    skin2: "Wanderer Style",
+    skin3: "Holiday Style",
+    skin4: "Pastel Style",
+    skin5: "Space Style",
+    skin6: "Tea Party Style"
+  },
+  blastoise: {
+    default: "Default",
+    skin1: "Fashionable Style",
+    skin2: "Firefighter Style",
+    skin3: "Holiday Style",
+    skin4: "Tuxedo Style",
+    skin5: "Pokébuki Style",
+    skin6: "Sacred Style",
+    skin7: "New Year Style",
+    skin8: "Stage Style",
+    skin9: "New Year Festival Style",
+    skin10: "Sunglasses Style"
+  },
+  blaziken: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Punk Style",
+    skin4: "Champion Style",
+    skin5: "Neo Street Style"
+  },
+  blissey: {
+    default: "Default",
+    skin1: "Checkered Style",
+    skin2: "Starry Night Style",
+    skin3: "Sweet Style",
+    skin4: "Sacred Style",
+    skin5: "Pokébuki Style",
+    skin6: "Tuxedo Style",
+    skin7: "Starry Night Style (Purple)",
+  },
+  buzzwole: {
+    default: "Default",
+    skin1: "Tuxedo Style",
+    skin2: "Dark Hero Style",
+    skin3: "Tuxedo Style (Blue-Green)",
+    skin4: "Purple Unite Style",
+    skin5: "Orange Unite Style",
+    skin6: "Champion Style"
+  },
+  ceruledge: {
+    default: "Default",
+    skin1: "Noble Style",
+    skin2: "Neo Street Style"
   },
   // Adicione mais pokémon aqui
 };
