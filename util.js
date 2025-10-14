@@ -6285,14 +6285,18 @@ const skillDamage = {
               type: "physical",
             },
             {
-              label: "Damage - Stack Value 2-6",
+              label: "Damage - per Stack Value 2-6",
               formula: (firstHitDamage, Level) => 0.5 * firstHitDamage,
               type: "dependent",
               dependsOn: 1
             },
             {
               label: "Damage - Total 6 Stacks",
-              formula: (firstHitDamage, Level) => firstHitDamage + (0.5 * firstHitDamage * 5),
+              formula: (firstHitDamage, Level) => {
+                const first = Math.floor(firstHitDamage);
+                const perStack = Math.floor(0.5 * first);
+                return (first + (perStack * 5)) * 1.15;
+              },
               type: "dependent",
               dependsOn: 1
             }
@@ -6869,6 +6873,7 @@ const skillDamage = {
       name: "Pyro Ball",
       cooldown: 5,
       buff:{},
+      effects: ["Burned"],
       debuffs: {
         ATK: 5,
         SpATK: 5
@@ -6900,9 +6905,24 @@ const skillDamage = {
     "s12": {
       name: "Blaze Kick",
       cooldown: 9.5,
+      effects: ["Unstoppable", "Burned"],
       buff: {
+        CritRate: 100
       },
-      effects: ["Unstoppable"],
+      debuffs: {
+        ATK: 5,
+        SpATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      buffPlus: {
+       levelRequired: 11,
+        buffs: {
+          AtkSPD: 45
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -6919,6 +6939,17 @@ const skillDamage = {
     "s21": {
       name: "Flame Charge",
       cooldown: 5,
+      buff:{},
+      buffPlus: {
+       levelRequired: 13,
+       buffs: {},
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -6930,7 +6961,16 @@ const skillDamage = {
     "s22": {
       name: "Feint",
       cooldown: 9,
+      effects: ["Invincible"],
+      buff: {
+        Speed: "40%"
+      },
       formulas: [
+         {
+          label: "HP restoration after dodging",
+          type: "text-only",
+		      additionalText: "The next 3 auto attacks restore HP for 30% of damage dealt."
+        },
       ]
     },
 	"ult": {
@@ -14940,6 +14980,18 @@ const skillDamage = {
     skin11: "Dark Lord Style",
     skin12: "Punk Style",
     skin13: "Super Suit Style"
+  },
+  cinderace: {
+    default: "Default",
+    skin1: "Captain Style",
+    skin2: "Space Style",
+    skin3: "Pastel Style",
+    skin4: "Tuxedo Style",
+    skin5: "Guardian Style",
+    skin6: "Super Suit Style",
+    skin7: "Ninja Style",
+    skin8: "Bedtime Style",
+    skin9: "Neo Guardian Style"
   },
   // Adicione mais pokémon aqui
 };

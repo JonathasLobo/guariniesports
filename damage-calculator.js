@@ -1240,7 +1240,7 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
     }
 
     if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
-    return Math.round(Number(val));
+        return Math.floor(Number(val));
   };
 
   const statLine = (label, valueHtml) =>
@@ -3487,10 +3487,10 @@ if (incluirEmblemas === "sim") {
             let displayText = "";
             let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
             
-            if (Math.round(values.modified) > Math.round(values.base)) {
-              displayText = `${Math.round(values.base)} → <span style="color:limegreen;">▲ ${Math.round(values.modified)}</span>`;
+            if (Math.floor(values.modified) > Math.floor(values.base)) {
+              displayText = `${Math.floor(values.base)} → <span style="color:limegreen;">▲ ${Math.floor(values.modified)}</span>`;
             } else {
-              displayText = `${Math.round(values.modified)}`;
+              displayText = `${Math.floor(values.modified)}`;
             }
             
             if (hasAdditionalText) {
@@ -3723,8 +3723,8 @@ s.formulas.forEach((f, index) => {
   if (f.type === "dependent") {
     const dependsOnIndex = f.dependsOn;
     if (calculatedValues[dependsOnIndex]) {
-      let dependentBase = calculatedValues[dependsOnIndex].base;
-      let dependentModified = calculatedValues[dependsOnIndex].modified;
+      let dependentBase = Math.floor(calculatedValues[dependsOnIndex].base);
+      let dependentModified = Math.floor(calculatedValues[dependsOnIndex].modified);
       
       if (calculatedValues[dependsOnIndex].hasPassiveBonus) {
         dependentBase = calculatedValues[dependsOnIndex].withPassive.base;
@@ -3768,8 +3768,8 @@ const damageValuesHtml = s.formulas.map((f, index) => {
   const values = calculatedValues[index];
   if (!values) return "";
   
-  const baseVal = Math.round(values.base);
-  const modVal = Math.round(values.modified);
+  const baseVal = Math.floor(values.base);
+  const modVal = Math.floor(values.modified);
   const hasIncrease = modVal > baseVal;
   const percentIncrease = baseVal > 0 ? (((modVal - baseVal) / baseVal) * 100).toFixed(1) : 0;
   
