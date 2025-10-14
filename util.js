@@ -7408,6 +7408,18 @@ const skillDamage = {
           description: "Stores prey in mouth using moves, then spits it when hit to damage and debuff enemies. Prey type (Arrokuda or Pikachu) changes based on own HP.",
           buff: {
           },
+          debuffs:{
+            DEF: 20,
+            SpDEF: 5,
+            Speed: 50,
+            AtkSPD: 10
+          },
+          debuffLabels: {
+            DEF: "(DEBUFF) Defense Reduction",
+            SpDEF: "(DEBUFF) SpecialDefense Reduction",
+            Speed: "(DEBUFF) MoveSpeed Reduction",
+            AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+          },
           formulas: [
           ]
         },
@@ -7430,6 +7442,14 @@ const skillDamage = {
     "s11": {
       name: "Surf",
       cooldown: 7.5,
+      buff:{},
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 13,
+        debuffs:{
+          Speed: 40
+        }
+      },
       formulas: [
         {
           label: "First Hit",
@@ -7446,6 +7466,8 @@ const skillDamage = {
     "s12": {
       name: "Dive",
       cooldown: 6,
+      buff:{},
+      effects: ["Unstoppable"],
       formulas: [
         {
           label: "Damage",
@@ -7467,6 +7489,13 @@ const skillDamage = {
     "s21": {
       name: "Hurricane",
       cooldown: 7.5,
+       buff:{},
+        buffPlus: {
+          levelRequired: 11,
+          buffs: {
+            Speed: "20%",
+          }
+        },
       formulas: [
         {
           label: "Damage",
@@ -7488,12 +7517,26 @@ const skillDamage = {
 		  label: "Healing - per Blade (5 blades) Skill Plus",
           formula: (SPATK, Level) => 0.30 * SPATK + 0 * (Level - 1) + 40,
           type: "special"
-		}
+		},
+    {
+          label: "Cooldown",
+          type: "text-only",
+		      additionalText: "cooldown is reduced by 0.5s for each blade that hits (total 2.5s)."
+        },
       ]
     },
 	"ult": {
 		name: "Gatling Gulp Missile",
     cooldown: 123,
+      buff:{},
+        buffPlus: {
+          levelRequired: 9,
+          effects: ["Unstoppable"],
+          buffs: {
+            Speed: "30%",
+            Shield: 30
+          }
+        },
 		formulas: [
         {
           label: "Damage (10x)",
@@ -15175,6 +15218,14 @@ const skillDamage = {
     skin3: "Merchant Style",
     skin4: "Dainty Style",
     skin5: "Sweet Style"
+  },
+  cramorant: {
+    default: "Default",
+    skin1: "Cook Style",
+    skin2: "Frontier Style",
+    skin3: "Tuxedo Style",
+    skin4: "Pokébuki Style",
+    skin5: "Hip-Hop Style"
   },
   // Adicione mais pokémon aqui
 };
