@@ -6275,11 +6275,6 @@ const skillDamage = {
           affectsBasicAttack: true,
           formulas: [
             {
-              label: "Damage - Flame Body",
-              formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
-              type: "physical",
-            },
-            {
               label: "Damage - First Stack",
               formula: (ATK, Level) => 0.075 * ATK + 0 * (Level - 1) + 0,
               type: "physical",
@@ -7014,6 +7009,9 @@ const skillDamage = {
     "s11": {
       name: "Moonlight",
       cooldown: 8.5,
+      buff: {
+        Speed: "20%"
+      },
       formulas: [
         {
           label: "Heal - per Tick (per half second)",
@@ -7031,12 +7029,30 @@ const skillDamage = {
           label: "Damage",
           formula: (SPATK, Level) => 1.4 * SPATK + 20 * (Level - 1) + 350,
           type: "special"
-        }
+        },
+        {
+          label: "HP restoration",
+          type: "text-only",
+		      additionalText: "Restores its HP for 140% of the damage dealt."
+        },
+        {
+          label: "HP restoration Skill Plus",
+          type: "text-only",
+		      additionalText: "Restores its HP for 160% of the damage dealt."
+        },
       ]
     },
     "s21": {
       name: "Gravity",
       cooldown: 8,
+      effects: ["Stun"],
+      buff:{},
+      debuffs: {
+        Speed: 15
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - Auto Attacks",
@@ -7048,6 +7064,14 @@ const skillDamage = {
     "s22": {
       name: "Follow Me",
       cooldown: 7.5,
+      buff:{},
+      buffPlus:{
+        levelRequired: 13,
+        buffs: {
+          DEF: 150,
+          SpDEF: 100
+        }
+      },
       formulas: [
 		{
 		  label: "Shield",
@@ -7059,39 +7083,146 @@ const skillDamage = {
 	"ult": {
 		name: "Wonder Wish",
     cooldown: 100,
+    buff:{
+    },
+    buffPlus: {
+      levelRequired: 8,
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
-          label: "Explosion",
+          label: "Heal",
+          type: "text-only",
+		      additionalText: "25% missing HP"
+        },
+	  ]
+	},
+  "ult1": {
+		name: "Splash",
+    buff:{},
+		formulas: [
+        {
+          label: "Effect",
+          type: "text-only",
+		      additionalText: "Notthing Happens - Ult 90% recharged"
+        },
+	  ]
+	},
+    "ult2": {
+		name: "Explosion",
+    buff:{},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable"],
+      buffs:{
+      },
+    },
+		formulas: [
+        {
+          label: "Damage",
           formula: (SPATK, Level) => 4.86 * SPATK + 34 * (Level - 1) + 1640,
           type: "special"
         },
-		{
-          label: "Hydro Pump - Damage - per Hit (3 Hits)",
+        {
+          label: "Damage - Self",
+          formula: (HP, Level) => 0.4 * HP,
+          type: "hp"
+        }
+	  ]
+	},
+  "ult3": {
+		name: "Hydro Pump",
+    buff:{},
+		formulas: [
+        {
+          label: "Damage - per Hit (3 Hits)",
           formula: (SPATK, Level) => 1.215 * SPATK + 9 * (Level - 1) + 410,
           type: "special"
         },
-		{
-          label: "Hyper Beam",
+	  ]
+	},
+  "ult4": {
+		name: "Hyper Beam",
+    buff:{},
+		formulas: [
+        {
+          label: "Damage",
           formula: (SPATK, Level) => 2.43 * SPATK + 17 * (Level - 1) + 820,
           type: "special"
         },
-		{
-          label: "Close Combat - Damage - per Hit (7 Hits)",
+        {
+          label: "Damage - Additional",
+          type: "text-only",
+		      additionalText: "15% of enemy max HP."
+        },
+	  ]
+	},
+  "ult5": {
+		name: "Block",
+    buff:{
+    },
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Stun"],
+      buffs:{
+        DmgTaken: 25
+      },
+    },
+		formulas: [
+        {
+          label: "Shield",
+          formula: (HP, Level) => 0.2 * HP + 0 * (Level - 1) + 500,
+          type: "hp"
+        },
+	  ]
+	},
+  "ult6": {
+		name: "Close Combat",
+    buff:{},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable"],
+      buffs:{
+        DmgTaken: 25
+      },
+    },
+		formulas: [
+        {
+          label: "Damage",
           formula: (SPATK, Level) => 0.5207 * SPATK + 4 * (Level - 1) + 176,
           type: "special"
         },
-		{
-          label: "Close Combat - Heal - per Hit, per Target",
+        {
+          label: "Heal - per Hit, per Target",
           formula: (SPATK, Level) => 0.104 * SPATK + 1 * (Level - 1) + 35,
-          type: "special"
+          type: "heal",
+          affects: "SpATK"
         },
-		{
-          label: "Fly",
+	  ]
+	},
+  "ult7": {
+		name: "Fly",
+    buff:{
+    },
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Invincible"],
+      buffs: {
+        Speed: "65%"
+      }
+    },
+		formulas: [
+        {
+          label: "Damage",
           formula: (SPATK, Level) => 3.159 * SPATK + 22 * (Level - 1) + 1066,
           type: "special"
         }
-	]
-	}
+	  ]
+	},
   },
 
     "comfey": {
@@ -14992,6 +15123,15 @@ const skillDamage = {
     skin7: "Ninja Style",
     skin8: "Bedtime Style",
     skin9: "Neo Guardian Style"
+  },
+  clefable: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Elegant Style",
+    skin4: "Costume Party Style",
+    skin5: "Warm Style",
+    skin6: "Tea Party Style"
   },
   // Adicione mais pokémon aqui
 };

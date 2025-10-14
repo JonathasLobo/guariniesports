@@ -1020,7 +1020,7 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   let specificCooldownReduction = 0;
   let specificCooldownReductionPercent = 0;
   
-  const isUltimate = skillKey === "ult" || skillKey === "ult1" || skillKey === "ult2";
+  const isUltimate = skillKey === "ult" || skillKey === "ult1" || skillKey === "ult2" || skillKey === "ult3" || skillKey === "ult4" || skillKey === "ult5" || skillKey === "ult6" || skillKey === "ult7";
   
   if (isUltimate) {
     totalCDR = globalEnergyRate || 0;
@@ -3527,7 +3527,7 @@ Object.keys(skills).forEach(key => {
   const imgPath = `./estatisticas-shad/images/skills/${selectedPokemon}_${key}.png`;
   const fallbackImg = `./estatisticas-shad/images/skills/${key}.png`;
 
-  const isUltimate = key === "ult" || key === "ult1" || key === "ult2";
+  const isUltimate = key === "ult" || key === "ult1" || key === "ult2" || key === "ult3" || key === "ult4" || key === "ult5" || key === "ult6" || key === "ult7";
   const ultimateClass = isUltimate ? " ultimate" : "";
   
   const isActivatable = activeSkills[selectedPokemon] && activeSkills[selectedPokemon].hasOwnProperty(key);
@@ -3975,8 +3975,43 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
           activeSkills[pokemon] = {};
         }
         
+        // ✅ NOVO: Comportamento especial para Clefable
+        if (pokemon === "clefable" && skillKey.startsWith("ult")) {
+          const currentlyActive = !!activeSkills[pokemon][skillKey];
+          
+          if (skillKey === "ult") {
+            // Clicar na ult base: apenas toggle, não afeta as outras
+            activeSkills[pokemon]["ult"] = !currentlyActive;
+          } else {
+            // Clicar em ult1-7: desativar outras ult1-7, manter ult base
+            const ultNumbers = ["ult1", "ult2", "ult3", "ult4", "ult5", "ult6", "ult7"];
+            
+            if (!currentlyActive) {
+              // Desativar todas as outras ultX (mas manter ult base)
+              ultNumbers.forEach(ultKey => {
+                if (ultKey !== skillKey) {
+                  activeSkills[pokemon][ultKey] = false;
+                }
+              });
+              // Ativar a clicada
+              activeSkills[pokemon][skillKey] = true;
+            } else {
+              // Se clicar na mesma ativa, apenas desativa
+              activeSkills[pokemon][skillKey] = false;
+            }
+          }
+          
+          // Atualizar classes visuais imediatamente
+          activatableSkills.forEach(b => {
+            const pk = b.dataset.skillKey;
+            if (b.dataset.pokemon === pokemon && pk.startsWith("ult")) {
+              const isActiveNow = !!activeSkills[pokemon][pk];
+              b.classList.toggle("active", isActiveNow);
+            }
+          });
+        }
         // Comportamento especial para Blaziken - ults mutuamente exclusivas
-        if (pokemon === "blaziken" && (skillKey === "ult" || skillKey === "ult1")) {
+        else if (pokemon === "blaziken" && (skillKey === "ult" || skillKey === "ult1")) {
           const currentlyActive = !!activeSkills[pokemon][skillKey];
           
           if (!currentlyActive) {
@@ -4002,16 +4037,16 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
             }
           });
         } 
-        // Comportamento padrão para outros pokémons
+        // Comportamento padrÃ£o para outros pokÃ©mons
         else {
-          // Se a skill estÃ¡ sendo ativada
+          // Se a skill está sendo ativada
           if (!activeSkills[pokemon][skillKey]) {
             // Desativar outras skills do mesmo slot primeiro
             deactivateOtherSkillsInSlot(pokemon, skillKey);
             // Ativar a skill atual
             activeSkills[pokemon][skillKey] = true;
           } else {
-            // Se estÃ¡ sendo desativada, apenas desativar
+            // Se está sendo desativada, apenas desativar
             activeSkills[pokemon][skillKey] = false;
           }
         }
