@@ -7187,7 +7187,6 @@ const skillDamage = {
       levelRequired: 8,
       effects: ["Unstoppable"],
       buffs:{
-        DmgTaken: 25
       },
     },
 		formulas: [
