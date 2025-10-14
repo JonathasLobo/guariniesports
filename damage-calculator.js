@@ -371,7 +371,9 @@ const updatePokemonImage = () => {
   "True Damage": { icon: "💥", label: "True Damage" },
   "Cleanses": { icon: "✨", label: "Cleanses" },
   "Immobilized": { icon: "🛑", label: "Immobilized" },
-  "Vision Reduction": { icon: "👁️", label: "Vision Reduction" }
+  "Vision Reduction": { icon: "👁️", label: "Vision Reduction" },
+  "Untargetable": { icon: "🎯", label: "Untargetable" },
+  "Invisible": { icon: "👤", label: "Invisible" },
 };
 
   const CUSTOM_SKILL_MAPPING = {

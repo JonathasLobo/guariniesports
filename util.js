@@ -7228,6 +7228,7 @@ const skillDamage = {
       "passive": {
           name: "Triage",
           description: "Gains movement speed near low-HP allies. Stores flowers to empower healing moves when attached, and provides shields and scoring support while untargetable.",
+          effects: ["Untargetable", "Invincible"],
           buff: {
             Speed: "25%"
           },
@@ -7239,12 +7240,12 @@ const skillDamage = {
           },
           {
           label: "Shield - Attach (Sweet Kiss)",
-          formula: (HP) => 0.22 * HP,
+          formula: (HP) => 0.209 * HP,
           type: "hp"
           },
           {
           label: "Shield - Attach (Synthesis or Floral Healing)",
-          formula: (HP) => 0.15 * HP,
+          formula: (HP) => 0.14 * HP,
           type: "hp"
           },
           ]
@@ -7268,6 +7269,16 @@ const skillDamage = {
     "s11": {
       name: "Floral Healing",
       cooldown: 5,
+      buff:{},
+      buffPlus: {
+        levelRequired: 10,
+        allyBuffs: {
+          Speed: 30
+      },
+       allyBuffLabels: {
+          Speed: "(ALLY BUFF) MoveSpeed Increase"
+      },
+      },
       formulas: [
         {
           label: "Healing",
@@ -7296,10 +7307,21 @@ const skillDamage = {
     "s12": {
       name: "Sweet Kiss",
       cooldown: 6,
+      effects: ["Stun"],
+      buff:{},
+      buffPlus: {
+        levelRequired: 10,
+        allyBuffs: {
+          Speed: 50
+      },
+       allyBuffLabels: {
+          Speed: "(ALLY BUFF) MoveSpeed Increase"
+      },
+      },
       formulas: [
         {
           label: "Additional Shield",
-          formula: (SPATK, Level) => 0.85 * SPATK + 0 * (Level - 1) + 288,
+          formula: (SPATK, Level) => 0.8045 * SPATK + 0 * (Level - 1) + 277,
           type: "shield"
         }
       ]
@@ -7307,6 +7329,8 @@ const skillDamage = {
     "s21": {
       name: "Magical Leaf",
       cooldown: 10,
+      buff:{},
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage - per leaf",
@@ -7318,6 +7342,8 @@ const skillDamage = {
     "s22": {
       name: "Grass Knot",
       cooldown: 6,
+      buff:{},
+      effects: ["Immobilized"],
       formulas: [
 		{
 		  label: "Damage",
@@ -7334,6 +7360,16 @@ const skillDamage = {
 	"ult": {
 		name: "Flowery Fields Forever",
     cooldown: 89,
+    buff:{},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Invisible"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Heal - per tick",
@@ -15131,6 +15167,14 @@ const skillDamage = {
     skin4: "Costume Party Style",
     skin5: "Warm Style",
     skin6: "Tea Party Style"
+  },
+  comfey: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Merchant Style",
+    skin4: "Dainty Style",
+    skin5: "Sweet Style"
   },
   // Adicione mais pokémon aqui
 };
