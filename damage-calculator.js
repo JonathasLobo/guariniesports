@@ -1821,35 +1821,66 @@ if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
 
       // Aplicar efeitos especiais da skill
       if (skill.activeEffect && typeof skill.activeEffect === "function") {
-        modifiedStats = skill.activeEffect(modifiedStats, baseStats);
+        const skillName = skill.name || skillKey;
+        const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+        
+        // Executar o efeito PASSANDO O NÍVEL ATUAL
+        modifiedStats = skill.activeEffect(modifiedStats, baseStats, currentLevel);
+        
+        // Se Shell Smash foi ativado, rastrear os modificadores
+        if (modifiedStats._shellSmashBonus) {
+          const bonus = modifiedStats._shellSmashBonus;
+          
+          // Rastrear o bônus positivo de ATK
+          addStatModifier("ATK", bonus.convertedValue, `${skillName} (Conversion)`, "formula", iconPath);
+          
+          // Rastrear o bônus positivo de SpATK
+          addStatModifier("SpATK", bonus.convertedValue, `${skillName} (Conversion)`, "formula", iconPath);
+          
+          // Rastrear a redução de DEF (negativa)
+          addStatModifier("DEF", -bonus.originalDEF, `${skillName} (Sacrifice)`, "formula", iconPath);
+          
+          // Rastrear a redução de SpDEF (negativa)
+          addStatModifier("SpDEF", -bonus.originalSpDEF, `${skillName} (Sacrifice)`, "formula", iconPath);
+        }
       }
 
-      if (skill.debuffs && typeof skill.debuffs === 'object') {
-        Object.keys(skill.debuffs).forEach(debuffStat => {
-          const debuffValue = parseFloat(skill.debuffs[debuffStat]);
-          
-          if (!Number.isFinite(debuffValue)) return;
-          
-          if (!debuffsAcumulados[debuffStat]) {
-            debuffsAcumulados[debuffStat] = {
-              total: 0,
-              skills: [],
-              customLabel: null // NOVO: para armazenar o label customizado
-            };
-          }
-          
-          debuffsAcumulados[debuffStat].total += debuffValue;
-          debuffsAcumulados[debuffStat].skills.push({
-            name: skill.name,
-            value: debuffValue
-          });
-          
-          // NOVO: Usar debuffLabels se disponível
-          if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
-            debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
-          }
-        });
-      }
+if (skill.debuffs && typeof skill.debuffs === 'object') {
+  Object.keys(skill.debuffs).forEach(debuffStat => {
+    let debuffValue = skill.debuffs[debuffStat];
+    
+    // Converter para número se for string
+    if (typeof debuffValue === 'string') {
+      // Remover caracteres não numéricos (exceto ponto decimal e sinal negativo)
+      debuffValue = parseFloat(debuffValue.replace(/[^\d.-]/g, ''));
+    }
+    
+    // Garantir que é um número válido
+    if (!Number.isFinite(debuffValue)) {
+      console.warn(`Valor de debuff inválido para ${debuffStat}:`, skill.debuffs[debuffStat]);
+      return;
+    }
+    
+    if (!debuffsAcumulados[debuffStat]) {
+      debuffsAcumulados[debuffStat] = {
+        total: 0,
+        skills: [],
+        customLabel: null
+      };
+    }
+    
+    debuffsAcumulados[debuffStat].total += debuffValue;
+    debuffsAcumulados[debuffStat].skills.push({
+      name: skill.name,
+      value: debuffValue
+    });
+    
+    // Usar debuffLabels se disponível
+    if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
+      debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
+    }
+  });
+}
 
       if (skill.allyBuffs && typeof skill.allyBuffs === 'object') {
         Object.keys(skill.allyBuffs).forEach(buffStat => {
@@ -3283,44 +3314,40 @@ expandableStats.forEach(statLine => {
     }
   });
 });
-// Mostrar debuffs ativos
-if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
-  Object.keys(modified._debuffsAcumulados).forEach(debuffStat => {
-    const debuffData = modified._debuffsAcumulados[debuffStat];
-    const baseValue = 0;
-    const modifiedValue = debuffData.total;
-    
-    // ✅ CORREÇÃO: Usar customLabel se disponível, senão usar o padrão
-    const debuffLabel = debuffData.customLabel || `(DEBUFF) ${debuffStat} Reduction`;
-    
-    // Tratamento especial para Unstoppable - exibir em segundos (BUFF positivo)
-    if (debuffStat === "Unstoppable") {
-      statusFinalDiv.insertAdjacentHTML("beforeend", `
-        <div class="stat-line">
-          <span class="stat-label">${debuffLabel}</span>
-          <span class="stat-value">
-            <span class="base-value">${baseValue}s</span>
-            <span class="arrow-up">▲</span>
-            <span class="modified-up">${modifiedValue}s</span>
-            <span class="percent-increase">+100%</span>
-          </span>
-        </div>
-      `);
-    } else {
-      // DEBUFFS (reduções) - mostrar em vermelho
-      statusFinalDiv.insertAdjacentHTML("beforeend", `
-        <div class="stat-line">
-          <span class="stat-label">${debuffLabel}</span>
-          <span class="stat-value">
-            <span class="base-value">${baseValue}%</span>
-            <span class="arrow-down">▼</span>
-            <span class="modified-down">-${modifiedValue}%</span>
-          </span>
-        </div>
-      `);
+    // Mostrar debuffs ativos
+    if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
+      Object.values(modified._debuffsAcumulados).forEach(debuff => {
+        const baseValue = 0;
+        const modifiedValue = debuff.value;
+        
+        // Tratamento especial para Unstoppable - exibir em segundos (BUFF positivo)
+        if (debuff.stat === "Unstoppable") {
+          statusFinalDiv.insertAdjacentHTML("beforeend", `
+            <div class="stat-line">
+              <span class="stat-label">${debuff.label}</span>
+              <span class="stat-value">
+                <span class="base-value">${baseValue}s</span>
+                <span class="arrow-up">▲</span>
+                <span class="modified-up">${modifiedValue}s</span>
+                <span class="percent-increase">+100%</span>
+              </span>
+            </div>
+          `);
+        } else {
+          // DEBUFFS (reduções) - mostrar em vermelho
+          statusFinalDiv.insertAdjacentHTML("beforeend", `
+            <div class="stat-line">
+              <span class="stat-label">${debuff.label}</span>
+              <span class="stat-value">
+                <span class="base-value">${baseValue}%</span>
+                <span class="arrow-down">▼</span>
+                <span class="modified-down">-${modifiedValue}%</span>
+              </span>
+            </div>
+          `);
+        }
+      });
     }
-  });
-}
     // NOVO: Mostrar ally buffs ativos (buffs para aliados)
     if (modified._allyBuffsAcumulados && Object.keys(modified._allyBuffsAcumulados).length > 0) {
       Object.values(modified._allyBuffsAcumulados).forEach(allyBuff => {
@@ -3794,7 +3821,22 @@ if (hasSkillPlus) {
   const plusText = isPlusActive ? "PLUS ACTIVE" : `PLUS LV ${levelReq} ACTIVATION`;
   skillPlusIndicator = `<span class="skill-upgrade-indicator">${plusText}</span>`;
 }
-
+// Informação especial para Shell Smash
+let shellSmashInfo = "";
+if (key === "s12" && selectedPokemon === "blastoise" && isActiveSkill && modified._shellSmashBonus) {
+  const bonus = modified._shellSmashBonus;
+  const percentDisplay = (bonus.conversionRate * 100).toFixed(0); // 40 ou 50
+  
+  shellSmashInfo = `
+    <div class="skill-info-special" style="background: rgba(255, 100, 100, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #ff6464;">
+      <strong>⚠️ Defense Conversion:</strong><br>
+      <span style="color: #888;">Total Defense: ${Math.floor(bonus.totalDefense)} (${Math.floor(bonus.originalDEF)} + ${Math.floor(bonus.originalSpDEF)})</span><br>
+      <span style="color: #4CAF50;">→ +${Math.floor(bonus.convertedValue)} ATK & Sp.ATK (${percentDisplay}% converted)</span><br>
+      <span style="color: #f44336;">→ DEF & Sp.DEF reduced to 0</span>
+      ${currentLevel >= 11 ? '<span style="color: #FFD700; font-weight: bold;">⭐ Plus Active!</span>' : ''}
+    </div>
+  `;
+}
 // Criar HTML dos valores de dano destacados
 const damageValuesHtml = s.formulas.map((f, index) => {
   if (f.type === "text-only") {
@@ -3909,6 +3951,7 @@ const skillHtml = `
         ${isActivatable ? '<div class="skill-status"></div>' : ''}
       </div>
       <div class="skill-info">
+        ${shellSmashInfo}
         ${damageValuesHtml}
         ${buffsHtml}
       </div>

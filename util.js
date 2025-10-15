@@ -7563,6 +7563,13 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    debuffs: {
+      Speed: 40
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -7580,6 +7587,22 @@ const skillDamage = {
     "s11": {
       name: "Rock Tomb",
       cooldown: 5.5,
+      buff: {},
+      debuffs: {
+        Speed: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage - Projectile",
@@ -7601,12 +7624,67 @@ const skillDamage = {
     "s12": {
       name: "Shell Smash",
       cooldown: 7,
+      buff: {
+        Speed: "75%"
+      },
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
-      ]
+      ],
+        // NOVO: Função especial para Shell Smash
+        activeEffect: (modifiedStats, baseStats, currentLevel) => {
+          // Determinar percentual baseado no nível
+          const conversionRate = currentLevel >= 11 ? 0.50 : 0.40;
+          
+          // Somar DEF + SpDEF
+          const totalDefense = modifiedStats.DEF + modifiedStats.SpDEF;
+          
+          // Calcular o percentual da soma
+          const convertedValue = totalDefense * conversionRate;
+          
+          // Adicionar aos ataques
+          modifiedStats.ATK += convertedValue;
+          modifiedStats.SpATK += convertedValue;
+          
+          // IMPORTANTE: Armazenar o bônus para rastreamento
+          if (!modifiedStats._shellSmashBonus) {
+            modifiedStats._shellSmashBonus = {
+              totalDefense: totalDefense,
+              convertedValue: convertedValue,
+              originalDEF: modifiedStats.DEF,
+              originalSpDEF: modifiedStats.SpDEF,
+              conversionRate: conversionRate // Armazenar para exibir na UI
+            };
+          }
+          
+          // Zerar as defesas
+          modifiedStats.DEF = 0;
+          modifiedStats.SpDEF = 0;
+          
+          return modifiedStats;
+        }
     },
     "s21": {
       name: "Stealth Rock",
       cooldown: 5.5,
+      buff: {},
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 35
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -7618,6 +7696,15 @@ const skillDamage = {
     "s22": {
       name: "X-Scissor",
       cooldown: 6.5,
+      buff: {
+      },
+      effects: ["Stun"],
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -7639,7 +7726,22 @@ const skillDamage = {
 	"ult": {
 		name: "Rubble Rouser",
     cooldown: 134,
+    buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        effects: ["Stun", "Unstoppable"],
+        buffs: {
+          Speed: "30%",
+          Shield: 40
+        }
+      },
 		formulas: [
+      {
+          label: "Shield",
+          formula: (HP, Level) => 0.4 * HP + 600,
+          type: "hp"
+        },
         {
           label: "Damage - Revenge",
           formula: (ATK, Level) => 1.6 * ATK + 12 * (Level - 1) + 360,
@@ -15226,6 +15328,14 @@ const skillDamage = {
     skin3: "Tuxedo Style",
     skin4: "Pokébuki Style",
     skin5: "Hip-Hop Style"
+  },
+  crustle: {
+    default: "Default",
+    skin1: "Shrine Style",
+    skin2: "Cake Style",
+    skin3: "Starry Night Style",
+    skin4: "Tuxedo Style",
+    skin5: "Starry Night Style (Pink)"
   },
   // Adicione mais pokémon aqui
 };
