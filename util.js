@@ -945,7 +945,7 @@ const gameHeldItensPassive = {
   "assaultvest": { Shield: "+20%" },
   "buddybarrier": { Shield: "+25%"},
   "rockyhelmet": { ATK: "+1.8%" },
-  "shellbell": { formula: (stats) => 80 + (stats.SpATK * 0.6), target: "HP" },
+  "shellbell": { formula: (stats) => 80 + (stats.SpATK * 0.6), target: "HPRegen" },
   "slickspoon": { SpDEFPen: "+15%"},
   "bigroot": { HPRegen: "+20%" }
 };
@@ -7963,6 +7963,10 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      AtkSPD: 12
+    },
+
       formulas: [
         {
           label: "Damage - Basic",
@@ -7980,6 +7984,10 @@ const skillDamage = {
     "s11": {
       name: "Razor leaf",
       cooldown: 8,
+      buff: {
+        ATK: "10%",
+        AtkSPD: 10
+      },
       formulas: [
         {
           label: "Damage - Basic [Main Target]",
@@ -8005,12 +8013,31 @@ const skillDamage = {
           label: "Attack Speed - % Increase",
           formula: (ATK, Level) => 0 * ATK + 1 * (Level - 1) + 40,
           type: "physical"
-        }
+        },
+        {
+          label: "Level 11 buff",
+          type: "text-only",
+		      additionalText: "2% of the main target's remaining HP and 1% for secondary targets."
+        },
       ]
     },
     "s12": {
       name: "Spirit Shackle",
       cooldown: 8.5,
+      buff: {
+        Speed: "-25%"
+      },
+      debuffs: {
+        Speed: 80
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs:{},
+        skillDamageMultiplier: 1.125
+      },
       formulas: [
 		{
           label: "Damage - Min Charge",
@@ -8032,6 +8059,15 @@ const skillDamage = {
     "s21": {
       name: "Leaf Tornado",
       cooldown: 8,
+      effects: ["Stun"],
+      buff: {
+      },
+      debuffs: {
+        Speed: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
