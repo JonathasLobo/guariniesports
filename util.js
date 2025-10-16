@@ -883,6 +883,7 @@ const gameHeldItens = {
 	"shellbell": 'Shell Bell',
 	"slickspoon": 'Slick Spoon',
 	"spatkspecs": 'Sp. Atk Specs',
+  "tenacitybelt": 'Tenacity Belt', 
 	"weaknesspolice": 'Weakness Police',
 	"wiseglasses": 'Wise Glasses',
 }
@@ -922,6 +923,7 @@ const gameHeldItensStatus = {
 	"shellbell": ['SpATK +24','CDR +4.5%'],
 	"slickspoon": ['HP +210','SpATK +30'],
 	"spatkspecs": ['SpATK +24'],
+  "tenacitybelt": ['DEF +30','SpDEF +30'],
 	"weaknesspolice": ['HP +210','ATK +15'],
 	"wiseglasses": ['SpATK +39'],
 }
@@ -947,7 +949,8 @@ const gameHeldItensPassive = {
   "rockyhelmet": { ATK: "+1.8%" },
   "shellbell": { formula: (stats) => 80 + (stats.SpATK * 0.6), target: "HPRegen" },
   "slickspoon": { SpDEFPen: "+15%"},
-  "bigroot": { HPRegen: "+20%" }
+  "bigroot": { HPRegen: "+20%" },
+  "tenacitybelt": { DEF: "+28%" , SpDEF: "+28%"}
 };
 
 

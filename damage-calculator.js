@@ -1271,65 +1271,47 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
   };
 
   const applyItemPassiveEffects = (baseStats, modifiedStats, selectedItems) => {
-  const passives = getItemPassivesSource();
-  let result = ensureAllStats({ ...modifiedStats });
+    const passives = getItemPassivesSource();
+    let result = ensureAllStats({ ...modifiedStats });
 
-  selectedItems.forEach(itemKey => {
-    if (!activeItemPassives[itemKey]) return;
-    
-    const passive = passives[itemKey];
-    if (!passive) return;
-
-    if (itemKey === "razorclaw") return;
-
-    // ✅ NOVO: Pegar nome e ícone do item
-    const itemName = gameHeldItens[itemKey];
-    const iconPath = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
-
-    // ✅ CASO 1: Passivas com fórmula (Shell Bell, Choice Specs, Razor Claw)
-    if (typeof passive.formula === "function") {
-      const targetStat = passive.target || "SpATK";
-      const bonusValue = passive.formula(modifiedStats); // Calcula com stats modificados
-      result[targetStat] += bonusValue;
+    selectedItems.forEach(itemKey => {
+      if (!activeItemPassives[itemKey]) return;
       
-      // ✅ NOVO: Rastrear o modificador AQUI
-      addStatModifier(targetStat, bonusValue, `${itemName} (Passive)`, "formula", iconPath);
-      return;
-    }
+      const passive = passives[itemKey];
+      if (!passive) return;
 
-    // ✅ CASO 2: Passivas com valores fixos ou percentuais
-    Object.entries(passive).forEach(([stat, rawVal]) => {
-      if (!STAT_KEYS.includes(stat)) return;
+      if (itemKey === "razorclaw") return;
 
-      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-      const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
-      if (!Number.isFinite(numeric)) return;
-
-      if (PERCENT_KEYS.has(stat)) {
-        // Stats percentuais (CDR, CritRate, etc)
-        result[stat] += numeric;
-        // ✅ NOVO: Rastrear
-        addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
-      } else {
-        if (isPercentString) {
-          // Percentual sobre stat numérico (ex: Wise Glasses +7% SpATK)
-          const baseForBuff = Number(modifiedStats[stat]) || 0;
-          const bonusValue = baseForBuff * (numeric / 100);
-          result[stat] += bonusValue;
-          // ✅ NOVO: Rastrear
-          addStatModifier(stat, bonusValue, `${itemName} (Passive)`, "percent", iconPath);
-        } else {
-          // Valor flat
-          result[stat] += numeric;
-          // ✅ NOVO: Rastrear
-          addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
-        }
+      if (typeof passive.formula === "function") {
+        const targetStat = passive.target || "SpATK";
+        // ✅ CORREÇÃO: Usar modifiedStats em vez de baseStats
+        result[targetStat] += passive.formula(modifiedStats);
+        return;
       }
-    });
-  });
 
-  return ensureAllStats(result);
-};
+      Object.entries(passive).forEach(([stat, rawVal]) => {
+        if (!STAT_KEYS.includes(stat)) return;
+
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
+        if (!Number.isFinite(numeric)) return;
+
+        if (PERCENT_KEYS.has(stat)) {
+          result[stat] += numeric;
+        } else {
+          if (isPercentString) {
+            // ✅ CORREÇÃO: Usar modifiedStats em vez de baseStats
+            const baseForBuff = Number(modifiedStats[stat]) || 0;
+            result[stat] += baseForBuff * (numeric / 100);
+          } else {
+            result[stat] += numeric;
+          }
+        }
+      });
+    });
+
+    return ensureAllStats(result);
+  };
 
   // Emblemas
   const EMBLEM_BONUSES = {
@@ -3018,8 +3000,48 @@ selectedHeldItems.forEach(selectedItem => {
 });
     // 2) Aplicar passivos dos itens
     modified = applyItemPassiveEffects(base, modified, selectedItems);
+    // Rastrear passivos dos itens ativos
+selectedItems.forEach(itemKey => {
+  if (!activeItemPassives[itemKey]) return;
+  
+  const passive = getItemPassivesSource()[itemKey];
+  if (!passive) return;
+  
+  const itemName = gameHeldItens[itemKey];
+  const iconPath = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
+  
+  if (itemKey === "razorclaw") return;
+
+  if (typeof passive.formula === "function") {
+    const targetStat = passive.target || "SpATK";
+    const bonusValue = passive.formula(base);
+    addStatModifier(targetStat, bonusValue, `${itemName} (Passive)`, "formula", iconPath);
+    return;
+  }
+
+  Object.entries(passive).forEach(([stat, rawVal]) => {
+    if (!STAT_KEYS.includes(stat)) return;
+
+    const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+    const numeric = parseFloat(String(rawVal).replace("%","").replace(",", "."));
+    if (!Number.isFinite(numeric)) return;
+
+    if (PERCENT_KEYS.has(stat)) {
+      addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
+    } else {
+      if (isPercentString) {
+        const baseForBuff = Number(base[stat]) || 0;
+        const bonusValue = baseForBuff * (numeric / 100);
+        addStatModifier(stat, bonusValue, `${itemName} (Passive)`, "percent", iconPath);
+      } else {
+        addStatModifier(stat, numeric, `${itemName} (Passive)`, "flat", iconPath);
+      }
+    }
+  });
+});
 
     // 3) Battle Items
+// 3) Battle Items
 let selectedBattle = "";
 battleRadios.forEach(r => { if (r.checked) selectedBattle = r.value; });
 
