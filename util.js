@@ -7762,6 +7762,8 @@ const skillDamage = {
           description: "Damages and marks sleeping enemies near Darkrai, empowering its boosted attack and dealing bonus damage over time without waking them.",
           buff: {
           },
+          skillDamageMultiplier: 1.10, // 10% de aumento
+          affectsBasicAttack: true,
           formulas: [
           {
           label: "Damage",
@@ -7770,7 +7772,7 @@ const skillDamage = {
           },
           {
           label: "Damage - DoT",
-          formula: (HP) => 0.02 * HP + 2,
+          formula: (HP) => 0.02 * HP,
           type: "hp"
           },
           ]
@@ -7787,13 +7789,29 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (SPATK, Level) => 1.6 * SPATK + 0 * (Level - 1) + 336,
           type: "special"
-        }
+        },
+        {
+          label: "Healing",
+          type: "text-only",
+		      additionalText: "20% damage dealt"
+        },
       ]
 	},
 
     "s11": {
       name: "Dark Void",
       cooldown: 4,
+      buff: {
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 40,
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -7821,6 +7839,15 @@ const skillDamage = {
     "s21": {
       name: "Shadow Claw",
       cooldown: 6,
+      buff: {
+      },
+      effects: ["Sleep"],
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -7887,6 +7914,7 @@ const skillDamage = {
     "s22": {
       name: "Dark Pulse",
       cooldown: 8,
+      
       formulas: [
 		{
 		  label: "Damage",
@@ -7903,7 +7931,22 @@ const skillDamage = {
 	"ult": {
 		name: "Worst Nightmare",
     cooldown: 112,
+    buff: {
+      },
+      buffPlus: {
+        levelRequired: 9,
+        effects: ["Sleep", "Unstoppable"],
+        buffs: {
+          Speed: "80%",
+          Shield: 20
+        }
+      },
 		formulas: [
+      {
+		  label: "Damage - DoT (21 Ticks)",
+          formula: (HP, Level) => 0.03 * HP,
+          type: "hp"
+		},
 	]
 	}
   },
@@ -15337,6 +15380,10 @@ const skillDamage = {
     skin4: "Tuxedo Style",
     skin5: "Starry Night Style (Pink)"
   },
+  darkrai: {
+    default: "Default",
+    skin1: "Costume Party Style",
+    },
   // Adicione mais pokémon aqui
 };
 

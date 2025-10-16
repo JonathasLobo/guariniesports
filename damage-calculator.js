@@ -374,6 +374,7 @@ const updatePokemonImage = () => {
   "Vision Reduction": { icon: "👁️", label: "Vision Reduction" },
   "Untargetable": { icon: "🎯", label: "Untargetable" },
   "Invisible": { icon: "👤", label: "Invisible" },
+  "Sleep": { icon: "💤", label: "Sleep" }
 };
 
   const CUSTOM_SKILL_MAPPING = {
@@ -386,6 +387,10 @@ const updatePokemonImage = () => {
     s2: ["U11"] 
   },
   alcremie: {
+    s1: ["s11", "s21"],
+    s2: ["s12", "s22"]
+  },
+  darkrai: {
     s1: ["s11", "s21"],
     s2: ["s12", "s22"]
   },
@@ -3712,19 +3717,21 @@ s.formulas.forEach((f, index) => {
       }
     }
 
-    // Aplicar skillDamageMultiplier da passiva
-    if (skills.passive) {
-      const passive = skills.passive;
-      const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon]['passive'];
-      
-      if (isPassiveActive && passive.skillDamageMultiplier) {
-        const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+// Aplicar skillDamageMultiplier de QUALQUER passiva ativa
+    ['passive', 'passive1', 'passive2'].forEach(passiveKey => {
+      if (skills[passiveKey]) {
+        const passive = skills[passiveKey];
+        const isPassiveActive = activePassives[selectedPokemon] && activePassives[selectedPokemon][passiveKey];
         
-        if (!isBasicAttack || passive.affectsBasicAttack === true) {
-          modifiedVal *= passive.skillDamageMultiplier;
+        if (isPassiveActive && passive.skillDamageMultiplier) {
+          const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+          
+          if (!isBasicAttack || passive.affectsBasicAttack === true) {
+            modifiedVal *= passive.skillDamageMultiplier;
+          }
         }
       }
-    }
+    });
 
     // NOVO: Aplicar skillDamageMultiplier GLOBAL de QUALQUER skill com buffPlus ativo
     if (activeSkills[selectedPokemon]) {
