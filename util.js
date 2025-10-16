@@ -7803,6 +7803,7 @@ const skillDamage = {
       cooldown: 4,
       buff: {
       },
+      effects: ["Sleep"],
       buffPlus: {
         levelRequired: 11,
         debuffs: {
