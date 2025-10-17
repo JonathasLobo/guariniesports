@@ -3880,3 +3880,388 @@ textarea.form-control {
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
 }
+
+/* ===== SISTEMA DE TEMA (LIGHT/DARK MODE) - CORREÇÃO COMPLETA ===== */
+
+/* Botão de alternância de tema */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 15px auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  min-width: 180px;
+}
+
+.theme-toggle-btn:hover {
+  background: linear-gradient(135deg, #5a67d8, #6a3fa0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.theme-icon {
+  font-size: 18px;
+}
+
+/* Container dos botões de ação */
+.action-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+/* ===== LIGHT MODE (Padrão) ===== */
+/* Garantir que no light mode tudo fique PRETO */
+.skill-box .skill-info h4 {
+  color: #000000;
+}
+
+.skill-box.ultimate .skill-info h4 {
+  color: #ff6b00;
+}
+
+.skill-box.passive .skill-info h4 {
+  color: #000000;
+}
+
+.skill-damage-label {
+  color: #000000;
+}
+
+.skill-damage-number {
+  color: #1d1dd1;
+}
+
+.skill-cooldown-badge {
+  color: #000000;
+}
+
+.skill-slot-label {
+  color: #000;
+}
+
+.skill-selection-name {
+  color: #000;
+}
+
+/* ===== DARK MODE STYLES ===== */
+.resultado-container.dark-mode {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #667eea;
+}
+
+/* Colunas no dark mode */
+.dark-mode .coluna-temporada,
+.dark-mode .coluna-total {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.dark-mode .coluna-temporada h3 {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.dark-mode .coluna-total h3 {
+  color: #20c997;
+  border-bottom-color: #20c997;
+}
+
+/* Stat lines no dark mode */
+.dark-mode .stat-line {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+  border-left-color: #667eea;
+}
+
+.dark-mode .stat-line:hover {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.18) 0%, rgba(118, 75, 162, 0.18) 100%);
+}
+
+.dark-mode .stat-line .stat-label {
+  color: #e0e0e0;
+}
+
+.dark-mode .stat-line .stat-value {
+  color: #a8b3ff;
+}
+
+.dark-mode .stat-value .modified-up,
+.dark-mode .stat-value .modified-down {
+  color: #a8b3ff;
+}
+
+.dark-mode .stat-value .base-value {
+  color: #666;
+}
+
+/* Stats especiais no dark mode */
+.dark-mode .stat-line.special-stat {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.12) 0%, rgba(255, 152, 0, 0.12) 100%);
+  border-left-color: #ffc107;
+}
+
+/* Effect indicators no dark mode */
+.dark-mode .stat-line.effect-indicator {
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.12) 0%, rgba(186, 85, 211, 0.12) 100%);
+  border-left-color: #8a2be2;
+}
+
+.dark-mode .stat-line.effect-indicator .stat-label {
+  color: #ba55d3;
+}
+
+.dark-mode .stat-line.effect-indicator .stat-value {
+  color: #9b59b6;
+}
+
+/* Skills no dark mode */
+.dark-mode .skill-box {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(102, 126, 234, 0.08) 100%);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.dark-mode .skill-box:hover {
+  border-color: rgba(102, 126, 234, 0.7);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* CORREÇÃO: Títulos das skills em branco no dark mode */
+.dark-mode .skill-box .skill-info h4,
+.dark-mode .skill-box.ultimate .skill-info h4,
+.dark-mode .skill-box.passive .skill-info h4 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Listas e textos das skills em branco */
+.dark-mode .skill-box .skill-info li,
+.dark-mode .skill-info-text {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-info-text strong {
+  color: #ffffff !important;
+}
+
+/* Cooldown no dark mode - BRANCO */
+.dark-mode .skill-cooldown-badge {
+  color: #ffffff !important;
+  background: rgba(220, 53, 69, 0.3) !important;
+  border-color: rgba(220, 53, 69, 0.6) !important;
+}
+
+.dark-mode .skill-cooldown {
+  color: #ffffff !important;
+}
+
+/* Skill damage values no dark mode */
+.dark-mode .skill-damage-value {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.2) 0%, rgba(67, 233, 123, 0.2) 100%);
+  border-color: rgba(76, 201, 240, 0.5);
+}
+
+.dark-mode .skill-damage-value:hover {
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.3) 0%, rgba(67, 233, 123, 0.3) 100%);
+  border-color: rgba(76, 201, 240, 0.7);
+}
+
+.dark-mode .skill-damage-label {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-damage-number {
+  color: #a8b3ff !important;
+}
+
+.dark-mode .skill-damage-number span {
+  color: #a8b3ff !important;
+}
+
+.dark-mode .skill-damage-percent {
+  color: #4CAF50 !important;
+}
+
+/* Passive skills no dark mode */
+.dark-mode .skill-box.passive {
+  background: linear-gradient(135deg, rgba(123, 97, 255, 0.25) 0%, rgba(123, 97, 255, 0.08) 100%);
+  border-color: rgba(123, 97, 255, 0.6);
+}
+
+.dark-mode .skill-box.passive .passive-subtitle {
+  color: #ffffff !important;
+}
+
+/* Ultimate skills no dark mode */
+.dark-mode .skill-box.ultimate {
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.3) 0%, rgba(255, 140, 66, 0.15) 100%);
+  border-color: #ff8c42;
+}
+
+.dark-mode .skill-box.ultimate .skill-damage-number {
+  color: #ffb347 !important;
+}
+
+/* Skill buffs section no dark mode */
+.dark-mode .skill-buffs-section {
+  background: rgba(255, 193, 7, 0.15);
+  border-left-color: #ffc107;
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-buffs-section strong {
+  color: #ffc107 !important;
+}
+
+.dark-mode .skill-buffs-section span {
+  color: #ffffff !important;
+}
+
+/* Info jogador no dark mode */
+.dark-mode .info-jogador {
+  background: rgba(0, 0, 0, 0.4);
+  color: #e0e0e0;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Pokemon ratings no dark mode */
+.dark-mode .rating-label {
+  color: #e0e0e0;
+}
+
+.dark-mode .rating-bar-container {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.dark-mode .rating-value {
+  color: #e0e0e0;
+}
+
+/* Stat details (expansion) no dark mode */
+.dark-mode .stat-details {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 100%);
+  border-left-color: #667eea;
+}
+
+.dark-mode .modifier-item {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark-mode .modifier-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.dark-mode .modifier-name {
+  color: #e0e0e0;
+}
+
+/* CORREÇÃO: Skill build selector no dark mode - ROUTE EM BRANCO */
+.dark-mode .skill-slot-label {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-selector-circle {
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .skill-selector-circle:hover {
+  border-color: #a8b3ff;
+}
+
+.dark-mode .skill-selection-name {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-selection-name.selected {
+  color: #a8b3ff !important;
+}
+
+/* Muscle/Sweet gauge no dark mode */
+.dark-mode .muscle-gauge-control,
+.dark-mode .sweet-gauge-control {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: #dc3545;
+}
+
+.dark-mode .stack-label-new {
+  color: #ffffff !important;
+}
+
+.dark-mode .muscle-gauge-control > div:first-child,
+.dark-mode .sweet-gauge-control > div:first-child {
+  color: #ffffff !important;
+}
+
+.dark-mode .muscle-display,
+.dark-mode .sweet-toggle {
+  color: #ffffff !important;
+}
+
+/* Adicionais para dark mode - garantir texto branco */
+.dark-mode .skill-upgrade-indicator {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-upgrade-indicator.plus-active {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-info-special {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-info-special span {
+  color: #ffffff !important;
+}
+
+/* CRÍTICO: Forçar cor branca em todos os elementos de skill header */
+.dark-mode .skill-header-wrapper {
+  color: #ffffff !important;
+}
+
+.dark-mode .skill-header-wrapper * {
+  color: #ffffff !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .action-buttons-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .theme-toggle-btn {
+    min-width: 160px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 576px) {
+  .theme-toggle-btn {
+    min-width: 140px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .theme-icon {
+    font-size: 16px;
+  }
+}

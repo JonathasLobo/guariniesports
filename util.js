@@ -7918,7 +7918,6 @@ const skillDamage = {
     "s22": {
       name: "Dark Pulse",
       cooldown: 8,
-      
       formulas: [
 		{
 		  label: "Damage",
@@ -8082,6 +8081,26 @@ const skillDamage = {
     "s22": {
       name: "Shadow Sneak",
       cooldown: 12,
+      buff: {
+        Speed: "70%"
+      },
+      debuff: {
+        Speed: 30,
+        DEF: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        DEF: "(DEBUFF) Defense Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuff: {
+          DEF: 20
+        },
+        debuffLabels: {
+          DEF: "(DEBUFF) Defense Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -8093,6 +8112,16 @@ const skillDamage = {
 	"ult": {
 		name: "Nock Nock",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      skillDamageMultiplier: 1.3,
+      buffs: {
+        Shield: 30,
+        Speed: "30%"
+      }
+    },
 		formulas: [
         {
           label: "Damage - per Quill (30 Quills)",
@@ -8167,6 +8196,18 @@ const skillDamage = {
     "s12": {
       name: "Mystical Fire",
       cooldown: 4.5,
+      buff:{},
+      buffPlus: {
+        levelRequired: 11,
+        buffs:{
+        },
+        otherSkillsCooldownReduction: {
+          s11: 1.5,
+          s21: 1.5,
+          s12: 1.5,
+          s22: 1.5
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -8178,6 +8219,19 @@ const skillDamage = {
     "s21": {
       name: "Fire Spin",
       cooldown: 6.5,
+      buff:{},
+      effects: ["Stun"],
+      debuff: {
+        Speed: 30
+      },
+      debuffLabels :{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        skillDamageMultiplier: 1.125, // 30% de aumento no dano das skills
+        affectsBasicAttack: true,
+      },
       formulas: [
         {
           label: "Damage - per Tick",
@@ -8189,6 +8243,19 @@ const skillDamage = {
     "s22": {
       name: "Flame Charge",
       cooldown: 4.5,
+      buff:{},
+      debuff: {
+        Speed: 30
+      },
+      debuffLabels :{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          Speed: "30%"
+        }
+      },
       formulas: [
 		{
 		  label: "Damage",
@@ -8205,6 +8272,23 @@ const skillDamage = {
 	"ult": {
 		name: "Fanciful Fireworks",
     cooldown: 84,
+    buff:{},
+      buffPlus: {
+        levelRequired: 9,
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        },
+      debuffs: {
+        Speed: 50,
+        HPRegen: 50
+      },
+      debuffLabels :{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        HPRegen: "(DEBUFF) HPRegeneration Reduction "
+      },
+      },
 		formulas: [
         {
           label: "Damage - per Tick",
@@ -15424,6 +15508,25 @@ const skillDamage = {
     default: "Default",
     skin1: "Costume Party Style",
     },
+  decidueye: {
+    default: "Default",
+    skin1: "Star Cloak Style",
+    skin2: "Theater Style",
+    skin3: "Ninja Style",
+    skin4: "Tuxedo Style",
+    skin5: "Theater Style (Red)",
+    skin6: "Star Cloak Style (Light Blue)",
+    skin7: "Costume Party Style"
+  },
+  delphox: {
+    default: "Default",
+    skin1: "Purple Unite Style",
+    skin2: "Orange Unite Style",
+    skin3: "Tuxedo Style",
+    skin4: "Sacred Style",
+    skin5: "Tea Party Style",
+    skin6: "Dark Magician Style"
+  },
   // Adicione mais pokémon aqui
 };
 

@@ -3070,8 +3070,8 @@ if (selectedBattle) {
   }
   
   if (selectedBattle === "potion") {
-    const potionHealing = 160 + (modified.HP * 0.20);
-    modified.HP += potionHealing;
+    const potionHealing = 160 + (modified.HPRegen * 0.20);
+    modified.HPRegen += potionHealing;
     addStatModifier("HP", potionHealing, battleItemName, "formula", iconPath);
   }
 }
@@ -4235,6 +4235,42 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
         console.error("Erro ao gerar imagem:", err);
         alert("Não foi possível gerar a imagem.");
       });
+    });
+  }
+  // ===== SISTEMA DE TEMA (LIGHT/DARK MODE) =====
+  const btnThemeToggle = document.getElementById("btn-theme-toggle");
+  const themeIcon = btnThemeToggle?.querySelector(".theme-icon");
+  const themeText = btnThemeToggle?.querySelector(".theme-text");
+  
+  // Carregar tema salvo do localStorage
+  let currentTheme = localStorage.getItem("calculadora-theme") || "light";
+  
+  // Aplicar tema inicial
+  const applyTheme = (theme) => {
+    const resultadoContainer = document.getElementById("resultado");
+    
+    if (theme === "dark") {
+      resultadoContainer.classList.add("dark-mode");
+      if (themeIcon) themeIcon.textContent = "☀️";
+      if (themeText) themeText.textContent = "Light Mode";
+    } else {
+      resultadoContainer.classList.remove("dark-mode");
+      if (themeIcon) themeIcon.textContent = "🌙";
+      if (themeText) themeText.textContent = "Dark Mode";
+    }
+    
+    currentTheme = theme;
+    localStorage.setItem("calculadora-theme", theme);
+  };
+  
+  // Aplicar tema salvo
+  applyTheme(currentTheme);
+  
+  // Event listener para alternar tema
+  if (btnThemeToggle) {
+    btnThemeToggle.addEventListener("click", () => {
+      const newTheme = currentTheme === "light" ? "dark" : "light";
+      applyTheme(newTheme);
     });
   }
 });
