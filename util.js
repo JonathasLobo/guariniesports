@@ -6492,7 +6492,7 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 7,
-      effects: ["Burned"],
+      effects: ["Burn"],
       buff:{},
       selfBuff:{
         CooldownPercent: 65
@@ -6525,7 +6525,7 @@ const skillDamage = {
     "s12": {
       name: "Overheat",
       cooldown: 7.5,
-      effects: ["Burned"],
+      effects: ["Burn"],
       buff: {},
       selfBuffPlus: {
         levelRequired: 11,
@@ -6661,7 +6661,7 @@ const skillDamage = {
           type: "physical"
         },
         {
-          label: "Damage - Additional to Charizard burned targets (4x)",
+          label: "Damage - Additional to Charizard Burn targets (4x)",
           formula: (ATK, Level) => 0.32 * ATK + 2 * (Level - 1) + 10,
           type: "physical"
         }
@@ -6671,7 +6671,7 @@ const skillDamage = {
     "s11": {
       name: "Flamethrower",
       cooldown: 6,
-      effects: ["Burned"],
+      effects: ["Burn"],
       buff: {
         Speed: "40%"
       },
@@ -6707,7 +6707,7 @@ const skillDamage = {
     "s12": {
       name: "Fire Punch",
       cooldown: 5,
-      effects: ["Burned"],
+      effects: ["Burn"],
       buff: {
       },
       debuffs: {
@@ -6801,7 +6801,7 @@ const skillDamage = {
     buff:{},
     buffPlus: {
       levelRequired: 9,
-      effects: ["Unstoppable", "Bound", "Invincible", "Burned"],
+      effects: ["Unstoppable", "Bound", "Invincible", "Burn"],
       buffs: {
         HindRed: 100,
         Lifesteal: 80,
@@ -6871,7 +6871,7 @@ const skillDamage = {
       name: "Pyro Ball",
       cooldown: 5,
       buff:{},
-      effects: ["Burned"],
+      effects: ["Burn"],
       debuffs: {
         ATK: 5,
         SpATK: 5
@@ -6903,7 +6903,7 @@ const skillDamage = {
     "s12": {
       name: "Blaze Kick",
       cooldown: 9.5,
-      effects: ["Unstoppable", "Burned"],
+      effects: ["Unstoppable", "Burn"],
       buff: {
         CritRate: 100
       },
@@ -8311,6 +8311,16 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    buffPlus: {
+      levelRequired: 1,
+      otherSkillsCooldownReduction: {
+        s11: 1,
+        s21: 1,
+        s12: 1,
+        s22: 1
+      }
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -8333,6 +8343,16 @@ const skillDamage = {
     "s11": {
       name: "Tri Attack",
       cooldown: 6,
+      buff: {},
+      effects: ["Burn", "Paralyze", "Freeze"],
+      conditionalEffects: {
+        options: ["Burn", "Paralyze", "Freeze"],
+        debuffs: {
+          "Burn": { ATK: 12 },
+          "Paralyze": { AtkSPD: 12, Speed: 15 },
+          "Freeze": { Speed: 40 }
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -8352,13 +8372,28 @@ const skillDamage = {
 		{
           label: "Damage - Basic",
           formula: (ATK, Level) => 0.636 * ATK + 2 * (Level - 1) + 39,
-          type: "physical"
-        }
+          type: "physical",
+          additionalText: "Heals for 7% max HP."
+        },
+                {
+          label: "Damage - Basic Skill Plus",
+          type: "text-only",
+		      additionalText: "Additional heals 3% max HP."
+        },
       ]
     },
     "s12": {
       name: "Drill Peck",
       cooldown: 6,
+      buff: {
+        DmgTaken: 20
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 2
+        }
+      },
       formulas: [
 		{
           label: "Damage - 3x (No Gauge)",
@@ -8369,18 +8404,43 @@ const skillDamage = {
           label: "Damage - 5x (Full Gauge)",
           formula: (ATK, Level) => 0.74 * ATK + 2 * (Level - 1) + 68,
           type: "physical"
-        }
+        },
+        {
+          label: "Damage - 3x (Full Gauge)",
+          type: "text-only",
+		      additionalText: "3% of enemy max HP."
+        },
+        {
+          label: "Damage - Heal",
+          type: "text-only",
+		      additionalText: "Restores 30% of the damage dealt by the flat damage."
+        },
       ]
     },
     "s21": {
       name: "Agility",
       cooldown: 9,
+      buff: {
+        HindRed: 100,
+        Speed: "20%"
+      },
       formulas: [
       ]
     },
     "s22": {
       name: "Jump Kick",
       cooldown: 6.5,
+      buff:{},
+      debuffs: {
+        Speed: 25
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuff: {
+        CooldownFlat: 3
+      },
+      effects: ["Stun"],
       formulas: [
 		{
           label: "Damage - Initial",
@@ -8397,6 +8457,17 @@ const skillDamage = {
 	"ult": {
 		name: "Triple Trample",
     cooldown: 134,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        ATK: "25%",
+        SpATK: "-5%",
+        Shield: 30,
+        Speed: "80%"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -15526,6 +15597,14 @@ const skillDamage = {
     skin4: "Sacred Style",
     skin5: "Tea Party Style",
     skin6: "Dark Magician Style"
+  },
+  dodrio: {
+    default: "Default",
+    skin1: "Purple Unite Style",
+    skin2: "Orange Unite Style",
+    skin3: "Gift Box Style",
+    skin4: "Performer Style",
+    skin5: "Pokébuki Style"
   },
   // Adicione mais pokémon aqui
 };

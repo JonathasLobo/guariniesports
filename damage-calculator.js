@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedSkins = {};
   let statModifiers = {}; // Rastreia todos os modificadores de cada stat
   let currentExpandedStat = null; // Controla qual stat está expandido
+  let selectedConditionalEffects = {};
 
 // Tornar imagem clicável para abrir modal
 const makeImageClickable = () => {
@@ -367,14 +368,16 @@ const updatePokemonImage = () => {
   "Stun": { icon: "🌀", label: "Stun" },
   "Bound": { icon: "🪢", label: "Bound"},
   "Invincible": { icon: "💎", label: "Invincible" },
-  "Burned": { icon: "🔥", label: "Burned" },
+  "Burn": { icon: "🔥", label: "Burn" },
   "True Damage": { icon: "💥", label: "True Damage" },
   "Cleanses": { icon: "✨", label: "Cleanses" },
   "Immobilized": { icon: "🛑", label: "Immobilized" },
   "Vision Reduction": { icon: "👁️", label: "Vision Reduction" },
   "Untargetable": { icon: "🎯", label: "Untargetable" },
   "Invisible": { icon: "👤", label: "Invisible" },
-  "Sleep": { icon: "💤", label: "Sleep" }
+  "Sleep": { icon: "💤", label: "Sleep" },
+  "Paralyze": { icon: "⚡", label: "Paralyze" },
+  "Freeze": { icon: "💤", label: "Freeze" }
 };
 
   const CUSTOM_SKILL_MAPPING = {
@@ -1644,6 +1647,37 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
       });
     }
 
+    // Processar debuffs condicionais (ex: Tri Attack)
+if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedConditionalEffects[pokemon][skillKey]) {
+  const selectedEffect = selectedConditionalEffects[pokemon][skillKey];
+  const conditionalDebuffs = skill.conditionalEffects.debuffs[selectedEffect];
+  
+  if (conditionalDebuffs) {
+    Object.keys(conditionalDebuffs).forEach(debuffStat => {
+      const debuffValue = parseFloat(conditionalDebuffs[debuffStat]);
+      
+      if (!Number.isFinite(debuffValue)) return;
+      
+      if (!debuffsAcumulados[debuffStat]) {
+        debuffsAcumulados[debuffStat] = {
+          total: 0,
+          skills: [],
+          customLabel: null
+        };
+      }
+      
+      debuffsAcumulados[debuffStat].total += debuffValue;
+      debuffsAcumulados[debuffStat].skills.push({
+        name: `${skill.name} (${selectedEffect})`,
+        value: debuffValue
+      });
+      
+      // Label customizado
+      debuffsAcumulados[debuffStat].customLabel = `(DEBUFF) ${debuffStat} Reduction [${selectedEffect}]`;
+    });
+  }
+}
+
       // Aplicar SELF-BUFFS básicos (afetam apenas a skill específica)
       if (skill.selfBuff && typeof skill.selfBuff === 'object') {
         if (!modifiedStats._selfBuffs[skillKey]) {
@@ -2414,6 +2448,18 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
 
   // FUNÇÃO PARA SELECIONAR POKÉMON
   const selectPokemon = (poke) => {
+  const levelSelector = document.getElementById("level-selector-container");
+  const actionButtons = document.getElementById("action-buttons-container");
+  
+  if (levelSelector) {
+    levelSelector.classList.remove("hidden-until-pokemon");
+    levelSelector.classList.add("show-after-pokemon");
+  }
+  
+  if (actionButtons) {
+    actionButtons.classList.remove("hidden-until-pokemon");
+    actionButtons.classList.add("show-after-pokemon");
+  } 
     selectedPokemon = poke;
     
   if (!selectedSkins[poke]) {
@@ -2830,6 +2876,44 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     // Se não há seleção para este slot, mostrar todas do slot
     return true;
   };
+
+  // Função para criar seletor de efeito condicional
+const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) => {
+  if (!selectedConditionalEffects[pokemon]) {
+    selectedConditionalEffects[pokemon] = {};
+  }
+
+  if (!selectedConditionalEffects[pokemon][skillKey]) {
+    selectedConditionalEffects[pokemon][skillKey] = conditionalEffects.options[0];
+  }
+  
+  const currentSelection = selectedConditionalEffects[pokemon][skillKey] || conditionalEffects.options[0];
+  
+  const selectorHTML = `
+    <div class="conditional-effect-selector" data-no-toggle="true">
+      <div class="effect-selector-label">Status debuff select:</div>
+      <div class="effect-options">
+        ${conditionalEffects.options.map(effectName => {
+          const isSelected = currentSelection === effectName;
+          const effectConfig = EFFECT_CONFIG[effectName] || { icon: "●", label: effectName };
+          const icon = effectConfig.icon;
+          
+          return `
+            <div class="effect-option ${isSelected ? 'selected' : ''}" 
+                 data-pokemon="${pokemon}" 
+                 data-skill="${skillKey}" 
+                 data-effect="${effectName}">
+              <span class="effect-icon">${icon}</span>
+              <span class="effect-name">${effectName}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  
+  return selectorHTML;
+};
 
   // FUNÇÃO DE CÁLCULO
   const calcular = () => {
@@ -3422,17 +3506,37 @@ if (skillDamage[selectedPokemon]) {
       // Renderizar effects ativos como linhas na tabela
       if (activeEffects.size > 0) {
         activeEffects.forEach(effectName => {
-          const config = EFFECT_CONFIG[effectName] || { icon: "⭐", label: effectName };
+          // ✅ VERIFICAR SE É UM EFEITO CONDICIONAL
+          let shouldDisplay = true;
           
-          statusFinalDiv.insertAdjacentHTML("beforeend", `
-            <div class="stat-line effect-indicator">
-              <span class="stat-label">
-                <span class="effect-icon-inline">${config.icon}</span>
-                ${config.label}
-              </span>
-              <span class="stat-value">ACTIVE</span>
-            </div>
-          `);
+          Object.keys(skills).forEach(skillKey => {
+            const skill = skills[skillKey];
+            const isSkillActive = activeSkills[selectedPokemon] && activeSkills[selectedPokemon][skillKey];
+            
+            // Se a skill tem conditional effects e está ativa
+            if (isSkillActive && skill.conditionalEffects && skill.conditionalEffects.options) {
+              // Se este effect está na lista de opções
+              if (skill.conditionalEffects.options.includes(effectName)) {
+                // Só mostra se for o effect selecionado
+                const selectedEffect = selectedConditionalEffects[selectedPokemon]?.[skillKey];
+                shouldDisplay = (effectName === selectedEffect);
+              }
+            }
+          });
+          
+          if (shouldDisplay) {
+            const config = EFFECT_CONFIG[effectName] || { icon: "⭐", label: effectName };
+            
+            statusFinalDiv.insertAdjacentHTML("beforeend", `
+              <div class="stat-line effect-indicator">
+                <span class="stat-label">
+                  <span class="effect-icon-inline">${config.icon}</span>
+                  ${config.label}
+                </span>
+                <span class="stat-value">ACTIVE</span>
+              </div>
+            `);
+          }
         });
       }
     }
@@ -3944,6 +4048,11 @@ if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.
 }
 
 
+let conditionalEffectHTML = "";
+if (s.conditionalEffects && s.conditionalEffects.options) {
+  conditionalEffectHTML = createConditionalEffectSelector(selectedPokemon, key, s.conditionalEffects);
+}
+
 const skillHtml = `
   <div class="skill-box${ultimateClass}${activatableClass}${activeClass}" data-pokemon="${selectedPokemon}" data-skill-key="${key}">
     <div class="skill-box-content">
@@ -3963,10 +4072,12 @@ const skillHtml = `
         ${shellSmashInfo}
         ${damageValuesHtml}
         ${buffsHtml}
+        ${conditionalEffectHTML}
       </div>
     </div>
   </div>
 `;
+
 skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
 });
 
@@ -4048,6 +4159,26 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
       });
     });
 
+    const effectOptions = skillsDiv.querySelectorAll(".effect-option");
+    effectOptions.forEach(option => {
+      option.addEventListener("click", (e) => {
+        e.stopPropagation(); // ✅ IMPEDE QUE O CLIQUE CHEGUE NA SKILL BOX
+        
+        const pokemon = option.dataset.pokemon;
+        const skillKey = option.dataset.skill;
+        const effectName = option.dataset.effect;
+        
+        // Salvar seleção
+        if (!selectedConditionalEffects[pokemon]) {
+          selectedConditionalEffects[pokemon] = {};
+        }
+        selectedConditionalEffects[pokemon][skillKey] = effectName;
+        
+        // Recalcular para aplicar o debuff correto
+        calcular();
+      });
+    });
+
     } else {
       skillsDiv.innerHTML = `<div class="stat-line"><span class="stat-label">Nenhuma skill disponível</span></div>`;
     }
@@ -4055,7 +4186,10 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
     // Event listeners para skills ativáveis clicáveis
     const activatableSkills = skillsDiv.querySelectorAll(".skill-box.activatable");
     activatableSkills.forEach(box => {
-      box.addEventListener("click", () => {
+      box.addEventListener("click", (e) => {
+        if (e.target.closest('[data-no-toggle="true"]')) {
+          return;
+        } 
         const pokemon = box.dataset.pokemon;
         const skillKey = box.dataset.skillKey;
         

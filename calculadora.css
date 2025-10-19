@@ -852,8 +852,6 @@ textarea.form-control {
   padding: 8px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  max-height: 400px;
-  overflow-y: auto;
 }
 
 .held-item-option {
@@ -4264,4 +4262,138 @@ textarea.form-control {
   .theme-icon {
     font-size: 16px;
   }
+}
+/* Conditional Effect Selector */
+.conditional-effect-selector {
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.12) 0%, rgba(186, 85, 211, 0.12) 100%);
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.effect-selector-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a2be2;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.effect-options {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.effect-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  min-width: 70px;
+}
+
+.effect-option:hover {
+  border-color: #8a2be2;
+  background: rgba(138, 43, 226, 0.15);
+  transform: translateY(-2px);
+}
+
+.effect-option.selected {
+  border-color: #8a2be2;
+  background: rgba(138, 43, 226, 0.25);
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4);
+}
+
+.effect-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.effect-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.effect-option.selected .effect-name {
+  color: #8a2be2;
+}
+
+/* Dark mode */
+.dark-mode .effect-selector-label {
+  color: #ba55d3;
+}
+
+.dark-mode .effect-name {
+  color: #ffffff;
+}
+
+.dark-mode .effect-option.selected .effect-name {
+  color: #ba55d3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .effect-options {
+    gap: 6px;
+  }
+  
+  .effect-option {
+    padding: 6px 10px;
+    min-width: 60px;
+  }
+  
+  .effect-icon {
+    font-size: 18px;
+  }
+  
+  .effect-name {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 576px) {
+  .effect-option {
+    padding: 5px 8px;
+    min-width: 55px;
+  }
+  
+  .effect-icon {
+    font-size: 16px;
+  }
+  
+  .effect-name {
+    font-size: 8px;
+  }
+}
+
+/* Ocultar elementos antes de selecionar Pokémon */
+.hidden-until-pokemon {
+  display: none !important;
+}
+
+.show-after-pokemon {
+  display: block !important;
+}
+
+/* Garantir que o container de nível mantenha sua estrutura */
+.level-selector-container.show-after-pokemon {
+  display: block !important;
+}
+
+/* Garantir que o container de botões mantenha sua estrutura flex */
+.action-buttons-container.show-after-pokemon {
+  display: flex !important;
 }
