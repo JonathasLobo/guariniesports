@@ -18,78 +18,78 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Dados dos emblemas
   const EMBLEM_DATA = {
-    verde: { 
-      name: "Verde", 
+    green: { 
+      name: "Green", 
       stat: "Sp. ATK", 
       color: "#28a745",
       levels: { 2: 1, 4: 2, 6: 4 },
       description: "Aumenta o Sp. ATK"
     },
-    vermelho: { 
-      name: "Vermelho", 
+    red: { 
+      name: "Red", 
       stat: "Atk Speed", 
       color: "#dc3545",
       levels: { 3: 2, 5: 4, 7: 8 },
       description: "Aumenta a velocidade de ataque"
     },
-    azul: { 
-      name: "Azul", 
+    blue: { 
+      name: "Blue", 
       stat: "DEF", 
       color: "#007bff",
       levels: { 2: 2, 4: 4, 6: 8 },
       description: "Aumenta a defesa física"
     },
-    branco: { 
-      name: "Branco", 
+    white: { 
+      name: "White", 
       stat: "HP", 
       color: "#ffffff",
       levels: { 2: 1, 4: 2, 6: 4 },
       description: "Aumenta os pontos de vida"
     },
-    preto: { 
-      name: "Preto", 
+    black: { 
+      name: "Black", 
       stat: "CDR", 
       color: "#343a40",
       levels: { 3: 1, 5: 2, 7: 4 },
       description: "Reduz o tempo de recarga das habilidades"
     },
-    amarelo: { 
-      name: "Amarelo", 
+    yellow: { 
+      name: "Yellow", 
       stat: "Speed", 
       color: "#ffc107",
       levels: { 3: 4, 5: 6, 7: 12 },
       description: "Aumenta a velocidade de movimento"
     },
-    marrom: { 
-      name: "Marrom", 
+    brown: { 
+      name: "Brown", 
       stat: "ATK", 
       color: "#8b4513",
       levels: { 2: 1, 4: 2, 6: 4 },
       description: "Aumenta o ATK físico"
     },
-    roxo: { 
-      name: "Roxo", 
+    purple: { 
+      name: "Purple", 
       stat: "Sp. DEF", 
       color: "#6f42c1",
       levels: { 2: 2, 4: 4, 6: 8 },
       description: "Aumenta a defesa especial"
     },
-    rosa: { 
-      name: "Rosa", 
+    pink: { 
+      name: "Pink", 
       stat: "Hindrance Reduction", 
       color: "#e83e8c",
       levels: { 3: 4, 5: 8, 7: 16 },
       description: "Reduz a duração dos efeitos de controle"
     },
-    azulmarinho: { 
-      name: "Azul-Marinho", 
+    navy: { 
+      name: "Navy", 
       stat: "Energy Rate", 
       color: "#1e3a8a",
       levels: { 3: 1, 5: 2, 7: 4 },
       description: "Aumenta a velocidade de carregamento da ultimate"
     },
-    cinza: { 
-      name: "Cinza", 
+    gray: { 
+      name: "Gray", 
       stat: "Damage Taken", 
       color: "#6c757d",
       levels: { 3: 3, 5: 6, 7: 12 },
@@ -1318,17 +1318,17 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
 
   // Emblemas
   const EMBLEM_BONUSES = {
-    verde: { stat: "SpATK", values: { 2: 1, 4: 2, 6: 4 } },
-    vermelho: { stat: "AtkSPD", values: { 3: 2, 5: 4, 7: 8 } },
-    azul: { stat: "DEF", values: { 2: 2, 4: 4, 6: 8 } },
-    branco: { stat: "HP", values: { 2: 1, 4: 2, 6: 4 } },
-    preto: { stat: "CDR", values: { 3: 1, 5: 2, 7: 4 } },
-    amarelo: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
-    marrom: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
-    roxo: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } },
-    cinza: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } },
-    rosa: { stat: "HindRed", values: { 3: 4, 5: 8, 7: 16 } },
-    azulmarinho: { stat: "EnergyRate", values: { 3: 1, 5: 2, 7: 4 } },
+    green: { stat: "SpATK", values: { 2: 1, 4: 2, 6: 4 } },
+    red: { stat: "AtkSPD", values: { 3: 2, 5: 4, 7: 8 } },
+    blue: { stat: "DEF", values: { 2: 2, 4: 4, 6: 8 } },
+    white: { stat: "HP", values: { 2: 1, 4: 2, 6: 4 } },
+    black: { stat: "CDR", values: { 3: 1, 5: 2, 7: 4 } },
+    yellow: { stat: "Speed", values: { 3: 4, 5: 6, 7: 12 } },
+    brown: { stat: "ATK", values: { 2: 1, 4: 2, 6: 4 } },
+    purple: { stat: "SpDEF", values: { 2: 2, 4: 4, 6: 8 } },
+    gray: { stat: "DmgTaken", values: { 3: 3, 5: 6, 7: 12 } },
+    pink: { stat: "HindRed", values: { 3: 4, 5: 8, 7: 16 } },
+    navy: { stat: "EnergyRate", values: { 3: 1, 5: 2, 7: 4 } },
   };
 
   // Funções para o novo sistema de emblemas
@@ -1435,7 +1435,7 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
       const indicator = `<span class="emblem-color-indicator" style="background-color: ${emblem.color}; ${emblem.color === '#ffffff' ? 'border: 1px solid #ccc;' : ''}"></span>`;
       
       // Cada emblema em sua própria linha com estrutura organizada
-      if (emblemKey === "cinza") {
+      if (emblemKey === "gray") {
         return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> -${bonus} Dmg Taken</span></div>`;
       } else {
         return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> +${bonus}% ${emblem.stat}</span></div>`;
@@ -2331,7 +2331,7 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
       const button = document.createElement("button");
       button.className = "damage-type-btn";
       button.dataset.type = type;
-      button.textContent = type === "ATK" ? "FÍSICOS" : "ESPECIAIS";
+      button.textContent = type === "ATK" ? "PHYSICAL" : "SPECIAL";
       
       const isActive = currentDamageTypeFilter === type;
       if (isActive) {
@@ -2820,7 +2820,7 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     const resetButton = document.createElement("button");
     resetButton.id = "reset-held-items-btn";
     resetButton.className = "reset-held-items-button";
-    resetButton.textContent = "🗑️ Resetar Held Itens";
+    resetButton.textContent = "🗑️ Reset Held Itens";
     resetButton.title = "Limpar todos os held items selecionados";
     
     resetButton.addEventListener("click", () => {
@@ -3177,7 +3177,7 @@ if (incluirEmblemas === "sim") {
         // Criar ícone customizado com a cor correta
         const customIcon = `<span style="display: inline-block; width: 14px; height: 14px; border-radius: 50%; background-color: ${emblemData.color}; ${emblemData.color === '#ffffff' ? 'border: 1px solid #333;' : ''} margin-right: 8px; flex-shrink: 0;"></span>`;
         
-        if (emblemKey === "cinza") {
+        if (emblemKey === "gray") {
           modified.DmgTaken += 0;
           if (!modified._fixedDmgTaken) modified._fixedDmgTaken = 0;
           modified._fixedDmgTaken += bonus;
@@ -3583,7 +3583,7 @@ if (incluirEmblemas === "sim") {
       
       const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #333;" : "";
       
-      if (emblemKey === "cinza") {
+      if (emblemKey === "gray") {
         return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
           <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 8px; flex-shrink: 0; ${borderStyle}"></span>
           <span style="color: #000; font-size: 12px; font-weight: 500;">${emblem.name} Lv.${level} (-${bonus})</span>

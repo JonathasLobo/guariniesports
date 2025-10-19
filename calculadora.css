@@ -2277,17 +2277,17 @@ textarea.form-control {
 }
 
 /* Cores específicas dos emblemas */
-.emblem-verde { background-color: #28a745; }
-.emblem-vermelho { background-color: #dc3545; }
-.emblem-azul { background-color: #007bff; }
-.emblem-branco { background-color: #ffffff; border: 1px solid #ccc; }
-.emblem-preto { background-color: #343a40; }
-.emblem-amarelo { background-color: #ffc107; }
-.emblem-marrom { background-color: #8b4513; }
-.emblem-roxo { background-color: #6f42c1; }
-.emblem-rosa { background-color: #e83e8c; }
-.emblem-azulmarinho { background-color: #1e3a8a; }
-.emblem-cinza { background-color: #6c757d; }
+.emblem-green { background-color: #28a745; }
+.emblem-red { background-color: #dc3545; }
+.emblem-blue { background-color: #007bff; }
+.emblem-white { background-color: #ffffff; border: 1px solid #ccc; }
+.emblem-black { background-color: #343a40; }
+.emblem-yellow { background-color: #ffc107; }
+.emblem-brown { background-color: #8b4513; }
+.emblem-purple { background-color: #6f42c1; }
+.emblem-pink { background-color: #e83e8c; }
+.emblem-navy { background-color: #1e3a8a; }
+.emblem-gray { background-color: #6c757d; }
 
 /* Responsividade */
 @media (max-width: 768px) {
