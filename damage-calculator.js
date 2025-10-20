@@ -1502,6 +1502,17 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   if (!skill) return;
 
   try {
+     if (skill.nextBasicAttackPercent !== undefined) {
+      if (!modifiedStats._nextBasicAttackPercents) {
+        modifiedStats._nextBasicAttackPercents = [];
+      }
+      
+      modifiedStats._nextBasicAttackPercents.push({
+        value: skill.nextBasicAttackPercent,
+        source: skill.name || skillKey
+      });
+    }
+
     // **1. PRIMEIRO: Processar buffs condicionais para Alcremie**
     if (pokemon === "alcremie" && skill.conditionalBuffs) {
       const gaugeState = sweetGauge ? "full" : "notFull";
@@ -1748,17 +1759,17 @@ if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedC
         }
       });
     }
-        // ADICIONE ESTA SEÇÃO AQUI (posição correta):
-        if (skill.buffPlus.nextBasicAttackPercent) {
-          if (!modifiedStats._nextBasicAttackPercents) {
-            modifiedStats._nextBasicAttackPercents = [];
-          }
-          
-          modifiedStats._nextBasicAttackPercents.push({
-            value: skill.buffPlus.nextBasicAttackPercent,
-            source: skill.name + " (Plus)"
-          });
-        }
+    // ✅ PROCESSAR nextBasicAttackPercent DO BUFFPLUS
+    if (skill.buffPlus.nextBasicAttackPercent !== undefined) {
+      if (!modifiedStats._nextBasicAttackPercents) {
+        modifiedStats._nextBasicAttackPercents = [];
+      }
+      
+      modifiedStats._nextBasicAttackPercents.push({
+        value: skill.buffPlus.nextBasicAttackPercent,
+        source: `${skill.name || skillKey} (Plus)`
+      });
+    }
 
 if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
         Object.keys(skill.buffPlus.debuffs).forEach(debuffStat => {
@@ -2507,8 +2518,14 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
           if (!['passive', 'passive1', 'passive2'].includes(skillKey)) {
             const skill = skillDamage[poke][skillKey];
             // Verifica se a skill tem buff ou efeitos ativáveis (incluindo ults e conditionalBuffs)
-            if (skill.buff || skill.conditionalBuffs || skill.activeEffect || skill.debuffs || 
-                skill.dynamicBuffs || (skill.formulas && skill.formulas.some(f => f.activatable)) ||
+            if (skill.buff || 
+                skill.conditionalBuffs || 
+                skill.activeEffect || 
+                skill.debuffs || 
+                skill.dynamicBuffs || 
+                skill.nextBasicAttackPercent !== undefined || // ✅ ADICIONAR
+                skill.buffPlus?.nextBasicAttackPercent !== undefined ||
+                (skill.formulas && skill.formulas.some(f => f.activatable)) ||
                 skillKey.startsWith('ult')) {
               activeSkills[poke][skillKey] = false;
             }
@@ -3405,6 +3422,7 @@ expandableStats.forEach(statLine => {
     }
   });
 });
+
     // Mostrar debuffs ativos
     if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
       Object.values(modified._debuffsAcumulados).forEach(debuff => {
@@ -3800,16 +3818,18 @@ s.formulas.forEach((f, index) => {
         }
       }
 
-      // Aplicar multiplicadores de nextBasicAttackPercent para ataques básicos
+      // ✅ NOVO: Aplicar nextBasicAttackPercent aos ataques básicos
       if (modified._nextBasicAttackPercents && modified._nextBasicAttackPercents.length > 0) {
         const basicAttackKeys = ['basic', 'basicattack', 'atkboosted'];
         if (basicAttackKeys.includes(key)) {
-          const totalPercentIncrease = modified._nextBasicAttackPercents.reduce((total, buff) => {
-            return total + buff.value;
-          }, 0);
+          const totalPercent = modified._nextBasicAttackPercents.reduce((sum, buff) => sum + buff.value, 0);
           
-          const multiplier = 1 + (totalPercentIncrease / 100);
-          modifiedVal *= multiplier;
+          if (totalPercent !== 0) {
+            const multiplier = 1 + (totalPercent / 100);
+            const finalMultiplier = Math.max(0, multiplier); // Proteção contra negativo
+            
+            modifiedVal *= finalMultiplier;
+          }
         }
       }
       
@@ -3962,17 +3982,32 @@ const damageValuesHtml = s.formulas.map((f, index) => {
   const baseVal = Math.floor(values.base);
   const modVal = Math.floor(values.modified);
   const hasIncrease = modVal > baseVal;
-  const percentIncrease = baseVal > 0 ? (((modVal - baseVal) / baseVal) * 100).toFixed(1) : 0;
+  // ✅ CALCULAR percentIncrease CONSIDERANDO nextBasicAttackPercent
+  let percentIncrease = 0;
+
+  // Verificar se é um Basic Attack e se há modificadores nextBasicAttackPercent ativos
+  const isBasicAttack = (key === "basic" || key === "basicattack" || key === "atkboosted");
+
+  if (isBasicAttack && modified._nextBasicAttackPercents && modified._nextBasicAttackPercents.length > 0) {
+    // Somar todos os modificadores de nextBasicAttackPercent
+    const totalPercent = modified._nextBasicAttackPercents.reduce((sum, buff) => sum + buff.value, 0);
+    percentIncrease = totalPercent.toFixed(1);
+  } else if (baseVal > 0) {
+    // Cálculo normal de aumento percentual
+    percentIncrease = (((modVal - baseVal) / baseVal) * 100).toFixed(1);
+  } else {
+    percentIncrease = 0;
+  }
   
-  return `
+    return `
     <div class="skill-damage-value">
       <span class="skill-damage-label">${f.label}</span>
       <div>
-        ${hasIncrease ? 
+        ${hasIncrease || percentIncrease != 0 ? 
           `<span class="skill-damage-number">
-            <span style="color: #888; font-size: 16px; text-decoration: line-through;">${baseVal}</span>
+            ${baseVal !== modVal ? `<span style="color: #888; font-size: 16px; text-decoration: line-through;">${baseVal}</span>` : ''}
             ${modVal}
-            <span class="skill-damage-percent">+${percentIncrease}%</span>
+            <span class="skill-damage-percent ${percentIncrease < 0 ? 'negative' : ''}">${percentIncrease > 0 ? '+' : ''}${percentIncrease}%</span>
           </span>` :
           `<span class="skill-damage-number">${modVal}</span>`
         }
@@ -3984,10 +4019,10 @@ const damageValuesHtml = s.formulas.map((f, index) => {
 
 // Criar seção de buffs - SEMPRE mostrar quando a skill está ativa
 let buffsHtml = "";
-if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs || s.conditionalBuffs)) {
+if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs || s.conditionalBuffs || s.nextBasicAttackPercent !== undefined || (s.buffPlus && s.buffPlus.nextBasicAttackPercent !== undefined))) {
   let buffsList = [];
   
-  // ✅ NOVO: Processar conditionalBuffs (Alcremie)
+  // ✅ Processar conditionalBuffs (Alcremie)
   if (selectedPokemon === "alcremie" && s.conditionalBuffs) {
     const gaugeState = sweetGauge ? "full" : "notFull";
     const conditionalBuffsToApply = s.conditionalBuffs[gaugeState];
@@ -4036,6 +4071,20 @@ if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.
       const label = s.debuffLabels?.[stat] || `${stat} Reduction`;
       buffsList.push(`<span style="color:#000000;">-${value}% ${label}</span>`);
     });
+  }
+  
+  // Exibir nextBasicAttackPercent básico
+  if (s.nextBasicAttackPercent !== undefined) {
+    const value = s.nextBasicAttackPercent;
+    const sign = value >= 0 ? "+" : "";
+    buffsList.push(`<span style="color:#000000;">${sign}${value}% Basic Attack Damage</span>`);
+  }
+  
+  // Exibir nextBasicAttackPercent do buffPlus
+  if (isPlusActive && s.buffPlus?.nextBasicAttackPercent !== undefined) {
+    const value = s.buffPlus.nextBasicAttackPercent;
+    const sign = value >= 0 ? "+" : "";
+    buffsList.push(`<span style="color:#000000;">${sign}${value}% Basic Attack Damage (Plus)</span>`);
   }
   
   if (buffsList.length > 0) {

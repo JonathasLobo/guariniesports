@@ -8506,6 +8506,22 @@ const skillDamage = {
     "s11": {
       name: "Dragon Breath",
       cooldown: 7.5,
+      buff:{},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 15
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -8548,6 +8564,11 @@ const skillDamage = {
           formula: (ATK, Level) => 1.1 * ATK + 5 * (Level - 1) + 265,
           type: "physical"
         },
+        {
+          label: "Damage - Full Mark Heal",
+          formula: (HP, Level) => 0.15 * HP,
+          type: "hp"
+        },
 		{
           label: "Damage Skill Plus",
           formula: (ATK, Level) => 1.19 * ATK + 6 * (Level - 1) + 300,
@@ -8568,6 +8589,11 @@ const skillDamage = {
     "s21": {
       name: "Dragon Dance",
       cooldown: 11,
+      effects: ["Invincible"],
+      buff:{
+        AtkSPD: 200,
+      },
+      nextBasicAttackPercent: -10,
       formulas: [
         {
           label: "Damage",
@@ -8578,23 +8604,66 @@ const skillDamage = {
           label: "Damage (Boosted)",
           formula: (ATK, Level) => 1.035 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
-        }
+        },
+        {
+              label: "HP Restore Skill Plus",
+              formula: (ATK, level) => 0.25 * ATK,
+              type: "physical",
+              affects: "nextBasicAttack"
+          },
+        {
+          label: "Cooldown Reduction if assits",
+          type: "text-only",
+		  additionalText: "50% Reduction"
+        },
       ]
     },
     "s22": {
       name: "Phantom Force",
       cooldown: 12,
+      effects: ["Invisible"],
+      buff:{
+        Speed: "30%",
+        AtkSPD: 85,
+        ATK: 80
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 0.5
+        }
+      },
       formulas: [
       ]
     },
 	"ult": {
 		name: "Dreep and Destroy",
     cooldown: 10,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs:{
+        Shield: 10,
+        Speed: "10%"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
           formula: (ATK, Level) => 1.01 * ATK + 4 * (Level - 1) + 180,
-          type: "physical"
+          type: "physical",
+          additionalText: "Deals 10% of enemy missing HP."
+        },
+        {
+          label: "Damage - Additional (Same Target)",
+          formula: (firstHitDamage, Level) => 0.3 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 0
+        },
+        {
+          label: "Internal cooldowns",
+          type: "text-only",
+		      additionalText: "Energy Amplifier = 30s CD / Buddy Barrier = 60s CD"
         }
 	 ]
 	}
@@ -15605,6 +15674,16 @@ const skillDamage = {
     skin3: "Gift Box Style",
     skin4: "Performer Style",
     skin5: "Pokébuki Style"
+  },
+  dragapult: {
+    default: "Default",
+    skin1: "Yellow Unite Style",
+    skin2: "Orange Unite Style",
+    skin3: "Purple Unite Style",
+    skin4: "Scientist Style",
+    skin5: "Dark Magician Style",
+    skin6: "Racer Style",
+    skin7: "Scientist Style (Midnight Blue)"
   },
   // Adicione mais pokémon aqui
 };

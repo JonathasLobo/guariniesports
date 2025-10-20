@@ -4397,3 +4397,6 @@ textarea.form-control {
 .action-buttons-container.show-after-pokemon {
   display: flex !important;
 }
+.skill-damage-percent.negative {
+  color: #fff !important;
+}
