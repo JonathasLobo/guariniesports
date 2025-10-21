@@ -8681,6 +8681,20 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    conditionalEffects: {
+        options: ["Water", "Electric", "Fire"],
+        effectsByType: {
+            "Water": [],
+            "Electric": ["Stun"],
+            "Fire": ["Stun"] 
+        },
+        buffs: {
+            "Water": { CDR: 1, HPRegen: 5 }, 
+            "Electric": { CDR: 1 },
+            "Fire": {}
+        },
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -8691,19 +8705,44 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
-        }
+        },
+                {
+          label: "Damage - Additional Fire",
+          type: "text-only",
+		  additionalText: "10% of the enemy's remaining HP."
+        },
       ]
 	},
 
     "s11": {
       name: "Dragon Dance",
       cooldown: 5.5,
+      buff:{
+        AtkSPD: 80,
+        ATK: "24%"
+      },
+      selfBuff: {
+        CooldownFlat: 1
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs:{
+          Speed: "10%"
+        }
+      },
       formulas: [
       ]
     },
     "s12": {
       name: "Extreme Speed",
       cooldown: 7,
+      buff:{},
+      debuff: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -8715,6 +8754,13 @@ const skillDamage = {
     "s21": {
       name: "Hyper Beam",
       cooldown: 10.5,
+      buff: {},
+      buffPlus: {
+        levelRequired: 13,
+        buffs:{
+          DmgTaken: 50
+        }
+      },
       formulas: [
         {
           label: "Damage - Stage 0",
@@ -8741,6 +8787,15 @@ const skillDamage = {
     "s22": {
       name: "Outrage",
       cooldown: 8,
+      buff:{
+        AtkSPD: 35
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          HindRed: 40
+        }
+      },
       formulas: [
 		{
           label: "Damage - Stomp",
@@ -8757,6 +8812,16 @@ const skillDamage = {
 	"ult": {
 		name: "Draco Impact",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Untargetable", "Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        AtkSPD: 35,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -15684,6 +15749,16 @@ const skillDamage = {
     skin5: "Dark Magician Style",
     skin6: "Racer Style",
     skin7: "Scientist Style (Midnight Blue)"
+  },
+  dragonite: {
+    default: "Default",
+    skin1: "Holiday Style",
+    skin2: "Gardening Style",
+    skin3: "Marine Style",
+    skin4: "Champion Style",
+    skin5: "Warm Style",
+    skin6: "Marching Band Style",
+    skin7: "Warm Party Style (Blue)"
   },
   // Adicione mais pokémon aqui
 };

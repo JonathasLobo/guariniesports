@@ -377,7 +377,10 @@ const updatePokemonImage = () => {
   "Invisible": { icon: "👤", label: "Invisible" },
   "Sleep": { icon: "💤", label: "Sleep" },
   "Paralyze": { icon: "⚡", label: "Paralyze" },
-  "Freeze": { icon: "💤", label: "Freeze" }
+  "Freeze": { icon: "💤", label: "Freeze" },
+  "Water": { icon: "💧", label: "Water" },
+  "Electric": { icon: "⚡", label: "Electric" },
+  "Fire": { icon: "🔥", label: "Fire" },
 };
 
   const CUSTOM_SKILL_MAPPING = {
@@ -1626,11 +1629,11 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           }
           // Para stats percentuais (Speed, AtkSPD, CDR, etc.)
           else if (PERCENT_KEYS.has(stat)) {
-            // SPEED é híbrido: pode ser flat OU percent
-            if (stat === "Speed" && isPercentString) {
-              const bonusValue = baseStats.Speed * (numeric / 100);
-              modifiedStats.Speed += bonusValue;
-              addStatModifier("Speed", bonusValue, skillName, "percent", iconPath);
+            // SPEED e HPRegen são híbridos: podem ser flat OU percent
+            if ((stat === "Speed" || stat === "HPRegen") && isPercentString) {
+              const bonusValue = baseStats[stat] * (numeric / 100);
+              modifiedStats[stat] += bonusValue;
+              addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
             } else {
               // Outros stats percentuais: adicionar diretamente
               modifiedStats[stat] += numeric;
@@ -1661,30 +1664,59 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
     // Processar debuffs condicionais (ex: Tri Attack)
 if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedConditionalEffects[pokemon][skillKey]) {
   const selectedEffect = selectedConditionalEffects[pokemon][skillKey];
-  const conditionalDebuffs = skill.conditionalEffects.debuffs[selectedEffect];
+  const conditionalBuffs = skill.conditionalEffects.buffs?.[selectedEffect];
   
-  if (conditionalDebuffs) {
-    Object.keys(conditionalDebuffs).forEach(debuffStat => {
-      const debuffValue = parseFloat(conditionalDebuffs[debuffStat]);
+  if (conditionalBuffs && typeof conditionalBuffs === 'object') {
+    Object.keys(conditionalBuffs).forEach(buffStat => {
+      const buffValue = conditionalBuffs[buffStat];
       
-      if (!Number.isFinite(debuffValue)) return;
-      
-      if (!debuffsAcumulados[debuffStat]) {
-        debuffsAcumulados[debuffStat] = {
-          total: 0,
-          skills: [],
-          customLabel: null
-        };
+      // Converter para número
+      let numeric;
+      if (typeof buffValue === 'string') {
+        numeric = parseFloat(buffValue.replace(/[^\d.-]/g, ''));
+      } else {
+        numeric = parseFloat(buffValue);
       }
       
-      debuffsAcumulados[debuffStat].total += debuffValue;
-      debuffsAcumulados[debuffStat].skills.push({
-        name: `${skill.name} (${selectedEffect})`,
-        value: debuffValue
-      });
+      // Validar número
+      if (!Number.isFinite(numeric) || numeric === 0) return;
       
-      // Label customizado
-      debuffsAcumulados[debuffStat].customLabel = `(DEBUFF) ${debuffStat} Reduction [${selectedEffect}]`;
+      const skillName = skill.name || skillKey;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      
+      if (modifiedStats.hasOwnProperty(buffStat) || buffStat === "FlatCDR") {
+        const isPercentString = (typeof buffValue === "string" && buffValue.includes("%"));
+        
+        // FlatCDR (redução flat de cooldown)
+        if (buffStat === "FlatCDR") {
+          if (!modifiedStats[buffStat]) modifiedStats[buffStat] = 0;
+          modifiedStats[buffStat] += numeric;
+          addStatModifier(buffStat, numeric, `${skillName} (${selectedEffect})`, "flat", iconPath);
+        }
+        // Stats percentuais (CDR, AtkSPD, CritRate, etc)
+        else if (PERCENT_KEYS.has(buffStat)) {
+          modifiedStats[buffStat] += numeric;
+          addStatModifier(buffStat, numeric, `${skillName} (${selectedEffect})`, "flat", iconPath);
+        }
+        // Damage Taken Reduction
+        else if (buffStat === "DmgTaken") {
+          modifiedStats[buffStat] += numeric;
+          addStatModifier(buffStat, numeric, `${skillName} (${selectedEffect})`, "flat", iconPath);
+        }
+        // Stats numéricos (HP, ATK, DEF, etc)
+        else {
+          if (isPercentString) {
+            // Buff percentual baseado no valor base
+            const bonusValue = baseStats[buffStat] * (numeric / 100);
+            modifiedStats[buffStat] += bonusValue;
+            addStatModifier(buffStat, bonusValue, `${skillName} (${selectedEffect})`, "percent", iconPath);
+          } else {
+            // Buff flat
+            modifiedStats[buffStat] += numeric;
+            addStatModifier(buffStat, numeric, `${skillName} (${selectedEffect})`, "flat", iconPath);
+          }
+        }
+      }
     });
   }
 }
@@ -2908,7 +2940,7 @@ const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) 
   
   const selectorHTML = `
     <div class="conditional-effect-selector" data-no-toggle="true">
-      <div class="effect-selector-label">Status debuff select:</div>
+      <div class="effect-selector-label">Status select:</div>
       <div class="effect-options">
         ${conditionalEffects.options.map(effectName => {
           const isSelected = currentSelection === effectName;
@@ -3508,6 +3540,22 @@ if (skillDamage[selectedPokemon]) {
             skill.effects.forEach(effectName => {
               activeEffects.add(effectName);
             });
+          }
+
+          if (skill.conditionalEffects && skill.conditionalEffects.effectsByType) {
+            const selectedEffect = selectedConditionalEffects[selectedPokemon]?.[skillKey];
+            
+            if (selectedEffect && skill.conditionalEffects.effectsByType[selectedEffect]) {
+              const effectsForType = skill.conditionalEffects.effectsByType[selectedEffect];
+              
+              if (Array.isArray(effectsForType)) {
+                effectsForType.forEach(effectName => {
+                  if (effectName && effectName.trim() !== "") {
+                    activeEffects.add(effectName);
+                  }
+                });
+              }
+            }
           }
           
           // Effects do buffPlus
