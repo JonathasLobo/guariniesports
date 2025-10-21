@@ -8853,13 +8853,32 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (ATK, Level) => 1.35 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
-        }
+        },
+        {
+          label: "Damage - Boosted (Additional)",
+          type: "text-only",
+		  additionalText: "Deals 1.5% enemy max HP damage and can critically strike."
+        },
       ]
 	},
 
     "s11": {
       name: "Flash Cannon",
       cooldown: 5,
+      buff:{
+        Speed: "-50%",
+        AtkSPD: 100
+      },
+      debuff: {
+        Speed: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }, 
+      buffPlus: {
+        levelRequired: 11,
+        effects: ["Stun"]
+      },
       formulas: [
 		{
           label: "Damage - Rupture",
@@ -8871,11 +8890,29 @@ const skillDamage = {
           formula: (ATK, Level) => 1.05 * ATK + 3 * (Level - 1) + 120,
           type: "physical"
         },
+        {
+          label: "Damage - Cannon Boosted",
+          formula: (firstHitDamage, Level, HP) => (firstHitDamage + (0.005 * HP)) * 3,
+          type: "dependent",
+          dependsOn: 0,
+        },
       ]
     },
     "s12": {
       name: "Dragon Pulse",
       cooldown: 7.5,
+      buff:{
+        Speed: "-30%"
+      },
+      selfBuff: {
+        CooldownPercent: 30
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs:{
+          HPRegen: 8
+        }
+      },
       formulas: [
 		{
           label: "Damage - No Charge",
@@ -8920,6 +8957,14 @@ const skillDamage = {
     "s22": {
       name: "Stealth Rock",
       cooldown: 8.5,
+      buff:{},
+      effects: ["Stun"],
+      debuff: {
+        Speed: 25
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage - per Tick (4 Ticks)",
@@ -8936,6 +8981,23 @@ const skillDamage = {
 	"ult": {
 		name: "Revolving Ruin",
     cooldown: 134,
+    buff: {},
+    buffPlus:{
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        ATK: "8%",
+        Shield: 28,
+        Speed: "30%",
+        AtkSPD: 35
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage - per Hit",
@@ -15759,6 +15821,18 @@ const skillDamage = {
     skin5: "Warm Style",
     skin6: "Marching Band Style",
     skin7: "Warm Party Style (Blue)"
+  },
+  duraludon: {
+    default: "Default",
+    skin1: "Purple Unite Style",
+    skin2: "Orange Unite Style",
+    skin3: "Guardian Style",
+    skin4: "Dark Suit Style",
+    skin5: "Red Unite Style",
+    skin6: "Kimono Style",
+    skin7: "Bonfire Style",
+    skin8: "Dark Suit Style (Burgundy)",
+    skin9: "Kimono Style (Coral)"
   },
   // Adicione mais pokémon aqui
 };

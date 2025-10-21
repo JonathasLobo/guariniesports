@@ -1123,7 +1123,7 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
     SpDEFPen: "Sp. DEF Penetration", DEFPen: "Defense Penetration"
   };
 
-  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "Shield", "DmgTaken", "HindRed", "SpDEFPen", "DEFPen"]);
+  const PERCENT_KEYS = new Set(["AtkSPD","CDR","CritRate","CritDmg","Lifesteal","EnergyRate", "Shield", "DmgTaken", "HindRed", "HPRegen","SpDEFPen", "DEFPen"]);
 
   // Função para adicionar um modificador ao rastreamento
   const addStatModifier = (stat, value, source, type = "flat", iconPath = null) => {
@@ -2281,8 +2281,8 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
           const dependentBase = passive.calculatedValues[dependsOnIndex].base;
           const dependentModified = passive.calculatedValues[dependsOnIndex].modified;
           
-          const baseVal = f.formula(dependentBase, targetLevel);
-          const modifiedVal = f.formula(dependentModified, targetLevel);
+          const baseVal = f.formula(dependentBase, targetLevel, baseStats.HP);
+          const modifiedVal = f.formula(dependentModified, targetLevel, modifiedStats.HP);
           
           if (!passive.calculatedValues) passive.calculatedValues = {};
           passive.calculatedValues[index] = { base: baseVal, modified: modifiedVal };
@@ -3984,8 +3984,8 @@ s.formulas.forEach((f, index) => {
         modifiedVal = f.formula(dependentModified, targetLevel, modified.HP, muscleGauge);
       } else {
         // Comportamento padrão (sem gauge)
-        baseVal = f.formula(dependentBase, targetLevel);
-        modifiedVal = f.formula(dependentModified, targetLevel);
+        baseVal = f.formula(dependentBase, targetLevel, base.HP);
+        modifiedVal = f.formula(dependentModified, targetLevel, modified.HP);
       }
       
       calculatedValues[index] = { base: baseVal, modified: modifiedVal, hasPassiveBonus: false };
