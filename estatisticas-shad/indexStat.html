@@ -218,6 +218,41 @@
                     font-size: 1.1rem !important;
                 }
             }
+
+            /* Esconder botões específicos */
+            .hidden-button {
+                display: none !important;
+            }
+            
+            /* Desktop styles */
+            @media (min-width: 769px) {
+                body {
+                    overflow: hidden;
+                    height: 100vh;
+                    position: fixed;
+                }
+                
+                .main-container {
+                    position: relative;
+                    height: 100vh;
+                }
+                
+                .title {
+                    position: absolute;
+                    top: 8px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+                
+                .button-container {
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    flex-direction: row;
+                    top: 56px;
+                    gap: 20px;
+                }
+            }
         </style>
     </head>
 
