@@ -9023,7 +9023,14 @@ const skillDamage = {
           name: "Cotton Down",
           description: "Taking a large hit triggers HP recovery, a self-speed boost, and revenge damage with a slow to nearby enemies (10s cooldown).",
           buff: {
-            Speed: "15%"
+            Speed: "15%",
+            HPRegen: 15
+          },
+          debuff: {
+            Speed: 30
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
           },
           formulas: [
           {
@@ -9040,6 +9047,13 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{},
+    debuff: {
+      Speed: 20
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -9062,6 +9076,16 @@ const skillDamage = {
     "s11": {
       name: "Pollen Puff",
       cooldown: 5,
+      buff:{},
+      buffPlus: {
+        levelRequired: 10,
+        allyBuffs:{
+          DmgTaken: 15
+        },
+        allyBuffLabels: {
+          DmgTaken: "(ALLY BUFF) Damage Taken Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -9083,7 +9107,18 @@ const skillDamage = {
     },
     "s12": {
       name: "Leaf Tornado",
-      cooldown: 9,
+      cooldown: 8,
+      buff: {},
+      allyBuffs: {
+        Speed: 55
+      },
+      allyBuffLabels: {
+        Speed: "(ALLY BUFF) MoveSpeed Increase"
+      },
+      buffPlus:{
+        levelRequired: 10,
+        effects: ["Blind"]
+      },
       formulas: [
         {
           label: "Damage - First Hit",
@@ -9101,17 +9136,50 @@ const skillDamage = {
     "s21": {
       name: "Cotton Guard",
       cooldown: 10.5,
+      buff:{},
+      buffPlus: {
+        levelRequired: 12,
+        allyBuffs:{
+          Speed: 30
+        },
+        allyBuffLabels: {
+          Speed: "(ALLY BUFF) MoveSpeed Increase"
+        }
+      },
       formulas: [
         {
           label: "Shield",
           formula: (SPATK, Level) => 1.725 * SPATK + 23 * (Level - 1) + 290,
           type: "shield"
-        }
+        },
+        {
+          label: "Heal - Shield",
+          formula: (firstHitDamage, Level) => 0.15 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 0
+        },
+
       ]
     },
     "s22": {
       name: "Cotton Spore",
       cooldown: 6,
+      buff: {
+        Speed: "30%"
+      },
+      debuff: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 12,
+        buffs: {
+          DEF: "50%",
+          SpDEF: "50%"
+        }
+      },  
       formulas: [
 		{
 		  label: "Damage",
@@ -9123,6 +9191,15 @@ const skillDamage = {
 	"ult": {
 		name: "Cotton Cloud Crash",
     cooldown: 100,
+    buff: {},
+    buffPlus:{
+      levelRequired: 9,
+      effects: ["Invincible"],
+      buffs: {
+        Speed: "40%",
+        Shield: 30
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -15833,6 +15910,19 @@ const skillDamage = {
     skin7: "Bonfire Style",
     skin8: "Dark Suit Style (Burgundy)",
     skin9: "Kimono Style (Coral)"
+  },
+  eldegoss: {
+    default: "Default",
+    skin1: "Fashionable Style",
+    skin2: "Purple Unite Style",
+    skin3: "Orange Unite Style",
+    skin4: "Space Style",
+    skin5: "Big Ribbon Style",
+    skin6: "Pastel Style",
+    skin7: "Pokébuki Style",
+    skin8: "Blue Unite Style",
+    skin9: "Sailor Style",
+    skin10: "Sacred Style	"
   },
   // Adicione mais pokémon aqui
 };

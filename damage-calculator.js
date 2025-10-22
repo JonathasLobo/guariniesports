@@ -383,6 +383,7 @@ const updatePokemonImage = () => {
   "Water": { icon: "💧", label: "Water" },
   "Electric": { icon: "⚡", label: "Electric" },
   "Fire": { icon: "🔥", label: "Fire" },
+  "Blind": { icon: "🕶️", label: "Blind" },
 };
 
   const CUSTOM_SKILL_MAPPING = {
@@ -3208,18 +3209,15 @@ if (activeBattleItem && isBattleItemActive) {
   }
   
   if (activeBattleItem === "potion") {
-    // ✅ CORREÇÃO: A Potion usa 20% do HP (não do HPRegen)
-    const potionHealingFlat = 160 + (base.HP * 0.20); // ← MUDANÇA AQUI: base.HP ao invés de base.HPRegen
+    const potionHealingFlat = 160 + (base.HP * 0.20);
     
-    // Calcular quanto esse valor flat representa em % do HPRegen base
-    const baseHPRegen = base.HPRegen || 1; // Evitar divisão por zero
-    const percentIncrease = (potionHealingFlat / baseHPRegen) * 100;
+    // Calcular quanto esse healing representa em % do HP TOTAL
+    const healingPercentOfHP = (potionHealingFlat / base.HP) * 100;
     
-    // Adicionar o percentual ao HPRegen modificado
-    modified.HPRegen += percentIncrease;
+    // Adicionar ao HPRegen como valor percentual do HP
+    modified.HPRegen += healingPercentOfHP;
     
-    // Rastrear como modificador com informação adicional
-    addStatModifier("HPRegen", percentIncrease, `${battleItemName} (${Math.floor(potionHealingFlat)} HP)`, "formula", iconPath);
+    addStatModifier("HPRegen", healingPercentOfHP, `${battleItemName} (${Math.floor(potionHealingFlat)} HP / ${healingPercentOfHP.toFixed(1)}% HP)`, "formula", iconPath);
   }
 }
 
@@ -4434,25 +4432,33 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
     calcular();
   });
 
-  // Battle items - Sistema com desmarcação
+// Battle items - Sistema com desmarcação
+let lastSelectedBattleItem = null;
+
 battleRadios.forEach(r => {
-  // Adicionar event listener para CLICK ao invés de CHANGE
   r.addEventListener("click", (e) => {
     const clickedValue = r.value;
     
     // Se clicar no item já selecionado, desmarcar
-    if (activeBattleItem === clickedValue) {
-      e.preventDefault(); // Prevenir seleção automática
-      r.checked = false; // Desmarcar
-      activeBattleItem = null;
-      isBattleItemActive = false;
-      calcular();
+    if (activeBattleItem === clickedValue && lastSelectedBattleItem === clickedValue) {
+      e.preventDefault();
+      
+      // Forçar desmarcação usando setTimeout para garantir execução
+      setTimeout(() => {
+        r.checked = false;
+        activeBattleItem = null;
+        isBattleItemActive = false;
+        lastSelectedBattleItem = null;
+        calcular();
+      }, 0);
+      
       return;
     }
     
-    // Se clicar em um item diferente, atualizar seleção
+    // Novo item selecionado
     activeBattleItem = clickedValue;
     isBattleItemActive = false; // Resetar estado ativo ao trocar
+    lastSelectedBattleItem = clickedValue;
     calcular();
   });
 });
