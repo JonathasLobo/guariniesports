@@ -118,6 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let activePassives = {};
   let activeItemPassives = {};
   let activeSkills = {}; // Nova variável para skills ativáveis
+  let activeBattleItem = null; // Qual battle item está selecionado
+  let isBattleItemActive = false; // Se o buff está ativo ou não
   let currentRoleFilter = "All";
   let currentLevel = 1;
   let currentDamageTypeFilter = null;
@@ -2504,6 +2506,10 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     actionButtons.classList.add("show-after-pokemon");
   } 
     selectedPokemon = poke;
+
+  activeBattleItem = null;
+  isBattleItemActive = false;
+  battleRadios.forEach(r => r.checked = false);
     
   if (!selectedSkins[poke]) {
     selectedSkins[poke] = "default";
@@ -3174,18 +3180,17 @@ selectedItems.forEach(itemKey => {
 });
 
     // 3) Battle Items
-// 3) Battle Items
 let selectedBattle = "";
 battleRadios.forEach(r => { if (r.checked) selectedBattle = r.value; });
 
-if (selectedBattle) {
-  const battleItemName = gameBattleItems[selectedBattle] || selectedBattle;
-  const iconPath = `./estatisticas-shad/images/battle-items/${selectedBattle}.png`;
+if (activeBattleItem && isBattleItemActive) {
+  const battleItemName = gameBattleItems[activeBattleItem] || activeBattleItem;
+  const iconPath = `./estatisticas-shad/images/battle-items/${activeBattleItem}.png`;
   
-  if (selectedBattle === "xattack") {
+  if (activeBattleItem === "xattack") {
     const atkBonus = base.ATK * 0.20;
     const spatkBonus = base.SpATK * 0.20;
-    const aspdBonus = base.AtkSPD * 0.25;
+    const aspdBonus = 25; // Flat 25%
     
     modified.ATK += atkBonus;
     modified.SpATK += spatkBonus;
@@ -3193,19 +3198,28 @@ if (selectedBattle) {
     
     addStatModifier("ATK", atkBonus, battleItemName, "percent", iconPath);
     addStatModifier("SpATK", spatkBonus, battleItemName, "percent", iconPath);
-    addStatModifier("AtkSPD", aspdBonus, battleItemName, "percent", iconPath);
+    addStatModifier("AtkSPD", aspdBonus, battleItemName, "flat", iconPath);
   }
   
-  if (selectedBattle === "xspeed") {
+  if (activeBattleItem === "xspeed") {
     const speedBonus = base.Speed * 0.45;
     modified.Speed += speedBonus;
     addStatModifier("Speed", speedBonus, battleItemName, "percent", iconPath);
   }
   
-  if (selectedBattle === "potion") {
-    const potionHealing = 160 + (modified.HPRegen * 0.20);
-    modified.HPRegen += potionHealing;
-    addStatModifier("HP", potionHealing, battleItemName, "formula", iconPath);
+  if (activeBattleItem === "potion") {
+    // ✅ CORREÇÃO: A Potion usa 20% do HP (não do HPRegen)
+    const potionHealingFlat = 160 + (base.HP * 0.20); // ← MUDANÇA AQUI: base.HP ao invés de base.HPRegen
+    
+    // Calcular quanto esse valor flat representa em % do HPRegen base
+    const baseHPRegen = base.HPRegen || 1; // Evitar divisão por zero
+    const percentIncrease = (potionHealingFlat / baseHPRegen) * 100;
+    
+    // Adicionar o percentual ao HPRegen modificado
+    modified.HPRegen += percentIncrease;
+    
+    // Rastrear como modificador com informação adicional
+    addStatModifier("HPRegen", percentIncrease, `${battleItemName} (${Math.floor(potionHealingFlat)} HP)`, "formula", iconPath);
   }
 }
 
@@ -3673,19 +3687,27 @@ if (incluirEmblemas === "sim") {
   }
 }
 
-    // Mostrar Battle Item
-    const selectedBattleNow = Array.from(battleRadios).find(r => r.checked)?.value;
-    if (selectedBattleNow) {
-      const battleItemName = gameBattleItems[selectedBattleNow] || selectedBattleNow;
+    // ✅ CÓDIGO NOVO COM SISTEMA CLICÁVEL:
+    if (activeBattleItem) {
+      const battleItemName = gameBattleItems[activeBattleItem] || activeBattleItem;
+      const activeClass = isBattleItemActive ? " item-active" : "";
       
-      const battleImg = `<img src="./estatisticas-shad/images/battle-items/${selectedBattleNow}.png" 
-                          alt="${battleItemName}" 
-                          title="${battleItemName}" 
-                          style="width:40px; height:40px;">`;
+      const battleImg = `
+        <div class="item-icon-container item-clickable${activeClass}" data-battle-item="${activeBattleItem}">
+          <img src="./estatisticas-shad/images/battle-items/${activeBattleItem}.png" 
+              alt="${battleItemName}" 
+              title="${battleItemName} (Clique para ativar/desativar)" 
+              style="width:40px; height:40px;">
+          <div class="item-passive-dot"></div>
+        </div>
+      `;
+      
       statusFinalDiv.insertAdjacentHTML("beforeend", `
         <div class="stat-line special-stat">
           <span class="stat-label">Battle Item</span>
-          <span class="stat-value">${battleImg}</span>
+          <span class="stat-value item-icons-wrapper">
+            ${battleImg}
+          </span>
         </div>
       `);
     }
@@ -4375,14 +4397,13 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
     });
 
     // Event listeners para itens clicáveis (passivas dos itens)
-    const itemContainers = statusFinalDiv.querySelectorAll(".item-icon-container.item-clickable");
-    itemContainers.forEach(container => {
-      container.addEventListener("click", () => {
-        const itemKey = container.dataset.item;
-        activeItemPassives[itemKey] = !activeItemPassives[itemKey];
+    const battleItemContainer = statusFinalDiv.querySelector(".item-icon-container[data-battle-item]");
+    if (battleItemContainer) {
+      battleItemContainer.addEventListener("click", () => {
+        isBattleItemActive = !isBattleItemActive;
         calcular();
       });
-    });
+    }
 
     resultado.style.display = "flex";
     if (compartilharContainer) {
@@ -4413,8 +4434,28 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
     calcular();
   });
 
-  // Battle items
-  battleRadios.forEach(r => r.addEventListener("change", calcular));
+  // Battle items - Sistema com desmarcação
+battleRadios.forEach(r => {
+  // Adicionar event listener para CLICK ao invés de CHANGE
+  r.addEventListener("click", (e) => {
+    const clickedValue = r.value;
+    
+    // Se clicar no item já selecionado, desmarcar
+    if (activeBattleItem === clickedValue) {
+      e.preventDefault(); // Prevenir seleção automática
+      r.checked = false; // Desmarcar
+      activeBattleItem = null;
+      isBattleItemActive = false;
+      calcular();
+      return;
+    }
+    
+    // Se clicar em um item diferente, atualizar seleção
+    activeBattleItem = clickedValue;
+    isBattleItemActive = false; // Resetar estado ativo ao trocar
+    calcular();
+  });
+});
   
   // Emblemas
   emblemasRadios.forEach(r => {
