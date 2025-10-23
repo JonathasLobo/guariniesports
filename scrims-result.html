@@ -9,56 +9,33 @@
     .hidden { display: none; }
     .logo-preview { max-width: 40px; max-height: 40px; }
     
-    /* Ajustes específicos para mobile */
     @media (max-width: 640px) {
-      /* Melhorar visualização da tabela no mobile */
       .mobile-table-text {
         font-size: 0.75rem;
         line-height: 1rem;
       }
       
-      /* Formulário mais compacto no mobile */
       .mobile-form input, .mobile-form select, .mobile-form button {
         font-size: 0.9rem;
         padding: 0.5rem;
       }
       
-      /* Botões menores no mobile */
       .mobile-buttons {
         font-size: 0.85rem;
         padding: 0.4rem 0.8rem;
       }
     }
   </style>
-  <div id="google_translate_element"></div>
-
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement(
-    {pageLanguage: 'pt', includedLanguages: 'pt,en,ja'},
-    'google_translate_element'
-  );
-}
-</script>
-
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<!-- Adsense tag -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
-     crossorigin="anonymous"></script>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-84NHN394WF');
-</script>
-<body class="w-full min-h-screen bg-cover bg-no-repeat bg-center" style="background-image: url(./background.jpg)">
+<body class="w-full min-h-screen bg-cover bg-no-repeat bg-center" style="background-image: url(./images/backgrounds/index-background.png)">
   <div class="max-w-3xl mx-auto p-2 sm:p-4 pb-20 rounded">
     <!-- Título Principal -->
-    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6 text-white">Resultados do Guariní</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6 text-white">Resultados do Guarini</h1>
+
+    <!-- Status de Conexão (temporário para debug) -->
+    <div id="statusConexao" class="mb-4 p-3 rounded text-center text-white bg-blue-600">
+      🔄 Conectando ao Firebase...
+    </div>
 
     <!-- Contadores de Vitórias/Empates/Derrotas -->
     <div class="flex justify-around mb-4 text-lg font-semibold text-white">
@@ -69,8 +46,8 @@ function googleTranslateElementInit() {
 
     <!-- Formulário de Adição de Resultados -->
     <div class="mb-4 flex flex-col md:flex-row gap-2 items-center">
-      <img src="./logos/Guarini.png" alt="Guariní" class="w-16 h-16 object-contain" />
-      <input id="placarMeuTime" type="number" placeholder="Placar Guariní" class="w-full p-2 border rounded text-black" />
+      <img src="./images/backgrounds/Guarini.png" alt="Guarini" class="w-16 h-16 object-contain" />
+      <input id="placarMeuTime" type="number" placeholder="Placar Guarini" class="w-full p-2 border rounded text-black" />
       <span class="font-bold text-xl text-white">X</span>
       <input id="placarAdversario" type="number" placeholder="Placar Adversário" class="w-full p-2 border rounded text-black" />
       <input id="nomeAdversario" type="text" placeholder="Nome do Time Adversário" class="w-full p-2 border rounded text-black" />
@@ -102,43 +79,7 @@ function googleTranslateElementInit() {
     </table>
   </div>
 
-  <!-- Painel lateral de agendamento - Responsivo -->
-  <!--<div class="fixed bottom-4 right-2 sm:right-4 w-[280px] sm:w-[300px] bg-white rounded-lg shadow-lg z-50 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
-    <div class="p-3 sm:p-4 border-b font-bold text-center bg-gray-100 text-sm sm:text-base">Próximos Scrims</div>
-    <div id="schedule" class="p-2 sm:p-3 space-y-2 sm:space-y-3 text-xs sm:text-sm"></div>
-  </div>-->
-
-  <!-- Modal de Agendamento - Responsivo -->
-  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm sm:w-80">
-      <h2 class="text-lg font-bold mb-4">Agendar Scrim</h2>
-      <form id="scrimForm" class="space-y-4">
-        <input type="hidden" id="selectedDate" />
-        <input type="hidden" id="editIndex" value="-1" />
-        <div>
-          <label class="block text-sm font-medium mb-1">Adversário</label>
-          <input type="text" id="team2" class="w-full border rounded p-2 text-sm" required />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Horário</label>
-          <input type="time" id="matchTime" class="w-full border rounded p-2 text-sm" required />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Formato</label>
-          <select id="matchFormat" class="w-full border rounded p-2 text-sm" required>
-            <option value="2x2">2x2</option>
-            <option value="3x3">3x3</option>
-          </select>
-        </div>
-        <div class="flex justify-end space-x-2 pt-2">
-          <button type="button" onclick="closeModal()" class="text-gray-500 px-3 py-1 text-sm">Cancelar</button>
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Salvar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
- <!-- Scripts -->
+  <!-- Scripts -->
   <script src="util.js"></script>
   
   <!-- Firebase SDK -->
@@ -147,19 +88,62 @@ function googleTranslateElementInit() {
 
   <!-- Configuração do Firebase -->
   <script>
+    console.log("🔧 Iniciando configuração do Firebase...");
+    
     const firebaseConfig = {
       apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUlPIol",
       authDomain: "site-grn.firebaseapp.com",
       projectId: "site-grn",
       storageBucket: "site-grn.firebasestorage.app",
       messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:COLE_SEU_APP_ID_REAL_AQUI"
+      appId: "1:27613322806:web:3d4e5f6g7h8i9j0k" // ⬅️ SUBSTITUA pelo App ID real
     };
     
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    
-    console.log("🔥 Firebase inicializado!");
+    try {
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      
+      console.log("✅ Firebase inicializado com sucesso!");
+      console.log("📦 Configuração:", firebaseConfig);
+      
+      // Atualizar status visual
+      const statusElement = document.getElementById('statusConexao');
+      if (statusElement) {
+        statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-green-600';
+        statusElement.textContent = '✅ Conectado ao Firebase';
+        
+        // Esconder após 3 segundos
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 3000);
+      }
+      
+      // Teste de conexão
+      db.collection('scrims').doc('guarini-scrims').get()
+        .then((doc) => {
+          console.log("🧪 Teste de leitura:", doc.exists ? "Documento existe" : "Documento não existe ainda");
+        })
+        .catch((error) => {
+          console.error("❌ Erro no teste de leitura:", error);
+          console.error("Código:", error.code);
+          console.error("Mensagem:", error.message);
+          
+          if (statusElement) {
+            statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-red-600';
+            statusElement.textContent = '❌ Erro: ' + error.message;
+          }
+        });
+      
+    } catch (error) {
+      console.error("❌ ERRO CRÍTICO ao inicializar Firebase:", error);
+      alert("Erro ao inicializar Firebase: " + error.message);
+      
+      const statusElement = document.getElementById('statusConexao');
+      if (statusElement) {
+        statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-red-600';
+        statusElement.textContent = '❌ Erro na inicialização: ' + error.message;
+      }
+    }
   </script>
   
   <script src="scrims-result.js"></script>
