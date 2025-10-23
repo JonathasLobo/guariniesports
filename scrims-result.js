@@ -4,6 +4,30 @@ let empates = 0;
 let derrotas = 0;
 let resultados = [];
 
+// ====== CÓDIGO DE DEBUG - ADICIONAR NO INÍCIO ======
+console.log("🔥 Script carregado!");
+console.log("📍 DOCUMENTO_ID:", DOCUMENTO_ID);
+
+// Interceptar função salvarDados para ver se está sendo chamada
+const salvarDadosOriginal = salvarDados;
+window.salvarDados = async function() {
+    console.log("💾 SALVANDO DADOS...");
+    console.log("📊 Vitórias:", vitorias);
+    console.log("📊 Empates:", empates);
+    console.log("📊 Derrotas:", derrotas);
+    console.log("📊 Total resultados:", resultados.length);
+    console.log("📊 Dados:", { vitorias, empates, derrotas, resultados });
+    
+    try {
+        await salvarDadosOriginal();
+        console.log("✅ DADOS SALVOS COM SUCESSO!");
+    } catch (error) {
+        console.error("❌ ERRO AO SALVAR:", error);
+        console.error("Código:", error.code);
+        console.error("Mensagem:", error.message);
+    }
+};
+
 // Armazena as composições de cada jogo
 let composicoes = {};
 
@@ -439,11 +463,15 @@ async function removerResultado(index) {
 // ==============================================
 
 async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, formato, externo = false) {
+    console.log("🎮 ADICIONANDO RESULTADO...");
+    
     if (!externo) {
         placarMeuTime = parseInt(document.getElementById('placarMeuTime').value);
         placarAdversario = parseInt(document.getElementById('placarAdversario').value);
         nomeAdversario = document.getElementById('nomeAdversario').value.trim();
         formato = document.getElementById('formatoScrim').value;
+
+        console.log("📝 Dados do formulário:", { placarMeuTime, placarAdversario, nomeAdversario, formato });
 
         if (isNaN(placarMeuTime) || isNaN(placarAdversario) || nomeAdversario === "") {
             alert("Preencha todos os campos corretamente!");
@@ -461,6 +489,8 @@ async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversari
 
     const resultado = placarMeuTime > placarAdversario ? "Vitória" :
                       placarMeuTime < placarAdversario ? "Derrota" : "Empate";
+
+    console.log("🏆 Resultado:", resultado);
 
     if (resultado === "Vitória") {
         vitorias++;
@@ -480,11 +510,18 @@ async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversari
         formato: formato || '2x2'
     };
 
+    console.log("📦 Objeto criado:", resultadoObj);
+
     resultados.push(resultadoObj);
+    
+    console.log("📊 Total de resultados agora:", resultados.length);
     
     reconstruirTabela();
     atualizarContadores();
+    
+    console.log("💾 Chamando salvarDados()...");
     await salvarDados();
+    console.log("✅ Processo concluído!");
 }
 
 function atualizarContadores() {
