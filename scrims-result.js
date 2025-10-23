@@ -3,104 +3,112 @@ let vitorias = 0;
 let empates = 0;
 let derrotas = 0;
 let resultados = [];
-
-// ====== CÓDIGO DE DEBUG - ADICIONAR NO INÍCIO ======
-console.log("🔥 Script carregado!");
-console.log("📍 DOCUMENTO_ID:", DOCUMENTO_ID);
-
-// Interceptar função salvarDados para ver se está sendo chamada
-const salvarDadosOriginal = salvarDados;
-window.salvarDados = async function() {
-    console.log("💾 SALVANDO DADOS...");
-    console.log("📊 Vitórias:", vitorias);
-    console.log("📊 Empates:", empates);
-    console.log("📊 Derrotas:", derrotas);
-    console.log("📊 Total resultados:", resultados.length);
-    console.log("📊 Dados:", { vitorias, empates, derrotas, resultados });
-    
-    try {
-        await salvarDadosOriginal();
-        console.log("✅ DADOS SALVOS COM SUCESSO!");
-    } catch (error) {
-        console.error("❌ ERRO AO SALVAR:", error);
-        console.error("Código:", error.code);
-        console.error("Mensagem:", error.message);
-    }
-};
-
-// Armazena as composições de cada jogo
 let composicoes = {};
 
-// ID do documento no Firebase (pode ser fixo ou baseado em usuário)
-const DOCUMENTO_ID = 'guarini-scrims'; // Use 'user-{userId}' se tiver autenticação
+// ID do documento no Firebase
+const DOCUMENTO_ID = 'guarini-scrims';
+
+// Flag para evitar loops de atualização
+let atualizandoDoFirebase = false;
+
+console.log("🎮 Script carregado!");
 
 // ==============================================
-// FUNÇÕES DE PERSISTÊNCIA (FIREBASE)
+// FUNÇÕES DE FIREBASE
 // ==============================================
 
-async function salvarDados() {
+async function salvarNoFirebase() {
+    if (atualizandoDoFirebase) {
+        console.log("⏭️ Ignorando salvamento (atualização do Firebase em andamento)");
+        return;
+    }
+    
     try {
+        console.log("💾 SALVANDO NO FIREBASE...");
+        console.log("📊 Dados:", { vitorias, empates, derrotas, totalResultados: resultados.length });
+        
         const dados = {
             vitorias,
             empates,
             derrotas,
             resultados,
-            composicoes,
             ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
         };
         
         await db.collection('scrims').doc(DOCUMENTO_ID).set(dados);
-        console.log('Dados salvos com sucesso!');
+        console.log("✅ DADOS SALVOS COM SUCESSO!");
+        
     } catch (error) {
-        console.error('Erro ao salvar dados:', error);
-        alert('Erro ao salvar dados. Verifique sua conexão.');
+        console.error("❌ ERRO AO SALVAR:", error);
+        console.error("Código:", error.code);
+        console.error("Mensagem:", error.message);
+        alert("Erro ao salvar dados. Verifique sua conexão.");
     }
 }
 
-async function carregarDados() {
+async function carregarDoFirebase() {
     try {
+        console.log("📥 CARREGANDO DO FIREBASE...");
+        
         const doc = await db.collection('scrims').doc(DOCUMENTO_ID).get();
         
         if (doc.exists) {
+            atualizandoDoFirebase = true;
+            
             const dados = doc.data();
             vitorias = dados.vitorias || 0;
             empates = dados.empates || 0;
             derrotas = dados.derrotas || 0;
             resultados = dados.resultados || [];
-            composicoes = dados.composicoes || {};
-
+            
+            console.log("✅ DADOS CARREGADOS:", { vitorias, empates, derrotas, totalResultados: resultados.length });
+            
             reconstruirTabela();
             atualizarContadores();
+            
+            atualizandoDoFirebase = false;
         } else {
-            console.log('Nenhum dado encontrado no Firebase');
+            console.log("ℹ️ Nenhum dado encontrado no Firebase (primeira vez)");
         }
     } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        alert('Erro ao carregar dados. Verifique sua conexão.');
+        console.error("❌ ERRO AO CARREGAR:", error);
+        alert("Erro ao carregar dados. Verifique sua conexão.");
+        atualizandoDoFirebase = false;
     }
 }
 
-// Listener para mudanças em tempo real
+// Listener para atualizações em tempo real
 function iniciarListenerTempoReal() {
+    console.log("👂 Iniciando listener de tempo real...");
+    
     db.collection('scrims').doc(DOCUMENTO_ID)
         .onSnapshot((doc) => {
-            if (doc.exists) {
+            if (doc.exists && !atualizandoDoFirebase) {
+                console.log("🔄 ATUALIZAÇÃO EM TEMPO REAL RECEBIDA!");
+                
+                atualizandoDoFirebase = true;
+                
                 const dados = doc.data();
                 vitorias = dados.vitorias || 0;
                 empates = dados.empates || 0;
                 derrotas = dados.derrotas || 0;
                 resultados = dados.resultados || [];
-                composicoes = dados.composicoes || {};
-
+                
                 reconstruirTabela();
                 atualizarContadores();
                 
-                console.log('Dados atualizados em tempo real!');
+                console.log("✅ Interface atualizada com novos dados");
+                
+                atualizandoDoFirebase = false;
             }
         }, (error) => {
-            console.error('Erro no listener:', error);
+            console.error("❌ Erro no listener:", error);
         });
 }
+
+// ==============================================
+// FUNÇÕES DE INTERFACE
+// ==============================================
 
 function reconstruirTabela() {
     const tabela = document.getElementById('tabelaResultados');
@@ -108,9 +116,9 @@ function reconstruirTabela() {
 
     resultados.forEach((item, index) => {
         const nossoTime = "Guarini";
-        const nossaLogo = '<img src="./logos/Guarini.png" alt="Guarini" class="w-10 h-10 inline-block">';
-        const imagemAdversario = `./logos/${item.adversario}.png`;
-        const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./logos/noimage.png'" alt="${item.adversario}" class="w-10 h-10 inline-block">`;
+        const nossaLogo = '<img src="./images/backgrounds/Guarini.png" alt="Guarini" class="w-10 h-10 inline-block">';
+        const imagemAdversario = `./images/logos/${item.adversario}.png`;
+        const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./images/logos/noimage.png'" alt="${item.adversario}" class="w-10 h-10 inline-block">`;
 
         let time1, placar1, logo1, time2, placar2, logo2;
 
@@ -137,7 +145,6 @@ function reconstruirTabela() {
             logo2 = logoAdversario;
         }
 
-        // Linha principal
         const novaLinha = document.createElement('tr');
         novaLinha.className = 'cursor-pointer hover:bg-gray-50';
         novaLinha.onclick = () => toggleExpansao(index);
@@ -149,7 +156,6 @@ function reconstruirTabela() {
         conteudoPrincipal.className = "inline-block";
         
         const formatoTexto = item.formato ? ` (${item.formato})` : '';
-        
         conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${item.dataRegistro})${formatoTexto}</span>`;
         
         const botaoExcluir = document.createElement('button');
@@ -165,7 +171,6 @@ function reconstruirTabela() {
         novaLinha.appendChild(celula);
         tabela.appendChild(novaLinha);
 
-        // Linha expandida
         const linhaExpandida = document.createElement('tr');
         linhaExpandida.id = `expandida-${index}`;
         linhaExpandida.className = 'hidden';
@@ -178,6 +183,9 @@ function reconstruirTabela() {
         celulaExpandida.innerHTML = `
             <div class="bg-white p-4 rounded shadow-sm">
                 <h4 class="font-bold text-sm mb-3">Composições dos Jogos (Total: ${totalJogos} jogos)</h4>
+                <div class="text-xs text-gray-500 italic mb-2">
+                    ⚠️ As composições são salvas apenas localmente (não sincronizam entre usuários)
+                </div>
                 <div id="jogos-${index}" class="space-y-3">
                     ${criarJogosHTML(totalJogos, index)}
                 </div>
@@ -186,33 +194,6 @@ function reconstruirTabela() {
         
         linhaExpandida.appendChild(celulaExpandida);
         tabela.appendChild(linhaExpandida);
-    });
-    
-    setTimeout(restaurarComposicoes, 100);
-}
-
-function restaurarComposicoes() {
-    Object.keys(composicoes).forEach(resultadoIndex => {
-        Object.keys(composicoes[resultadoIndex]).forEach(jogoIndex => {
-            Object.keys(composicoes[resultadoIndex][jogoIndex]).forEach(elementId => {
-                const pokemon = composicoes[resultadoIndex][jogoIndex][elementId];
-                const elemento = document.getElementById(elementId);
-                
-                if (elemento) {
-                    elemento.innerHTML = `
-                        <img src="./sprites/${pokemon}.png" 
-                             alt="${pokemon}" 
-                             class="w-10 h-10 object-contain"
-                             onerror="this.src='./sprites/noimage.png'">
-                        <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
-                    `;
-                    
-                    elemento.dataset.pokemon = pokemon;
-                    elemento.classList.remove('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
-                    elemento.classList.add('border-green-500', 'bg-green-50');
-                }
-            });
-        });
     });
 }
 
@@ -227,9 +208,7 @@ function criarJogosHTML(totalJogos, resultadoIndex) {
                     <div class="flex gap-1">
                         ${criarQuadradosComposicao(`guarini-jogo-${resultadoIndex}-${i}`)}
                     </div>
-                    
                     <span class="font-bold text-lg">X</span>
-                    
                     <div class="flex gap-1">
                         ${criarQuadradosComposicao(`adversario-jogo-${resultadoIndex}-${i}`)}
                     </div>
@@ -243,17 +222,15 @@ function criarJogosHTML(totalJogos, resultadoIndex) {
 
 function criarQuadradosComposicao(prefixoId) {
     let html = '';
-    
     for (let i = 1; i <= 5; i++) {
         html += `
             <div class="w-16 h-20 border-2 border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors p-1" 
                  id="${prefixoId}-${i}" 
-                 onclick="selecionarComposicao('${prefixoId}-${i}')">
+                 onclick="alert('Função de composição desativada temporariamente')">
                 <span class="text-gray-400 text-lg font-bold">+</span>
             </div>
         `;
     }
-    
     return html;
 }
 
@@ -266,196 +243,16 @@ function toggleExpansao(index) {
                 el.classList.add('hidden');
             }
         });
-        
         linhaExpandida.classList.remove('hidden');
     } else {
         linhaExpandida.classList.add('hidden');
     }
 }
 
-function selecionarComposicao(elementId) {
-    const elemento = document.getElementById(elementId);
-    if (!elemento) return;
-    
-    if (elemento.dataset.pokemon) {
-        abrirModalPokemon(elementId, elemento.dataset.pokemon);
-    } else {
-        abrirModalPokemon(elementId);
-    }
-}
-
-function abrirModalPokemon(elementId, pokemonAtual = null) {
-    if (typeof pokemonBaseImages === 'undefined') {
-        alert('Erro: util.js não carregado. Verifique se o arquivo está incluído no HTML.');
-        return;
-    }
-    
-    const modalExistente = document.getElementById('pokemon-modal');
-    if (modalExistente) {
-        modalExistente.remove();
-    }
-    
-    const modal = document.createElement('div');
-    modal.id = 'pokemon-modal';
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
-    
-    const resultadoIndex = elementId.split('-')[2];
-    const jogoIndex = elementId.split('-')[3];
-    const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
-    
-    modal.innerHTML = `
-        <div class="bg-white rounded-lg shadow-xl w-96 h-96 flex flex-col">
-            <div class="p-3 border-b flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold">Selecionar Pokémon</h3>
-                <div class="flex gap-2">
-                    ${pokemonAtual ? `<button onclick="removerPokemon('${elementId}')" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Remover</button>` : ''}
-                    <button onclick="fecharModalPokemon()" class="text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
-                </div>
-            </div>
-            <div class="p-2 overflow-y-auto flex-grow">
-                <div class="grid grid-cols-6 gap-1">
-                    ${Object.keys(pokemonBaseImages).map(pokemon => {
-                        const isUsado = pokemonsUsados.includes(pokemon) && pokemon !== pokemonAtual;
-                        return `
-                            <div class="text-center ${isUsado ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} p-1 rounded transition-all" 
-                                 ${isUsado ? '' : `onclick="selecionarPokemon('${elementId}', '${pokemon}')"`}>
-                                <img src="./sprites/${pokemon}.png" 
-                                     alt="${pokemon}" 
-                                     class="w-10 h-10 mx-auto object-contain mb-1"
-                                     onerror="this.src='./sprites/noimage.png'">
-                                <div class="text-xs capitalize truncate">${pokemon.replace(/[-_]/g, ' ')}</div>
-                                ${isUsado ? '<div class="text-xs text-red-500">Em uso</div>' : ''}
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-}
-
-function obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex) {
-    const pokemonsUsados = [];
-    
-    for (let i = 1; i <= 5; i++) {
-        const elemGuarini = document.getElementById(`guarini-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
-        if (elemGuarini && elemGuarini.dataset.pokemon) {
-            pokemonsUsados.push(elemGuarini.dataset.pokemon);
-        }
-        
-        const elemAdversario = document.getElementById(`adversario-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
-        if (elemAdversario && elemAdversario.dataset.pokemon) {
-            pokemonsUsados.push(elemAdversario.dataset.pokemon);
-        }
-    }
-    
-    return pokemonsUsados;
-}
-
-function selecionarPokemon(elementId, pokemon) {
-    const elemento = document.getElementById(elementId);
-    if (!elemento) return;
-    
-    const resultadoIndex = elementId.split('-')[2];
-    const jogoIndex = elementId.split('-')[3];
-    const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
-    
-    if (pokemonsUsados.includes(pokemon)) {
-        alert('Este Pokémon já está sendo usado neste jogo!');
-        return;
-    }
-    
-    elemento.innerHTML = `
-        <img src="./sprites/${pokemon}.png" 
-             alt="${pokemon}" 
-             class="w-10 h-10 object-contain"
-             onerror="this.src='./sprites/noimage.png'">
-        <div class="text-xs text-center capitalize truncate mt-1">${pokemon.replace(/[-_]/g, ' ')}</div>
-    `;
-    
-    elemento.dataset.pokemon = pokemon;
-    elemento.classList.remove('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
-    elemento.classList.add('border-green-500', 'bg-green-50');
-    
-    salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon);
-    
-    fecharModalPokemon();
-}
-
-function removerPokemon(elementId) {
-    const elemento = document.getElementById(elementId);
-    if (!elemento) return;
-    
-    elemento.innerHTML = '<span class="text-gray-400 text-lg font-bold">+</span>';
-    delete elemento.dataset.pokemon;
-    elemento.classList.remove('border-green-500', 'bg-green-50');
-    elemento.classList.add('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
-    
-    const resultadoIndex = elementId.split('-')[2];
-    const jogoIndex = elementId.split('-')[3];
-    removerDaComposicao(resultadoIndex, jogoIndex, elementId);
-    
-    fecharModalPokemon();
-}
-
-function fecharModalPokemon() {
-    const modal = document.getElementById('pokemon-modal');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-function salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon) {
-    if (!composicoes[resultadoIndex]) {
-        composicoes[resultadoIndex] = {};
-    }
-    if (!composicoes[resultadoIndex][jogoIndex]) {
-        composicoes[resultadoIndex][jogoIndex] = {};
-    }
-    
-    composicoes[resultadoIndex][jogoIndex][elementId] = pokemon;
-    
-    // Salva no Firebase
-    salvarDados();
-}
-
-function removerDaComposicao(resultadoIndex, jogoIndex, elementId) {
-    if (composicoes[resultadoIndex] && composicoes[resultadoIndex][jogoIndex]) {
-        delete composicoes[resultadoIndex][jogoIndex][elementId];
-        
-        if (Object.keys(composicoes[resultadoIndex][jogoIndex]).length === 0) {
-            delete composicoes[resultadoIndex][jogoIndex];
-        }
-        
-        if (Object.keys(composicoes[resultadoIndex]).length === 0) {
-            delete composicoes[resultadoIndex];
-        }
-    }
-    
-    // Salva no Firebase
-    salvarDados();
-}
-
-async function removerResultado(index) {
-    if (!confirm("Tem certeza que deseja excluir este resultado?")) return;
-
-    const resultado = resultados[index];
-    
-    if (resultado.resultado === "Vitória") {
-        vitorias--;
-    } else if (resultado.resultado === "Derrota") {
-        derrotas--;
-    } else {
-        empates--;
-    }
-
-    resultados.splice(index, 1);
-    
-    reconstruirTabela();
-    atualizarContadores();
-    await salvarDados();
+function atualizarContadores() {
+    document.getElementById('winCount').textContent = vitorias;
+    document.getElementById('drawCount').textContent = empates;
+    document.getElementById('lossCount').textContent = derrotas;
 }
 
 // ==============================================
@@ -471,7 +268,7 @@ async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversari
         nomeAdversario = document.getElementById('nomeAdversario').value.trim();
         formato = document.getElementById('formatoScrim').value;
 
-        console.log("📝 Dados do formulário:", { placarMeuTime, placarAdversario, nomeAdversario, formato });
+        console.log("📝 Dados:", { placarMeuTime, placarAdversario, nomeAdversario, formato });
 
         if (isNaN(placarMeuTime) || isNaN(placarAdversario) || nomeAdversario === "") {
             alert("Preencha todos os campos corretamente!");
@@ -486,7 +283,6 @@ async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversari
 
     const nossoTime = "Guarini";
     const dataHoje = new Date().toLocaleDateString('pt-BR');
-
     const resultado = placarMeuTime > placarAdversario ? "Vitória" :
                       placarMeuTime < placarAdversario ? "Derrota" : "Empate";
 
@@ -514,25 +310,40 @@ async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversari
 
     resultados.push(resultadoObj);
     
-    console.log("📊 Total de resultados agora:", resultados.length);
+    console.log("📊 Total de resultados:", resultados.length);
     
     reconstruirTabela();
     atualizarContadores();
     
-    console.log("💾 Chamando salvarDados()...");
-    await salvarDados();
+    console.log("💾 Salvando no Firebase...");
+    await salvarNoFirebase();
     console.log("✅ Processo concluído!");
 }
 
-function atualizarContadores() {
-    document.getElementById('winCount').textContent = vitorias;
-    document.getElementById('drawCount').textContent = empates;
-    document.getElementById('lossCount').textContent = derrotas;
+async function removerResultado(index) {
+    if (!confirm("Tem certeza que deseja excluir este resultado?")) return;
+
+    console.log("🗑️ Removendo resultado", index);
+
+    const resultado = resultados[index];
+    
+    if (resultado.resultado === "Vitória") {
+        vitorias--;
+    } else if (resultado.resultado === "Derrota") {
+        derrotas--;
+    } else {
+        empates--;
+    }
+
+    resultados.splice(index, 1);
+    
+    reconstruirTabela();
+    atualizarContadores();
+    await salvarNoFirebase();
 }
 
 function exportarResultados() {
     const agora = new Date();
-
     const dadosParaExportar = {
         metadata: {
             dataExportacao: agora.toLocaleDateString('pt-BR'),
@@ -579,7 +390,7 @@ function exportarCSV() {
     document.body.removeChild(link);
 }
 
-function importarResultados(event) {
+async function importarResultados(event) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -613,7 +424,6 @@ function importarResultados(event) {
                 vitorias = 0;
                 empates = 0;
                 derrotas = 0;
-                document.getElementById('tabelaResultados').innerHTML = '';
 
                 partidas.forEach(item => {
                     resultados.push({
@@ -639,7 +449,7 @@ function importarResultados(event) {
                 atualizarContadores();
             }
             event.target.value = '';
-            await salvarDados();
+            await salvarNoFirebase();
         } catch (err) {
             alert("Erro ao importar arquivo: " + err.message);
             event.target.value = '';
@@ -660,7 +470,7 @@ async function limparResultados() {
 
     document.getElementById('tabelaResultados').innerHTML = '';
     atualizarContadores();
-    await salvarDados();
+    await salvarNoFirebase();
 }
 
 // ==============================================
@@ -668,15 +478,29 @@ async function limparResultados() {
 // ==============================================
 
 document.addEventListener("DOMContentLoaded", async function () {
-    // Carrega dados do Firebase
-    await carregarDados();
+    console.log("🚀 Iniciando aplicação...");
+    
+    // Aguarda o Firebase estar disponível
+    if (typeof firebase === 'undefined' || typeof db === 'undefined') {
+        console.error("❌ Firebase não está carregado!");
+        alert("Erro: Firebase não inicializado. Verifique o HTML.");
+        return;
+    }
+    
+    console.log("✅ Firebase disponível");
+    
+    // Carrega dados iniciais
+    await carregarDoFirebase();
     
     // Inicia listener para atualizações em tempo real
     iniciarListenerTempoReal();
 
+    // Eventos dos botões
     document.getElementById("botaoAdicionar").addEventListener("click", adicionarResultado);
     document.getElementById("botaoExportar").addEventListener("click", exportarResultados);
     document.getElementById("botaoExportarCSV").addEventListener("click", exportarCSV);
     document.getElementById("importarArquivo").addEventListener("change", importarResultados);
     document.getElementById("botaoLimpar").addEventListener("click", limparResultados);
+    
+    console.log("✅ Aplicação iniciada!");
 });

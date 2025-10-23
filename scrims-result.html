@@ -138,31 +138,30 @@ function googleTranslateElementInit() {
     </div>
   </div>
 
-  <!-- Scripts -->
+ <!-- Scripts -->
   <script src="util.js"></script>
-  <script src="scrims-result.js"></script>
-
+  
   <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-<!-- Configuração do Firebase -->
-<script>
-  // COLE AQUI o firebaseConfig que você copiou
-  const firebaseConfig = {
-    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUlPIol",
-    authDomain: "site-grn.firebaseapp.com",
-    projectId: "site-grn",
-    storageBucket: "site-grn.firebasestorage.app",
-    messagingSenderId: "27613322806",
-    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
-  };
+  <!-- Configuração do Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUlPIol",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:COLE_SEU_APP_ID_REAL_AQUI"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    console.log("🔥 Firebase inicializado!");
+  </script>
   
-  // Inicializa o Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  
-  console.log("🔥 Firebase inicializado!");
-</script>
+  <script src="scrims-result.js"></script>
 </body>
 </html>
