@@ -79,7 +79,7 @@
     </table>
   </div>
 
-  <!-- Scripts -->
+   <!-- Scripts -->
   <script src="util.js"></script>
   
   <!-- Firebase SDK -->
@@ -96,7 +96,7 @@
       projectId: "site-grn",
       storageBucket: "site-grn.firebasestorage.app",
       messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:3d4e5f6g7h8i9j0k" // ⬅️ SUBSTITUA pelo App ID real
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297"
     };
     
     try {
@@ -104,45 +104,11 @@
       const db = firebase.firestore();
       
       console.log("✅ Firebase inicializado com sucesso!");
-      console.log("📦 Configuração:", firebaseConfig);
-      
-      // Atualizar status visual
-      const statusElement = document.getElementById('statusConexao');
-      if (statusElement) {
-        statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-green-600';
-        statusElement.textContent = '✅ Conectado ao Firebase';
-        
-        // Esconder após 3 segundos
-        setTimeout(() => {
-          statusElement.style.display = 'none';
-        }, 3000);
-      }
-      
-      // Teste de conexão
-      db.collection('scrims').doc('guarini-scrims').get()
-        .then((doc) => {
-          console.log("🧪 Teste de leitura:", doc.exists ? "Documento existe" : "Documento não existe ainda");
-        })
-        .catch((error) => {
-          console.error("❌ Erro no teste de leitura:", error);
-          console.error("Código:", error.code);
-          console.error("Mensagem:", error.message);
-          
-          if (statusElement) {
-            statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-red-600';
-            statusElement.textContent = '❌ Erro: ' + error.message;
-          }
-        });
+      console.log("📦 Projeto:", firebaseConfig.projectId);
       
     } catch (error) {
       console.error("❌ ERRO CRÍTICO ao inicializar Firebase:", error);
       alert("Erro ao inicializar Firebase: " + error.message);
-      
-      const statusElement = document.getElementById('statusConexao');
-      if (statusElement) {
-        statusElement.className = 'mb-4 p-3 rounded text-center text-white bg-red-600';
-        statusElement.textContent = '❌ Erro na inicialização: ' + error.message;
-      }
     }
   </script>
   
