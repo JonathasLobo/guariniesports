@@ -4,23 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resultados - Pokémon Unite</title>
-  <link rel="icon" href="favicon.png" type="image/png">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     .hidden { display: none; }
     .logo-preview { max-width: 40px; max-height: 40px; }
     
+    /* Ajustes específicos para mobile */
     @media (max-width: 640px) {
+      /* Melhorar visualização da tabela no mobile */
       .mobile-table-text {
         font-size: 0.75rem;
         line-height: 1rem;
       }
       
+      /* Formulário mais compacto no mobile */
       .mobile-form input, .mobile-form select, .mobile-form button {
         font-size: 0.9rem;
         padding: 0.5rem;
       }
       
+      /* Botões menores no mobile */
       .mobile-buttons {
         font-size: 0.85rem;
         padding: 0.4rem 0.8rem;
@@ -32,11 +35,6 @@
   <div class="max-w-3xl mx-auto p-2 sm:p-4 pb-20 rounded">
     <!-- Título Principal -->
     <h1 class="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6 text-white">Resultados do Guarini</h1>
-
-    <!-- Status de Conexão (temporário para debug) -->
-    <div id="statusConexao" class="mb-4 p-3 rounded text-center text-white bg-blue-600">
-      🔄 Conectando ao Firebase...
-    </div>
 
     <!-- Contadores de Vitórias/Empates/Derrotas -->
     <div class="flex justify-around mb-4 text-lg font-semibold text-white">
@@ -80,39 +78,39 @@
     </table>
   </div>
 
-   <!-- Scripts -->
-  <script src="util.js"></script>
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Modal de Agendamento - Responsivo -->
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm sm:w-80">
+      <h2 class="text-lg font-bold mb-4">Agendar Scrim</h2>
+      <form id="scrimForm" class="space-y-4">
+        <input type="hidden" id="selectedDate" />
+        <input type="hidden" id="editIndex" value="-1" />
+        <div>
+          <label class="block text-sm font-medium mb-1">Adversário</label>
+          <input type="text" id="team2" class="w-full border rounded p-2 text-sm" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Horário</label>
+          <input type="time" id="matchTime" class="w-full border rounded p-2 text-sm" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Formato</label>
+          <select id="matchFormat" class="w-full border rounded p-2 text-sm" required>
+            <option value="2x2">2x2</option>
+            <option value="3x3">3x3</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" onclick="closeModal()" class="text-gray-500 px-3 py-1 text-sm">Cancelar</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  <!-- Configuração do Firebase -->
-  <script>
-    console.log("🔧 Iniciando configuração do Firebase...");
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUlPIol",
-      authDomain: "site-grn.firebaseapp.com",
-      projectId: "site-grn",
-      storageBucket: "site-grn.firebasestorage.app",
-      messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:ad4dc08ce043f19d530297"
-    };
-    
-    try {
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-      
-      console.log("✅ Firebase inicializado com sucesso!");
-      console.log("📦 Projeto:", firebaseConfig.projectId);
-      
-    } catch (error) {
-      console.error("❌ ERRO CRÍTICO ao inicializar Firebase:", error);
-      alert("Erro ao inicializar Firebase: " + error.message);
-    }
-  </script>
-  
-  <script src="scrims-result.js"></script>
+  <!-- Scripts -->
+  <script src="util.js"></script>
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="scrims-result.js"></script>
 </body>
 </html>
