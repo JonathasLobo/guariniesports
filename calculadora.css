@@ -567,6 +567,183 @@ textarea.form-control {
   #emblemas-container label { font-size: 13px; margin-bottom: 6px; }
 }
 
+/* ===== MAP BUFFS SELECTOR ===== */
+.map-buffs-selector-new {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.map-buffs-title {
+  color: #fe8a01;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #fe8a01;
+  padding-bottom: 8px;
+}
+
+.map-buffs-grid {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.map-buff-item-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.map-buff-item-new:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.map-buff-image-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.map-buff-image-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.map-buff-image-circle.active {
+  border-color: #ffcb05;
+  box-shadow: 0 0 15px rgba(255, 203, 5, 0.5);
+  transform: scale(1.1);
+}
+
+.map-buff-image-circle.active::after {
+  content: "\2713";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffcb05;
+  font-weight: bold;
+  font-size: 24px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.map-buff-name {
+  font-size: 11px;
+  color: #fff;
+  margin-top: 6px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.map-buff-description {
+  background: rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  text-align: left;
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-buff-description.empty {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-buff-description.active {
+  color: #fff;
+}
+
+.map-buff-info-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.map-buff-info-line:last-child {
+  margin-bottom: 0;
+}
+
+.map-buff-indicator {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 0;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .map-buffs-grid {
+    gap: 10px;
+  }
+  
+  .map-buff-image-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .map-buff-name {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .map-buffs-grid {
+    gap: 8px;
+  }
+  
+  .map-buff-image-circle {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .map-buff-name {
+    font-size: 9px;
+  }
+  
+  .map-buffs-selector-new {
+    padding: 15px;
+  }
+}
+
+/* Dark Mode */
+.dark-mode .map-buff-description {
+  background: rgba(0, 123, 255, 0.15);
+  border-color: rgba(0, 123, 255, 0.4);
+}
+
+.dark-mode .map-buff-info-line span {
+  color: #ffffff !important;
+}
+
 /* -----------------------------
    ESTILOS DO DROPDOWN CUSTOMIZADO
    (miniaturas ao lado do nome)

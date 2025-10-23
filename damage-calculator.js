@@ -97,6 +97,82 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const MAP_BUFFS_DATA = {
+  accelgor: {
+    name: "Accelgor",
+    stat: "CDR",
+    value: 10,
+    color: "#28a745",
+    type: "percent",
+    mutuallyExclusive: false,
+    description: "Increase 10% CDR",
+    image: "./estatisticas-shad/images/objetivos/accelgor.png"
+  },
+  escavalier: {
+    name: "Escavalier",
+    stat: "Speed",
+    value: 30,
+    color: "#dc3545",
+    type: "debuff",
+    mutuallyExclusive: false,
+    description: "Decrease 30% MoveSpeed Reduction on opponent",
+    debuffLabel: "(DEBUFF) MoveSpeed Reduction",
+    image: "./estatisticas-shad/images/objetivos/escavalier.png"
+  },
+  regirock: {
+    name: "Regirock",
+    stats: { DEF: 30, SpDEF: 25 },
+    color: "#8b7355",
+    type: "percent",
+    mutuallyExclusive: true,
+    group: "regi",
+    conflictsWith: "legendary",
+    description: "Aumenta DEF em 30% e Sp. DEF em 25%",
+    image: "./estatisticas-shad/images/objetivos/regirock.png"
+  },
+  registeel: {
+    name: "Registeel",
+    stats: { ATK: 15, SpATK: 15 },
+    color: "#6c757d",
+    type: "percent",
+    mutuallyExclusive: true,
+    group: "regi",
+    conflictsWith: "legendary",
+    description: "Aumenta ATK e Sp. ATK em 15%",
+    image: "./estatisticas-shad/images/objetivos/registeel.png"
+  },
+  regice: {
+    name: "Regice",
+    stat: "HPRegen",
+    value: 5,
+    color: "#4dabf7",
+    type: "percent",
+    mutuallyExclusive: true,
+    group: "regi",
+    conflictsWith: "legendary",
+    description: "Aumenta HP Regen em 5%",
+    image: "./estatisticas-shad/images/objetivos/regice.png"
+  },
+  groudon: {
+    name: "Groudon",
+    color: "#ff4500",
+    type: "special",
+    mutuallyExclusive: true,
+    group: "legendary",
+    description: "Aumenta Shield e dano de skills/basicos em 50%",
+    image: "./estatisticas-shad/images/objetivos/groudon.png",
+    shieldFormula: (hp) => {
+      // 30% do HP + 1000
+      const shieldValue = (hp * 0.30) + 1000;
+      // Converter para percentual baseado no HP total
+      const percentual = (shieldValue / hp) * 100;
+      return percentual;
+    },
+    skillDamageMultiplier: 1.50, // 50% de aumento
+    affectsBasicAttack: true
+  }
+};
+
   // Elementos originais
   const levelDisplay = document.getElementById("level-display");
   const levelDecrease = document.getElementById("level-decrease");
@@ -132,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let statModifiers = {}; // Rastreia todos os modificadores de cada stat
   let currentExpandedStat = null; // Controla qual stat está expandido
   let selectedConditionalEffects = {};
+  let selectedMapBuffs = {};
 
 // Tornar imagem clicável para abrir modal
 const makeImageClickable = () => {
@@ -1398,6 +1475,134 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
       grid.appendChild(emblemDiv);
     });
   };
+
+  const createMapBuffsGrid = () => {
+  const grid = document.getElementById("map-buffs-grid");
+  if (!grid) return;
+  
+  grid.innerHTML = "";
+
+  Object.keys(MAP_BUFFS_DATA).forEach(buffKey => {
+    const buff = MAP_BUFFS_DATA[buffKey];
+    
+    const buffDiv = document.createElement("div");
+    buffDiv.className = "map-buff-item-new";
+    
+    const circle = document.createElement("div");
+    circle.className = "map-buff-image-circle";
+    circle.dataset.buff = buffKey;
+    
+    if (selectedMapBuffs[buffKey]) {
+      circle.classList.add("active");
+    }
+    
+    const img = document.createElement("img");
+    img.src = buff.image;
+    img.alt = buff.name;
+    img.onerror = function() {
+      this.src = "./estatisticas-shad/images/objetivos/placeholder.png";
+    };
+    
+    circle.appendChild(img);
+    
+    const name = document.createElement("div");
+    name.className = "map-buff-name";
+    name.textContent = buff.name;
+    
+    circle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMapBuff(buffKey);
+    });
+    
+    buffDiv.appendChild(circle);
+    buffDiv.appendChild(name);
+    grid.appendChild(buffDiv);
+  });
+};
+
+const toggleMapBuff = (buffKey) => {
+  const buff = MAP_BUFFS_DATA[buffKey];
+  
+  // Se for um buff mutuamente exclusivo (regis)
+  if (buff.mutuallyExclusive && buff.group === "regi") {
+    // Se clicar no mesmo regi já selecionado, desmarcar todos
+    if (selectedMapBuffs[buffKey]) {
+      delete selectedMapBuffs[buffKey];
+    } else {
+      // Desselecionar outros regis
+      Object.keys(selectedMapBuffs).forEach(key => {
+        if (MAP_BUFFS_DATA[key].group === "regi") {
+          delete selectedMapBuffs[key];
+        }
+      });
+      
+      // Desselecionar Groudon se houver conflito
+      if (buff.conflictsWith) {
+        Object.keys(selectedMapBuffs).forEach(key => {
+          if (MAP_BUFFS_DATA[key].group === buff.conflictsWith) {
+            delete selectedMapBuffs[key];
+          }
+        });
+      }
+      
+      // Selecionar o atual
+      selectedMapBuffs[buffKey] = true;
+    }
+  }
+  // Se for Groudon (legendary)
+  else if (buff.group === "legendary") {
+    // Se clicar no Groudon já selecionado, desmarcar
+    if (selectedMapBuffs[buffKey]) {
+      delete selectedMapBuffs[buffKey];
+    } else {
+      // Desselecionar todos os Regis
+      Object.keys(selectedMapBuffs).forEach(key => {
+        if (MAP_BUFFS_DATA[key].group === "regi") {
+          delete selectedMapBuffs[key];
+        }
+      });
+      
+      // Selecionar Groudon
+      selectedMapBuffs[buffKey] = true;
+    }
+  }
+  // Toggle normal para buffs não exclusivos (Accelgor, Escavalier)
+  else {
+    if (selectedMapBuffs[buffKey]) {
+      delete selectedMapBuffs[buffKey];
+    } else {
+      selectedMapBuffs[buffKey] = true;
+    }
+  }
+  
+  updateMapBuffDescription();
+  createMapBuffsGrid();
+  calcular();
+};
+
+const updateMapBuffDescription = () => {
+  const descContainer = document.getElementById("map-buff-description");
+  if (!descContainer) return;
+  
+  const selectedKeys = Object.keys(selectedMapBuffs);
+  
+  if (selectedKeys.length === 0) {
+    descContainer.className = "map-buff-description empty";
+    descContainer.innerHTML = "Select map buffs to see their effects";
+    return;
+  }
+  
+  descContainer.className = "map-buff-description active";
+  
+  const buffLines = selectedKeys.map(buffKey => {
+    const buff = MAP_BUFFS_DATA[buffKey];
+    const indicator = `<span class="map-buff-indicator" style="background-color: ${buff.color};"></span>`;
+    
+    return `<div class="map-buff-info-line">${indicator}<span><strong>${buff.name}:</strong> ${buff.description}</span></div>`;
+  }).join("");
+  
+  descContainer.innerHTML = buffLines;
+};
 
   const selectEmblemLevel = (emblemKey, level) => {
     if (selectedEmblems[emblemKey] == level) {
@@ -3285,11 +3490,132 @@ if (incluirEmblemas === "sim") {
     }
   });
 }
-    // 5) Passiva do Pokémon
-    modified = applyPassiveBuff(modified, selectedPokemon, base, targetLevel);
 
-    // 6) Skills ativáveis
-    modified = applyActiveSkillBuffs(modified, selectedPokemon, base);
+// 5) Passiva do Pokémon
+modified = applyPassiveBuff(modified, selectedPokemon, base, targetLevel);
+
+// 6) Skills ativáveis
+modified = applyActiveSkillBuffs(modified, selectedPokemon, base);
+
+let incluirMapBuffs = "";
+mapBuffsRadios.forEach(r => { if (r.checked) incluirMapBuffs = r.value; });
+
+if (incluirMapBuffs === "sim") {
+  Object.keys(selectedMapBuffs).forEach(buffKey => {
+    const buff = MAP_BUFFS_DATA[buffKey];
+    const buffName = buff.name;
+    
+    const customIcon = `<img src="${buff.image}" style="width: 14px; height: 14px; border-radius: 50%; margin-right: 8px;" onerror="this.style.display='none'">`;
+    
+    if (buff.type === "debuff") {
+      // Escavalier - debuff no oponente
+      if (!modified._debuffsAcumulados) {
+        modified._debuffsAcumulados = {};
+      }
+      
+      const debuffStat = buff.stat;
+      
+      if (!modified._debuffsAcumulados[debuffStat]) {
+        modified._debuffsAcumulados[debuffStat] = {
+          total: 0,
+          skills: [],
+          customLabel: null,
+          label: buff.debuffLabel || `(DEBUFF) ${debuffStat} Reduction`,
+          value: 0,
+          stat: debuffStat
+        };
+      }
+      
+      // ✅ ACUMULAR o valor ao invés de substituir
+      modified._debuffsAcumulados[debuffStat].total += buff.value;
+      modified._debuffsAcumulados[debuffStat].value += buff.value;
+      modified._debuffsAcumulados[debuffStat].skills.push({
+        name: buffName,
+        value: buff.value
+      });
+      
+      if (buff.debuffLabel) {
+        modified._debuffsAcumulados[debuffStat].customLabel = buff.debuffLabel;
+        modified._debuffsAcumulados[debuffStat].label = buff.debuffLabel;
+      }
+      
+      return;
+    }
+    
+    if (buff.type === "special") {
+      // Groudon - Shield formula + Skill Damage Multiplier
+      
+      // 1) Calcular Shield baseado no HP
+      if (buff.shieldFormula) {
+        const shieldPercent = buff.shieldFormula(modified.HP);
+        modified.Shield += shieldPercent;
+        
+        if (!statModifiers.Shield) {
+          statModifiers.Shield = { base: 0, modifications: [], total: 0 };
+        }
+        statModifiers.Shield.modifications.push({
+          value: shieldPercent,
+          source: buffName,
+          type: "formula",
+          customIcon: customIcon
+        });
+      }
+      
+      // 2) Armazenar o multiplicador de dano para aplicar nas skills depois
+      if (buff.skillDamageMultiplier) {
+        if (!modified._mapBuffDamageMultipliers) {
+          modified._mapBuffDamageMultipliers = [];
+        }
+        modified._mapBuffDamageMultipliers.push({
+          multiplier: buff.skillDamageMultiplier,
+          affectsBasicAttack: buff.affectsBasicAttack,
+          source: buffName
+        });
+      }
+      
+      return;
+    }
+    
+    // Buffs com stats multiplos (Regirock, Registeel)
+    if (buff.stats) {
+      Object.keys(buff.stats).forEach(stat => {
+        const value = buff.stats[stat];
+        const bonusValue = base[stat] * (value / 100);
+        modified[stat] += bonusValue;
+        
+        if (!statModifiers[stat]) {
+          statModifiers[stat] = { base: 0, modifications: [], total: 0 };
+        }
+        statModifiers[stat].modifications.push({
+          value: value,
+          source: buffName,
+          type: "emblem-percent",
+          customIcon: customIcon
+        });
+      });
+    }
+    // Buffs com stat unico (Accelgor, Regice)
+    else if (buff.stat && buff.type === "percent") {
+      const stat = buff.stat;
+      const value = buff.value;
+      
+      if (PERCENT_KEYS.has(stat)) {
+        // Accelgor (CDR) ou Regice (HPRegen) - stats percentuais
+        modified[stat] += value;
+        
+        if (!statModifiers[stat]) {
+          statModifiers[stat] = { base: 0, modifications: [], total: 0 };
+        }
+        statModifiers[stat].modifications.push({
+          value: value,
+          source: buffName,
+          type: "flat",
+          customIcon: customIcon
+        });
+      }
+    }
+  });
+}
 
     modified = ensureAllStats(modified);
 
@@ -3685,6 +4011,30 @@ if (incluirEmblemas === "sim") {
   }
 }
 
+// Mostrar map buffs ativos
+if (incluirMapBuffs === "sim") {
+  const selectedBuffKeys = Object.keys(selectedMapBuffs);
+  if (selectedBuffKeys.length > 0) {
+    const activeBuffs = selectedBuffKeys.map(buffKey => {
+      const buff = MAP_BUFFS_DATA[buffKey];
+      
+      return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
+        <img src="${buff.image}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; object-fit: cover;" onerror="this.style.display='none'">
+        <span style="color: #000; font-size: 12px; font-weight: 500;">${buff.name}</span>
+      </div>`;
+    }).join("");
+
+    statusFinalDiv.insertAdjacentHTML("beforeend", `
+      <div class="stat-line special-stat" style="flex-direction: column; align-items: flex-start;">
+        <span class="stat-label" style="margin-bottom: 8px;">Map Buffs</span>
+        <div style="display: flex; flex-direction: column; width: 100%; padding-left: 10px;">
+          ${activeBuffs}
+        </div>
+      </div>
+    `);
+  }
+}
+
     // ✅ CÓDIGO NOVO COM SISTEMA CLICÁVEL:
     if (activeBattleItem) {
       const battleItemName = gameBattleItems[activeBattleItem] || activeBattleItem;
@@ -3927,6 +4277,17 @@ s.formulas.forEach((f, index) => {
       }
     });
 
+    // NOVO: Aplicar multiplicadores de dano dos Map Buffs (Groudon)
+    if (modified._mapBuffDamageMultipliers && modified._mapBuffDamageMultipliers.length > 0) {
+      modified._mapBuffDamageMultipliers.forEach(buffMultiplier => {
+        const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+        
+        if (!isBasicAttack || buffMultiplier.affectsBasicAttack === true) {
+          modifiedVal *= buffMultiplier.multiplier;
+        }
+      });
+    }
+
     // NOVO: Aplicar skillDamageMultiplier GLOBAL de QUALQUER skill com buffPlus ativo
     if (activeSkills[selectedPokemon]) {
       Object.keys(activeSkills[selectedPokemon]).forEach(skillKey => {
@@ -4153,6 +4514,17 @@ if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.
     const value = s.buffPlus.nextBasicAttackPercent;
     const sign = value >= 0 ? "+" : "";
     buffsList.push(`<span style="color:#000000;">${sign}${value}% Basic Attack Damage (Plus)</span>`);
+  }
+
+  if (modified._mapBuffDamageMultipliers && modified._mapBuffDamageMultipliers.length > 0) {
+    modified._mapBuffDamageMultipliers.forEach(buffMultiplier => {
+      const isBasicAttack = (key === "basic" || key === "basicattack" || key === "atkboosted");
+      
+      if (!isBasicAttack || buffMultiplier.affectsBasicAttack === true) {
+        const percentBonus = ((buffMultiplier.multiplier - 1) * 100).toFixed(0);
+        buffsList.push(`<span style="color:#000000;">+${percentBonus}% Damage (${buffMultiplier.source})</span>`);
+      }
+    });
   }
   
   if (buffsList.length > 0) {
@@ -4478,11 +4850,30 @@ battleRadios.forEach(r => {
     });
   });
 
+  // Map Buffs
+  const mapBuffsRadios = document.querySelectorAll("input[name='mapbuffs']");
+  const mapBuffsContainer = document.getElementById("map-buffs-selector");
+
+  mapBuffsRadios.forEach(r => {
+    r.addEventListener("change", () => {
+      if (r.value === "sim") {
+        mapBuffsContainer.style.display = "block";
+        createMapBuffsGrid();
+      } else {
+        mapBuffsContainer.style.display = "none";
+        selectedMapBuffs = {};
+        updateMapBuffDescription();
+      }
+      calcular();
+    });
+  });
+
   // INICIALIZAÇÃO
   createRoleFilters();
   createPokemonGrid();
   filterPokemonGrid(); // Aplicar filtro inicial
   createHeldItemsGrid();
+  createMapBuffsGrid();
   calcular();
   
   // Botão de download como imagem

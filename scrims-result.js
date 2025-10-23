@@ -7,32 +7,75 @@ let resultados = [];
 // Armazena as composições de cada jogo
 let composicoes = {};
 
+// ID do documento no Firebase (pode ser fixo ou baseado em usuário)
+const DOCUMENTO_ID = 'guarini-scrims'; // Use 'user-{userId}' se tiver autenticação
+
 // ==============================================
-// FUNÇÕES DE PERSISTÊNCIA (localStorage)
+// FUNÇÕES DE PERSISTÊNCIA (FIREBASE)
 // ==============================================
 
-function salvarDados() {
-    const dados = {
-        vitorias,
-        empates,
-        derrotas,
-        resultados
-    };
-    localStorage.setItem('scrimsData', JSON.stringify(dados));
+async function salvarDados() {
+    try {
+        const dados = {
+            vitorias,
+            empates,
+            derrotas,
+            resultados,
+            composicoes,
+            ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        await db.collection('scrims').doc(DOCUMENTO_ID).set(dados);
+        console.log('Dados salvos com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        alert('Erro ao salvar dados. Verifique sua conexão.');
+    }
 }
 
-function carregarDados() {
-    const dadosSalvos = localStorage.getItem('scrimsData');
-    if (dadosSalvos) {
-        const dados = JSON.parse(dadosSalvos);
-        vitorias = dados.vitorias || 0;
-        empates = dados.empates || 0;
-        derrotas = dados.derrotas || 0;
-        resultados = dados.resultados || [];
+async function carregarDados() {
+    try {
+        const doc = await db.collection('scrims').doc(DOCUMENTO_ID).get();
+        
+        if (doc.exists) {
+            const dados = doc.data();
+            vitorias = dados.vitorias || 0;
+            empates = dados.empates || 0;
+            derrotas = dados.derrotas || 0;
+            resultados = dados.resultados || [];
+            composicoes = dados.composicoes || {};
 
-        reconstruirTabela();
-        atualizarContadores();
+            reconstruirTabela();
+            atualizarContadores();
+        } else {
+            console.log('Nenhum dado encontrado no Firebase');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        alert('Erro ao carregar dados. Verifique sua conexão.');
     }
+}
+
+// Listener para mudanças em tempo real
+function iniciarListenerTempoReal() {
+    db.collection('scrims').doc(DOCUMENTO_ID)
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                const dados = doc.data();
+                vitorias = dados.vitorias || 0;
+                empates = dados.empates || 0;
+                derrotas = dados.derrotas || 0;
+                resultados = dados.resultados || [];
+                composicoes = dados.composicoes || {};
+
+                reconstruirTabela();
+                atualizarContadores();
+                
+                console.log('Dados atualizados em tempo real!');
+            }
+        }, (error) => {
+            console.error('Erro no listener:', error);
+        });
 }
 
 function reconstruirTabela() {
@@ -40,8 +83,8 @@ function reconstruirTabela() {
     tabela.innerHTML = '';
 
     resultados.forEach((item, index) => {
-        const nossoTime = "Guariní";
-        const nossaLogo = '<img src="./logos/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
+        const nossoTime = "Guarini";
+        const nossaLogo = '<img src="./logos/Guarini.png" alt="Guarini" class="w-10 h-10 inline-block">';
         const imagemAdversario = `./logos/${item.adversario}.png`;
         const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./logos/noimage.png'" alt="${item.adversario}" class="w-10 h-10 inline-block">`;
 
@@ -78,16 +121,13 @@ function reconstruirTabela() {
         const celula = document.createElement('td');
         celula.className = "p-2 border-b group";
         
-        // Conteúdo principal alinhado à esquerda
         const conteudoPrincipal = document.createElement('div');
         conteudoPrincipal.className = "inline-block";
         
-        // Adiciona o formato após a data se existir
         const formatoTexto = item.formato ? ` (${item.formato})` : '';
         
         conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${item.dataRegistro})${formatoTexto}</span>`;
         
-        // Botão de excluir alinhado à direita
         const botaoExcluir = document.createElement('button');
         botaoExcluir.innerHTML = '❌';
         botaoExcluir.className = 'float-right text-red-500 hover:text-red-700 text-xs ml-4';
@@ -101,7 +141,7 @@ function reconstruirTabela() {
         novaLinha.appendChild(celula);
         tabela.appendChild(novaLinha);
 
-        // Linha expandida (inicialmente oculta)
+        // Linha expandida
         const linhaExpandida = document.createElement('tr');
         linhaExpandida.id = `expandida-${index}`;
         linhaExpandida.className = 'hidden';
@@ -109,10 +149,8 @@ function reconstruirTabela() {
         const celulaExpandida = document.createElement('td');
         celulaExpandida.className = 'p-4 bg-gray-50 border-b';
         
-        // Calcula o número total de jogos baseado no placar
         const totalJogos = item.placarNosso + item.placarAdversario;
         
-        // Conteúdo da área expandida
         celulaExpandida.innerHTML = `
             <div class="bg-white p-4 rounded shadow-sm">
                 <h4 class="font-bold text-sm mb-3">Composições dos Jogos (Total: ${totalJogos} jogos)</h4>
@@ -126,7 +164,6 @@ function reconstruirTabela() {
         tabela.appendChild(linhaExpandida);
     });
     
-    // Restaurar composições salvas após um breve delay para garantir que os elementos foram criados
     setTimeout(restaurarComposicoes, 100);
 }
 
@@ -163,14 +200,12 @@ function criarJogosHTML(totalJogos, resultadoIndex) {
             <div class="border p-3 rounded bg-gray-50">
                 <div class="text-sm font-medium mb-2">Jogo ${i}</div>
                 <div class="flex items-center justify-center gap-4">
-                    <!-- Time 1 (Guariní) -->
                     <div class="flex gap-1">
                         ${criarQuadradosComposicao(`guarini-jogo-${resultadoIndex}-${i}`)}
                     </div>
                     
                     <span class="font-bold text-lg">X</span>
                     
-                    <!-- Time 2 (Adversário) -->
                     <div class="flex gap-1">
                         ${criarQuadradosComposicao(`adversario-jogo-${resultadoIndex}-${i}`)}
                     </div>
@@ -202,7 +237,6 @@ function toggleExpansao(index) {
     const linhaExpandida = document.getElementById(`expandida-${index}`);
     
     if (linhaExpandida.classList.contains('hidden')) {
-        // Fecha todas as outras expansões antes de abrir esta
         document.querySelectorAll('[id^="expandida-"]').forEach(el => {
             if (el !== linhaExpandida) {
                 el.classList.add('hidden');
@@ -217,37 +251,30 @@ function toggleExpansao(index) {
 
 function selecionarComposicao(elementId) {
     const elemento = document.getElementById(elementId);
-    
     if (!elemento) return;
     
-    // Se já tem um Pokémon selecionado, abrir modal para trocar
     if (elemento.dataset.pokemon) {
         abrirModalPokemon(elementId, elemento.dataset.pokemon);
     } else {
-        // Se está vazio, abrir modal para selecionar
         abrirModalPokemon(elementId);
     }
 }
 
 function abrirModalPokemon(elementId, pokemonAtual = null) {
-    // Verifica se util.js foi carregado e se pokemonBaseImages está disponível
     if (typeof pokemonBaseImages === 'undefined') {
         alert('Erro: util.js não carregado. Verifique se o arquivo está incluído no HTML.');
         return;
     }
     
-    // Remove modal existente se houver
     const modalExistente = document.getElementById('pokemon-modal');
     if (modalExistente) {
         modalExistente.remove();
     }
     
-    // Cria o modal
     const modal = document.createElement('div');
     modal.id = 'pokemon-modal';
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
     
-    // Obter Pokémons já selecionados neste jogo
     const resultadoIndex = elementId.split('-')[2];
     const jogoIndex = elementId.split('-')[3];
     const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
@@ -288,15 +315,12 @@ function abrirModalPokemon(elementId, pokemonAtual = null) {
 function obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex) {
     const pokemonsUsados = [];
     
-    // Verifica todos os quadrados do jogo atual
     for (let i = 1; i <= 5; i++) {
-        // Time Guariní
         const elemGuarini = document.getElementById(`guarini-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
         if (elemGuarini && elemGuarini.dataset.pokemon) {
             pokemonsUsados.push(elemGuarini.dataset.pokemon);
         }
         
-        // Time Adversário
         const elemAdversario = document.getElementById(`adversario-jogo-${resultadoIndex}-${jogoIndex}-${i}`);
         if (elemAdversario && elemAdversario.dataset.pokemon) {
             pokemonsUsados.push(elemAdversario.dataset.pokemon);
@@ -310,7 +334,6 @@ function selecionarPokemon(elementId, pokemon) {
     const elemento = document.getElementById(elementId);
     if (!elemento) return;
     
-    // Verifica se o Pokémon já está em uso neste jogo
     const resultadoIndex = elementId.split('-')[2];
     const jogoIndex = elementId.split('-')[3];
     const pokemonsUsados = obterPokemonsUsadosNoJogo(resultadoIndex, jogoIndex);
@@ -320,7 +343,6 @@ function selecionarPokemon(elementId, pokemon) {
         return;
     }
     
-    // Atualiza o elemento com imagem e nome
     elemento.innerHTML = `
         <img src="./sprites/${pokemon}.png" 
              alt="${pokemon}" 
@@ -333,7 +355,6 @@ function selecionarPokemon(elementId, pokemon) {
     elemento.classList.remove('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
     elemento.classList.add('border-green-500', 'bg-green-50');
     
-    // Salva a composição
     salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon);
     
     fecharModalPokemon();
@@ -343,13 +364,11 @@ function removerPokemon(elementId) {
     const elemento = document.getElementById(elementId);
     if (!elemento) return;
     
-    // Volta ao estado original
     elemento.innerHTML = '<span class="text-gray-400 text-lg font-bold">+</span>';
     delete elemento.dataset.pokemon;
     elemento.classList.remove('border-green-500', 'bg-green-50');
     elemento.classList.add('border-gray-300', 'hover:border-blue-400', 'hover:bg-blue-50');
     
-    // Remove da composição salva
     const resultadoIndex = elementId.split('-')[2];
     const jogoIndex = elementId.split('-')[3];
     removerDaComposicao(resultadoIndex, jogoIndex, elementId);
@@ -374,42 +393,32 @@ function salvarComposicao(resultadoIndex, jogoIndex, elementId, pokemon) {
     
     composicoes[resultadoIndex][jogoIndex][elementId] = pokemon;
     
-    // Salva no localStorage
-    localStorage.setItem('composicoes', JSON.stringify(composicoes));
+    // Salva no Firebase
+    salvarDados();
 }
 
 function removerDaComposicao(resultadoIndex, jogoIndex, elementId) {
     if (composicoes[resultadoIndex] && composicoes[resultadoIndex][jogoIndex]) {
         delete composicoes[resultadoIndex][jogoIndex][elementId];
         
-        // Se o jogo ficou vazio, remove o jogo
         if (Object.keys(composicoes[resultadoIndex][jogoIndex]).length === 0) {
             delete composicoes[resultadoIndex][jogoIndex];
         }
         
-        // Se o resultado ficou vazio, remove o resultado
         if (Object.keys(composicoes[resultadoIndex]).length === 0) {
             delete composicoes[resultadoIndex];
         }
     }
     
-    // Salva no localStorage
-    localStorage.setItem('composicoes', JSON.stringify(composicoes));
+    // Salva no Firebase
+    salvarDados();
 }
 
-function carregarComposicoes() {
-    const composicoesSalvas = localStorage.getItem('composicoes');
-    if (composicoesSalvas) {
-        composicoes = JSON.parse(composicoesSalvas);
-    }
-}
-
-function removerResultado(index) {
+async function removerResultado(index) {
     if (!confirm("Tem certeza que deseja excluir este resultado?")) return;
 
     const resultado = resultados[index];
     
-    // Atualizar contadores
     if (resultado.resultado === "Vitória") {
         vitorias--;
     } else if (resultado.resultado === "Derrota") {
@@ -418,20 +427,18 @@ function removerResultado(index) {
         empates--;
     }
 
-    // Remover o resultado do array
     resultados.splice(index, 1);
     
-    // Atualizar a tabela e salvar
     reconstruirTabela();
     atualizarContadores();
-    salvarDados();
+    await salvarDados();
 }
 
 // ==============================================
 // FUNÇÕES PRINCIPAIS
 // ==============================================
 
-function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, formato, externo = false) {
+async function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, formato, externo = false) {
     if (!externo) {
         placarMeuTime = parseInt(document.getElementById('placarMeuTime').value);
         placarAdversario = parseInt(document.getElementById('placarAdversario').value);
@@ -446,98 +453,22 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, for
         document.getElementById('placarMeuTime').value = '';
         document.getElementById('placarAdversario').value = '';
         document.getElementById('nomeAdversario').value = '';
-        document.getElementById('formatoScrim').value = '2x2'; // Reset para valor padrão
+        document.getElementById('formatoScrim').value = '2x2';
     }
 
-    const nossoTime = "Guariní";
-    const nossaLogo = '<img src="./logos/Guarini.png" alt="Guariní" class="w-10 h-10 inline-block">';
-    const imagemAdversario = `./logos/${nomeAdversario}.png`;
-    const logoAdversario = `<img src="${imagemAdversario}" onerror="this.src='./logos/noimage.png'" alt="${nomeAdversario}" class="w-10 h-10 inline-block">`;
+    const nossoTime = "Guarini";
     const dataHoje = new Date().toLocaleDateString('pt-BR');
 
-    let time1, placar1, logo1, time2, placar2, logo2;
     const resultado = placarMeuTime > placarAdversario ? "Vitória" :
                       placarMeuTime < placarAdversario ? "Derrota" : "Empate";
 
     if (resultado === "Vitória") {
-        time1 = nossoTime;
-        placar1 = placarMeuTime;
-        logo1 = nossaLogo;
-        time2 = nomeAdversario;
-        placar2 = placarAdversario;
-        logo2 = logoAdversario;
         vitorias++;
     } else if (resultado === "Derrota") {
-        time1 = nomeAdversario;
-        placar1 = placarAdversario;
-        logo1 = logoAdversario;
-        time2 = nossoTime;
-        placar2 = placarMeuTime;
-        logo2 = nossaLogo;
         derrotas++;
     } else {
-        time1 = nossoTime;
-        placar1 = placarMeuTime;
-        logo1 = nossaLogo;
-        time2 = nomeAdversario;
-        placar2 = placarAdversario;
-        logo2 = logoAdversario;
         empates++;
     }
-
-    const novaLinha = document.createElement('tr');
-    novaLinha.className = 'cursor-pointer hover:bg-gray-50';
-    const novoIndice = resultados.length; // Armazena o índice antes de adicionar
-    novaLinha.onclick = () => toggleExpansao(novoIndice);
-    
-    const celula = document.createElement('td');
-    celula.className = "p-2 border-b group text-sm";
-    
-    // Conteúdo principal
-    const conteudoPrincipal = document.createElement('div');
-    conteudoPrincipal.className = "inline-block";
-    
-    // Adiciona o formato após a data
-    const formatoTexto = formato ? ` (${formato})` : '';
-    
-    conteudoPrincipal.innerHTML = `${logo1} ${time1} <strong>${placar1}</strong> x <strong>${placar2}</strong> ${time2} ${logo2} <span class="text-gray-500 text-xs ml-2">(${dataHoje})${formatoTexto}</span>`;
-    
-    // Botão de excluir
-    const botaoExcluir = document.createElement('button');
-    botaoExcluir.innerHTML = '❌';
-    botaoExcluir.className = 'float-right text-red-500 hover:text-red-700 text-xs ml-4';
-    botaoExcluir.onclick = (e) => {
-        e.stopPropagation();
-        removerResultado(novoIndice);
-    };
-    celula.appendChild(conteudoPrincipal);
-    celula.appendChild(botaoExcluir);
-    novaLinha.appendChild(celula);
-    document.getElementById('tabelaResultados').appendChild(novaLinha);
-
-    // Criar linha expandida para o novo resultado
-    const linhaExpandida = document.createElement('tr');
-    linhaExpandida.id = `expandida-${novoIndice}`;
-    linhaExpandida.className = 'hidden';
-    
-    const celulaExpandida = document.createElement('td');
-    celulaExpandida.className = 'p-4 bg-gray-50 border-b';
-    
-    // Calcula o número total de jogos baseado no placar
-    const totalJogos = placarMeuTime + placarAdversario;
-    
-    // Conteúdo da área expandida
-    celulaExpandida.innerHTML = `
-        <div class="bg-white p-4 rounded shadow-sm">
-            <h4 class="font-bold text-sm mb-3">Composições dos Jogos (Total: ${totalJogos} jogos)</h4>
-            <div id="jogos-${novoIndice}" class="space-y-3">
-                ${criarJogosHTML(totalJogos, novoIndice)}
-            </div>
-        </div>
-    `;
-    
-    linhaExpandida.appendChild(celulaExpandida);
-    document.getElementById('tabelaResultados').appendChild(linhaExpandida);
 
     const resultadoObj = {
         time: nossoTime,
@@ -546,12 +477,14 @@ function adicionarResultado(placarMeuTime, placarAdversario, nomeAdversario, for
         adversario: nomeAdversario,
         resultado: resultado,
         dataRegistro: dataHoje,
-        formato: formato || '2x2' // Valor padrão se não especificado
+        formato: formato || '2x2'
     };
 
     resultados.push(resultadoObj);
+    
+    reconstruirTabela();
     atualizarContadores();
-    salvarDados();
+    await salvarDados();
 }
 
 function atualizarContadores() {
@@ -567,7 +500,7 @@ function exportarResultados() {
         metadata: {
             dataExportacao: agora.toLocaleDateString('pt-BR'),
             versao: "1.0",
-            aplicacao: "Resultados Guariní"
+            aplicacao: "Resultados Guarini"
         },
         estatisticas: {
             vitorias: vitorias,
@@ -614,7 +547,7 @@ function importarResultados(event) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             if (file.name.endsWith('.csv')) {
                 const csvData = e.target.result;
@@ -632,15 +565,13 @@ function importarResultados(event) {
                         dataRegistro: valores[5]?.replace(/"/g, '') || new Date().toLocaleDateString('pt-BR'),
                         formato: valores[6]?.replace(/"/g, '') || '2x2'
                     };
-                    adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, item.formato, true);
-                    // Atualiza a data do último resultado adicionado com a data do arquivo
+                    await adicionarResultado(item.placarNosso, item.placarAdversario, item.adversario, item.formato, true);
                     resultados[resultados.length - 1].dataRegistro = item.dataRegistro;
                 }
             } else {
                 const dadosImportados = JSON.parse(e.target.result);
                 const partidas = dadosImportados.partidas || [];
 
-                // Limpa os resultados atuais antes de importar os novos
                 resultados = [];
                 vitorias = 0;
                 empates = 0;
@@ -648,7 +579,6 @@ function importarResultados(event) {
                 document.getElementById('tabelaResultados').innerHTML = '';
 
                 partidas.forEach(item => {
-                    // Adiciona o resultado mantendo todas as propriedades originais
                     resultados.push({
                         time: item.time,
                         placarNosso: item.placarNosso,
@@ -659,7 +589,6 @@ function importarResultados(event) {
                         formato: item.formato || '2x2'
                     });
 
-                    // Atualiza os contadores
                     if (item.resultado === "Vitória") {
                         vitorias++;
                     } else if (item.resultado === "Derrota") {
@@ -669,12 +598,11 @@ function importarResultados(event) {
                     }
                 });
 
-                // Reconstroi a tabela e atualiza os contadores
                 reconstruirTabela();
                 atualizarContadores();
             }
             event.target.value = '';
-            salvarDados();
+            await salvarDados();
         } catch (err) {
             alert("Erro ao importar arquivo: " + err.message);
             event.target.value = '';
@@ -684,26 +612,30 @@ function importarResultados(event) {
     reader.readAsText(file);
 }
 
-function limparResultados() {
+async function limparResultados() {
     if (!confirm("Tem certeza que deseja limpar todos os dados?")) return;
 
     resultados = [];
     vitorias = 0;
     empates = 0;
     derrotas = 0;
+    composicoes = {};
 
-    localStorage.removeItem('scrimsData');
     document.getElementById('tabelaResultados').innerHTML = '';
     atualizarContadores();
+    await salvarDados();
 }
 
 // ==============================================
 // INICIALIZAÇÃO
 // ==============================================
 
-document.addEventListener("DOMContentLoaded", function () {
-    carregarDados();
-    carregarComposicoes();
+document.addEventListener("DOMContentLoaded", async function () {
+    // Carrega dados do Firebase
+    await carregarDados();
+    
+    // Inicia listener para atualizações em tempo real
+    iniciarListenerTempoReal();
 
     document.getElementById("botaoAdicionar").addEventListener("click", adicionarResultado);
     document.getElementById("botaoExportar").addEventListener("click", exportarResultados);
