@@ -32,7 +32,6 @@ const sectionImages = {
     "ally-section": "./images/indexPokemons/mamoswine-pb.png",
     "enemy-section": "./images/indexPokemons/clefable-pb.png",
     "rayquaza-section": "./images/indexPokemons/darkrai-pb.png",
-    "scrims-section": "./images/indexPokemons/glaceon-pb.png"
 };
 
 const sectionTexts = {
@@ -42,7 +41,6 @@ const sectionTexts = {
     "ally-section": "Ranking do picks e winrates do time aliado.",
     "enemy-section": "Ranking dos recordes dos atributos de cada jogador.",
     "rayquaza-section": "Ranking dos smites do Rayquaza.",
-    "scrims-section": "Acesse os resultados detalhados das scrims realizadas."
 };
 
 Object.keys(sectionImages).forEach(sectionId => {
@@ -149,13 +147,5 @@ fetch('./results.json')
         }
         rayquazaSectionDiv.appendChild(rayquazaButton)
 
-        const scrimsSectionDiv = document.getElementById("scrims-section");
-        const scrimsButton = document.createElement("div");
-        scrimsButton.classList.add("text-xl", "text-black", "font-serif", "cursor-pointer", "transition-colors", "duration-200", "ease-in-out", "group-hover:text-white");
-        scrimsButton.innerText = 'Scrims';
-        scrimsButton.onclick = () => {
-            window.location.href = window.location.pathname.replace('indexStat.html', 'scrims-result.html');
-        };
-        scrimsSectionDiv.appendChild(scrimsButton);
     }
 })
