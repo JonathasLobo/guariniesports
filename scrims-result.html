@@ -11,27 +11,85 @@
     
     /* Ajustes específicos para mobile */
     @media (max-width: 640px) {
-      /* Melhorar visualização da tabela no mobile */
       .mobile-table-text {
         font-size: 0.75rem;
         line-height: 1rem;
       }
       
-      /* Formulário mais compacto no mobile */
       .mobile-form input, .mobile-form select, .mobile-form button {
         font-size: 0.9rem;
         padding: 0.5rem;
       }
       
-      /* Botões menores no mobile */
       .mobile-buttons {
         font-size: 0.85rem;
         padding: 0.4rem 0.8rem;
       }
     }
+
+    /* Indicador de carregamento */
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Badge de status do Firebase */
+    .firebase-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .firebase-status.connected {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .firebase-status.disconnected {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .firebase-status .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body class="w-full min-h-screen bg-cover bg-no-repeat bg-center" style="background-image: url(./images/backgrounds/index-background.png)">
+  
+  <!-- Badge de status do Firebase -->
+  <div id="firebaseStatus" class="firebase-status connected">
+    <span class="pulse"></span>
+    <span>Firebase Conectado</span>
+  </div>
+
   <div class="max-w-3xl mx-auto p-2 sm:p-4 pb-20 rounded">
     <!-- Título Principal -->
     <h1 class="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6 text-white">Resultados do Guarini</h1>
@@ -63,6 +121,12 @@
       <button id="botaoExportar" class="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded text-sm sm:text-base">Exportar JSON</button>
       <button id="botaoExportarCSV" class="bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-2 rounded text-sm sm:text-base">Exportar CSV</button>
       <button id="botaoLimpar" class="bg-red-600 hover:bg-red-700 text-white px-2 py-2 rounded text-sm sm:text-base">Limpar Dados</button>
+    </div>
+
+    <!-- Indicador de carregamento -->
+    <div id="loadingIndicator" class="hidden">
+      <div class="loading-spinner"></div>
+      <p class="text-center text-white">Carregando dados do Firebase...</p>
     </div>
 
     <!-- Tabela de Resultados -->
@@ -110,7 +174,8 @@
 
   <!-- Scripts -->
   <script src="util.js"></script>
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="scrims-result.js"></script>
+  <!-- IMPORTANTE: Usar type="module" para imports ES6 -->
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./scrims-result.js"></script>
 </body>
 </html>

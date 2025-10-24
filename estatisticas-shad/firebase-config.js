@@ -1,8 +1,19 @@
 // firebase-config.js
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  Timestamp
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// Suas credenciais do Firebase (pegue do console Firebase)
+// Suas credenciais do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
   authDomain: "site-grn.firebaseapp.com",
@@ -19,3 +30,18 @@ const app = initializeApp(firebaseConfig);
 
 // Inicializa o Firestore
 export const db = getFirestore(app);
+
+// Exporta funções do Firestore para uso fácil
+export { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  Timestamp
+};
+
+console.log("🔥 Firebase inicializado com sucesso!");
