@@ -6008,7 +6008,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Healing",
-          formula: (attribute, Level) => 1.84 * attribute + 0 * (Level - 1) + 238,
+          formula: (attribute, Level) => 1.7 * attribute + 0 * (Level - 1) + 220,
           type: "heal",
           healAttribute: "SpATK"
         },
