@@ -210,6 +210,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedConditionalEffects = {};
   let selectedMapBuffs = {};
 
+  // Função de arredondamento customizada
+// Arredonda para cima apenas se o decimal for >= 0.7
+const customRound = (value) => {
+  const decimal = value - Math.floor(value);
+  if (decimal >= 0.7) {
+    return Math.ceil(value);
+  }
+  return Math.floor(value);
+};
+
 // Tornar imagem clicável para abrir modal
 const makeImageClickable = () => {
   const resultImage = document.querySelector(".resultado-image img");
@@ -480,6 +490,10 @@ const updatePokemonImage = () => {
     s1: ["s11", "s21"],
     s2: ["s12", "s22"]
   },
+  megacharizardx: {
+    s1: ["s12"],
+    s2: ["U12"] 
+  },
   }
 
   // Mapa de Pokémon com itens fixos
@@ -487,7 +501,8 @@ const updatePokemonImage = () => {
     "zacian": "rustedsword",
     "mewtwox": "mewtwonitex",
     "mewtwoy": "mewtwonitey",
-    "megalucario": "lucarionite"
+    "megalucario": "lucarionite",
+    "megacharizardx": "charizarditex"
   };
 
 // Função para criar o seletor de skills dentro do resultado
@@ -516,7 +531,7 @@ const createSkillBuildInResult = () => {
   
   // Verificar se existem skills s11/s12 e s21/s22
   const hasS1Skills = skills.s11 || skills.s12;
-  const hasS2Skills = skills.s21 || skills.s22 || (selectedPokemon === "megalucario" && skills.U11);
+  const hasS2Skills = skills.s21 || skills.s22 || (selectedPokemon === "megalucario" && skills.U11) || (selectedPokemon === "megacharizardx" && skills.U12);
   
   if (!hasS1Skills && !hasS2Skills) return;
   
@@ -1315,26 +1330,28 @@ const generateStatDetailsHTML = (stat, baseValue, modifiedValue) => {
     return out;
   };
 
-  const formatValue = (key, val, extraFixed = null) => {
-    if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
-    
-    // Tratar debuffs como porcentagem
-    const DEBUFF_KEYS = new Set(["DEF", "SpDEF", "Speed", "ATK", "SpATK", "HP"]);
-    if (DEBUFF_KEYS.has(key) && typeof key === "string" && key.includes("Reduction")) {
-      return `${Number(val).toFixed(1)}%`;
+const formatValue = (key, val, extraFixed = null) => {
+  if (val === null || val === undefined || Number.isNaN(Number(val))) return "-";
+  
+  // Tratar debuffs como porcentagem
+  const DEBUFF_KEYS = new Set(["DEF", "SpDEF", "Speed", "ATK", "SpATK", "HP"]);
+  if (DEBUFF_KEYS.has(key) && typeof key === "string" && key.includes("Reduction")) {
+    return `${Number(val).toFixed(1)}%`;
+  }
+  
+  if (key === "DmgTaken") {
+    const percentText = `${Number(val).toFixed(1)}%`;
+    if (extraFixed !== null) {
+      return `${percentText} <span style="color:#888;">(-${extraFixed})</span>`;
     }
-    
-    if (key === "DmgTaken") {
-      const percentText = `${Number(val).toFixed(1)}%`;
-      if (extraFixed !== null) {
-        return `${percentText} <span style="color:#888;">(-${extraFixed})</span>`;
-      }
-      return percentText;
-    }
+    return percentText;
+  }
 
-    if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
-        return Math.floor(Number(val));
-  };
+  if (PERCENT_KEYS.has(key)) return `${Number(val).toFixed(1)}%`;
+  
+  // Aplicar arredondamento customizado para valores numéricos
+  return customRound(Number(val));
+};
 
   const statLine = (label, valueHtml) =>
     `<div class="stat-line"><span class="stat-label">${label}</span><span class="stat-value">${valueHtml}</span></div>`;
@@ -4098,9 +4115,9 @@ if (incluirMapBuffs === "sim") {
             let hasAdditionalText = f.additionalText && f.additionalText.trim() !== "";
             
             if (Math.floor(values.modified) > Math.floor(values.base)) {
-              displayText = `${Math.floor(values.base)} → <span style="color:limegreen;">▲ ${Math.floor(values.modified)}</span>`;
+              displayText = `${customRound(values.base)} → <span style="color:limegreen;">▲ ${customRound(values.modified)}</span>`;
             } else {
-              displayText = `${Math.floor(values.modified)}`;
+              displayText = `${customRound(values.modified)}`;
             }
             
             if (hasAdditionalText) {
@@ -4348,8 +4365,9 @@ s.formulas.forEach((f, index) => {
   if (f.type === "dependent") {
     const dependsOnIndex = f.dependsOn;
     if (calculatedValues[dependsOnIndex]) {
-      let dependentBase = Math.floor(calculatedValues[dependsOnIndex].base);
-      let dependentModified = Math.floor(calculatedValues[dependsOnIndex].modified);
+    // ✅ CORRETO:
+    let dependentBase = calculatedValues[dependsOnIndex].base;
+    let dependentModified = calculatedValues[dependsOnIndex].modified;
       
       if (calculatedValues[dependsOnIndex].hasPassiveBonus) {
         dependentBase = calculatedValues[dependsOnIndex].withPassive.base;
@@ -4408,8 +4426,8 @@ const damageValuesHtml = s.formulas.map((f, index) => {
   const values = calculatedValues[index];
   if (!values) return "";
   
-  const baseVal = Math.floor(values.base);
-  const modVal = Math.floor(values.modified);
+const baseVal = customRound(values.base);
+const modVal = customRound(values.modified);
   const hasIncrease = modVal > baseVal;
   // ✅ CALCULAR percentIncrease CONSIDERANDO nextBasicAttackPercent
   let percentIncrease = 0;
