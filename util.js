@@ -9587,6 +9587,12 @@ const skillDamage = {
           buff: {
             HindRed: "100%"
           },
+          debuff: {
+            Speed: 30
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
+          },
           formulas: [
           {
             label: "Damage - Counter",
@@ -9597,6 +9603,14 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+        buff: {
+          },
+          debuff: {
+            Speed: 30
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
+          },
       formulas: [
         {
           label: "Damage - Basic",
@@ -9614,6 +9628,14 @@ const skillDamage = {
     "s11": {
       name: "Psyshock",
       cooldown: 5,
+      effects: ["Stun"],
+      buff: {},
+      debuff: {
+        Speed: 75
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - First Hit",
@@ -9622,7 +9644,7 @@ const skillDamage = {
         },
 		{
           label: "Damage - Subsequent Hits",
-          formula: (SPATK, Level) => 0.22 * SPATK + 4 * (Level - 1) + 122,
+          formula: (SPATK, Level) => 0.22 * SPATK + 4 * (Level - 1) + 112,
           type: "special"
         }
       ]
@@ -9630,6 +9652,16 @@ const skillDamage = {
     "s12": {
       name: "Stored Power",
       cooldown: 5,
+       buff: {
+        Speed: "70%",
+        HPRegen: 37.5
+       },
+      debuff: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - First Hit",
@@ -9651,30 +9683,64 @@ const skillDamage = {
     "s21": {
       name: "Psybeam",
       cooldown: 7.5,
+      buff:{},
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage - Initial",
           formula: (SPATK, Level) => 0.91 * SPATK + 13 * (Level - 1) + 540,
           type: "special",
-		  additionalText: "6% max HP of the first enemy hit as additional damage."
-        }
+        },
+        {
+          label: "Damage - Additional",
+          type: "text-only",
+		      additionalText: "6% max HP of the first enemy hit as additional damage."
+        },
+        {
+          label: "Damage - Additional (Stunned) Skill Plus",
+          type: "text-only",
+		      additionalText: "5% max HP of the enemy hit as additional damage if the initial target was stunned and if the secondary target can be stunned"
+        },
       ]
     },
     "s22": {
       name: "Future Sight",
       cooldown: 7,
+      buff: {},
+      selfBuff: {
+        CooldownFlat: 0.8
+      },
+      buffPlus:{
+        levelRequired: 12,
+        skillDamageMultiplier: 1.10, // 10% de aumento
+        affectsBasicAttack: true,
+      },
       formulas: [
 		{
 		  label: "Damage",
           formula: (SPATK, Level) => 0.576 * SPATK + 9 * (Level - 1) + 338,
           type: "special",
-		  additionalText: "10% of enemy missing HP."
-		}
+		},
+      {
+          label: "Damage - Execute",
+          type: "text-only",
+		      additionalText: "10% of enemy missing HP."
+        },
       ]
     },
 	"ult": {
 		name: "Psychic Solare",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable"],
+      buffs:{
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -9693,10 +9759,27 @@ const skillDamage = {
             DmgTaken: "10%"
           },
           formulas: [
+          {
+            label: "Damage - Taken from a single move or attack ",
+            type: "text-only",
+            additionalText: "110% of that move or attack's damage"
+          },
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      otherSkillsCooldownReduction: {
+          s11: 2.5,
+          s12: 2.5  
+      }
+    },
+    debuff: {
+      Speed: 50
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -16161,11 +16244,24 @@ const skillDamage = {
     skin7: "Pokébuki Style",
     skin8: "Blue Unite Style",
     skin9: "Sailor Style",
-    skin10: "Sacred Style	"
+    skin10: "Sacred Style"
   },
   empoleon: {
     default: "Default",
     skin1: "Regal Style",
+  },
+  espeon: {
+    default: "Default",
+    skin1: "Pokébuki Style",
+    skin2: "Orange Unite Style",
+    skin3: "Purple Unite Style",
+    skin4: "Tuxedo Style",
+    skin5: "Jingle Bells Style",
+    skin6: "Performer Style",
+    skin7: "Checkered Style",
+    skin8: "Green Unite Style",
+    skin9: "Fairy-Tale Style",
+    skin10: "Star Style"
   },
   // Adicione mais pokémon aqui
 };

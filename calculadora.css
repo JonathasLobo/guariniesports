@@ -4578,3 +4578,131 @@ textarea.form-control {
   color: #fff !important;
 }
 
+/* ===== META STATS ===== */
+.meta-stats-week {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.meta-stats-title {
+  color: #667eea;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.meta-stat-line {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.meta-stat-line:last-child {
+  margin-bottom: 0;
+}
+
+.meta-stat-line:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(2px);
+}
+
+.meta-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 6px;
+}
+
+.meta-stat-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-rank {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.meta-rate {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.meta-stat-line.winrate {
+  border-left-color: #28a745;
+}
+
+.meta-stat-line.winrate .meta-rate {
+  color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.meta-stat-line.pickrate {
+  border-left-color: #007bff;
+}
+
+.meta-stat-line.pickrate .meta-rate {
+  color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.meta-stat-line.banrate {
+  border-left-color: #dc3545;
+}
+
+.meta-stat-line.banrate .meta-rate {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.dark-mode .meta-stats-week {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+  border-color: rgba(102, 126, 234, 0.35);
+}
+
+.dark-mode .meta-stats-title {
+  color: #a8b3ff;
+}
+
+.dark-mode .meta-stat-line {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark-mode .meta-stat-label {
+  color: #fff;
+}
+
+.dark-mode .meta-rank {
+  color: #e0e0e0;
+}
+
+.dark-mode .meta-stat-line.winrate .meta-rate {
+  color: #4CAF50;
+}
+
+.dark-mode .meta-stat-line.pickrate .meta-rate {
+  color: #42a5f5;
+}
+
+.dark-mode .meta-stat-line.banrate .meta-rate {
+  color: #ef5350;
+}

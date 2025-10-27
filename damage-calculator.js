@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gameHeldItens: typeof gameHeldItens,
     skillDamage: typeof skillDamage
   });
+  loadMetaData();
 
   // Elementos do seletor de Pokémon
   const pokemonCircle = document.getElementById("pokemon-circle");
@@ -209,7 +210,147 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentExpandedStat = null; // Controla qual stat está expandido
   let selectedConditionalEffects = {};
   let selectedMapBuffs = {};
+  let currentMetaData = null;
 
+  async function loadMetaData() {
+  try {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const fileName = `meta${day}${month}${year}.json`;
+    
+    console.log(`🔍 Tentando carregar: ${fileName}`);
+    console.log(`📍 URL completa: ${window.location.origin}/${fileName}`);
+    
+    const response = await fetch(`./${fileName}`);
+    
+    if (response.ok) {
+      currentMetaData = await response.json();
+      console.log('✅ Meta data carregado com sucesso!', currentMetaData);
+      return currentMetaData;
+    } else {
+      console.log(`⚠️ Arquivo ${fileName} não encontrado (Status: ${response.status})`);
+      
+      // Tentar semana anterior
+      const lastWeek = new Date(today);
+      lastWeek.setDate(lastWeek.getDate() - 7);
+      const lastDay = String(lastWeek.getDate()).padStart(2, '0');
+      const lastMonth = String(lastWeek.getMonth() + 1).padStart(2, '0');
+      const lastYear = lastWeek.getFullYear();
+      const lastWeekFileName = `meta${lastDay}-${lastMonth}-${lastYear}.json`;
+      
+      console.log(`🔄 Tentando semana anterior: ${lastWeekFileName}`);
+      
+      const fallbackResponse = await fetch(`./${lastWeekFileName}`);
+      if (fallbackResponse.ok) {
+        currentMetaData = await fallbackResponse.json();
+        console.log('✅ Meta data da semana anterior carregado!');
+        return currentMetaData;
+      } else {
+        console.log('❌ Nenhum arquivo de meta encontrado');
+        return null;
+      }
+    }
+  } catch (error) {
+    console.error('❌ Erro ao carregar meta data:', error);
+    console.log('💡 Dica: Verifique se o arquivo JSON está na raiz do projeto');
+    return null;
+  }
+}
+
+function normalizePokemonName(name) {
+  if (!name) return '';
+  let normalized = name.trim().toLowerCase();
+  
+  const nameMapping = {
+    'megacharizardx': 'mega charizard x',
+    'megalucario': 'mega lucario',
+    'alolanraichu': 'alolan raichu',
+    'alolanninetales': 'alolan ninetales',
+    'galarianrapidash': 'galarian rapidash',
+    'mrmime': 'mr. mime'
+  };
+
+  const mapped = nameMapping[normalized.replace(/[\s.-]/g, '')];
+  return mapped || normalized;
+}
+
+function getPokemonMetaStats(pokemonName) {
+  if (!currentMetaData) return null;
+
+  const normalizedName = normalizePokemonName(pokemonName);
+  const stats = { winrate: null, pickrate: null, banrate: null };
+
+  const winrateEntry = currentMetaData.taxaVitoria.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
+  if (winrateEntry) {
+    stats.winrate = { rank: winrateEntry.ranking, rate: winrateEntry.taxa };
+  }
+
+  const pickrateEntry = currentMetaData.taxaSelecao.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
+  if (pickrateEntry) {
+    stats.pickrate = { rank: pickrateEntry.ranking, rate: pickrateEntry.taxa };
+  }
+
+  const banrateEntry = currentMetaData.taxaBanimento.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
+  if (banrateEntry) {
+    stats.banrate = { rank: banrateEntry.ranking, rate: banrateEntry.taxa };
+  }
+
+  return stats;
+}
+
+function createMetaStatsHTML(pokemonName) {
+  if (!currentMetaData || !pokemonName) return '';
+
+  const stats = getPokemonMetaStats(pokemonName);
+  if (!stats || (!stats.winrate && !stats.pickrate && !stats.banrate)) return '';
+
+  let html = '<div class="meta-stats-week">';
+  html += '<div class="meta-stats-title">📊 Weekly Stats</div>';
+  
+  if (stats.winrate) {
+    html += `
+      <div class="meta-stat-line winrate">
+        <span class="meta-stat-label">🏆 Winrate Week</span>
+        <span class="meta-stat-values">
+          <span class="meta-rank">Rank: #${stats.winrate.rank}</span>
+          <span class="meta-rate">${stats.winrate.rate.toFixed(2)}%</span>
+        </span>
+      </div>`;
+  }
+  
+  if (stats.pickrate) {
+    html += `
+      <div class="meta-stat-line pickrate">
+        <span class="meta-stat-label">🎯 Pickrate Week</span>
+        <span class="meta-stat-values">
+          <span class="meta-rank">Rank: #${stats.pickrate.rank}</span>
+          <span class="meta-rate">${stats.pickrate.rate.toFixed(2)}%</span>
+        </span>
+      </div>`;
+  }
+  
+  if (stats.banrate) {
+    html += `
+      <div class="meta-stat-line banrate">
+        <span class="meta-stat-label">🚫 Banrate Week</span>
+        <span class="meta-stat-values">
+          <span class="meta-rank">Rank: #${stats.banrate.rank}</span>
+          <span class="meta-rate">${stats.banrate.rate.toFixed(2)}%</span>
+        </span>
+      </div>`;
+  }
+  
+  html += '</div>';
+  return html;
+}
   // Função de arredondamento customizada
 // Arredonda para cima apenas se o decimal for >= 0.7
 const customRound = (value) => {
@@ -518,6 +659,12 @@ const createSkillBuildInResult = () => {
   if (existingRatings) {
     existingRatings.remove();
   }
+
+  // NOVO: Remover meta stats antigas
+  const existingMetaStats = document.querySelector(".meta-stats-week");
+  if (existingMetaStats) {
+    existingMetaStats.remove();
+  }
   
   // Verificar se temos dados de skills para este PokÃ©mon
   if (!selectedPokemon || !skillDamage[selectedPokemon]) {
@@ -560,6 +707,14 @@ const createSkillBuildInResult = () => {
   // Adicionar seletor de Route ABAIXO e CENTRALIZADO
   const routeSelector = createRouteSelector();
   skillSelector.appendChild(routeSelector);
+
+  // Adicionar Meta Stats
+  const metaStatsHTML = createMetaStatsHTML(selectedPokemon);
+  if (metaStatsHTML) {
+    const metaStatsDiv = document.createElement("div");
+    metaStatsDiv.innerHTML = metaStatsHTML;
+    skillSelector.appendChild(metaStatsDiv.firstElementChild);
+  }
   
   // Inserir o seletor apÃ³s a role badge
   const roleBadge = resultImage.querySelector(".role-badge");
@@ -1730,6 +1885,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
   if (!skill) return;
 
   try {
+    
      if (skill.nextBasicAttackPercent !== undefined) {
       if (!modifiedStats._nextBasicAttackPercents) {
         modifiedStats._nextBasicAttackPercents = [];
@@ -1829,6 +1985,14 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         ) {
           return;
         }
+        if (
+          pokemon === "espeon" &&
+          skillKey === "s12" &&
+          stat === "HPRegen" &&
+          !(activeSkills[pokemon]?.s22)
+        ) {
+          return; // Não aplica HPRegen de Stored Power se Future Sight não estiver ativa
+        }
 
         const skillName = skill.name || skillKey;
         const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
@@ -1885,6 +2049,27 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         }
       });
     }
+    // **NOVO**: Verificar otherSkillsCooldownReduction no buff básico
+if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
+  Object.keys(skill.buff.otherSkillsCooldownReduction).forEach(targetSkillKey => {
+    const reductionValue = skill.buff.otherSkillsCooldownReduction[targetSkillKey];
+    
+    // Adicionar ao tracking de self-buffs da skill alvo
+    if (!modifiedStats._selfBuffs) {
+      modifiedStats._selfBuffs = {};
+    }
+    
+    if (!modifiedStats._selfBuffs[targetSkillKey]) {
+      modifiedStats._selfBuffs[targetSkillKey] = {};
+    }
+    
+    if (!modifiedStats._selfBuffs[targetSkillKey].CooldownFlat) {
+      modifiedStats._selfBuffs[targetSkillKey].CooldownFlat = 0;
+    }
+    
+    modifiedStats._selfBuffs[targetSkillKey].CooldownFlat += Number(reductionValue);
+  });
+}
 
     // Processar debuffs condicionais (ex: Tri Attack)
 if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedConditionalEffects[pokemon][skillKey]) {
@@ -1953,6 +2138,14 @@ if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedC
         }
         
         Object.keys(skill.selfBuff).forEach(stat => {
+          if (
+            pokemon === "espeon" &&
+            skillKey === "s22" &&
+            stat === "CooldownFlat" &&
+            !(activeSkills[pokemon]?.s12 || activeSkills[pokemon]?.s11)
+          ) {
+            return;
+          }
           const rawVal = skill.selfBuff[stat];
           const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
           
