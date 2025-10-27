@@ -9797,6 +9797,7 @@ const skillDamage = {
     "s11": {
       name: "Megahorn",
       cooldown: 8,
+      buff:{},
       formulas: [
 		{
           label: "Shield",
@@ -9807,8 +9808,13 @@ const skillDamage = {
 		{
           label: "Damage (Column group, x2)",
           formula: (ATK, Level) => 1.7 * ATK + 10 * (Level - 1) + 200,
+          type: "physical"
+        },
+        	{
+          label: "Damage (No Retreat Formation)",
+          formula: (ATK, Level) => 2.7 * ATK + 100 * (Level - 1) + 400,
           type: "physical",
-		  additionalText: "Damage (No Retreat Formation): Deals additional damage equal to 3% of the enemies' max HP. This additional damage is capped at 1000."
+		  additionalText: "Deals additional damage equal to 3% of the enemies' max HP. This additional damage is capped at 1000."
         },
 		{
           label: "Damage (Dispatch formation Trooper)",
@@ -9820,19 +9826,40 @@ const skillDamage = {
           label: "Shield Skill Plus",
           formula: (ATK, Level) => 0.8 * ATK + 0 * (Level - 1) + 400,
           type: "physical",
-		  additionalText: "Shield - Additional: 12% Max HP"
+        },
+        {
+          label: "Shield - Additional Skill Plus",
+          formula: (HP, Level) => 0.12 * HP,
+          type: "hp",
         },
       ]
     },
     "s12": {
       name: "Iron Head",
       cooldown: 7.5,
+      buff:{},
+      debuff: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          ATK: 400
+        },
+      },
       formulas: [
 		{
           label: "Shield",
           formula: (ATK, Level) => 0.6 * ATK + 10 * (Level - 1) + 250,
-          type: "physical",
-		  additionalText: "Shield - Additional: 10% Max HP"
+          type: "physical"
+        },
+        {
+          label: "Shield - Additional",
+          formula: (HP, Level) => 0.1 * HP,
+          type: "hp",
         },
 		{
           label: "Damage",
@@ -9842,14 +9869,26 @@ const skillDamage = {
 		{
           label: "Damage (Dispatch formation per Trooper)",
           formula: (ATK, Level) => 0.9 * ATK + 2 * (Level - 1) + 100,
-          type: "physical",
-		  additionalText: "1.6% target missing HP"
+          type: "physical"
 		}
       ]
     },
     "s21": {
       name: "No Retreat",
       cooldown: 5,
+      effects: ["Unstoppable"],
+      buff:{
+        Speed: "-10%",
+        ATK: "25%",
+        DmgTaken: 20
+      },
+      buffPlus:{
+        levelRequired: 12,
+        buffs:{
+          ATK: "15%",
+          DmgTaken: 10
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -9902,6 +9941,22 @@ const skillDamage = {
 	"ult": {
 		name: "Dust Devil Formation",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs:{
+        DmgTaken: 30,
+        Speed: "30%",
+        Shield: 30
+      },
+      debuff: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage - per Hit",
@@ -16262,6 +16317,10 @@ const skillDamage = {
     skin8: "Green Unite Style",
     skin9: "Fairy-Tale Style",
     skin10: "Star Style"
+  },
+  falinks: {
+    default: "Default",
+    skin1: "Armor Style",
   },
   // Adicione mais pokémon aqui
 };
