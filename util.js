@@ -8930,7 +8930,7 @@ const skillDamage = {
       name: "Extreme Speed",
       cooldown: 7,
       buff:{},
-      debuff: {
+      debuffs: {
         Speed: 50
       },
       debuffLabels: {
@@ -9062,7 +9062,7 @@ const skillDamage = {
         Speed: "-50%",
         AtkSPD: 100
       },
-      debuff: {
+      debuffs: {
         Speed: 60
       },
       debuffLabels: {
@@ -9152,7 +9152,7 @@ const skillDamage = {
       cooldown: 8.5,
       buff:{},
       effects: ["Stun"],
-      debuff: {
+      debuffs: {
         Speed: 25
       },
       debuffLabels: {
@@ -9219,7 +9219,7 @@ const skillDamage = {
             Speed: "15%",
             HPRegen: 15
           },
-          debuff: {
+          debuffs: {
             Speed: 30
           },
           debuffLabels: {
@@ -9241,7 +9241,7 @@ const skillDamage = {
 	"atkboosted": {
 	  name: "Basic Attack",
     buff:{},
-    debuff: {
+    debuffs: {
       Speed: 20
     },
     debuffLabels: {
@@ -9360,7 +9360,7 @@ const skillDamage = {
       buff: {
         Speed: "30%"
       },
-      debuff: {
+      debuffs: {
         Speed: 40
       },
       debuffLabels: {
@@ -9531,7 +9531,7 @@ const skillDamage = {
       buff: {
         AtkSPD: 40
       },
-      debuff: {
+      debuffs: {
         SpDEF: 60
       },
       debuffLabels: {
@@ -9563,7 +9563,7 @@ const skillDamage = {
         CDR: 30,
         Shield: 20
       },
-      debuff: {
+      debuffs: {
         Speed: 50
       },
       debuffLabels: {
@@ -9587,7 +9587,7 @@ const skillDamage = {
           buff: {
             HindRed: "100%"
           },
-          debuff: {
+          debuffs: {
             Speed: 30
           },
           debuffLabels: {
@@ -9605,7 +9605,7 @@ const skillDamage = {
 	  name: "Basic Attack",
         buff: {
           },
-          debuff: {
+          debuffs: {
             Speed: 30
           },
           debuffLabels: {
@@ -9630,7 +9630,7 @@ const skillDamage = {
       cooldown: 5,
       effects: ["Stun"],
       buff: {},
-      debuff: {
+      debuffs: {
         Speed: 75
       },
       debuffLabels: {
@@ -9656,7 +9656,7 @@ const skillDamage = {
         Speed: "70%",
         HPRegen: 37.5
        },
-      debuff: {
+      debuffs: {
         Speed: 50
       },
       debuffLabels: {
@@ -9774,7 +9774,7 @@ const skillDamage = {
           s12: 2.5  
       }
     },
-    debuff: {
+    debuffs: {
       Speed: 50
     },
     debuffLabels: {
@@ -9838,7 +9838,7 @@ const skillDamage = {
       name: "Iron Head",
       cooldown: 7.5,
       buff:{},
-      debuff: {
+      debuffs: {
         Speed: 50
       },
       debuffLabels: {
@@ -9950,7 +9950,7 @@ const skillDamage = {
         Speed: "30%",
         Shield: 30
       },
-      debuff: {
+      debuffs: {
         Speed: 20
       },
       debuffLabels: {
@@ -9978,6 +9978,12 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+      AtkSPD: 30,
+      Lifesteal: 30,
+    },
+      skillDamageMultiplier: 1.10, // 10% de aumento
+      affectsBasicAttack: true,
       formulas: [
         {
           label: "Damage - Basic",
@@ -10000,6 +10006,22 @@ const skillDamage = {
     "s11": {
       name: "Earthquake",
       cooldown: 6.5,
+      buff:{},
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage - Initial",
@@ -10016,6 +10038,18 @@ const skillDamage = {
     "s12": {
       name: "Dragon Rush",
       cooldown: 5.5,
+      buff: {
+        DmgTaken: 30
+      },
+      buffPlus: {
+        levelRequired: 11,
+        effects: ["Unstoppable"]
+      },
+       conditionalBuffs: {
+        // Quando s22 (Dragon Claw) estiver ativa, adicionar Stun
+        requiredSkill: "s22",
+        effectsWhenActive: ["Stun"]
+      },
       formulas: [
 		{
           label: "Damage",
@@ -10027,6 +10061,8 @@ const skillDamage = {
     "s21": {
       name: "Dig",
       cooldown: 7.5,
+      effects: ["Untargetable"],
+      buff:{},
       formulas: [
         {
           label: "Damage",
@@ -10043,6 +10079,20 @@ const skillDamage = {
     "s22": {
       name: "Dragon Claw",
       cooldown: 4,
+      buff:{},
+      debuffs: {
+        Speed: 45
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+        conditionalDebuffs: {
+          // Quando s12 (Dragon Rush) estiver ativa, aumentar debuff
+          requiredSkill: "s12",
+          debuffsWhenActive: {
+            Speed: 60 // Valor aumentado
+          }
+        },
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -10069,6 +10119,22 @@ const skillDamage = {
 	"ult": {
 		name: "Livid Outrage",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        DmgTaken: 30,
+        Speed: "30%",
+        Shield: 30
+      },
+      debuff: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage - First Hit",
@@ -13593,7 +13659,7 @@ const skillDamage = {
           description: "Charges a psychic shield by moving, granting hindrance resistance when full. Higher movement speed also significantly boosts move damage.",
           buff: {
           },
-          skillDamageMultiplier: 1.60, // 30% de aumento no dano das skills
+          skillDamageMultiplier: 1.60,
           affectsBasicAttack: false,
           formulas: [
           {
@@ -16321,6 +16387,18 @@ const skillDamage = {
   falinks: {
     default: "Default",
     skin1: "Armor Style",
+  },
+  garchomp: {
+    default: "Default",
+    skin1: "Beach Style",
+    skin2: "Stakeout Style",
+    skin3: "Holiday Style",
+    skin4: "Masquerade Style",
+    skin5: "Martial Arts Style",
+    skin6: "Tuxedo Style",
+    skin7: "Wanderer Style",
+    skin8: "Martial Arts Style (Green)",
+    skin9: "Stakeout Style (Light Blue"
   },
   // Adicione mais pokémon aqui
 };

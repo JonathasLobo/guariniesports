@@ -635,6 +635,10 @@ const updatePokemonImage = () => {
     s1: ["s12"],
     s2: ["U12"] 
   },
+  garchomp: {
+    s1: ["s21", "s12"],
+    s2: ["s11", "s22"]
+  },
   }
 
   // Mapa de Pokémon com itens fixos
@@ -1965,7 +1969,6 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         }
       }
       
-
     // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
     if (skill.buff && typeof skill.buff === 'object') {
       Object.keys(skill.buff).forEach(stat => {
@@ -1991,7 +1994,7 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
           stat === "HPRegen" &&
           !(activeSkills[pokemon]?.s22)
         ) {
-          return; // Não aplica HPRegen de Stored Power se Future Sight não estiver ativa
+          return;
         }
 
         const skillName = skill.name || skillKey;
@@ -2347,42 +2350,60 @@ if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
         }
       }
 
-if (skill.debuffs && typeof skill.debuffs === 'object') {
-  Object.keys(skill.debuffs).forEach(debuffStat => {
-    let debuffValue = skill.debuffs[debuffStat];
-    
-    // Converter para número se for string
-    if (typeof debuffValue === 'string') {
-      // Remover caracteres não numéricos (exceto ponto decimal e sinal negativo)
-      debuffValue = parseFloat(debuffValue.replace(/[^\d.-]/g, ''));
-    }
-    
-    // Garantir que é um número válido
-    if (!Number.isFinite(debuffValue)) {
-      console.warn(`Valor de debuff inválido para ${debuffStat}:`, skill.debuffs[debuffStat]);
-      return;
-    }
-    
-    if (!debuffsAcumulados[debuffStat]) {
-      debuffsAcumulados[debuffStat] = {
-        total: 0,
-        skills: [],
-        customLabel: null
-      };
-    }
-    
-    debuffsAcumulados[debuffStat].total += debuffValue;
-    debuffsAcumulados[debuffStat].skills.push({
-      name: skill.name,
-      value: debuffValue
-    });
-    
-    // Usar debuffLabels se disponível
-    if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
-      debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
-    }
-  });
-}
+      if (skill.debuffs && typeof skill.debuffs === 'object') {
+        // Verificar se há conditional debuffs ativos
+        let debuffsToUse = { ...skill.debuffs };
+        let isEnhanced = false;
+        
+        if (skill.conditionalDebuffs && skill.conditionalDebuffs.requiredSkill) {
+          const requiredSkill = skill.conditionalDebuffs.requiredSkill;
+          
+          // Se a skill necessária está ativa, usar debuffs condicionais
+          if (activeSkills[pokemon] && activeSkills[pokemon][requiredSkill]) {
+            debuffsToUse = { ...skill.conditionalDebuffs.debuffsWhenActive };
+            isEnhanced = true;
+          }
+        }
+        
+        // Processar os debuffs (normais ou condicionais)
+        Object.keys(debuffsToUse).forEach(debuffStat => {
+          let debuffValue = debuffsToUse[debuffStat];
+          
+          // Converter para número se for string
+          if (typeof debuffValue === 'string') {
+            debuffValue = parseFloat(debuffValue.replace(/[^\d.-]/g, ''));
+          }
+          
+          // Garantir que é um número válido
+          if (!Number.isFinite(debuffValue)) {
+            console.warn(`Valor de debuff inválido para ${debuffStat}:`, debuffsToUse[debuffStat]);
+            return;
+          }
+          
+          if (!debuffsAcumulados[debuffStat]) {
+            debuffsAcumulados[debuffStat] = {
+              total: 0,
+              skills: [],
+              customLabel: null
+            };
+          }
+          
+          debuffsAcumulados[debuffStat].total += debuffValue;
+          
+          // Adicionar label especial se for condicional
+          const skillNameLabel = isEnhanced ? skill.name + " (Enhanced)" : skill.name;
+          
+          debuffsAcumulados[debuffStat].skills.push({
+            name: skillNameLabel,
+            value: debuffValue
+          });
+          
+          // Usar debuffLabels se disponível
+          if (skill.debuffLabels && skill.debuffLabels[debuffStat]) {
+            debuffsAcumulados[debuffStat].customLabel = skill.debuffLabels[debuffStat];
+          }
+        });
+      }
 
       if (skill.allyBuffs && typeof skill.allyBuffs === 'object') {
         Object.keys(skill.allyBuffs).forEach(buffStat => {
@@ -4090,6 +4111,20 @@ if (skillDamage[selectedPokemon]) {
             });
           }
 
+          if (skill.conditionalBuffs && skill.conditionalBuffs.requiredSkill) {
+            const requiredSkill = skill.conditionalBuffs.requiredSkill;
+            
+            // Verificar se a skill necessária está ativa
+            if (activeSkills[selectedPokemon] && activeSkills[selectedPokemon][requiredSkill]) {
+              // Adicionar effects condicionais
+              if (skill.conditionalBuffs.effectsWhenActive && Array.isArray(skill.conditionalBuffs.effectsWhenActive)) {
+                skill.conditionalBuffs.effectsWhenActive.forEach(effectName => {
+                  activeEffects.add(effectName);
+                });
+              }
+            }
+          }
+
           if (skill.conditionalEffects && skill.conditionalEffects.effectsByType) {
             const selectedEffect = selectedConditionalEffects[selectedPokemon]?.[skillKey];
             
@@ -4435,6 +4470,7 @@ s.formulas.forEach((f, index) => {
         baseVal = f.formula(baseAttribute, targetLevel, base.HP);
         modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);
       }
+      
 
       // Aplicar bônus do Razor Claw apenas para ataques básicos e boosted
       if (selectedItems.includes("razorclaw") && activeItemPassives["razorclaw"]) {
@@ -4514,7 +4550,7 @@ s.formulas.forEach((f, index) => {
             
             // Aplicar multiplicador globalmente
             if (!isBasicAttack || activeSkill.buffPlus.affectsBasicAttack === true) {
-              modifiedVal *= activeSkill.buffPlus.skillDamageMultiplier;
+                      modifiedVal *= activeSkill.buffPlus.skillDamageMultiplier;
             }
           }
         }
@@ -4548,6 +4584,38 @@ s.formulas.forEach((f, index) => {
         modifiedVal *= 1.20;
       }
     }
+    
+    if (activeSkills[selectedPokemon]) {
+    Object.keys(activeSkills[selectedPokemon]).forEach(activeSkillKey => {
+      // Verificar se a skill está ativa
+      if (activeSkills[selectedPokemon][activeSkillKey]) {
+        const activeSkill = skills[activeSkillKey];
+        
+        // Verificar se tem skillDamageMultiplier
+        if (activeSkill?.skillDamageMultiplier) {
+          const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+          
+          // Aplicar multiplicador globalmente (afeta TODAS as skills)
+          if (!isBasicAttack || activeSkill.affectsBasicAttack === true) {
+            modifiedVal *= activeSkill.skillDamageMultiplier;
+          }
+        }
+
+        // Verificar se tem buffPlus com skillDamageMultiplier
+        if (activeSkill?.buffPlus && 
+            currentLevel >= (activeSkill.buffPlus.levelRequired || 11) &&
+            activeSkill.buffPlus.skillDamageMultiplier) {
+          
+          const isBasicAttack = ['atkboosted', 'basic', 'basicattack'].includes(key);
+          
+          // Aplicar multiplicador globalmente
+          if (!isBasicAttack || activeSkill.buffPlus.affectsBasicAttack === true) {
+            modifiedVal *= activeSkill.buffPlus.skillDamageMultiplier;
+          }
+        }
+      }
+    });
+  }
     
     calculatedValues[index] = { base: baseVal, modified: modifiedVal };
   }
