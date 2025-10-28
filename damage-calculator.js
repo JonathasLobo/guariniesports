@@ -887,10 +887,17 @@ const createSkillSlot = (label, slotKey, pokemon) => {
     circle.textContent = "+";
   }
   
-  // Event listener para abrir painel de seleção
   circle.addEventListener("click", (e) => {
     e.stopPropagation();
-    openSkillSelectionPanel(pokemon, slotKey, slotContainer);
+    
+    // Se já existe um painel aberto, fechar
+    const existingPanel = document.getElementById("route-selection-panel");
+    if (existingPanel) {
+      closeRouteSelectionPanel();
+      return;
+    }
+    
+    openRouteSelectionPanel(routeContainer);
   });
   
   slotContainer.appendChild(slotLabel);
@@ -910,6 +917,8 @@ const createRouteSelector = () => {
     align-items: center;
     gap: 8px;
     margin: 15px 0;
+    position: relative;
+    z-index: 10;
   `;
   
   const routeLabel = document.createElement("div");
@@ -969,6 +978,14 @@ const showRouteSelectionPanel = (routes, routeContainer) => {
   const panel = document.createElement("div");
   panel.className = "skill-selection-panel show";
   panel.id = "route-selection-panel";
+  panel.style.cssText = `
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 8px;
+    z-index: 1000;
+  `;
   
   const title = document.createElement("div");
   title.className = "skill-selection-title";
