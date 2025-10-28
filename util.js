@@ -10171,6 +10171,12 @@ const skillDamage = {
           description: "Reflects slows and damage-over-time effects back to the attacker for 3s (8s cooldown).",
           buff: {
           },
+          debuffs: {
+            Speed: 40
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
+          },
           formulas: [
           {
             label: "Damage - DoT Applied (4x)",
@@ -10181,6 +10187,13 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{},
+    debuffs: {
+      SpDEF: 10
+    },
+    debuffLabels: {
+      SpDEF: "(DEBUFF) SpecialDefense Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -10198,6 +10211,21 @@ const skillDamage = {
     "s11": {
       name: "Psychic",
       cooldown: 7.5,
+      buff:{},
+      debuffs: {
+        Speed: 50,
+        SpDEF: 81
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -10214,6 +10242,8 @@ const skillDamage = {
     "s12": {
       name: "Moonblast",
       cooldown: 7,
+      buff:{},
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -10230,6 +10260,9 @@ const skillDamage = {
     "s21": {
       name: "Psyshock",
       cooldown: 11,
+      buff:{
+        CDR: 15
+      },
       formulas: [
         {
           label: "Damage",
@@ -10256,6 +10289,18 @@ const skillDamage = {
     "s22": {
       name: "Future Sight",
       cooldown: 9,
+      buff: {
+        Speed: "40%"
+      },
+      selfBuff: {
+        CooldownPercent: 75
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs:{
+          CooldownPercent: 15
+        }
+      },
       formulas: [
 		{
 		  label: "Damage",
@@ -10267,6 +10312,15 @@ const skillDamage = {
 	"ult": {
 		name: "Fairy Singularity",
     cooldown: 89,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Final Tick",
@@ -16399,6 +16453,21 @@ const skillDamage = {
     skin7: "Wanderer Style",
     skin8: "Martial Arts Style (Green)",
     skin9: "Stakeout Style (Light Blue"
+  },
+  gardevoir: {
+    default: "Default",
+    skin1: "Fashionable Style",
+    skin2: "Holiday Style",
+    skin3: "Sacred Style",
+    skin4: "Café Style",
+    skin5: "Orange Unite Style",
+    skin6: "Purple Unite Style",
+    skin7: "Aurora Style",
+    skin8: "Blue Unite Style",
+    skin9: "Stage Style",
+    skin10: "Fashionable Style (Black)",
+    skin11: "Aristocrat Style",
+    skin12: "Songstress Style",
   },
   // Adicione mais pokémon aqui
 };

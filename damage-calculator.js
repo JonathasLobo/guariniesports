@@ -888,16 +888,17 @@ const createSkillSlot = (label, slotKey, pokemon) => {
   }
   
   circle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    
-    // Se já existe um painel aberto, fechar
-    const existingPanel = document.getElementById("route-selection-panel");
-    if (existingPanel) {
-      closeRouteSelectionPanel();
-      return;
-    }
-    
-    openRouteSelectionPanel(routeContainer);
+  e.stopPropagation();
+  
+  // Se já existe um painel aberto, fechar
+  const existingPanel = document.getElementById("skill-selection-panel");
+  if (existingPanel) {
+    closeSkillSelectionPanel();
+    return;
+  }
+  
+  // Abrir painel de seleção de skills
+  openSkillSelectionPanel(pokemon, slotKey, slotContainer);
   });
   
   slotContainer.appendChild(slotLabel);
@@ -1704,7 +1705,12 @@ const formatValue = (key, val, extraFixed = null) => {
     
     circle.addEventListener("click", (e) => {
       e.stopPropagation();
-      toggleMapBuff(buffKey);
+      
+      // Fechar qualquer painel existente primeiro
+      closeAllSelectionPanels();
+      
+      // Abrir painel de seleção de skills
+      openSkillSelectionPanel(pokemon, slotKey, slotContainer);
     });
     
     buffDiv.appendChild(circle);
