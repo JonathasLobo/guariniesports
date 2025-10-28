@@ -612,6 +612,7 @@ const updatePokemonImage = () => {
   "Electric": { icon: "⚡", label: "Electric" },
   "Fire": { icon: "🔥", label: "Fire" },
   "Blind": { icon: "🕶️", label: "Blind" },
+  "Poison": { icon: "🩻", label: "Poison" },
 };
 
   const CUSTOM_SKILL_MAPPING = {
@@ -638,6 +639,10 @@ const updatePokemonImage = () => {
   garchomp: {
     s1: ["s21", "s12"],
     s2: ["s11", "s22"]
+  },
+  gengar: {
+    s1: ["s11", "s22"],
+    s2: ["s12", "s21"]
   },
   }
 

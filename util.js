@@ -10339,9 +10339,9 @@ const skillDamage = {
   	"gengar": {
       "passive": {
           name: "Levitate",
-          description: "Gains 10% movement speed after being out of combat for 5 seconds.",
+          description: "Gains 20% movement speed after being out of combat for 5 seconds.",
           buff: {
-            Speed: "10%"
+            Speed: "20%"
           },
           formulas: [
           ]
@@ -10365,6 +10365,16 @@ const skillDamage = {
     "s11": {
       name: "Dream Eater",
       cooldown: 7,
+      effects: ["Sleep"],
+      buff: {
+      otherSkillsCooldownReduction: {
+          s12: 2,
+          s21: 2 
+        },
+      },
+      selfBuff: {
+        CooldownPercent: 100
+      },
       formulas: [
         {
           label: "Damage",
@@ -10391,17 +10401,31 @@ const skillDamage = {
     "s12": {
       name: "Sludge Bomb",
       cooldown: 8,
+      effects: ["Poison"],
+      buff:{},
       formulas: [
         {
           label: "Damage",
           formula: (SPATK, Level) => 1.06 * SPATK + 6 * (Level - 1) + 230,
           type: "special"
-        }
+        },
+        {
+          label: "Damage - Poison (10 Ticks)",
+          type: "text-only",
+		      additionalText: "1% Enemy Max HP every 0.5s (as special damage)"
+        },
       ]
     },
     "s21": {
       name: "Shadow Ball",
       cooldown: 4.5,
+      buff: {},
+      debuffs: {
+        Speed: 90
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -10423,6 +10447,11 @@ const skillDamage = {
     "s22": {
       name: "Hex",
       cooldown: 7.5,
+      effects: ["Invincible"],
+      buff:{},
+      selfBuff: {
+        CooldownPercent: 90
+      },
       formulas: [
 		{
 		  label: "Damage",
@@ -10439,6 +10468,21 @@ const skillDamage = {
 	"ult": {
 		name: "Phantom Ambush",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Invisible", "Invincible"],
+      buffs: {
+        Speed: "110%",
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -16468,6 +16512,18 @@ const skillDamage = {
     skin10: "Fashionable Style (Black)",
     skin11: "Aristocrat Style",
     skin12: "Songstress Style",
+  },
+  gengar: {
+    default: "Default",
+    skin1: "Space Style",
+    skin2: "Masked Style",
+    skin3: "Reporter Style",
+    skin4: "Theater Style",
+    skin5: "Tuxedo Style",
+    skin6: "Holiday Style",
+    skin7: "Beach Style",
+    skin8: "Costume Party Style",
+    skin9: "Neo Street Style"
   },
   // Adicione mais pokémon aqui
 };
