@@ -10653,6 +10653,14 @@ const skillDamage = {
           description: "When hit, may spread slime that damages, slows, and stacks a debuff on enemies. Also heals in tall grass while boosting its attack gauge.",
           buff: {
           },
+          debuffs: {
+            AtkSPD: 50,
+            Speed: 10
+          },
+          debuffLabels: {
+            AtkSPD: "(DEBUFF) AttackSpeed Reduction",
+            Speed: "(DEBUFF) MoveSpeed Reduction"
+          },
           formulas: [
           {
           label: "Damage (Slime)",
@@ -10669,6 +10677,20 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+        otherSkillsCooldownReduction: {
+          s21: 1.5, 
+          s22: 1.5,
+          s11: 1.5,
+          s12: 1.5 
+        },
+    },
+    debuffs: {
+      Speed: 50
+    },
+    debuffLabels :{
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -10679,13 +10701,27 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (SPATK, Level) => 0.57 * SPATK + 6 * (Level - 1) + 190,
           type: "special"
-        }
+        },
+        {
+          label: "Damage - Additional (Melee)",
+          formula: (HP, Level) => 0.03 * HP,
+          type: "hp"
+        },
       ]
 	},
 
     "s11": {
       name: "Muddy Water",
       cooldown: 4.5,
+      buff: {},
+      debuffs: {
+        ATK: 15,
+        SpATK: 15
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -10747,6 +10783,13 @@ const skillDamage = {
     "s21": {
       name: "Power Whip",
       cooldown: 7,
+      buff: {},
+      debuffs: {
+        Speed: 80
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }, 
       formulas: [
         {
           label: "Damage",
@@ -10758,6 +10801,13 @@ const skillDamage = {
     "s22": {
       name: "Acid Spray",
       cooldown: 7.5,
+      buff: {},
+      debuffs: {
+        Speed: 80
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }, 
       formulas: [
 		{
 		  label: "Damage (Initial)",
@@ -10774,7 +10824,20 @@ const skillDamage = {
 	"ult": {
 		name: "Right as Rain",
     cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Shield: 40,
+        Speed: "50%"
+      }
+    },
 		formulas: [
+      		{
+		  label: "Healing (13 ticks)",
+          formula: (HP, Level) => 0.04 * HP,
+          type: "hp"
+		}
 	]
 	}
   },
@@ -16601,6 +16664,15 @@ const skillDamage = {
     skin7: "Graceful Style",
     skin8: "Tea Party Style (Brown)",
     skin9: "Beach Style"
+  },
+  goodra: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Performer Style",
+    skin4: "Holiday Style",
+    skin5: "Bedtime Style",
+    skin6: "Sweet Style"
   },
   // Adicione mais pokémon aqui
 };
