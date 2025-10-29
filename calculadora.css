@@ -4707,3 +4707,69 @@ textarea.form-control {
 .dark-mode .meta-stat-line.banrate .meta-rate {
   color: #ef5350;
 }
+/* Crit Damage Selector */
+.crit-selector-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.crit-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #000;
+  font-size: 13px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.crit-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Estilo para dano crítico - valor abaixo do normal */
+.crit-damage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  width: 100%;
+}
+
+.crit-damage-value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  color: #dc3545;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+}
+
+.crit-damage-value img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.skill-damage-number.has-crit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+/* Dark mode */
+.dark-mode .crit-checkbox-label {
+  color: #fff;
+}

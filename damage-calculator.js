@@ -211,6 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedConditionalEffects = {};
   let selectedMapBuffs = {};
   let currentMetaData = null;
+  let showCritDamage = false; // Controla se mostra dano crítico
 
   async function loadMetaData() {
   try {
@@ -352,10 +353,10 @@ function createMetaStatsHTML(pokemonName) {
   return html;
 }
   // Função de arredondamento customizada
-// Arredonda para cima apenas se o decimal for >= 0.7
+// Arredonda para cima apenas se o decimal for >= 0.8
 const customRound = (value) => {
   const decimal = value - Math.floor(value);
-  if (decimal >= 0.7) {
+  if (decimal >= 0.8) {
     return Math.ceil(value);
   }
   return Math.floor(value);
@@ -641,8 +642,8 @@ const updatePokemonImage = () => {
     s2: ["s11", "s22"]
   },
   gengar: {
-    s1: ["s11", "s22"],
-    s2: ["s12", "s21"]
+    s1: ["s12", "s21"],
+    s2: ["s11", "s22"]
   },
   }
 
@@ -654,6 +655,20 @@ const updatePokemonImage = () => {
     "megalucario": "lucarionite",
     "megacharizardx": "charizarditex"
   };
+
+  // Função para criar o seletor de dano crítico
+const createCritDamageSelector = () => {
+  const critSelectorHTML = `
+    <div class="crit-selector-container">
+      <label class="crit-checkbox-label">
+        <input type="checkbox" class="crit-checkbox" id="crit-damage-checkbox" ${showCritDamage ? 'checked' : ''}>
+        <span>Show crit damage?</span>
+      </label>
+    </div>
+  `;
+  
+  return critSelectorHTML;
+};
 
 // Função para criar o seletor de skills dentro do resultado
 const createSkillBuildInResult = () => {
@@ -725,29 +740,57 @@ const createSkillBuildInResult = () => {
     skillSelector.appendChild(metaStatsDiv.firstElementChild);
   }
   
-  // Inserir o seletor apÃ³s a role badge
-  const roleBadge = resultImage.querySelector(".role-badge");
-  if (roleBadge) {
-    // NOVO: Adicionar ratings ANTES do seletor de skills
-    const ratingsHtml = createPokemonRatings(selectedPokemon);
-    if (ratingsHtml) {
-      roleBadge.insertAdjacentHTML("afterend", ratingsHtml);
+  // Inserir o seletor após a role badge
+const roleBadge = resultImage.querySelector(".role-badge");
+if (roleBadge) {
+  // PRIMEIRO: Adicionar o seletor de crit
+  const critSelector = createCritDamageSelector();
+  roleBadge.insertAdjacentHTML("afterend", critSelector);
+  
+  // Event listener para o checkbox de crit
+  setTimeout(() => {
+    const critCheckbox = document.getElementById("crit-damage-checkbox");
+    if (critCheckbox) {
+      critCheckbox.addEventListener("change", (e) => {
+        showCritDamage = e.target.checked;
+        calcular();
+      });
+    }
+  }, 100);
+  
+  // SEGUNDO: Adicionar ratings
+  const ratingsHtml = createPokemonRatings(selectedPokemon);
+  if (ratingsHtml) {
+    const critContainer = resultImage.querySelector(".crit-selector-container");
+    if (critContainer) {
+      critContainer.insertAdjacentHTML("afterend", ratingsHtml);
       
       // Agora inserir o skill selector após os ratings
+      const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
+      if (ratingsContainer) {
+        ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+      }
+    } else {
+      roleBadge.insertAdjacentHTML("afterend", ratingsHtml);
       const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
       if (ratingsContainer) {
         ratingsContainer.insertAdjacentElement("afterend", skillSelector);
       } else {
         roleBadge.insertAdjacentElement("afterend", skillSelector);
       }
+    }
+  } else {
+    const critContainer = resultImage.querySelector(".crit-selector-container");
+    if (critContainer) {
+      critContainer.insertAdjacentElement("afterend", skillSelector);
     } else {
       roleBadge.insertAdjacentElement("afterend", skillSelector);
     }
-  } else {
-    resultImage.appendChild(skillSelector);
   }
+} else {
+  resultImage.appendChild(skillSelector);
+}
 };
-
 
 // Controle de Muscle Gauge para Buzzwole
 const createMuscleGaugeControl = () => {
@@ -1710,12 +1753,7 @@ const formatValue = (key, val, extraFixed = null) => {
     
     circle.addEventListener("click", (e) => {
       e.stopPropagation();
-      
-      // Fechar qualquer painel existente primeiro
-      closeAllSelectionPanels();
-      
-      // Abrir painel de seleção de skills
-      openSkillSelectionPanel(pokemon, slotKey, slotContainer);
+      toggleMapBuff(buffKey);
     });
     
     buffDiv.appendChild(circle);
@@ -3581,25 +3619,26 @@ selectedHeldItems.forEach(selectedItem => {
       if (stacks > 0) {
         addStatModifier(config.stat, fixedBonus + bonusPercent, `${itemName} (${stacks} stacks)`, "percent", iconPath);
       }
-    } else if (config.percent) {
-      const totalPercentage = config.perStack * stacks;
-      const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
-      const bonusAmount = baseForPercent * (totalPercentage / 100);
-      modified[config.stat] += bonusAmount;
+      } else if (config.percent) {
+        // Para itens com stacks percentuais (Drive Lens, Accel Bracer, Weakness Police)
+        const totalPercentage = config.perStack * stacks;
+        
+        // Calcular o bônus baseado NO VALOR BASE (sem o flat do item)
+        const baseForPercent = base[config.stat] || 0;
+        const bonusAmount = baseForPercent * (totalPercentage / 100);
+        
+        modified[config.stat] += bonusAmount;
       
-      // Rastrear stacks
-      if (stacks > 0) {
-        addStatModifier(config.stat, bonusAmount, `${itemName} (${stacks} stacks)`, "percent", iconPath);
-      }
-    } else {
-      const bonusAmount = config.perStack * stacks;
-      modified[config.stat] += bonusAmount;
-      
-      // Rastrear stacks
-      if (stacks > 0) {
-        addStatModifier(config.stat, bonusAmount, `${itemName} (${stacks} stacks)`, "flat", iconPath);
-      }
-    }
+        if (stacks > 0) {
+            addStatModifier(
+              config.stat, 
+              bonusAmount, 
+              `${itemName} (${stacks} stacks - ${totalPercentage.toFixed(1)}%)`, 
+              "percent", 
+              iconPath
+            );
+          }
+        }
   }
 });
     // 2) Aplicar passivos dos itens
@@ -3909,9 +3948,9 @@ statusFinalDiv.innerHTML = STAT_KEYS
     const expandableClass = hasModifiers ? " expandable" : "";
     
   // Calcular porcentagem de mudança CORRETAMENTE
-    let percentChange = 0;
-    
-    // CORREÇÃO: Verificar tipo de modificadores para calcular corretamente
+ let percentChange = 0;
+
+// CORREÇÃO: Verificar tipo de modificadores para calcular corretamente
     if (k === "Speed") {
       if (hasModifiers && statModifiers[k].modifications.some(mod => mod.type === "percent" || mod.type === "speed-percent")) {
         // Somar tanto modificadores percent quanto speed-percent
@@ -3929,7 +3968,6 @@ statusFinalDiv.innerHTML = STAT_KEYS
           }, 0)
           .toFixed(1);
       } else if (b !== 0) {
-        // Modificadores flat: calcular percentual normal
         percentChange = (((m - b) / b) * 100).toFixed(1);
       } else {
         percentChange = 0;
@@ -3938,32 +3976,16 @@ statusFinalDiv.innerHTML = STAT_KEYS
       // Para stats percentuais (CDR, CritRate, etc): diferença direta
       percentChange = (m - b).toFixed(1);
     } else {
-      // Para stats numéricos (ATK, HP, DEF, etc): verificar se tem modificadores percentuais
-      if (hasModifiers) {
-        const percentMods = statModifiers[k].modifications.filter(mod => mod.type === "percent" || mod.type === "emblem-percent");
-        
-        if (percentMods.length > 0) {
-          // Se tem modificadores percentuais, somar os valores percentuais originais
-          percentChange = percentMods.reduce((sum, mod) => {
-            // Para emblemas, pegar o valor percentual original
-            if (mod.type === "emblem-percent") {
-              return sum + mod.value;
-            }
-            // Para outros percentuais, calcular baseado no valor modificado vs base
-            const modPercent = b !== 0 ? (mod.value / b) * 100 : 0;
-            return sum + modPercent;
-          }, 0).toFixed(1);
-        } else {
-          // Sem modificadores percentuais, cálculo normal
-          percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
-        }
+      // ✅ PARA STATS NUMÉRICOS (ATK, HP, DEF, SpATK, SpDEF):
+      // Sempre calcular baseado na diferença total (modified - base)
+      if (b !== 0) {
+        percentChange = (((m - b) / b) * 100).toFixed(1);
       } else {
-        // Sem modificadores, cálculo normal
-        percentChange = b !== 0 ? (((m - b) / b) * 100).toFixed(1) : 0;
+        percentChange = 0;
       }
-    }  
+    }
+
     let statLineHTML = "";
-    
     // Se o valor modificado é maior que o base (buff)
     if (m > b) {
       statLineHTML = `
@@ -4718,6 +4740,30 @@ const damageValuesHtml = s.formulas.map((f, index) => {
 const baseVal = customRound(values.base);
 const modVal = customRound(values.modified);
   const hasIncrease = modVal > baseVal;
+
+  // Calcular dano crítico se estiver ativo - APENAS para atkboosted
+  let critDamageValue = null;
+  const isBasicAttackForCrit = (key === "atkboosted");
+
+  if (showCritDamage && isBasicAttackForCrit) {
+    let baseCritMultiplier = 100; // Padrão: 100%
+    
+    // Casos específicos
+    if (selectedPokemon === "azumarill") {
+      baseCritMultiplier = 70; // Azumarill: 70%
+    } else if (selectedPokemon === "inteleon") {
+      baseCritMultiplier = 150; // Inteleon: 150%
+    }
+
+    if (!modified.CritDmg) {
+      modified.CritDmg = base.CritDmg;
+    }
+    
+    const critDmgPercent = modified.CritDmg || 0;
+    const totalCritMultiplier = baseCritMultiplier + critDmgPercent;
+    
+    critDamageValue = customRound(modVal * (1 + (totalCritMultiplier / 100)));
+  }
   // ✅ CALCULAR percentIncrease CONSIDERANDO nextBasicAttackPercent
   let percentIncrease = 0;
 
@@ -4735,10 +4781,10 @@ const modVal = customRound(values.modified);
     percentIncrease = 0;
   }
   
-    return `
+  return `
     <div class="skill-damage-value">
       <span class="skill-damage-label">${f.label}</span>
-      <div>
+      <div class="${critDamageValue !== null ? 'crit-damage-container' : ''}">
         ${hasIncrease || percentIncrease != 0 ? 
           `<span class="skill-damage-number">
             ${baseVal !== modVal ? `<span style="color: #888; font-size: 16px; text-decoration: line-through;">${baseVal}</span>` : ''}
@@ -4746,6 +4792,13 @@ const modVal = customRound(values.modified);
             <span class="skill-damage-percent ${percentIncrease < 0 ? 'negative' : ''}">${percentIncrease > 0 ? '+' : ''}${percentIncrease}%</span>
           </span>` :
           `<span class="skill-damage-number">${modVal}</span>`
+        }
+        ${critDamageValue !== null ? 
+          `<span class="crit-damage-value">
+            <img src="./estatisticas-shad/images/icons/crit.png" alt="Crit" onerror="this.style.display='none'">
+            ${critDamageValue}
+          </span>` : 
+          ''
         }
         ${f.additionalText ? `<div style="color:#888; font-size:12px; font-style:italic; margin-top:4px;">${f.additionalText}</div>` : ""}
       </div>
@@ -5081,6 +5134,26 @@ skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
         calcular();
       });
     }
+
+    const heldItemContainers = statusFinalDiv.querySelectorAll(".item-icon-container[data-item]");
+    heldItemContainers.forEach(container => {
+      const itemKey = container.dataset.item;
+      const passives = getItemPassivesSource();
+      
+      // Só adicionar listener se o item tiver passiva
+      if (passives[itemKey] && Object.keys(passives[itemKey]).length > 0) {
+        container.addEventListener("click", () => {
+          // Toggle da passiva do item
+          activeItemPassives[itemKey] = !activeItemPassives[itemKey];
+          
+          // Adicionar feedback visual imediato
+          container.classList.toggle("item-active", activeItemPassives[itemKey]);
+          
+          // Recalcular stats
+          calcular();
+        });
+      }
+    });
 
     resultado.style.display = "flex";
     if (compartilharContainer) {
