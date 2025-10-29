@@ -10497,8 +10497,8 @@ const skillDamage = {
       "passive": {
           name: "Snow Cloak",
           description: "Negates a hindrance, grants brief invincibility and stealth, with a long cooldown reset on respawn.",
+          effects: ["Invisible", "Invincible"],
           buff: {
-            Speed: "10%",
             HindRed: "100%"
           },
           formulas: [
@@ -10528,28 +10528,68 @@ const skillDamage = {
     "s11": {
       name: "Icicle Spear",
       cooldown: 5,
+      buff: {
+        selfDamageMultiplier: 1.35,
+        otherSkillsCooldownReduction: {
+          s21: 2, 
+          s22: 2.5
+        }
+      },
       formulas: [
         {
           label: "Damage - per Ice Crystal",
           formula: (SPATK, Level) => 0.37 * SPATK + 4 * (Level - 1) + 97,
           type: "special"
-        }
+        },
+        {
+          label: "Damage - Additional Skill Plus",
+          type: "text-only",
+		      additionalText: "0.5% of their remaining HP."
+        },
       ]
     },
     "s12": {
       name: "Icy Wind",
       cooldown: 6.5,
+      buff:{},
+      debuffs: {
+        Speed: 8
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - per Ice Crystal",
           formula: (SPATK, Level) => 0.20 * SPATK + 2 * (Level - 1) + 35,
           type: "special"
-        }
+        },
+        {
+          label: "Damage - Additional Skill Plus",
+          type: "text-only",
+		      additionalText: "1.5% of their remaining HP."
+        },
       ]
     },
     "s21": {
       name: "Ice Shard",
       cooldown: 8.5,
+      buff:{
+        Speed: "50%",
+        AtkSPD: 60
+      },
+      debuffs: {
+        Speed: 30
+      },
+      buffPlus:{
+        levelRequired: 12,
+        buffs: {
+          AtkSPD: 40
+        }
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - Basic",
@@ -10561,6 +10601,16 @@ const skillDamage = {
     "s22": {
       name: "Freeze Dry",
       cooldown: 8.5,
+      effects: ["Freeze"],
+      buff:{
+        SpATK: "50%",
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
 		  label: "Damage",
@@ -10572,6 +10622,21 @@ const skillDamage = {
 	"ult": {
 		name: "Glacial Stage",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      buffs: {
+        Speed: "80%",
+        AtkSPD: 35,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels:{
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -16524,6 +16589,18 @@ const skillDamage = {
     skin7: "Beach Style",
     skin8: "Costume Party Style",
     skin9: "Neo Street Style"
+  },
+  glaceon: {
+    default: "Default",
+    skin1: "Purple Unite Style",
+    skin2: "Orange Unite Style",
+    skin3: "Tuxedo Style",
+    skin4: "Tea Party Style",
+    skin5: "Checkered Style",
+    skin6: "Pink Unite Style",
+    skin7: "Graceful Style",
+    skin8: "Tea Party Style (Brown)",
+    skin9: "Beach Style"
   },
   // Adicione mais pokémon aqui
 };

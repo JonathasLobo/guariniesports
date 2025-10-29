@@ -608,7 +608,7 @@ const updatePokemonImage = () => {
   "Invisible": { icon: "👤", label: "Invisible" },
   "Sleep": { icon: "💤", label: "Sleep" },
   "Paralyze": { icon: "⚡", label: "Paralyze" },
-  "Freeze": { icon: "💤", label: "Freeze" },
+  "Freeze": { icon: "❄️", label: "Freeze" },
   "Water": { icon: "💧", label: "Water" },
   "Electric": { icon: "⚡", label: "Electric" },
   "Fire": { icon: "🔥", label: "Fire" },
@@ -2135,6 +2135,17 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
         }
       });
     }
+
+    // ✅ NOVO: Aplicar selfDamageMultiplier do buff básico
+if (skill.buff && skill.buff.selfDamageMultiplier) {
+  if (!modifiedStats._selfDamageMultipliers) {
+    modifiedStats._selfDamageMultipliers = {};
+  }
+  modifiedStats._selfDamageMultipliers[skillKey] = {
+    multiplier: skill.buff.selfDamageMultiplier,
+    source: skill.name || skillKey
+  };
+}
     // **NOVO**: Verificar otherSkillsCooldownReduction no buff básico
 if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
   Object.keys(skill.buff.otherSkillsCooldownReduction).forEach(targetSkillKey => {
@@ -2294,6 +2305,17 @@ if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedC
           }
         }
       });
+    }
+
+    // ✅ NOVO: Aplicar selfDamageMultiplier do buffPlus (se ativo)
+    if (skill.buffPlus.selfDamageMultiplier) {
+      if (!modifiedStats._selfDamageMultipliers) {
+        modifiedStats._selfDamageMultipliers = {};
+      }
+      modifiedStats._selfDamageMultipliers[skillKey] = {
+        multiplier: skill.buffPlus.selfDamageMultiplier,
+        source: `${skill.name || skillKey} (Plus)`
+      };
     }
     // ✅ PROCESSAR nextBasicAttackPercent DO BUFFPLUS
     if (skill.buffPlus.nextBasicAttackPercent !== undefined) {
@@ -4616,6 +4638,9 @@ s.formulas.forEach((f, index) => {
         const shieldMultiplier = 1 + (modified.Shield / 100);
         modifiedVal *= shieldMultiplier;
       }
+      if (s.selfDamageMultiplier && (f.type === "physical" || f.type === "special")) {
+        modifiedVal *= s.selfDamageMultiplier;
+      }
     }
 
 // Aplicar skillDamageMultiplier de QUALQUER passiva ativa
@@ -4633,6 +4658,11 @@ s.formulas.forEach((f, index) => {
         }
       }
     });
+
+    if (modified._selfDamageMultipliers && modified._selfDamageMultipliers[key]) {
+      const selfMultiplier = modified._selfDamageMultipliers[key];
+      modifiedVal *= selfMultiplier.multiplier;
+    }
 
     // NOVO: Aplicar multiplicadores de dano dos Map Buffs (Groudon)
     if (modified._mapBuffDamageMultipliers && modified._mapBuffDamageMultipliers.length > 0) {
