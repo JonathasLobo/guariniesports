@@ -647,6 +647,11 @@ const updatePokemonImage = () => {
   },
   }
 
+  const POKEMON_CRIT_BASE = {
+  "azumarill": 70,
+  "inteleon": 150,
+  // Pokémons padrão usam 100% (não precisam estar listados)
+  };
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
     "zacian": "rustedsword",
@@ -740,9 +745,15 @@ const createSkillBuildInResult = () => {
     skillSelector.appendChild(metaStatsDiv.firstElementChild);
   }
   
-  // Inserir o seletor após a role badge
+// Inserir o seletor após a role badge
 const roleBadge = resultImage.querySelector(".role-badge");
 if (roleBadge) {
+  // ✅ REMOVER SELETOR DE CRIT EXISTENTE ANTES DE CRIAR NOVO
+  const existingCritSelector = resultImage.querySelector(".crit-selector-container");
+  if (existingCritSelector) {
+    existingCritSelector.remove();
+  }
+  
   // PRIMEIRO: Adicionar o seletor de crit
   const critSelector = createCritDamageSelector();
   roleBadge.insertAdjacentHTML("afterend", critSelector);
@@ -751,7 +762,12 @@ if (roleBadge) {
   setTimeout(() => {
     const critCheckbox = document.getElementById("crit-damage-checkbox");
     if (critCheckbox) {
-      critCheckbox.addEventListener("change", (e) => {
+      // ✅ REMOVER LISTENERS ANTIGOS (prevenir múltiplos listeners)
+      const newCheckbox = critCheckbox.cloneNode(true);
+      critCheckbox.parentNode.replaceChild(newCheckbox, critCheckbox);
+      
+      // Adicionar listener novo
+      newCheckbox.addEventListener("change", (e) => {
         showCritDamage = e.target.checked;
         calcular();
       });
@@ -762,6 +778,7 @@ if (roleBadge) {
   const ratingsHtml = createPokemonRatings(selectedPokemon);
   if (ratingsHtml) {
     const critContainer = resultImage.querySelector(".crit-selector-container");
+    // ... resto do código (manter como está)
     if (critContainer) {
       critContainer.insertAdjacentHTML("afterend", ratingsHtml);
       
@@ -3542,6 +3559,29 @@ const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) 
     base = ensureAllStats(base);
     let modified = { ...base };
 
+    // ✅ APLICAR CRIT BASE ANTES DOS ITENS (se showCritDamage estiver ativo)
+    if (showCritDamage) {
+      const pokemonCritBase = POKEMON_CRIT_BASE[selectedPokemon] || 100;
+      
+      // Setar o valor base de CritDmg do Pokémon
+      modified.CritDmg = pokemonCritBase;
+      
+      // Registrar o valor base no statModifiers
+      if (!statModifiers.CritDmg) {
+        statModifiers.CritDmg = { base: 0, modifications: [], total: 0 };
+      }
+      
+      // Ícone customizado para o crit
+      const critIcon = `<img src="./estatisticas-shad/images/icons/crit.png" style="width: 14px; height: 14px; border-radius: 4px; margin-right: 8px;" onerror="this.style.display='none'">`;
+      
+      statModifiers.CritDmg.modifications.push({
+        value: pokemonCritBase,
+        source: `${safeCap(selectedPokemon)} Critical`,
+        type: "flat",
+        customIcon: critIcon
+      });
+    }
+
     const selectedItems = selectedHeldItems.map(item => item.key);
 
     // 1) Aplicar bônus normais dos itens e stacks
@@ -3722,6 +3762,27 @@ if (activeBattleItem && isBattleItemActive) {
     
     addStatModifier("HPRegen", healingPercentOfHP, `${battleItemName} (${Math.floor(potionHealingFlat)} HP / ${healingPercentOfHP.toFixed(1)}% HP)`, "formula", iconPath);
   }
+}
+// 4.5) Ajustar Crit Dmg base se showCritDamage estiver ativo
+if (showCritDamage) {
+  const pokemonCritBase = POKEMON_CRIT_BASE[selectedPokemon] || 100; // Padrão: 100%
+  
+  // Adicionar o valor base de crit do Pokémon
+  modified.CritDmg = (modified.CritDmg || 0) + pokemonCritBase;
+  
+  // Rastrear modificador com ícone customizado
+  const critIcon = `<img src="./estatisticas-shad/images/icons/crit.png" style="width: 14px; height: 14px; border-radius: 4px; margin-right: 8px;" onerror="this.style.display='none'">`;
+  
+  if (!statModifiers.CritDmg) {
+    statModifiers.CritDmg = { base: 0, modifications: [], total: 0 };
+  }
+  
+  statModifiers.CritDmg.modifications.push({
+    value: pokemonCritBase,
+    source: `${safeCap(selectedPokemon)} Critical`,
+    type: "flat",
+    customIcon: critIcon
+  });
 }
 
 // 4) Emblemas
@@ -4742,28 +4803,15 @@ const modVal = customRound(values.modified);
   const hasIncrease = modVal > baseVal;
 
   // Calcular dano crítico se estiver ativo - APENAS para atkboosted
-  let critDamageValue = null;
-  const isBasicAttackForCrit = (key === "atkboosted");
+    let critDamageValue = null;
+    const isBasicAttackForCrit = (key === "atkboosted");
 
-  if (showCritDamage && isBasicAttackForCrit) {
-    let baseCritMultiplier = 100; // Padrão: 100%
-    
-    // Casos específicos
-    if (selectedPokemon === "azumarill") {
-      baseCritMultiplier = 70; // Azumarill: 70%
-    } else if (selectedPokemon === "inteleon") {
-      baseCritMultiplier = 150; // Inteleon: 150%
+    if (showCritDamage && isBasicAttackForCrit) {
+      // Usar diretamente o modified.CritDmg (já inclui base do Pokémon + itens)
+      const totalCritMultiplier = modified.CritDmg || 100;
+      
+      critDamageValue = customRound(modVal * (1 + (totalCritMultiplier / 100)));
     }
-
-    if (!modified.CritDmg) {
-      modified.CritDmg = base.CritDmg;
-    }
-    
-    const critDmgPercent = modified.CritDmg || 0;
-    const totalCritMultiplier = baseCritMultiplier + critDmgPercent;
-    
-    critDamageValue = customRound(modVal * (1 + (totalCritMultiplier / 100)));
-  }
   // ✅ CALCULAR percentIncrease CONSIDERANDO nextBasicAttackPercent
   let percentIncrease = 0;
 
