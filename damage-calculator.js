@@ -1575,15 +1575,15 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
   const afterGlobalCDR = baseCooldown * (1 - (totalCDR / 100));
   
   // 2. Aplicar FlatCDR GLOBAL (apenas para skills normais)
-  const afterFlatCDR = Math.max(0.5, afterGlobalCDR - totalFlatCDR);
+  const afterFlatCDR = Math.max(0.1, afterGlobalCDR - totalFlatCDR);
   
   // 3. Aplicar redução FIXA em segundos específica da skill (incluindo cross-skill)
-  const afterFlatReduction = Math.max(0.5, afterFlatCDR - specificCooldownReduction);
+  const afterFlatReduction = Math.max(0.1, afterFlatCDR - specificCooldownReduction);
   
   // 4. Aplicar redução percentual ESPECÍFICA da skill
   const effectiveCooldown = afterFlatReduction * (1 - (specificCooldownReductionPercent / 100));
   
-  const finalCooldown = Math.max(0.5, effectiveCooldown);
+  const finalCooldown = Math.max(0.1, effectiveCooldown);
   
   return finalCooldown;
 };

@@ -10974,13 +10974,13 @@ const skillDamage = {
         HPRegen: 15,
         Speed: "30%",
         Shield: 40,
-        otherSkillsCooldownReduction :{
-          "1b": 1000,
-          "2b": 1000,
-          "1a": 1000,
-          "2a": 1000
-        }
       },
+        otherSkillsCooldownReduction :{
+          "1b": 4.5,
+          "1b": 5,
+          "2a": 8,
+          "2b": 10
+        }
     },
 		formulas: [
         {
@@ -11005,6 +11005,18 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+      otherSkillsCooldownReduction:{
+        s11: 0.5,
+        s12: 0.5
+      }
+    },
+    debuffs: {
+      Speed: 25
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -11022,6 +11034,15 @@ const skillDamage = {
     "s11": {
       name: "Water Shuriken",
       cooldown: 6,
+      buff: {
+        Speed: "25%"
+      },
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Redutcion"
+      },
       formulas: [
 		{
           label: "Damage - per Shuriken",
@@ -11038,6 +11059,10 @@ const skillDamage = {
     "s12": {
       name: "Surf",
       cooldown: 9,
+      buff:{},
+      selfBuff: {
+        CooldownFlat: 9
+      },
       formulas: [
 		{
           label: "Damage",
@@ -11064,12 +11089,28 @@ const skillDamage = {
     "s21": {
       name: "Double Team",
       cooldown: 8,
+      effects: ["Unstoppable"],
+      buff:{},
+      selfBuffPlus: {
+        levelRequired: 13,
+        CooldownFlat: 1
+      },
       formulas: [
       ]
     },
     "s22": {
       name: "Smokescreen",
       cooldown: 13,
+      effects: ["Unstoppable", "Invisible", "Vision Reduced"],
+      buff: {
+        Speed: "10%"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs:{
+          ATK: "20%"
+        }
+      },
       formulas: [
 		{
           label: "Damage - Boosted (Replacement)",
@@ -11081,6 +11122,22 @@ const skillDamage = {
 	"ult": {
 		name: "Waterburst Shuriken",
     cooldown: 100,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        AtkSPD: 35,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage (2x)",
@@ -16732,6 +16789,18 @@ const skillDamage = {
     skin5: "Masked Style",
     skin6: "Tree Style",
     skin7: "Marine Style"
+  },
+  greninja: {
+    default: "Default",
+    skin1: "Hero Style",
+    skin2: "Fashionable Style",
+    skin3: "Theater Style",
+    skin4: "Wanderer Style",
+    skin5: "Practice Style",
+    skin6: "Costume Party Style",
+    skin7: "Holiday Style",
+    skin8: "Neo Street Style",
+    skin9: "Fairy-Tale Style"
   },
   // Adicione mais pokémon aqui
 };
