@@ -616,6 +616,120 @@ const updatePokemonImage = () => {
   "Poison": { icon: "🩻", label: "Poison" },
 };
 
+const STAT_EFFECT_CONFIG = {
+  // Stats Ofensivos
+  ATK: { 
+    icon: "⚔️", 
+    label: "Attack",
+    color: "#ff6b6b"
+  },
+  SpATK: { 
+    icon: "⚔️", 
+    label: "Sp. Attack",
+    color: "#a78bfa"
+  },
+  
+  // Stats Defensivos
+  DEF: { 
+    icon: "🛡️", 
+    label: "Defense",
+    color: "#4dabf7"
+  },
+  SpDEF: { 
+    icon: "🛡️", 
+    label: "Sp. Defense",
+    color: "#74c0fc"
+  },
+  
+  // Velocidade e Mobilidade
+  Speed: { 
+    icon: "⚡", 
+    label: "Move Speed",
+    color: "#ffd43b"
+  },
+  AtkSPD: { 
+    icon: "⚡", 
+    label: "Attack Speed",
+    color: "#ff922b"
+  },
+  
+  // Utilitário
+   CDR: { 
+    icon: "🔄", 
+    label: "Cooldown Reduction",
+    color: "#20c997"
+  },
+  FlatCDR: { 
+    icon: "🔄", 
+    label: "Cooldown Reduction",
+    color: "#20c997"
+  },
+  CooldownFlat: {  // ✅ NOVO - para selfBuff
+    icon: "🔄",
+    label: "Cooldown",
+    color: "#20c997"
+  },
+  CooldownPercent: {  // ✅ NOVO - para selfBuff
+    icon: "🔄",
+    label: "Cooldown",
+    color: "#20c997"
+  },
+  FlatCDR: { 
+    icon: "🔄", 
+    label: "Cooldown Reduction",
+    color: "#20c997"
+  },
+  Shield: { 
+    icon: "🛡️", 
+    label: "Shield",
+    color: "#4dabf7"
+  },
+  HPRegen: { 
+    icon: "❤️", 
+    label: "HP Regen",
+    color: "#ff6b6b"
+  },
+  Lifesteal: { 
+    icon: "🩸", 
+    label: "Lifesteal",
+    color: "#c92a2a"
+  },
+  HindRed: { 
+    icon: "⤴️", 
+    label: "Hindrance",
+    color: "#4dabf7"
+  },
+  
+  // Crítico
+  CritRate: { 
+    icon: "💥", 
+    label: "Crit Rate",
+    color: "#ff6b00"
+  },
+  CritDmg: { 
+    icon: "💥", 
+    label: "Crit Damage",
+    color: "#e03131"
+  },
+  
+  // Outros
+  HP: { 
+    icon: "💚", 
+    label: "HP",
+    color: "#51cf66"
+  },
+  DmgTaken: { 
+    icon: "🛡️", 
+    label: "Damage Taken",
+    color: "#4dabf7"
+  },
+  EnergyRate: { 
+    icon: "⚡", 
+    label: "Energy Rate",
+    color: "#ffd43b"
+  }
+};
+
   const CUSTOM_SKILL_MAPPING = {
   absol: {
     s1: ["s12", "s21"],
@@ -645,7 +759,19 @@ const updatePokemonImage = () => {
     s1: ["s12", "s21"],
     s2: ["s11", "s22"]
   },
+  greedent: {
+    s1: ["1a", "1b"],
+    s2: ["2a", "2b"]
   }
+  }
+  const SKILL_KEY_ALIASES = {
+  greedent: {
+    "1a": "s11",
+    "1b": "s12",
+    "2a": "s21",
+    "2b": "s22"
+  },
+}
 
   const POKEMON_CRIT_BASE = {
   "azumarill": 70,
@@ -704,11 +830,27 @@ const createSkillBuildInResult = () => {
   if (!resultImage) return;
   
   const skills = skillDamage[selectedPokemon];
+
+  // ✅ NOVO: Função auxiliar para buscar skill com nomenclatura alternativa
+  const getSkillByKey = (pokemon, standardKey) => {
+    // Se tem aliases definidos, buscar pela nomenclatura alternativa
+    if (SKILL_KEY_ALIASES[pokemon]) {
+      // Procurar qual key alternativa corresponde ao padrão
+      for (const [altKey, stdKey] of Object.entries(SKILL_KEY_ALIASES[pokemon])) {
+        if (stdKey === standardKey) {
+          return skills[altKey]; // Retorna pela nomenclatura alternativa
+        }
+      }
+    }
+    // Se não tem alias, buscar normalmente
+    return skills[standardKey];
+  };
   
   // Verificar se existem skills s11/s12 e s21/s22
-  const hasS1Skills = skills.s11 || skills.s12;
-  const hasS2Skills = skills.s21 || skills.s22 || (selectedPokemon === "megalucario" && skills.U11) || (selectedPokemon === "megacharizardx" && skills.U12);
-  
+  const hasS1Skills = getSkillByKey(selectedPokemon, "s11") || getSkillByKey(selectedPokemon, "s12");
+  const hasS2Skills = getSkillByKey(selectedPokemon, "s21") || getSkillByKey(selectedPokemon, "s22") || 
+                     (selectedPokemon === "megalucario" && skills.U11) || 
+                     (selectedPokemon === "megacharizardx" && skills.U12);
   if (!hasS1Skills && !hasS2Skills) return;
   
   // Criar container do seletor
@@ -939,7 +1081,13 @@ const createSkillSlot = (label, slotKey, pokemon) => {
       img.alt = selectedSkillData.name;
       img.style.cssText = "border: none !important; box-shadow: none !important; outline: none !important; margin: 0 !important; padding: 0 !important;";
       img.onerror = function() {
-        this.src = `./estatisticas-shad/images/skills/${currentSelection}.png`;
+        // Tentar com a key padrão se for nomenclatura alternativa
+        if (SKILL_KEY_ALIASES[pokemon] && SKILL_KEY_ALIASES[pokemon][currentSelection]) {
+          const standardKey = SKILL_KEY_ALIASES[pokemon][currentSelection];
+          this.src = `./estatisticas-shad/images/skills/${pokemon}_${standardKey}.png`;
+        } else {
+          this.src = `./estatisticas-shad/images/skills/${currentSelection}.png`;
+        }
       };
       
       circle.appendChild(img);
@@ -1312,6 +1460,10 @@ const resetSkillSelections = () => {
 
 // Função para determinar qual slot uma skill pertence
 const getSkillSlot = (pokemon, skillKey) => {
+  let standardKey = skillKey;
+  if (SKILL_KEY_ALIASES[pokemon] && SKILL_KEY_ALIASES[pokemon][skillKey]) {
+    standardKey = SKILL_KEY_ALIASES[pokemon][skillKey];
+  }
   // Verificar mapeamento customizado primeiro
   if (CUSTOM_SKILL_MAPPING[pokemon]) {
     const mapping = CUSTOM_SKILL_MAPPING[pokemon];
@@ -3512,6 +3664,201 @@ const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) 
   return selectorHTML;
 };
 
+/**
+ * Formata os Active Effects de uma skill em HTML visual
+ * @param {Object} skill - Objeto da skill com buff/buffPlus/debuffs
+ * @param {boolean} isPlusActive - Se o buffPlus está ativo
+ * @param {number} currentLevel - Nível atual do pokémon
+ * @returns {string} HTML formatado dos efeitos
+ */
+const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
+  const effects = [];
+  
+  // Função auxiliar para adicionar um efeito
+  const addEffect = (stat, value, isDebuff = false, source = "") => {
+    const config = STAT_EFFECT_CONFIG[stat];
+    if (!config) return;
+    
+    const isPercent = typeof value === "string" && value.includes("%");
+    const numericValue = parseFloat(String(value).replace("%", "").replace("+", ""));
+    
+    if (isNaN(numericValue) || numericValue === 0) return;
+    
+    const arrow = isDebuff ? "▼" : "▲";
+    const arrowClass = isDebuff ? "effect-arrow-down" : "effect-arrow-up";
+    const sign = isDebuff ? "-" : "+";
+    const sourceLabel = source ? ` (${source})` : "";
+    
+    // ✅ TRATAMENTO ESPECIAL PARA COOLDOWNS
+    let displayValue;
+    let displayLabel = config.label;
+    
+    if (stat === "CooldownFlat") {
+      // Cooldown flat sempre mostra em segundos (redução)
+      displayValue = `${Math.abs(numericValue)}s`;
+      displayLabel = "Cooldown";
+      // CooldownFlat é sempre uma redução (positivo)
+      effects.push({
+        icon: config.icon,
+        label: displayLabel + sourceLabel,
+        value: displayValue,
+        arrow: "▼", // Sempre para baixo (redução de cooldown é bom)
+        arrowClass: "effect-arrow-down",
+        color: "#20c997", // Verde para indicar benefício
+        source: sourceLabel
+      });
+      return;
+    } else if (stat === "CooldownPercent") {
+      // Cooldown percent mostra em porcentagem
+      displayValue = `${Math.abs(numericValue)}%`;
+      displayLabel = "Cooldown";
+      // CooldownPercent é sempre uma redução (positivo)
+      effects.push({
+        icon: config.icon,
+        label: displayLabel + sourceLabel,
+        value: displayValue,
+        arrow: "▼",
+        arrowClass: "effect-arrow-down",
+        color: "#20c997",
+        source: sourceLabel
+      });
+      return;
+    } else {
+      // Tratamento normal para outros stats
+      displayValue = `${sign}${Math.abs(numericValue)}${isPercent || PERCENT_KEYS.has(stat) ? "%" : ""}`;
+    }
+    
+    effects.push({
+      icon: config.icon,
+      label: config.label,
+      value: displayValue,
+      arrow: arrow,
+      arrowClass: arrowClass,
+      color: config.color,
+      source: sourceLabel
+    });
+  };
+  
+  // 1. Processar buffs básicos (GLOBAIS)
+  if (skill.buff) {
+    Object.keys(skill.buff).forEach(stat => {
+      addEffect(stat, skill.buff[stat], false);
+    });
+  }
+  
+  // 2. Processar self-buffs (ESPECÍFICOS DA SKILL)
+  if (skill.selfBuff) {
+    Object.keys(skill.selfBuff).forEach(stat => {
+      // ✅ Processar CooldownFlat e CooldownPercent do selfBuff
+      if (stat === "CooldownFlat" || stat === "CooldownPercent") {
+        addEffect(stat, skill.selfBuff[stat], false, "Self");
+      } else {
+        addEffect(stat, skill.selfBuff[stat], false, "Self");
+      }
+    });
+  }
+  
+  // 3. Processar buffPlus (se ativo) - GLOBAIS
+  if (isPlusActive && skill.buffPlus) {
+    if (skill.buffPlus.buffs) {
+      Object.keys(skill.buffPlus.buffs).forEach(stat => {
+        addEffect(stat, skill.buffPlus.buffs[stat], false, "Plus");
+      });
+    }
+    
+    // Debuffs do Plus
+    if (skill.buffPlus.debuffs) {
+      Object.keys(skill.buffPlus.debuffs).forEach(stat => {
+        addEffect(stat, skill.buffPlus.debuffs[stat], true, "Plus");
+      });
+    }
+  }
+  
+  // 4. ✅ NOVO: Processar selfBuffPlus (se ativo) - ESPECÍFICOS DA SKILL
+  if (isPlusActive && skill.selfBuffPlus && skill.selfBuffPlus.buffs) {
+    Object.keys(skill.selfBuffPlus.buffs).forEach(stat => {
+      // Processar CooldownFlat e CooldownPercent do selfBuffPlus
+      if (stat === "CooldownFlat" || stat === "CooldownPercent") {
+        addEffect(stat, skill.selfBuffPlus.buffs[stat], false, "Self Plus");
+      } else {
+        addEffect(stat, skill.selfBuffPlus.buffs[stat], false, "Self Plus");
+      }
+    });
+  }
+  
+  // 5. Processar debuffs básicos
+  if (skill.debuffs) {
+    Object.keys(skill.debuffs).forEach(stat => {
+      const customLabel = skill.debuffLabels?.[stat];
+      if (customLabel) {
+        effects.push({
+          icon: "🎯",
+          label: customLabel.replace("(DEBUFF) ", "").replace(" Reduction", ""),
+          value: `-${skill.debuffs[stat]}%`,
+          arrow: "▼",
+          arrowClass: "effect-arrow-down",
+          color: "#ff6b6b",
+          source: ""
+        });
+      } else {
+        addEffect(stat, skill.debuffs[stat], true);
+      }
+    });
+  }
+  
+  // 6. Processar nextBasicAttackPercent
+  if (skill.nextBasicAttackPercent !== undefined) {
+    const value = skill.nextBasicAttackPercent;
+    const isDebuff = value < 0;
+    effects.push({
+      icon: "👊",
+      label: "Basic Attack Damage",
+      value: `${value >= 0 ? "+" : ""}${value}%`,
+      arrow: isDebuff ? "▼" : "▲",
+      arrowClass: isDebuff ? "effect-arrow-down" : "effect-arrow-up",
+      color: "#ff922b",
+      source: ""
+    });
+  }
+  
+  // 7. Processar nextBasicAttackPercent do Plus
+  if (isPlusActive && skill.buffPlus?.nextBasicAttackPercent !== undefined) {
+    const value = skill.buffPlus.nextBasicAttackPercent;
+    const isDebuff = value < 0;
+    effects.push({
+      icon: "👊",
+      label: "Basic Attack Damage",
+      value: `${value >= 0 ? "+" : ""}${value}%`,
+      arrow: isDebuff ? "▼" : "▲",
+      arrowClass: isDebuff ? "effect-arrow-down" : "effect-arrow-up",
+      color: "#ff922b",
+      source: " (Plus)"
+    });
+  }
+  
+  // Se não há efeitos, retornar vazio
+  if (effects.length === 0) return "";
+  
+  // Gerar HTML
+  const effectsHTML = effects.map(effect => `
+    <div class="active-effect-item">
+      <span class="effect-icon" style="color: ${effect.color};">${effect.icon}</span>
+      <span class="effect-label">${effect.label}</span>
+      <span class="${effect.arrowClass}">${effect.arrow}</span>
+      <span class="effect-value" style="color: ${effect.color};">${effect.value}</span>
+    </div>
+  `).join("");
+  
+  return `
+    <div class="active-effects-container">
+      <div class="active-effects-title">⚡ Active Effects</div>
+      <div class="active-effects-list">
+        ${effectsHTML}
+      </div>
+    </div>
+  `;
+};
+
   // FUNÇÃO DE CÁLCULO
   const calcular = () => {
     const targetLevel = parseInt(levelSelect.value, 10) || 1;
@@ -4884,96 +5231,10 @@ const modVal = customRound(values.modified);
   `;
 }).join("");
 
-// Criar seção de buffs - SEMPRE mostrar quando a skill está ativa
 let buffsHtml = "";
-if (isActiveSkill && (s.buff || s.selfBuff || (s.buffPlus && isPlusActive) || s.debuffs || s.conditionalBuffs || s.nextBasicAttackPercent !== undefined || (s.buffPlus && s.buffPlus.nextBasicAttackPercent !== undefined))) {
-  let buffsList = [];
-  
-  // ✅ Processar conditionalBuffs (Alcremie)
-  if (selectedPokemon === "alcremie" && s.conditionalBuffs) {
-    const gaugeState = sweetGauge ? "full" : "notFull";
-    const conditionalBuffsToApply = s.conditionalBuffs[gaugeState];
-    
-    if (conditionalBuffsToApply) {
-      Object.keys(conditionalBuffsToApply).forEach(stat => {
-        const value = conditionalBuffsToApply[stat];
-        const label = STAT_LABELS[stat] || stat;
-        const gaugeLabel = gaugeState === "full" ? " (Full Gauge)" : " (Not Full)";
-        buffsList.push(`<span style="color:#000000;">+${value} ${label}${gaugeLabel}</span>`);
-      });
-    }
-  }
-  
-  // Buffs globais básicos
-  if (s.buff) {
-    Object.keys(s.buff).forEach(stat => {
-      const value = s.buff[stat];
-      const label = STAT_LABELS[stat] || stat;
-      buffsList.push(`<span style="color:#000000;">+${value} ${label}</span>`);
-    });
-  }
-  
-  // Self-buffs (afetam apenas a skill)
-  if (s.selfBuff) {
-    Object.keys(s.selfBuff).forEach(stat => {
-      const value = s.selfBuff[stat];
-      const label = STAT_LABELS[stat] || stat;
-      buffsList.push(`<span style="color:#000000;">+${value} ${label} (Self)</span>`);
-    });
-  }
-  
-  // Buffs do Plus (se ativo)
-  if (isPlusActive && s.buffPlus?.buffs) {
-    Object.keys(s.buffPlus.buffs).forEach(stat => {
-      const value = s.buffPlus.buffs[stat];
-      const label = STAT_LABELS[stat] || stat;
-      buffsList.push(`<span style="color:#000000;">+${value} ${label}</span>`);
-    });
-  }
-  
-  // Debuffs
-  if (s.debuffs) {
-    Object.keys(s.debuffs).forEach(stat => {
-      const value = s.debuffs[stat];
-      const label = s.debuffLabels?.[stat] || `${stat} Reduction`;
-      buffsList.push(`<span style="color:#000000;">-${value}% ${label}</span>`);
-    });
-  }
-  
-  // Exibir nextBasicAttackPercent básico
-  if (s.nextBasicAttackPercent !== undefined) {
-    const value = s.nextBasicAttackPercent;
-    const sign = value >= 0 ? "+" : "";
-    buffsList.push(`<span style="color:#000000;">${sign}${value}% Basic Attack Damage</span>`);
-  }
-  
-  // Exibir nextBasicAttackPercent do buffPlus
-  if (isPlusActive && s.buffPlus?.nextBasicAttackPercent !== undefined) {
-    const value = s.buffPlus.nextBasicAttackPercent;
-    const sign = value >= 0 ? "+" : "";
-    buffsList.push(`<span style="color:#000000;">${sign}${value}% Basic Attack Damage (Plus)</span>`);
-  }
-
-  if (modified._mapBuffDamageMultipliers && modified._mapBuffDamageMultipliers.length > 0) {
-    modified._mapBuffDamageMultipliers.forEach(buffMultiplier => {
-      const isBasicAttack = (key === "basic" || key === "basicattack" || key === "atkboosted");
-      
-      if (!isBasicAttack || buffMultiplier.affectsBasicAttack === true) {
-        const percentBonus = ((buffMultiplier.multiplier - 1) * 100).toFixed(0);
-        buffsList.push(`<span style="color:#000000;">+${percentBonus}% Damage (${buffMultiplier.source})</span>`);
-      }
-    });
-  }
-  
-  if (buffsList.length > 0) {
-    buffsHtml = `
-      <div class="skill-buffs-section">
-        <strong>Active Effects:</strong> ${buffsList.join(" / ")}
-      </div>
-    `;
-  }
+if (isActiveSkill) {
+  buffsHtml = formatActiveEffects(s, isPlusActive, currentLevel);
 }
-
 
 let conditionalEffectHTML = "";
 if (s.conditionalEffects && s.conditionalEffects.options) {

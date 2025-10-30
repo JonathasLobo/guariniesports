@@ -4773,3 +4773,91 @@ textarea.form-control {
 .dark-mode .crit-checkbox-label {
   color: #fff;
 }
+
+/* Active Effects - Novo Visual */
+.active-effects-container {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.active-effects-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff8c00;
+  margin-bottom: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.active-effects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.active-effect-item {
+  display: grid;
+  grid-template-columns: 24px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+}
+
+.active-effect-item:hover {
+  transform: translateX(4px);
+}
+
+.effect-icon {
+  font-size: 18px;
+  text-align: center;
+}
+
+.effect-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
+.effect-arrow-up,
+.effect-arrow-down {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.effect-arrow-up {
+  color: #51cf66;
+}
+
+.effect-arrow-down {
+  color: #ff6b6b;
+}
+
+.effect-value {
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* Dark Mode */
+.dark-mode .active-effects-container {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.15));
+  border-color: #ffb300;
+}
+
+.dark-mode .active-effect-item {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .active-effect-item:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode .effect-label {
+  color: #fff;
+}

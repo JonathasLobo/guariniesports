@@ -10880,6 +10880,13 @@ const skillDamage = {
     "1a": {
       name: "Bullet Seed",
       cooldown: 4.5,
+      buff: {},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage - per Seed",
@@ -10896,6 +10903,16 @@ const skillDamage = {
     "1b": {
       name: "Belch",
       cooldown: 5,
+      buff: {},
+      selfBuff: {
+        CooldownFlat: 1
+      },
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -10912,12 +10929,27 @@ const skillDamage = {
     "2a": {
       name: "Stuff Cheeks",
       cooldown: 8,
+      buff:{
+        Speed: "70%"
+      },
       formulas: [
+      {
+          label: "Shield - per Berry consumed",
+          formula: (HP, Level) => 0.018 * HP,
+          type: "hp"
+        },
       ]
     },
     "2b": {
       name: "Covet",
       cooldown: 10,
+      buff:{
+        HindRed: 100,
+        Speed: "110%",
+        otherSkillsCooldownReduction: {
+          "1b": 100
+        },
+      },
       formulas: [
 		{
           label: "Damage",
@@ -10934,6 +10966,22 @@ const skillDamage = {
 	"ult": {
 		name: "Berry Belly Flop",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        HPRegen: 15,
+        Speed: "30%",
+        Shield: 40,
+        otherSkillsCooldownReduction :{
+          "1b": 1000,
+          "2b": 1000,
+          "1a": 1000,
+          "2a": 1000
+        }
+      },
+    },
 		formulas: [
         {
           label: "Damage",
@@ -16520,6 +16568,7 @@ const skillDamage = {
   darkrai: {
     default: "Default",
     skin1: "Costume Party Style",
+    skin2: "Dark Lord Style"
     },
   decidueye: {
     default: "Default",
@@ -16673,6 +16722,16 @@ const skillDamage = {
     skin4: "Holiday Style",
     skin5: "Bedtime Style",
     skin6: "Sweet Style"
+  },
+  greedent: {
+    default: "Default",
+    skin1: "Training Style",
+    skin2: "Tuxedo Style",
+    skin3: "Frontier Style",
+    skin4: "Berry Style",
+    skin5: "Masked Style",
+    skin6: "Tree Style",
+    skin7: "Marine Style"
   },
   // Adicione mais pokémon aqui
 };
