@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mutuallyExclusive: true,
     group: "regi",
     conflictsWith: "legendary",
-    description: "Aumenta DEF em 30% e Sp. DEF em 25%",
+    description: "Increase DEF 30% and Sp. DEF 25%",
     image: "./estatisticas-shad/images/objetivos/regirock.png"
   },
   registeel: {
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mutuallyExclusive: true,
     group: "regi",
     conflictsWith: "legendary",
-    description: "Aumenta ATK e Sp. ATK em 15%",
+    description: "Increase ATK and Sp. ATK 15%",
     image: "./estatisticas-shad/images/objetivos/registeel.png"
   },
   regice: {
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mutuallyExclusive: true,
     group: "regi",
     conflictsWith: "legendary",
-    description: "Aumenta HP Regen em 5%",
+    description: "Increase HP Regen 5%",
     image: "./estatisticas-shad/images/objetivos/regice.png"
   },
   groudon: {
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type: "special",
     mutuallyExclusive: true,
     group: "legendary",
-    description: "Aumenta Shield e dano de skills/basicos em 50%",
+    description: "Increase Shield and all damages 50%",
     image: "./estatisticas-shad/images/objetivos/groudon.png",
     shieldFormula: (hp) => {
       // 30% do HP + 1000
@@ -677,6 +677,11 @@ const STAT_EFFECT_CONFIG = {
   FlatCDR: { 
     icon: "🔄", 
     label: "Cooldown Reduction",
+    color: "#20c997"
+  },
+   OtherSkillCooldown: {
+    icon: "🔗",
+    label: "Other Skills Cooldown",
     color: "#20c997"
   },
   Shield: { 
@@ -3669,9 +3674,10 @@ const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) 
  * @param {Object} skill - Objeto da skill com buff/buffPlus/debuffs
  * @param {boolean} isPlusActive - Se o buffPlus está ativo
  * @param {number} currentLevel - Nível atual do pokémon
+ * @param {string} pokemon - Nome do pokémon
  * @returns {string} HTML formatado dos efeitos
  */
-const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
+const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = selectedPokemon) => {
   const effects = [];
   
   // Função auxiliar para adicionar um efeito
@@ -3689,30 +3695,26 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
     const sign = isDebuff ? "-" : "+";
     const sourceLabel = source ? ` (${source})` : "";
     
-    // ✅ TRATAMENTO ESPECIAL PARA COOLDOWNS
+    // Tratamento especial para cooldowns
     let displayValue;
     let displayLabel = config.label;
     
     if (stat === "CooldownFlat") {
-      // Cooldown flat sempre mostra em segundos (redução)
       displayValue = `${Math.abs(numericValue)}s`;
       displayLabel = "Cooldown";
-      // CooldownFlat é sempre uma redução (positivo)
       effects.push({
         icon: config.icon,
         label: displayLabel + sourceLabel,
         value: displayValue,
-        arrow: "▼", // Sempre para baixo (redução de cooldown é bom)
+        arrow: "▼",
         arrowClass: "effect-arrow-down",
-        color: "#20c997", // Verde para indicar benefício
+        color: "#20c997",
         source: sourceLabel
       });
       return;
     } else if (stat === "CooldownPercent") {
-      // Cooldown percent mostra em porcentagem
       displayValue = `${Math.abs(numericValue)}%`;
       displayLabel = "Cooldown";
-      // CooldownPercent é sempre uma redução (positivo)
       effects.push({
         icon: config.icon,
         label: displayLabel + sourceLabel,
@@ -3724,7 +3726,6 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
       });
       return;
     } else {
-      // Tratamento normal para outros stats
       displayValue = `${sign}${Math.abs(numericValue)}${isPercent || PERCENT_KEYS.has(stat) ? "%" : ""}`;
     }
     
@@ -3749,7 +3750,6 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
   // 2. Processar self-buffs (ESPECÍFICOS DA SKILL)
   if (skill.selfBuff) {
     Object.keys(skill.selfBuff).forEach(stat => {
-      // ✅ Processar CooldownFlat e CooldownPercent do selfBuff
       if (stat === "CooldownFlat" || stat === "CooldownPercent") {
         addEffect(stat, skill.selfBuff[stat], false, "Self");
       } else {
@@ -3766,7 +3766,6 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
       });
     }
     
-    // Debuffs do Plus
     if (skill.buffPlus.debuffs) {
       Object.keys(skill.buffPlus.debuffs).forEach(stat => {
         addEffect(stat, skill.buffPlus.debuffs[stat], true, "Plus");
@@ -3774,10 +3773,9 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
     }
   }
   
-  // 4. ✅ NOVO: Processar selfBuffPlus (se ativo) - ESPECÍFICOS DA SKILL
+  // 4. Processar selfBuffPlus (se ativo)
   if (isPlusActive && skill.selfBuffPlus && skill.selfBuffPlus.buffs) {
     Object.keys(skill.selfBuffPlus.buffs).forEach(stat => {
-      // Processar CooldownFlat e CooldownPercent do selfBuffPlus
       if (stat === "CooldownFlat" || stat === "CooldownPercent") {
         addEffect(stat, skill.selfBuffPlus.buffs[stat], false, "Self Plus");
       } else {
@@ -3836,6 +3834,155 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
     });
   }
   
+  // ✅ 8. NOVO: Processar otherSkillsCooldownReduction (buff básico)
+  if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
+    const otherSkillsReductions = skill.buff.otherSkillsCooldownReduction;
+    
+    Object.keys(otherSkillsReductions).forEach(targetSkillKey => {
+      const reductionValue = otherSkillsReductions[targetSkillKey];
+      
+      // Buscar nome da skill afetada
+      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
+      
+      effects.push({
+        icon: "🔗",
+        label: `${targetSkillName} Cooldown`,
+        value: `${Math.abs(reductionValue)}s`,
+        arrow: "▼",
+        arrowClass: "effect-arrow-down",
+        color: "#20c997",
+        source: "",
+        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
+        isOtherSkill: true
+      });
+    });
+  }
+  
+  // ✅ 9. NOVO: Processar otherSkillsCooldownReduction (buffPlus)
+  if (isPlusActive && skill.buffPlus?.otherSkillsCooldownReduction) {
+    const otherSkillsReductions = skill.buffPlus.otherSkillsCooldownReduction;
+    
+    Object.keys(otherSkillsReductions).forEach(targetSkillKey => {
+      const reductionValue = otherSkillsReductions[targetSkillKey];
+      
+      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
+      
+      effects.push({
+        icon: "🔗",
+        label: `${targetSkillName} Cooldown`,
+        value: `${Math.abs(reductionValue)}s`,
+        arrow: "▼",
+        arrowClass: "effect-arrow-down",
+        color: "#20c997",
+        source: " (Plus)",
+        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
+        isOtherSkill: true
+      });
+    });
+  }
+  
+  // Se não há efeitos, retornar vazio
+  if (effects.length === 0) return "";
+  
+  // Gerar HTML
+  const effectsHTML = effects.map(effect => {
+    // ✅ Template especial para otherSkills (com imagem)
+    if (effect.isOtherSkill) {
+      return `
+        <div class="active-effect-item other-skill-effect">
+          <img src="${effect.skillImage}" 
+               class="other-skill-icon" 
+               alt="${effect.label}"
+               onerror="this.style.display='none'">
+          <span class="effect-label">${effect.label}${effect.source}</span>
+          <span class="${effect.arrowClass}">${effect.arrow}</span>
+          <span class="effect-value" style="color: ${effect.color};">${effect.value}</span>
+        </div>
+      `;
+    }
+    
+    // Template normal
+    return `
+      <div class="active-effect-item">
+        <span class="effect-icon" style="color: ${effect.color};">${effect.icon}</span>
+        <span class="effect-label">${effect.label}</span>
+        <span class="${effect.arrowClass}">${effect.arrow}</span>
+        <span class="effect-value" style="color: ${effect.color};">${effect.value}</span>
+      </div>
+    `;
+  }).join("");
+  
+  return `
+    <div class="active-effects-container">
+      <div class="active-effects-title">⚡ Active Effects</div>
+      <div class="active-effects-list">
+        ${effectsHTML}
+      </div>
+    </div>
+  `;
+};
+/**
+ * Formata os efeitos de uma passiva em HTML visual
+ * @param {Object} passive - Objeto da passiva
+ * @param {string} pokemon - Nome do pokémon
+ * @returns {string} HTML formatado dos efeitos
+ */
+const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
+  const effects = [];
+  
+  // Função auxiliar (mesma lógica da formatActiveEffects)
+  const addEffect = (stat, value, isDebuff = false, source = "") => {
+    const config = STAT_EFFECT_CONFIG[stat];
+    if (!config) return;
+    
+    const isPercent = typeof value === "string" && value.includes("%");
+    const numericValue = parseFloat(String(value).replace("%", "").replace("+", ""));
+    
+    if (isNaN(numericValue) || numericValue === 0) return;
+    
+    const arrow = isDebuff ? "▼" : "▲";
+    const arrowClass = isDebuff ? "effect-arrow-down" : "effect-arrow-up";
+    const sign = isDebuff ? "-" : "+";
+    const sourceLabel = source ? ` (${source})` : "";
+    
+    let displayValue = `${sign}${Math.abs(numericValue)}${isPercent || PERCENT_KEYS.has(stat) ? "%" : ""}`;
+    
+    effects.push({
+      icon: config.icon,
+      label: config.label + sourceLabel,
+      value: displayValue,
+      arrow: arrow,
+      arrowClass: arrowClass,
+      color: config.color
+    });
+  };
+  
+  // 1. Processar buffs da passiva
+  if (passive.buff) {
+    Object.keys(passive.buff).forEach(stat => {
+      addEffect(stat, passive.buff[stat], false);
+    });
+  }
+  
+  // 2. Processar debuffs da passiva
+  if (passive.debuffs) {
+    Object.keys(passive.debuffs).forEach(stat => {
+      const customLabel = passive.debuffLabels?.[stat];
+      if (customLabel) {
+        effects.push({
+          icon: "🎯",
+          label: customLabel.replace("(DEBUFF) ", "").replace(" Reduction", ""),
+          value: `-${passive.debuffs[stat]}%`,
+          arrow: "▼",
+          arrowClass: "effect-arrow-down",
+          color: "#ff6b6b"
+        });
+      } else {
+        addEffect(stat, passive.debuffs[stat], true);
+      }
+    });
+  }
+  
   // Se não há efeitos, retornar vazio
   if (effects.length === 0) return "";
   
@@ -3850,8 +3997,8 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel) => {
   `).join("");
   
   return `
-    <div class="active-effects-container">
-      <div class="active-effects-title">⚡ Active Effects</div>
+    <div class="active-effects-container passive-effects">
+      <div class="active-effects-title">⚡ Passive Effects</div>
       <div class="active-effects-list">
         ${effectsHTML}
       </div>
@@ -3962,6 +4109,7 @@ STAT_KEYS.forEach(stat => {
   statModifiers[stat].base = base[stat] || 0;
 });
 
+// ✅ PRIMEIRA PASSAGEM: Coletar todos os flat bonuses
 selectedHeldItems.forEach(selectedItem => {
   const itemKey = selectedItem.key;
   const bonuses = gameHeldItensStatus?.[itemKey] || [];
@@ -3985,6 +4133,7 @@ selectedHeldItems.forEach(selectedItem => {
   });
 });
 
+// ✅ SEGUNDA PASSAGEM: Aplicar bônus base + stacks
 modified = { ...base };
 
 selectedHeldItems.forEach(selectedItem => {
@@ -3992,6 +4141,7 @@ selectedHeldItems.forEach(selectedItem => {
   const itemName = selectedItem.name;
   const iconPath = `./estatisticas-shad/images/held-itens/${itemKey}.png`;
 
+  // Aplicar bônus base (flat) do item
   const bonuses = gameHeldItensStatus?.[itemKey] || [];
   bonuses.forEach(b => {
     const parts = String(b).split(" +");
@@ -4009,45 +4159,62 @@ selectedHeldItems.forEach(selectedItem => {
     const amount = parseFloat(valStr.replace(",", "."));
     if (!isNaN(amount)) {
       modified[prop] += amount;
-      // Rastrear modificador
       addStatModifier(prop, amount, itemName, "flat", iconPath);
     }
   });
 
+  // ✅ PROCESSAR STACKS (SE O ITEM FOR STACKABLE)
   if (STACKABLE_ITEMS[itemName]) {
     const config = STACKABLE_ITEMS[itemName];
     const stacks = selectedItem.stacks || 0;
 
-    if (itemName === "Charging Charm") {
-      const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
-      const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
-      const fixedBonus = config.fixedBonus || 0;
-      modified[config.stat] += fixedBonus + bonusPercent;
-      
-      // Rastrear stacks
-      if (stacks > 0) {
-        addStatModifier(config.stat, fixedBonus + bonusPercent, `${itemName} (${stacks} stacks)`, "percent", iconPath);
-      }
-      } else if (config.percent) {
-        // Para itens com stacks percentuais (Drive Lens, Accel Bracer, Weakness Police)
-        const totalPercentage = config.perStack * stacks;
+    // ✅ SÓ APLICAR SE TIVER STACKS > 0
+    if (stacks > 0) {
+      if (itemName === "Charging Charm") {
+        // Charging Charm: bônus fixo + bônus percentual
+        const baseForPercent = (base[config.stat] || 0) + (flatBonusesByStat[config.stat] || 0);
+        const bonusPercent = (baseForPercent * (config.perStack / 100)) * stacks;
+        const fixedBonus = config.fixedBonus || 0;
+        const totalBonus = fixedBonus + bonusPercent;
         
-        // Calcular o bônus baseado NO VALOR BASE (sem o flat do item)
+        modified[config.stat] += totalBonus;
+        addStatModifier(
+          config.stat, 
+          totalBonus, 
+          `${itemName} (${stacks} stack${stacks > 1 ? 's' : ''})`, 
+          "percent", 
+          iconPath
+        );
+      } 
+      else if (config.percent) {
+        // Itens com stacks percentuais (Drive Lens, Accel Bracer, Weakness Police)
+        const totalPercentage = config.perStack * stacks;
         const baseForPercent = base[config.stat] || 0;
         const bonusAmount = baseForPercent * (totalPercentage / 100);
         
         modified[config.stat] += bonusAmount;
-      
-        if (stacks > 0) {
-            addStatModifier(
-              config.stat, 
-              bonusAmount, 
-              `${itemName} (${stacks} stacks - ${totalPercentage.toFixed(1)}%)`, 
-              "percent", 
-              iconPath
-            );
-          }
-        }
+        addStatModifier(
+          config.stat, 
+          bonusAmount, 
+          `${itemName} (${stacks} stack${stacks > 1 ? 's' : ''} - ${totalPercentage.toFixed(1)}%)`, 
+          "percent", 
+          iconPath
+        );
+      }
+      else {
+        // Itens com stacks flat (Attack Weight, Sp. Atk Specs, Aeos Cookie)
+        const bonusAmount = config.perStack * stacks;
+        
+        modified[config.stat] += bonusAmount;
+        addStatModifier(
+          config.stat, 
+          bonusAmount, 
+          `${itemName} (${stacks} stack${stacks > 1 ? 's' : ''})`, 
+          "flat", 
+          iconPath
+        );
+      }
+    }
   }
 });
     // 2) Aplicar passivos dos itens
@@ -4727,7 +4894,7 @@ if (incluirEmblemas === "sim") {
 
     statusFinalDiv.insertAdjacentHTML("beforeend", `
       <div class="stat-line special-stat" style="flex-direction: column; align-items: flex-start;">
-        <span class="stat-label" style="margin-bottom: 8px;">Emblemas</span>
+        <span class="stat-label" style="margin-bottom: 8px;">Emblems</span>
         <div style="display: flex; flex-direction: column; width: 100%; padding-left: 10px;">
           ${activeEmblems}
         </div>
@@ -4836,19 +5003,26 @@ if (incluirMapBuffs === "sim") {
           }).join("");
         }
 
-        const passiveHtml = `
-          <div class="skill-box passive${activeClass}" data-pokemon="${selectedPokemon}" data-passive-key="${passiveKey}" style="margin-bottom: 15px;">
-            <img src="${imgPath}" alt="${p.name}" class="skill-icon"
-                 onerror="this.onerror=null;this.src='${fallbackImg}'">
-            <div class="skill-info">
-              <h4>${p.name}</h4>
-              <div class="passive-subtitle">passive skill</div>
-              ${p.description ? `<ul><li style="color:#888; font-style:italic;">${p.description}</li></ul>` : ""}
-              ${passiveFormulasHtml ? `<ul>${passiveFormulasHtml}</ul>` : ""}
-            </div>
-            <div class="passive-status"></div>
+        // ✅ GERAR ACTIVE EFFECTS PARA PASSIVA
+      let passiveEffectsHtml = "";
+      if (isActive) {
+        passiveEffectsHtml = formatPassiveEffects(p, selectedPokemon);
+      }
+
+      const passiveHtml = `
+        <div class="skill-box passive${activeClass}" data-pokemon="${selectedPokemon}" data-passive-key="${passiveKey}" style="margin-bottom: 15px;">
+          <img src="${imgPath}" alt="${p.name}" class="skill-icon"
+              onerror="this.onerror=null;this.src='${fallbackImg}'">
+          <div class="skill-info">
+            <h4>${p.name}</h4>
+            <div class="passive-subtitle">passive skill</div>
+            ${p.description ? `<ul><li style="color:#888; font-style:italic;">${p.description}</li></ul>` : ""}
+            ${passiveFormulasHtml ? `<ul>${passiveFormulasHtml}</ul>` : ""}
+            ${passiveEffectsHtml}
           </div>
-        `;
+          <div class="passive-status"></div>
+        </div>
+      `;
         
         skillsDiv.insertAdjacentHTML("beforeend", passiveHtml);
       });
@@ -5233,7 +5407,7 @@ const modVal = customRound(values.modified);
 
 let buffsHtml = "";
 if (isActiveSkill) {
-  buffsHtml = formatActiveEffects(s, isPlusActive, currentLevel);
+  buffsHtml = formatActiveEffects(s, isPlusActive, currentLevel, selectedPokemon);
 }
 
 let conditionalEffectHTML = "";

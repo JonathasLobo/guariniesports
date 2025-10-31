@@ -11093,7 +11093,9 @@ const skillDamage = {
       buff:{},
       selfBuffPlus: {
         levelRequired: 13,
+        buffs: {
         CooldownFlat: 1
+        }
       },
       formulas: [
       ]
@@ -11153,6 +11155,7 @@ const skillDamage = {
           name: "Moxie",
           description: "Knockouts or assists reduce move cooldowns by 30%. Passively gains bonus HP, Attack, and attack speed permanently.",
           buff: {
+            CDR: 30,
             AtkSPD: "40%",
             ATK: 100,
             HP: 1200
@@ -11179,6 +11182,16 @@ const skillDamage = {
     "s11": {
       name: "Dragon Breath",
       cooldown: 5,
+      effects: ["Paralyze"],
+      buff: {
+        AtkSPD: 70
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -11215,6 +11228,8 @@ const skillDamage = {
     "s12": {
       name: "Aqua Tail",
       cooldown: 5,
+      effects: ["Unstoppable"],
+      buff:{},
       formulas: [
 		{
           label: "Damage",
@@ -11235,24 +11250,42 @@ const skillDamage = {
           label: "Healing Skill Plus",
           formula: (ATK, Level) => 0.5424 * ATK + 6 * (Level - 1) + 150,
           type: "physical"
-        }
+        },
+        {
+          label: "Damage - Additional Skill Plus",
+          type: "text-only",
+		      additionalText: "20% missing HP damage"
+        },
       ]
     },
     "s21": {
       name: "Waterfall",
       cooldown: 6,
+      buff: {},
+      selfBuffPlus:{
+        levelRequired: 12,
+        buffs: {
+        CooldownFlat: 1
+        }
+      },
       formulas: [
 		{
           label: "Damage",
           formula: (ATK, Level) => 1.29 * ATK + 6 * (Level - 1) + 225,
           type: "physical",
-		  additionalText: "Shield: 10% Max HP + 200"
+        },
+        	{
+          label: "Shield",
+          formula: (HP, Level) => 0.1 * HP + 200,
+          type: "hp",
         }
       ]
     },
     "s22": {
       name: "Bounce",
       cooldown: 8.5,
+      effects: ["Unstoppable"],
+      buff: {},
       formulas: [
 		{
           label: "Damage",
@@ -11274,6 +11307,16 @@ const skillDamage = {
 	"ult": {
 		name: "Dragon Current",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Untargetable"],
+      buffs: {
+        Speed: "95%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -16801,6 +16844,12 @@ const skillDamage = {
     skin7: "Holiday Style",
     skin8: "Neo Street Style",
     skin9: "Fairy-Tale Style"
+  },
+  gyarados: {
+    default: "Default",
+    skin1: "New Year Style",
+    skin2: "Darkness Style",
+    skin3: "Captain Style"
   },
   // Adicione mais pokémon aqui
 };

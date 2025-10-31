@@ -4861,3 +4861,37 @@ textarea.form-control {
 .dark-mode .effect-label {
   color: #fff;
 }
+/* Efeitos de Other Skills (com imagem) */
+.active-effect-item.other-skill-effect {
+  grid-template-columns: 32px 1fr auto auto;
+  background: linear-gradient(135deg, rgba(32, 201, 151, 0.1), rgba(64, 224, 208, 0.1));
+  border-left: 3px solid #20c997;
+}
+
+.other-skill-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Active Effects nas Passivas */
+.active-effects-container.passive-effects {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(147, 51, 234, 0.1));
+  border-color: #8b2be2;
+}
+
+.passive-effects .active-effects-title {
+  color: #8b2be2;
+}
+
+/* Dark Mode */
+.dark-mode .active-effect-item.other-skill-effect {
+  background: linear-gradient(135deg, rgba(32, 201, 151, 0.15), rgba(64, 224, 208, 0.15));
+}
+
+.dark-mode .active-effects-container.passive-effects {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(147, 51, 234, 0.15));
+  border-color: #9333ea;
+}
