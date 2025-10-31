@@ -66,10 +66,27 @@ textarea.form-control {
   align-items: flex-start;
   gap: 25px;
   margin-top: 30px;
-  padding: 25px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border: 2px solid #e9ecef;
+  padding: 30px;
+  background: linear-gradient(145deg, #ffffff, #f0f2f5);
+  border-radius: 24px;
+  border: none;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    0 3px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.resultado-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  border-radius: 24px 24px 0 0;
 }
 
 .resultado-image {
@@ -77,17 +94,37 @@ textarea.form-control {
   text-align: center;
   min-width: 180px;
   position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.resultado-image:hover {
+  transform: translateY(-2px);
 }
 
 .resultado-image img {
   max-width: 160px;
   height: auto;
-  border: 3px solid #ddd;
-  border-radius: 12px;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
   margin-bottom: 15px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resultado-image img:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.16),
+    0 4px 8px rgba(0, 0, 0, 0.12);
 }
 
 /* Gradiente da role na borda da imagem */
@@ -116,14 +153,43 @@ textarea.form-control {
   border-image: linear-gradient(45deg, #f16c38, #e55a25, #f16c38) 1;
 }
 
+.resultado-container::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.dark-mode .resultado-container::after {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(102, 126, 234, 0.05) 50%,
+    transparent 70%
+  );
+}
+
 .info-jogador {
-  background: #e9ecef;
-  padding: 15px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+  padding: 16px 20px;
+  border-radius: 14px;
   text-align: center;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 14px;
   color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  letter-spacing: 0.3px;
 }
 
 /* Tarja da role */
@@ -167,20 +233,41 @@ textarea.form-control {
 
 .coluna-temporada, .coluna-total {
   flex: 1;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   min-width: 280px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coluna-temporada:hover, .coluna-total:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .coluna-temporada h3 {
   color: #007bff;
-  margin: 0 0 15px 0;
-  border-bottom: 3px solid #007bff;
-  padding-bottom: 8px;
+  margin: 0 0 20px 0;
+  border-bottom: none;
+  padding: 12px 16px;
   text-align: center;
   font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(102, 126, 234, 0.1));
+  border-radius: 12px;
+  border-left: 4px solid #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 /* Avaliação (Fraco, Mediano, Bom, etc.) */
@@ -194,11 +281,18 @@ textarea.form-control {
 
 .coluna-total h3 {
   color: #28a745;
-  margin: 0 0 15px 0;
-  border-bottom: 3px solid #28a745;
-  padding-bottom: 8px;
+  margin: 0 0 20px 0;
+  border-bottom: none;
+  padding: 12px 16px;
   text-align: center;
   font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .stat-line {
@@ -2644,19 +2738,18 @@ textarea.form-control {
   font-weight: bold;
 }
 
-/* Painel de seleção - Simples e posicionado abaixo */
 .skill-selection-panel {
   position: absolute;
   background: rgba(0, 0, 0, 0.95);
-  border: 2px solid #ffcb05;
-  border-radius: 12px;
-  padding: 15px;
+  border: 1.5px solid #ffcb05;
+  border-radius: 8px;
+  padding: 10px;
   z-index: 1000;
-  min-width: 280px;
+  min-width: 180px;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 10px;
+  margin-top: 8px;
   display: none;
 }
 
@@ -2666,29 +2759,29 @@ textarea.form-control {
 
 .skill-selection-title {
   color: #ffcb05;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .skill-options {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 }
 
 .skill-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  padding: 8px;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
-  min-width: 100px;
+  min-width: 70px;
 }
 
 .skill-option:hover {
@@ -2697,15 +2790,15 @@ textarea.form-control {
 }
 
 .skill-option img {
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .skill-option-name {
-  font-size: 12px;
+  font-size: 11px;
   color: #ffffff;
   font-weight: 500;
   text-align: center;
@@ -4137,25 +4230,60 @@ textarea.form-control {
 
 /* ===== DARK MODE STYLES ===== */
 .resultado-container.dark-mode {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 2px solid #667eea;
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 3px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(102, 126, 234, 0.1);
+}
+
+.resultado-container.dark-mode::before {
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
 }
 
 /* Colunas no dark mode */
 .dark-mode .coluna-temporada,
 .dark-mode .coluna-total {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(102, 126, 234, 0.1);
+}
+
+.dark-mode .coluna-temporada:hover, 
+.dark-mode .coluna-total:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(102, 126, 234, 0.15);
 }
 
 .dark-mode .coluna-temporada h3 {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(102, 126, 234, 0.1));
+  border-left-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 .dark-mode .coluna-total h3 {
-  color: #20c997;
-  border-bottom-color: #20c997;
+  background: linear-gradient(135deg, rgba(32, 201, 151, 0.15), rgba(32, 201, 151, 0.1));
+  border-left-color: #20c997;
+  box-shadow: 0 2px 8px rgba(32, 201, 151, 0.2);
+}
+
+.dark-mode .resultado-image {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(22, 33, 62, 0.6));
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .resultado-image img {
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
 /* Stat lines no dark mode */
@@ -4309,9 +4437,9 @@ textarea.form-control {
 
 /* Info jogador no dark mode */
 .dark-mode .info-jogador {
-  background: rgba(0, 0, 0, 0.4);
-  color: #e0e0e0;
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Pokemon ratings no dark mode */
