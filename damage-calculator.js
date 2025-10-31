@@ -3819,7 +3819,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
-  // 7. Processar nextBasicAttackPercent do Plus
+ // 7. Processar nextBasicAttackPercent do Plus
   if (isPlusActive && skill.buffPlus?.nextBasicAttackPercent !== undefined) {
     const value = skill.buffPlus.nextBasicAttackPercent;
     const isDebuff = value < 0;
@@ -3834,7 +3834,45 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
-  // ✅ 8. NOVO: Processar otherSkillsCooldownReduction (buff básico)
+  // ✅ 8. NOVO: Processar effects básicos
+  if (skill.effects && Array.isArray(skill.effects)) {
+    skill.effects.forEach(effectName => {
+      const config = EFFECT_CONFIG[effectName];
+      if (config) {
+        effects.push({
+          icon: config.icon,
+          label: config.label,
+          value: "ACTIVE",
+          arrow: "",
+          arrowClass: "",
+          color: "#9333ea",
+          source: "",
+          isStatusEffect: true
+        });
+      }
+    });
+  }
+  
+  // ✅ 9. NOVO: Processar effects do buffPlus
+  if (isPlusActive && skill.buffPlus?.effects && Array.isArray(skill.buffPlus.effects)) {
+    skill.buffPlus.effects.forEach(effectName => {
+      const config = EFFECT_CONFIG[effectName];
+      if (config) {
+        effects.push({
+          icon: config.icon,
+          label: config.label,
+          value: "ACTIVE",
+          arrow: "",
+          arrowClass: "",
+          color: "#9333ea",
+          source: " (Plus)",
+          isStatusEffect: true
+        });
+      }
+    });
+  }
+  
+  // ✅ 10.NOVO: Processar otherSkillsCooldownReduction (buff básico)
   if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
     const otherSkillsReductions = skill.buff.otherSkillsCooldownReduction;
     
@@ -3886,7 +3924,18 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
   
   // Gerar HTML
   const effectsHTML = effects.map(effect => {
-    // ✅ Template especial para otherSkills (com imagem)
+    // ✅ Template especial para status effects
+    if (effect.isStatusEffect) {
+      return `
+        <div class="active-effect-item status-effect">
+          <span class="effect-icon" style="color: ${effect.color};">${effect.icon}</span>
+          <span class="effect-label">${effect.label}${effect.source}</span>
+          <span class="effect-status-badge">ACTIVE</span>
+        </div>
+      `;
+    }
+    
+    // Template especial para otherSkills (com imagem)
     if (effect.isOtherSkill) {
       return `
         <div class="active-effect-item other-skill-effect">

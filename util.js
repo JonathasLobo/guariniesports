@@ -11354,6 +11354,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      Speed: "-30%"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -11364,7 +11367,11 @@ const skillDamage = {
           label: "Damage - Boosted",
           formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
           type: "physical",
-		  additionalText: "Heal: 4% Max HP"
+        },
+        {
+          label: "Heal",
+          formula: (HP, Level) => 0.04 * HP,
+          type: "hp",
         }
       ]
 	},
@@ -11372,6 +11379,26 @@ const skillDamage = {
     "s11": {
       name: "Sacred Fire",
       cooldown: 12,
+      effects: ["Stun", "Burn"],
+      buff:{
+        ATK: "15%",
+        Speed: "30%"
+      },
+      debuffs: {
+        ATK: 10
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          ATK: 10
+        },
+        debuffLabels: {
+          ATK: "(DEBUFF) Attack Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage - Fireball",
@@ -11383,6 +11410,16 @@ const skillDamage = {
     "s12": {
       name: "Fire Spin",
       cooldown: 9,
+      effects: ["Stun"],
+      buff:{
+        Speed: "-40%"
+      },
+      debuffs: {
+        Speed: 80
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage (Vortex)",
@@ -11393,13 +11430,31 @@ const skillDamage = {
           label: "Damage (Heatwave)",
           formula: (ATK, Level) => 2.05 * ATK + 4 * (Level - 1) + 208,
           type: "physical",
-		  additionalText: "Shield: 30% Max HP"
+        },
+                {
+          label: "Shield",
+          formula: (HP, Level) => 0.3 * HP,
+          type: "hp",
         }
       ]
     },
     "s21": {
       name: "Flamethrower",
       cooldown: 6,
+      effects: ["Stun", "Burn"],
+      buff:{
+        Speed: "-15%"
+      },
+      debuffs: {
+        Speed: 30,
+        ATK: 20,
+        SpATK: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -11421,6 +11476,15 @@ const skillDamage = {
     "s22": {
       name: "Sky Attack",
       cooldown: 9,
+      buff:{
+        DmgTaken: 30
+      },
+      debuffs: {
+        Speed: 30,
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+      },
       formulas: [
 		{
           label: "Damage",
@@ -11442,6 +11506,14 @@ const skillDamage = {
 	"ult": {
 		name: "Rekindling Flame",
     cooldown: 134,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "80%",
+        Shield: 20
+      }
+    },
 		formulas: [
 	 ]
 	}
@@ -16850,6 +16922,11 @@ const skillDamage = {
     skin1: "New Year Style",
     skin2: "Darkness Style",
     skin3: "Captain Style"
+  },
+  hooh: {
+    default: "Default",
+    skin1: "Dark Lord Style",
+    skin2: "Fairy-Tale Style"
   },
   // Adicione mais pokémon aqui
 };

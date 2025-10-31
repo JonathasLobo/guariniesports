@@ -5023,3 +5023,26 @@ textarea.form-control {
   background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(147, 51, 234, 0.15));
   border-color: #9333ea;
 }
+
+/* Status Effects (Stun, Burn, etc.) */
+.active-effect-item.status-effect {
+  grid-template-columns: 24px 1fr auto;
+}
+
+.effect-status-badge {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000000;  /* ✅ PRETO no Light Mode */
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dark Mode */
+.dark-mode .active-effect-item.status-effect {
+  border-left-color: #a855f7;
+}
+
+.dark-mode .effect-status-badge {
+  color: #ffffff;  /* ✅ BRANCO no Dark Mode */
+}
