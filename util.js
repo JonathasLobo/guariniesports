@@ -11547,6 +11547,19 @@ const skillDamage = {
     "s11": {
       name: "Phantom Force",
       cooldown: 6.5,
+      buff: {},
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      allyBuffs: {
+        HPRegen: 15
+      },
+      allyBuffLabels: {
+        HPRegen: "(ALLY BUFF) HPRegen Increase"
+      },
       formulas: [
         {
           label: "Damage",
@@ -11563,6 +11576,16 @@ const skillDamage = {
     "s12": {
       name: "Shadow Ball",
       cooldown: 4.5,
+      effects: ["Stun"],
+      buff: {},
+      debuffs: {
+        Speed: 50,
+        SpDEF: "30%"
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -11579,6 +11602,13 @@ const skillDamage = {
     "s21": {
       name: "Hyperspace Hole",
       cooldown: 12,
+      buff:{},
+      buffPlus: {
+        levelRequired: 10,
+        buffs:{
+          Speed: "70%"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -11590,6 +11620,15 @@ const skillDamage = {
     "s22": {
       name: "Trick",
       cooldown: 7.5,
+      buff:{
+        Speed: "60%"
+      },
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          HPRegen: 10
+        }
+      },
       formulas: [
 		{
 		  label: "Shield",
@@ -11607,25 +11646,61 @@ const skillDamage = {
 	"ult": {
 		name: "Rings Unbound",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Invincible", "Unstoppable"],
+      buffs: {
+        HP: "40%",
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
 		{
           label: "Auto Attack Damage",
           formula: (SPATK, Level) => 0.5 * SPATK + 5 * (Level - 1) + 150,
           type: "special"
         },
+	]
+	},
+  "ult1": {
+		name: "Hyperspace Fury",
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Stun"],
+      buffs: {
+      }
+    },
+    formulas: [
 		{
           label: "Hyperspace Fury - Damage (7x)",
           formula: (SPATK, Level) => 0.15 * SPATK + 2 * (Level - 1) + 40,
           type: "special"
         },
+	  ]
+  },
+  "ult2": {
+		name: "Psybeam",
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Stun"],
+      buffs: {
+        HindRed: 100
+      }
+    },
+    formulas: [
 		{
           label: "Psybeam - Damage",
           formula: (SPATK, Level) => 1.75 * SPATK + 12 * (Level - 1) + 590,
           type: "special"
         }
-	]
-	}
+	  ]
   },
+},
 
   	"inteleon": {
       "passive": {
@@ -16927,6 +17002,16 @@ const skillDamage = {
     default: "Default",
     skin1: "Dark Lord Style",
     skin2: "Fairy-Tale Style"
+  },
+  hoopa: {
+    default: "Default",
+    skin1: "Special Style",
+    skin2: "Hip-Hop Style",
+    skin3: "Costume Party Style",
+    skin4: "Special Style (Navy)",
+    skin5: "Researcher Style",
+    skin6: "Captain Style",
+    skin7: "Neo Guardian Style"
   },
   // Adicione mais pokémon aqui
 };
