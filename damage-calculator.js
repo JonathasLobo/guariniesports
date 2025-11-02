@@ -4047,7 +4047,7 @@ const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
   
   return `
     <div class="active-effects-container passive-effects">
-      <div class="active-effects-title">⚡ Passive Effects</div>
+      <div class="active-effects-title">⚡ PASSIVE EFFECTS</div>
       <div class="active-effects-list">
         ${effectsHTML}
       </div>
@@ -5060,16 +5060,22 @@ if (incluirMapBuffs === "sim") {
 
       const passiveHtml = `
         <div class="skill-box passive${activeClass}" data-pokemon="${selectedPokemon}" data-passive-key="${passiveKey}" style="margin-bottom: 15px;">
-          <img src="${imgPath}" alt="${p.name}" class="skill-icon"
-              onerror="this.onerror=null;this.src='${fallbackImg}'">
-          <div class="skill-info">
-            <h4>${p.name}</h4>
-            <div class="passive-subtitle">passive skill</div>
-            ${p.description ? `<ul><li style="color:#888; font-style:italic;">${p.description}</li></ul>` : ""}
-            ${passiveFormulasHtml ? `<ul>${passiveFormulasHtml}</ul>` : ""}
-            ${passiveEffectsHtml}
+          <div class="skill-box-content">
+            <div class="skill-header-wrapper">
+              <img src="${imgPath}" alt="${p.name}" class="skill-icon"
+                  onerror="this.onerror=null;this.src='${fallbackImg}'">
+              <div style="flex: 1;">
+                <h4>${p.name}</h4>
+                <div class="passive-subtitle">passive skill</div>
+              </div>
+              <div class="passive-status"></div>
+            </div>
+            <div class="skill-info">
+              ${p.description ? `<div class="skill-info-text" style="color:#000; font-style:italic; background: none;">${p.description}</div>` : ""}
+              ${passiveFormulasHtml ? `<ul style="list-style: none; padding: 0; margin: 8px 0;">${passiveFormulasHtml}</ul>` : ""}
+              ${passiveEffectsHtml}
+            </div>
           </div>
-          <div class="passive-status"></div>
         </div>
       `;
         
