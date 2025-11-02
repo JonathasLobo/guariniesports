@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
-    const fileName = `meta27-10-2025.json`;
+    const fileName = `meta02-11-2025.json`;
     
     console.log(`🔍 Tentando carregar: ${fileName}`);
     console.log(`📍 URL completa: ${window.location.origin}/${fileName}`);
