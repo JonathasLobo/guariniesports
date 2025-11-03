@@ -554,7 +554,11 @@ const updatePokemonImage = () => {
     Endure: '🛡️',
     Mobility: '⚡',
     Score: '🎯',
-    Support: '💚'
+    Support: '💚',
+    Invade: '🥷',
+    Farm: '🪙',
+    Gank: '🗡️',
+    CC: '🎮'
   };
   
   // Mapeamento de nomes para classes CSS
@@ -563,7 +567,11 @@ const updatePokemonImage = () => {
     Endure: 'endure',
     Mobility: 'mobility',
     Score: 'score',
-    Support: 'support'
+    Support: 'support',
+    Invade: 'invade',
+    Farm: 'farm',
+    Gank: 'gank',
+    CC: 'cc'
   };
   
   const ratingsHtml = Object.entries(ratings).map(([category, value]) => {
@@ -606,6 +614,7 @@ const updatePokemonImage = () => {
   "Vision Reduction": { icon: "👁️", label: "Vision Reduction" },
   "Untargetable": { icon: "🎯", label: "Untargetable" },
   "Invisible": { icon: "👤", label: "Invisible" },
+  "Invisible Reveal": { icon: "🫵", label: "Invisible Reveal" },
   "Sleep": { icon: "💤", label: "Sleep" },
   "Paralyze": { icon: "⚡", label: "Paralyze" },
   "Freeze": { icon: "❄️", label: "Freeze" },
@@ -638,6 +647,11 @@ const STAT_EFFECT_CONFIG = {
   SpDEF: { 
     icon: "🛡️", 
     label: "Sp. Defense",
+    color: "#74c0fc"
+  },
+  SpDEFPen: { 
+    icon: "🛡️", 
+    label: "Sp. Defense Penetration",
     color: "#74c0fc"
   },
   
@@ -1553,42 +1567,27 @@ const calculateCooldownForSkill = (baseCooldown, globalCDR, globalEnergyRate, sk
     }
   }
   
-  // **NOVO**: Verificar se outras skills ativas afetam o cooldown desta skill
-  if (activeSkills[pokemon] && skillDamage[pokemon]) {
-    Object.keys(activeSkills[pokemon]).forEach(activeSkillKey => {
-      // Verificar se a skill está ativa
-      if (activeSkills[pokemon][activeSkillKey]) {
-        const activeSkill = skillDamage[pokemon][activeSkillKey];
-        
-        // Verificar se tem buffPlus com otherSkillsCooldownReduction
-        if (activeSkill?.buffPlus && 
-            currentLevel >= (activeSkill.buffPlus.levelRequired || 11) &&
-            activeSkill.buffPlus.otherSkillsCooldownReduction) {
-          
-          // Verificar se esta skill (skillKey) está na lista de reduções
-          const reductionForThisSkill = activeSkill.buffPlus.otherSkillsCooldownReduction[skillKey];
-          if (reductionForThisSkill !== undefined) {
-            specificCooldownReduction += Number(reductionForThisSkill);
-          }
-        }
-      }
-    });
-  }
-  
   // 1. Aplicar CDR/EnergyRate GLOBAL primeiro (limitado a 90%)
   totalCDR = Math.min(totalCDR, 90);
-  const afterGlobalCDR = baseCooldown * (1 - (totalCDR / 100));
+  let currentCooldown = baseCooldown * (1 - (totalCDR / 100));
   
   // 2. Aplicar FlatCDR GLOBAL (apenas para skills normais)
-  const afterFlatCDR = Math.max(0.1, afterGlobalCDR - totalFlatCDR);
+  if (!isUltimate) {
+    currentCooldown = Math.max(0.1, currentCooldown - totalFlatCDR);
+  }
   
-  // 3. Aplicar redução FIXA em segundos específica da skill (incluindo cross-skill)
-  const afterFlatReduction = Math.max(0.1, afterFlatCDR - specificCooldownReduction);
+  // 3. Aplicar redução percentual ESPECÍFICA da skill (otherSkillsCooldownReduction com %)
+  if (specificCooldownReductionPercent > 0) {
+    currentCooldown = currentCooldown * (1 - (specificCooldownReductionPercent / 100));
+  }
   
-  // 4. Aplicar redução percentual ESPECÍFICA da skill
-  const effectiveCooldown = afterFlatReduction * (1 - (specificCooldownReductionPercent / 100));
+  // 4. Aplicar redução FIXA em segundos ESPECÍFICA da skill (otherSkillsCooldownReduction sem %)
+  if (specificCooldownReduction > 0) {
+    currentCooldown = Math.max(0.1, currentCooldown - specificCooldownReduction);
+  }
   
-  const finalCooldown = Math.max(0.1, effectiveCooldown);
+  // 5. Garantir mínimo de 0.1s
+  const finalCooldown = Math.max(0.1, currentCooldown);
   
   return finalCooldown;
 };
@@ -2303,12 +2302,11 @@ if (skill.buff && skill.buff.selfDamageMultiplier) {
     source: skill.name || skillKey
   };
 }
-    // **NOVO**: Verificar otherSkillsCooldownReduction no buff básico
+// **NOVO**: Verificar otherSkillsCooldownReduction no buff básico
 if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
   Object.keys(skill.buff.otherSkillsCooldownReduction).forEach(targetSkillKey => {
     const reductionValue = skill.buff.otherSkillsCooldownReduction[targetSkillKey];
     
-    // Adicionar ao tracking de self-buffs da skill alvo
     if (!modifiedStats._selfBuffs) {
       modifiedStats._selfBuffs = {};
     }
@@ -2317,11 +2315,51 @@ if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
       modifiedStats._selfBuffs[targetSkillKey] = {};
     }
     
-    if (!modifiedStats._selfBuffs[targetSkillKey].CooldownFlat) {
-      modifiedStats._selfBuffs[targetSkillKey].CooldownFlat = 0;
+    const isPercent = typeof reductionValue === "string" && reductionValue.includes("%");
+    const numericValue = parseFloat(String(reductionValue).replace("%", ""));
+    
+    if (isPercent) {
+      if (!modifiedStats._selfBuffs[targetSkillKey].CooldownPercent) {
+        modifiedStats._selfBuffs[targetSkillKey].CooldownPercent = 0;
+      }
+      modifiedStats._selfBuffs[targetSkillKey].CooldownPercent += numericValue;
+    } else {
+      if (!modifiedStats._selfBuffs[targetSkillKey].CooldownFlat) {
+        modifiedStats._selfBuffs[targetSkillKey].CooldownFlat = 0;
+      }
+      modifiedStats._selfBuffs[targetSkillKey].CooldownFlat += numericValue;
+    }
+  });
+}
+// ✅ APLICAR otherSkillsCooldownReduction DO BUFFPLUS (COM VERIFICAÇÃO DE NÍVEL)
+if (skill.buffPlus?.otherSkillsCooldownReduction && 
+    currentLevel >= (skill.buffPlus.levelRequired || 11)) {
+  
+  Object.keys(skill.buffPlus.otherSkillsCooldownReduction).forEach(targetSkillKey => {
+    const reductionValue = skill.buffPlus.otherSkillsCooldownReduction[targetSkillKey];
+    
+    if (!modifiedStats._selfBuffs) {
+      modifiedStats._selfBuffs = {};
     }
     
-    modifiedStats._selfBuffs[targetSkillKey].CooldownFlat += Number(reductionValue);
+    if (!modifiedStats._selfBuffs[targetSkillKey]) {
+      modifiedStats._selfBuffs[targetSkillKey] = {};
+    }
+    
+    const isPercent = typeof reductionValue === "string" && reductionValue.includes("%");
+    const numericValue = parseFloat(String(reductionValue).replace("%", ""));
+    
+    if (isPercent) {
+      if (!modifiedStats._selfBuffs[targetSkillKey].CooldownPercent) {
+        modifiedStats._selfBuffs[targetSkillKey].CooldownPercent = 0;
+      }
+      modifiedStats._selfBuffs[targetSkillKey].CooldownPercent += numericValue;
+    } else {
+      if (!modifiedStats._selfBuffs[targetSkillKey].CooldownFlat) {
+        modifiedStats._selfBuffs[targetSkillKey].CooldownFlat = 0;
+      }
+      modifiedStats._selfBuffs[targetSkillKey].CooldownFlat += numericValue;
+    }
   });
 }
 
@@ -3680,6 +3718,9 @@ const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) 
 const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = selectedPokemon) => {
   const effects = [];
   
+  // ✅ CRIAR SET ANTES DE PROCESSAR QUALQUER BUFF
+  const addedCooldownReductions = new Set();
+  
   // Função auxiliar para adicionar um efeito
   const addEffect = (stat, value, isDebuff = false, source = "") => {
     const config = STAT_EFFECT_CONFIG[stat];
@@ -3737,6 +3778,54 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
       arrowClass: arrowClass,
       color: config.color,
       source: sourceLabel
+    });
+  };
+
+  // ✅ FUNÇÃO PARA PROCESSAR COOLDOWNS (USA O SET COMPARTILHADO)
+  const processOtherSkillsCooldown = (reductions, source = "") => {
+    if (!reductions || typeof reductions !== 'object') return;
+    
+    Object.keys(reductions).forEach(targetSkillKey => {
+      const reductionValue = reductions[targetSkillKey];
+      
+      // ✅ CHAVE ÚNICA: skill + valor + source
+      const uniqueKey = `${targetSkillKey}:${reductionValue}:${source}`;
+      
+      // ✅ SE JÁ FOI ADICIONADO, PULAR
+      if (addedCooldownReductions.has(uniqueKey)) {
+        console.log(`⏭️ Pulando duplicata: ${uniqueKey}`); // Debug
+        return;
+      }
+      
+      // ✅ MARCAR COMO ADICIONADO
+      addedCooldownReductions.add(uniqueKey);
+      console.log(`✅ Adicionado: ${uniqueKey}`); // Debug
+      
+      // Buscar nome da skill afetada
+      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
+      
+      // Tratamento correto do valor
+      const isPercent = typeof reductionValue === "string" && reductionValue.includes("%");
+      const numericValue = parseFloat(String(reductionValue).replace("%", ""));
+      
+      let displayValue;
+      if (isPercent) {
+        displayValue = `${Math.abs(numericValue)}%`;
+      } else {
+        displayValue = `${Math.abs(numericValue)}s`;
+      }
+      
+      effects.push({
+        icon: "🔗",
+        label: `${targetSkillName} Cooldown`,
+        value: displayValue,
+        arrow: "▼",
+        arrowClass: "effect-arrow-down",
+        color: "#20c997",
+        source: source,
+        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
+        isOtherSkill: true
+      });
     });
   };
   
@@ -3809,7 +3898,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     const value = skill.nextBasicAttackPercent;
     const isDebuff = value < 0;
     effects.push({
-      icon: "👊",
+      icon: "💊",
       label: "Basic Attack Damage",
       value: `${value >= 0 ? "+" : ""}${value}%`,
       arrow: isDebuff ? "▼" : "▲",
@@ -3819,12 +3908,12 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
- // 7. Processar nextBasicAttackPercent do Plus
+  // 7. Processar nextBasicAttackPercent do Plus
   if (isPlusActive && skill.buffPlus?.nextBasicAttackPercent !== undefined) {
     const value = skill.buffPlus.nextBasicAttackPercent;
     const isDebuff = value < 0;
     effects.push({
-      icon: "👊",
+      icon: "💊",
       label: "Basic Attack Damage",
       value: `${value >= 0 ? "+" : ""}${value}%`,
       arrow: isDebuff ? "▼" : "▲",
@@ -3834,7 +3923,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
-  // ✅ 8. NOVO: Processar effects básicos
+  // 8. Processar effects básicos
   if (skill.effects && Array.isArray(skill.effects)) {
     skill.effects.forEach(effectName => {
       const config = EFFECT_CONFIG[effectName];
@@ -3853,7 +3942,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
-  // ✅ 9. NOVO: Processar effects do buffPlus
+  // 9. Processar effects do buffPlus
   if (isPlusActive && skill.buffPlus?.effects && Array.isArray(skill.buffPlus.effects)) {
     skill.buffPlus.effects.forEach(effectName => {
       const config = EFFECT_CONFIG[effectName];
@@ -3872,50 +3961,49 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   }
   
-  // ✅ 10.NOVO: Processar otherSkillsCooldownReduction (buff básico)
-  if (skill.buff && skill.buff.otherSkillsCooldownReduction) {
-    const otherSkillsReductions = skill.buff.otherSkillsCooldownReduction;
+  // ✅ 10. PROCESSAR otherSkillsCooldownReduction (BUFF BÁSICO)
+  if (skill.buff?.otherSkillsCooldownReduction) {
+    processOtherSkillsCooldown(skill.buff.otherSkillsCooldownReduction, "");
+  }
+
+  // ✅ 11. PROCESSAR otherSkillsCooldownReduction (BUFFPLUS - SE ATIVO)
+  if (isPlusActive && skill.buffPlus?.otherSkillsCooldownReduction) {
+    processOtherSkillsCooldown(skill.buffPlus.otherSkillsCooldownReduction, " (Plus)");
+  }
+
+  // ✅ 12. PROCESSAR skillDamageMultiplier (BUFF BÁSICO)
+  if (skill.buff?.skillDamageMultiplier) {
+    const multiplier = skill.buff.skillDamageMultiplier;
+    const percentIncrease = ((multiplier - 1) * 100).toFixed(1);
+    const affectsBasic = skill.buff.affectsBasicAttack === true;
     
-    Object.keys(otherSkillsReductions).forEach(targetSkillKey => {
-      const reductionValue = otherSkillsReductions[targetSkillKey];
-      
-      // Buscar nome da skill afetada
-      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
-      
-      effects.push({
-        icon: "🔗",
-        label: `${targetSkillName} Cooldown`,
-        value: `${Math.abs(reductionValue)}s`,
-        arrow: "▼",
-        arrowClass: "effect-arrow-down",
-        color: "#20c997",
-        source: "",
-        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
-        isOtherSkill: true
-      });
+    effects.push({
+      icon: "⚔️",
+      label: affectsBasic ? "All Damage" : "Skill Damage",
+      value: `+${percentIncrease}%`,
+      arrow: "▲",
+      arrowClass: "effect-arrow-up",
+      color: "#ff6b00",
+      source: "",
+      isDamageMultiplier: true
     });
   }
-  
-  // ✅ 9. NOVO: Processar otherSkillsCooldownReduction (buffPlus)
-  if (isPlusActive && skill.buffPlus?.otherSkillsCooldownReduction) {
-    const otherSkillsReductions = skill.buffPlus.otherSkillsCooldownReduction;
+
+  // ✅ 13. PROCESSAR skillDamageMultiplier (BUFFPLUS - SE ATIVO)
+  if (isPlusActive && skill.buffPlus?.skillDamageMultiplier) {
+    const multiplier = skill.buffPlus.skillDamageMultiplier;
+    const percentIncrease = ((multiplier - 1) * 100).toFixed(1);
+    const affectsBasic = skill.buffPlus.affectsBasicAttack === true;
     
-    Object.keys(otherSkillsReductions).forEach(targetSkillKey => {
-      const reductionValue = otherSkillsReductions[targetSkillKey];
-      
-      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
-      
-      effects.push({
-        icon: "🔗",
-        label: `${targetSkillName} Cooldown`,
-        value: `${Math.abs(reductionValue)}s`,
-        arrow: "▼",
-        arrowClass: "effect-arrow-down",
-        color: "#20c997",
-        source: " (Plus)",
-        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
-        isOtherSkill: true
-      });
+    effects.push({
+      icon: "⚔️",
+      label: affectsBasic ? "All Damage" : "Skill Damage",
+      value: `+${percentIncrease}%`,
+      arrow: "▲",
+      arrowClass: "effect-arrow-up",
+      color: "#ff6b00",
+      source: " (Plus)",
+      isDamageMultiplier: true
     });
   }
   
@@ -3924,7 +4012,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
   
   // Gerar HTML
   const effectsHTML = effects.map(effect => {
-    // ✅ Template especial para status effects
+    // Template especial para status effects
     if (effect.isStatusEffect) {
       return `
         <div class="active-effect-item status-effect">
@@ -3949,6 +4037,18 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
         </div>
       `;
     }
+
+    // ✅ Template especial para damage multipliers
+    if (effect.isDamageMultiplier) {
+      return `
+        <div class="active-effect-item damage-multiplier">
+          <span class="effect-icon" style="color: ${effect.color};">${effect.icon}</span>
+          <span class="effect-label">${effect.label}${effect.source}</span>
+          <span class="${effect.arrowClass}">${effect.arrow}</span>
+          <span class="effect-value" style="color: ${effect.color}; font-weight: bold;">${effect.value}</span>
+        </div>
+      `;
+    }
     
     // Template normal
     return `
@@ -3970,6 +4070,7 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     </div>
   `;
 };
+
 /**
  * Formata os efeitos de uma passiva em HTML visual
  * @param {Object} passive - Objeto da passiva
@@ -4031,6 +4132,23 @@ const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
       }
     });
   }
+
+  // ✅ 3. PROCESSAR skillDamageMultiplier DA PASSIVA
+  if (passive.skillDamageMultiplier) {
+    const multiplier = passive.skillDamageMultiplier;
+    const percentIncrease = ((multiplier - 1) * 100).toFixed(1);
+    const affectsBasic = passive.affectsBasicAttack === true;
+    
+    effects.push({
+      icon: "⚔️",
+      label: affectsBasic ? "All Damage" : "Skill Damage",
+      value: `+${percentIncrease}%`,
+      arrow: "▲",
+      arrowClass: "effect-arrow-up",
+      color: "#ff6b00",
+      isDamageMultiplier: true
+    });
+  }
   
   // Se não há efeitos, retornar vazio
   if (effects.length === 0) return "";
@@ -4053,6 +4171,7 @@ const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
       </div>
     </div>
   `;
+  
 };
 
   // FUNÇÃO DE CÁLCULO
@@ -4123,29 +4242,6 @@ const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
 
     base = ensureAllStats(base);
     let modified = { ...base };
-
-    // ✅ APLICAR CRIT BASE ANTES DOS ITENS (se showCritDamage estiver ativo)
-    if (showCritDamage) {
-      const pokemonCritBase = POKEMON_CRIT_BASE[selectedPokemon] || 100;
-      
-      // Setar o valor base de CritDmg do Pokémon
-      modified.CritDmg = pokemonCritBase;
-      
-      // Registrar o valor base no statModifiers
-      if (!statModifiers.CritDmg) {
-        statModifiers.CritDmg = { base: 0, modifications: [], total: 0 };
-      }
-      
-      // Ícone customizado para o crit
-      const critIcon = `<img src="./estatisticas-shad/images/icons/crit.png" style="width: 14px; height: 14px; border-radius: 4px; margin-right: 8px;" onerror="this.style.display='none'">`;
-      
-      statModifiers.CritDmg.modifications.push({
-        value: pokemonCritBase,
-        source: `${safeCap(selectedPokemon)} Critical`,
-        type: "flat",
-        customIcon: critIcon
-      });
-    }
 
     const selectedItems = selectedHeldItems.map(item => item.key);
 

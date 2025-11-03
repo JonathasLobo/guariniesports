@@ -4176,7 +4176,8 @@ const pokemonRatings = {
     Endure: 2,
     Mobility: 4,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 3
   },
   aegislash: {
     Attack: 3.5,
@@ -6342,7 +6343,7 @@ const skillDamage = {
               label: "Damage - per Stack Value 2-6",
               formula: (firstHitDamage, Level) => 0.5 * firstHitDamage,
               type: "dependent",
-              dependsOn: 1
+              dependsOn: 0
             },
             {
               label: "Damage - Total 6 Stacks",
@@ -6352,7 +6353,7 @@ const skillDamage = {
                 return (first + (perStack * 5)) * 1.15;
               },
               type: "dependent",
-              dependsOn: 1
+              dependsOn: 0
             }
           ]
         },
@@ -7075,11 +7076,13 @@ const skillDamage = {
       },
       buffPlus: {
         levelRequired: 11,
+        buffs:{
+      },
         otherSkillsCooldownReduction: {
           s21: 4,  // Flame Charge -4s
           s22: 4   // Feint -4s
         }
-      },
+    },
       formulas: [
         {
           label: "Damage",
@@ -8274,6 +8277,7 @@ const skillDamage = {
     "s22": {
       name: "Shadow Sneak",
       cooldown: 12,
+      effects: ["Invisible Reveal"],
       buff: {
         Speed: "70%"
       },
@@ -8504,10 +8508,8 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
-    buff: {},
-    buffPlus: {
-      levelRequired: 1,
-      otherSkillsCooldownReduction: {
+    buff: {
+    otherSkillsCooldownReduction: {
         s11: 1,
         s21: 1,
         s12: 1,
@@ -11706,14 +11708,19 @@ const skillDamage = {
       "passive": {
           name: "Sniper",
           description: "Becomes camouflaged near walls, gaining guaranteed critical hit stacks over time. Higher evolutions can hold more stacks, and crits deal 250% damage.",
+          effects: ["Untargetable"],
           buff: {
-            CritDmg: "250%"
+            CritDmg: "250%",
+            Speed: "-10%"
           },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+      CritRate: 20
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -11731,6 +11738,17 @@ const skillDamage = {
     "s11": {
       name: "Fell Stinger",
       cooldown: 6.5,
+      effects: ["Untargetable"],
+      buff: {},
+      selfBuff: {
+        CooldownPercent: 50
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -11742,6 +11760,17 @@ const skillDamage = {
     "s12": {
       name: "Acrobatics",
       cooldown: 7,
+      buff:{
+        otherSkillsCooldownReduction: {
+          s22: "40%"
+        }
+      },
+      debuffs:{
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -11753,6 +11782,15 @@ const skillDamage = {
     "s21": {
       name: "Snipe Shot",
       cooldown: 7,
+      buff: {
+        SpDEFPen: 25
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage (Close)",
@@ -11774,6 +11812,11 @@ const skillDamage = {
     "s22": {
       name: "Liquidation",
       cooldown: 6,
+      buff:{
+        Speed: "-60%",
+      },
+      skillDamageMultiplier: 1.20,
+      affectsBasicAttack: true,
       formulas: [
 		{
 		  label: "Damage (per bullet)",
@@ -11785,6 +11828,17 @@ const skillDamage = {
 	"ult": {
 		name: "Azure Spy Vision",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Invisible Reveal"],
+      buffs: {
+        CritRate: 200,
+        Shield: 20,
+        Speed: "30%",
+        AtkSPD: 35
+      }
+    },
 		formulas: [
 	]
 	}
@@ -17012,6 +17066,13 @@ const skillDamage = {
     skin5: "Researcher Style",
     skin6: "Captain Style",
     skin7: "Neo Guardian Style"
+  },
+  inteleon: {
+    default: "Default",
+    skin1: "Orange Unite Style",
+    skin2: "Purple Unite Style",
+    skin3: "Marching Band Style",
+    skin4: "Phantom Thief Style"
   },
   // Adicione mais pokémon aqui
 };
