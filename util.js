@@ -11866,14 +11866,25 @@ const skillDamage = {
           label: "Damage - Boosted x3",
           formula: (SPATK, Level) => 0.20 * SPATK + 3 * (Level - 1) + 60,
           type: "special",
-		  additionalText: "Healing: 3.5% Max HP per tick"
-        }
+        },
+        {
+          label: "Healing",
+          formula: (HP, Level) => 0.035 * HP,
+          type: "hp"
+        },
       ]
 	},
 
     "s11": {
       name: "Water Pulse",
       cooldown: 4,
+      buff: {},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage (First Pulse)",
@@ -11890,6 +11901,8 @@ const skillDamage = {
     "s12": {
       name: "Perish Song",
       cooldown: 6.5,
+      effects: ["True Damage"],
+      buff:{},
       formulas: [
         {
           label: "Damage",
@@ -11901,6 +11914,8 @@ const skillDamage = {
     "s21": {
       name: "Bubble Beam",
       cooldown: 9,
+      effects: ["Stun"],
+      buff: {},
       formulas: [
         {
           label: "Shield",
@@ -11922,6 +11937,16 @@ const skillDamage = {
     "s22": {
       name: "Ice Beam",
       cooldown: 8,
+      effects: ["Freeze"],
+      buff: {
+        Speed: "20%"
+      },
+      debuffs: {
+        Speed: 15
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
 		  label: "Damage - Beam",
@@ -11938,6 +11963,16 @@ const skillDamage = {
 	"ult": {
 		name: "Lapras Express",
     cooldown: 100,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs:{
+        Shield: 60,
+        Speed: "30%"
+
+      }
+    },
 		formulas: [
 		{
 		  label: "Damage",
@@ -17073,6 +17108,14 @@ const skillDamage = {
     skin2: "Purple Unite Style",
     skin3: "Marching Band Style",
     skin4: "Phantom Thief Style"
+  },
+  lapras: {
+    default: "Default",
+    skin1: "Performer Style",
+    skin2: "Songstress Style",
+    skin3: "Fashionable Style	",
+    skin4: "Beach Style",
+    skin5: "Warm Style"
   },
   // Adicione mais pokémon aqui
 };
