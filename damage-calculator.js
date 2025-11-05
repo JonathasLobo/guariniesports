@@ -206,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let sweetGauge = false; // Exclusivo para Alcremie (false = Not Full, true = Full)
   let eonPower = 0;
   let eonPower2 = 0;
+  let eonPowerlatios = 0;
   let selectedRoute = null;
   let selectedSkins = {};
   let statModifiers = {}; // Rastreia todos os modificadores de cada stat
@@ -1257,6 +1258,101 @@ const createEonPower2Control = () => {
         eonPower2 = 60;
       } else {
         eonPower2 = Math.min(1059, eonPower2 + 1);
+      }
+      updateDisplay();
+      calcular();
+    }
+  });
+  
+  updateDisplay();
+};
+
+// Controle de Eon Power para Latios
+const createEonPowerControlLatios = () => {
+  if (selectedPokemon !== "latios") return;
+  
+  const skillsDiv = document.getElementById("skills-column");
+  if (!skillsDiv) return;
+  
+  // Remover controle existente
+  const existing = skillsDiv.querySelector(".eon-power-control");
+  if (existing) existing.remove();
+  
+  // Calcular bônus atual
+  const currentBonus = eonPowerlatios > 100 ? ((eonPowerlatios - 100) * 0.5).toFixed(1) : 0;
+  const bonusText = eonPowerlatios <= 100 
+    ? "⚪ Base Damage" 
+    : `🟣 +${currentBonus}% Damage Bonus`;
+  
+  const gaugeHTML = `
+    <div class="eon-power-control" style="background: rgba(138, 43, 226, 0.1); border: 2px solid #8a2be2; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center;">
+      <div style="color: #8a2be2; font-size: 16px; font-weight: bold; margin-bottom: 12px;">⚡ Eon Power</div>
+      <div class="stack-label-new" style="color: #030303ff">Power Level:</div>
+      <div class="stack-controls-new" style="justify-content: center;">
+        <div class="stack-button eon-decrease" style="border-color: #8a2be2; color: #8a2be2; background: rgba(138, 43, 226, 0.1);">−</div>
+        <div class="stack-display eon-display" style="border-color: #8a2be2; background: rgba(138, 43, 226, 0.15); min-width: 70px;">${eonPowerlatios}</div>
+        <div class="stack-button eon-increase" style="border-color: #8a2be2; color: #8a2be2; background: rgba(138, 43, 226, 0.1);">+</div>
+      </div>
+      <div class="eon-bonus-text" style="margin-top: 12px; font-size: 12px; color: #666;">
+        ${bonusText}
+      </div>
+      <div style="margin-top: 8px; font-size: 10px; color: #999; font-style: italic;">
+        ${eonPowerlatios <= 100 ? "Click: +1 (0-100)" : "Click: +1 (101-1099, +0.5% each)"}
+      </div>
+    </div>
+  `;
+  
+  // Inserir no TOPO (acima de tudo)
+  skillsDiv.insertAdjacentHTML("afterbegin", gaugeHTML);
+  
+  const decreaseBtn = skillsDiv.querySelector(".eon-decrease");
+  const increaseBtn = skillsDiv.querySelector(".eon-increase");
+  const display = skillsDiv.querySelector(".eon-display");
+  const bonusDisplay = skillsDiv.querySelector(".eon-bonus-text");
+  const hintText = skillsDiv.querySelector(".eon-power-control > div:last-child");
+  
+  const updateDisplay = () => {
+    display.textContent = eonPowerlatios;
+    decreaseBtn.classList.toggle("disabled", eonPowerlatios <= 0);
+    increaseBtn.classList.toggle("disabled", eonPowerlatios >= 1099);
+    display.classList.add("highlighted");
+    
+    // Atualizar texto do bônus
+    if (eonPowerlatios <= 100) {
+      bonusDisplay.innerHTML = "⚪ Base Damage";
+    } else {
+      const bonus = ((eonPowerlatios - 100) * 0.5).toFixed(1);
+      bonusDisplay.innerHTML = `🟣 +${bonus}% Damage Bonus`;
+    }
+    
+    // Atualizar hint de incremento
+    if (hintText) {
+      hintText.innerHTML = eonPowerlatios <= 100 
+        ? "Click: +1 (0-100)" 
+        : "Click: +1 (101-1099, +0.5% each)";
+    }
+    
+    setTimeout(() => display.classList.remove("highlighted"), 300);
+  };
+  
+  decreaseBtn.addEventListener("click", () => {
+    if (eonPowerlatios > 0) {
+      if (eonPowerlatios === 100) {
+        eonPowerlatios = 0;
+      } else {
+        eonPowerlatios = Math.max(0, eonPowerlatios - 1);
+      }
+      updateDisplay();
+      calcular();
+    }
+  });
+  
+  increaseBtn.addEventListener("click", () => {
+    if (eonPowerlatios < 1099) {
+      if (eonPowerlatios === 0) {
+        eonPowerlatios = 100;
+      } else {
+        eonPowerlatios = Math.min(1099, eonPowerlatios + 1);
       }
       updateDisplay();
       calcular();
@@ -3470,6 +3566,7 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
     sweetGauge = false;
     eonPower = 0;
     eonPower2 = 0;
+    eonPowerlatios = 0;
     selectedHeldItems = [];
     activeItemPassives = {};
     inicializarBloqueioItens();
@@ -5316,6 +5413,10 @@ if (incluirMapBuffs === "sim") {
       createEonPower2Control(); // ✅ NOVO: Segundo gauge
     }
 
+    if (selectedPokemon === "latios") {
+      createEonPowerControlLatios();
+    }
+
     if (typeof skillDamage !== "undefined" && skillDamage[selectedPokemon]) {
       const skills = skillDamage[selectedPokemon];
 
@@ -5496,6 +5597,9 @@ s.formulas.forEach((f, index) => {
         
         baseVal = f.formula(baseAttribute, targetLevel, base.HP, currentEonPower);
         modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP, currentEonPower);
+      } else if (f.usesEonPower && selectedPokemon === "latios") {
+        baseVal = f.formula(baseAttribute, targetLevel, base.HP, eonPowerlatios);
+        modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP, eonPowerlatios);
       } else {
         baseVal = f.formula(baseAttribute, targetLevel, base.HP);
         modifiedVal = f.formula(modifiedAttribute, targetLevel, modified.HP);

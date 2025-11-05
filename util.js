@@ -12184,16 +12184,11 @@ const skillDamage = {
     "latios": {
       "passive": {
           name: "Levitate",
-          description: "Gains burst of speed after using a move. Can fly to an allied Latias when out of combat, becoming unstoppable during the flight (90s cooldown for both).",
+          description: "Gains burst of speed after using a move. Can fly to an allied Latias when out of combat and incriese 10% move speed, becoming unstoppable during the flight (90s cooldown for both).",
           buff: {
             Speed: "50%"
           },
           formulas: [
-          {
-              label: "Latios Duo",
-              type: "text-only",
-          additionalText: "4% Missing HP"
-        },
           ]
         },
 	"atkboosted": {
@@ -12215,12 +12210,26 @@ const skillDamage = {
           label: "Damage",
           formula: (SPATK, Level) => 0.7 * SPATK + 15 * (Level - 1) + 400,
           type: "special"
-        }
+        },
+        		{
+          label: "Damage - Latias ally and marked enemy",
+          formula: (firstHitDamage, Level) => 0.2 * firstHitDamage, // 25% do primeiro hit
+          type: "dependent",
+          dependsOn: 0
+        },
       ]
     },
     "s12": {
       name: "Telekinesis",
       cooldown: 7.5,
+      effects: ["Stun"],
+      buff: {},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -12235,14 +12244,34 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Boosted Attack",
-          formula: (SPATK, Level) => 1.5 * SPATK + 5 * (Level - 1) + 400,
+          formula: (SPATK, Level) => 1.28 * SPATK + 4 * (Level - 1) + 340,
           type: "special"
         },
-		{
-          label: "Damage - Projectile (per Projectile)",
-          formula: (SPATK, Level) => 0.42 * SPATK + 6 * (Level - 1) + 128,
-          type: "special"
+{
+      label: "Damage - Projectile (per Projectile)",
+      formula: (SPATK, Level, HP, eonPowerlatios) => {
+        const baseDamage = 0.357 * SPATK + 5 * (Level - 1) + 108;
+        
+        // Se Eon Power <= 100, retorna dano base
+        if (eonPowerlatios <= 100) {
+          return baseDamage;
         }
+        
+        // A partir de 101, adiciona 0.5% por unidade acima de 100
+        const bonusPercent = (eonPowerlatios - 100) * 0.5;
+        const multiplier = 1 + (bonusPercent / 100);
+        
+        return baseDamage * multiplier;
+      },
+      type: "special",
+      usesEonPower: true,
+      usesEonPowerlatios: true // Flag para indicar que usa Eon Power
+    },
+            {
+          label: "Damage - Projectile (per Projectile) Skill Plus",
+          type: "text-only",
+          additionalText: "3% missing HP increase damage"
+        },
       ]
     },
     "s22": {
@@ -12250,15 +12279,49 @@ const skillDamage = {
       cooldown: 7.5,
       formulas: [
 		{
-		  label: "Damage - per Comet",
-          formula: (SPATK, Level) => 1.09 * SPATK + 24 * (Level - 1) + 364,
-          type: "special"
-		}
+		 formula: (SPATK, Level, HP, eonPowerlatios) => {
+        const baseDamage = 1.09 * SPATK + 24 * (Level - 1) + 364;
+        
+        // Se Eon Power <= 100, retorna dano base
+        if (eonPowerlatios <= 100) {
+          return baseDamage;
+        }
+        
+        // A partir de 101, adiciona 0.5% por unidade acima de 100
+        const bonusPercent = (eonPowerlatios - 100) * 0.5;
+        const multiplier = 1 + (bonusPercent / 100);
+        
+        return baseDamage * multiplier;
+      },
+      type: "special",
+      usesEonPower: true,
+      usesEonPowerlatios: true // Flag para indicar que usa Eon Power
+    },
+        {
+          label: "Damage - per Comet Skill Plus",
+          type: "text-only",
+          additionalText: "3% missing HP increase damage"
+        },
       ]
     },
 	"ult": {
 		name: "Eon Blast",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        CDR: 90,
+        Speed: "30%",
+        Shield: 20
+      },
+        otherSkillsCooldownReduction: {
+          s21: 6, 
+          s22: 7.5,
+          s11: 7,
+          s12: 7.5 
+        },
+    },
 		formulas: [
 		{
 		  label: "Damage",
@@ -17213,6 +17276,10 @@ const skillDamage = {
     skin5: "Warm Style"
   },
   latias: {
+    default: "Default",
+    skin1: "Marine Style",
+  },
+  latios: {
     default: "Default",
     skin1: "Marine Style",
   },
