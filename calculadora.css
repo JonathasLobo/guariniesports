@@ -5119,3 +5119,22 @@ textarea.form-control {
 .dark-mode .effect-status-badge {
   color: #ffffff;  /* ✅ BRANCO no Dark Mode */
 }
+
+.eon-power-control {
+  animation: eonGlow 2s ease-in-out infinite;
+}
+
+@keyframes eonGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
+  }
+}
+
+.eon-display {
+  font-weight: bold;
+  font-size: 18px;
+}
+

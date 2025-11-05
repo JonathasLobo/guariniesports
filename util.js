@@ -11986,7 +11986,7 @@ const skillDamage = {
   	"latias": {
       "passive": {
           name: "Levitate",
-          description: "Gains burst of speed after using a move. Can fly to an allied Latios when out of combat, becoming unstoppable during the flight (90s cooldown for both).",
+          description: "Gains burst of speed after using a move. Can fly to an allied Latios when out of combat, increase 10% move speed becoming unstoppable during the flight (90s cooldown for both).",
           buff: {
             Speed: "50%"
           },
@@ -12007,6 +12007,17 @@ const skillDamage = {
     "s11": {
       name: "Mist Ball",
       cooldown: 8,
+      buff: {},
+      debuffs: {
+        Speed: 40,
+        ATK: 25,
+        SpATK: 25
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
       formulas: [
         {
           label: "Damage - Projectile",
@@ -12038,23 +12049,54 @@ const skillDamage = {
           label: "Shield Skill Plus",
           formula: (SPATK, Level) => 1.8 * SPATK + 0 * (Level - 1) + 480,
           type: "shield"
-        }
+        },
+          {
+            label: "If Latios Duo",
+            type: "text-only",
+            additionalText: "Increase 20% movement speed"
+        },
       ]
     },
     "s21": {
       name: "Dragon Pulse",
       cooldown: 6,
+      buff:{
+        Speed: "-60%"
+      },
+      buffPlus: {
+        levelRequired: 10,
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
           formula: (SPATK, Level) => 1.2 * SPATK + 0 * (Level - 1) + 420,
           type: "special"
         },
-		{
-          label: "Damage - Projectile (per Projectile)",
-          formula: (SPATK, Level) => 0.44 * SPATK + 6 * (Level - 1) + 130,
-          type: "special"
-        },
+    {
+      label: "Damage - Projectile (per Projectile)",
+      formula: (SPATK, Level, HP, eonPower) => {
+        const baseDamage = 0.44 * SPATK + 6 * (Level - 1) + 130;
+        
+        // Se Eon Power <= 100, retorna dano base
+        if (eonPower <= 100) {
+          return baseDamage;
+        }
+        
+        // A partir de 101, adiciona 0.5% por unidade acima de 100
+        const bonusPercent = (eonPower - 100) * 0.5;
+        const multiplier = 1 + (bonusPercent / 100);
+        
+        return baseDamage * multiplier;
+      },
+      type: "special",
+      usesEonPower: true // Flag para indicar que usa Eon Power
+    },
 		{
           label: "Healing",
           formula: (SPATK, Level) => 1.6 * SPATK + 18 * (Level - 1) + 250,
@@ -12065,17 +12107,65 @@ const skillDamage = {
     "s22": {
       name: "Dragon Breath",
       cooldown: 6,
+      buff:{},
+      debuffs:{
+        Speed: 30,
+        SpDEF: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction",
+      },
+      buffPlus: {
+        levelRequired: 10,
+        debuffs: {
+          Speed: 10
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction",
+        }
+      },
       formulas: [
-		{
-		  label: "Damage",
-          formula: (SPATK, Level) => 1.4 * SPATK + 20 * (Level - 1) + 400,
-          type: "special"
-		}
+        {
+          label: "Damage",
+          formula: (SPATK, Level, HP, eonPower2) => {
+            const baseDamage = 1.4 * SPATK + 20 * (Level - 1) + 400;
+            
+            // ✅ NOVA LÓGICA: Base 60 ao invés de 100
+            if (eonPower2 <= 60) {
+              return baseDamage;
+            }
+            
+            // A partir de 61, adiciona 0.5% por unidade acima de 60
+            const bonusPercent = (eonPower2 - 60) * 0.5;
+            const multiplier = 1 + (bonusPercent / 100);
+            
+            return baseDamage * multiplier;
+          },
+          type: "special",
+          usesEonPower: true,
+          usesEonPower2: true
+        }
       ]
     },
 	"ult": {
 		name: "Mist Blast",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 8,
+      buffs: {
+        CDR: 20,
+        Speed: "30%",
+        Shield: 20
+      },
+        otherSkillsCooldownReduction: {
+          s21: 6, 
+          s22: 6,
+          s11: 8,
+          s12: 8 
+        },
+    },
 		formulas: [
 		{
 		  label: "Damage",
@@ -12099,6 +12189,11 @@ const skillDamage = {
             Speed: "50%"
           },
           formulas: [
+          {
+              label: "Latios Duo",
+              type: "text-only",
+          additionalText: "4% Missing HP"
+        },
           ]
         },
 	"atkboosted": {
@@ -17116,6 +17211,10 @@ const skillDamage = {
     skin3: "Fashionable Style	",
     skin4: "Beach Style",
     skin5: "Warm Style"
+  },
+  latias: {
+    default: "Default",
+    skin1: "Marine Style",
   },
   // Adicione mais pokémon aqui
 };
