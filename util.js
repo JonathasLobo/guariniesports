@@ -12811,6 +12811,13 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    debuffs: {
+      Speed: 50
+    },
+    debuffLabels :{
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -12828,6 +12835,13 @@ const skillDamage = {
     "s11": {
       name: "Close Combat",
       cooldown: 6,
+      buff: {},
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {},
+        selfDamageMultiplier: 1.25
+      },
       formulas: [
 		{
           label: "Damage - per Hit (4 hits)",
@@ -12844,6 +12858,15 @@ const skillDamage = {
     "s12": {
       name: "Cross Chop",
       cooldown: 6,
+      buff:{
+        CritRate: 10
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          ATK: 40
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -12855,6 +12878,30 @@ const skillDamage = {
     "s21": {
       name: "Dynamic Punch",
       cooldown: 8,
+      buff:{
+        ATK: "15%",
+        Speed: "40%"
+      },
+      effects: ["Unstoppable", "Stun"],
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          ATK: "5%",
+          Speed: "30%"
+        },
+        debuffs: {
+          Speed: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage - per Tick (4 Ticks)",
@@ -12866,6 +12913,19 @@ const skillDamage = {
     "s22": {
       name: "Submission",
       cooldown: 9,
+      effects: ["Unstoppable"],
+      buff: {
+        Speed: "70%",
+        CritRate: 5,
+        AtkSPD: 40
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CritRate: 5,
+          AtkSPD: 10
+        }
+      },
       formulas: [
 		{
           label: "Damage (2x)",
@@ -12877,6 +12937,19 @@ const skillDamage = {
 	"ult": {
 		name: "Barrage Blow",
     cooldown: 134,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "40%",
+        ATK: "25%",
+        DEF: 250,
+        SpDEF: 250,
+        AtkSPD: 35,
+        Shield: 20
+      }
+    },
 		formulas: [
 		{
           label: "Damage (6x)",
@@ -17506,6 +17579,15 @@ const skillDamage = {
     skin8: "Wanderer Style",
     skin9: "Martial Arts Style (White)",
     skin10: "Neo Street Style"
+  },
+  machamp: {
+    default: "Default",
+    skin1: "Beach Style",
+    skin2: "Adept Style",
+    skin3: "Excavation Style",
+    skin4: "Punk Style",
+    skin5: "Tuxedo Style",
+    skin6: "Neo Street Style"
   },
   // Adicione mais pokémon aqui
 };
