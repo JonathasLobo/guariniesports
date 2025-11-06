@@ -4358,126 +4358,234 @@ const pokemonRatings = {
     Endure: 3,
     Mobility: 1.5,
     Score: 1.5,
-    Support: 4.5
+    Support: 4.5,
+    Invade: 2,
+    Farm: 2.5,
+    Gank: 0.5,
+    CC: 3.5,
+    Smite: 2,
+    Sweep: 1
   },
   comfey: {
     Attack: 2,
     Endure: 2.5,
     Mobility: 3.5,
     Score: 2.5,
-    Support: 5
+    Support: 5,
+    Invade: 0,
+    Farm: 1,
+    Gank: 0,
+    CC: 3,
+    Smite: 0.5,
+    Sweep: 3
   },
   cramorant: {
     Attack: 4,
     Endure: 3,
     Mobility: 3,
     Score: 1.5,
-    Support: 1
+    Support: 1,
+    Invade: 2.5,
+    Farm: 4,
+    Gank: 3,
+    CC: 3.5,
+    Smite: 2,
+    Sweep: 3.5
   },
   crustle: {
     Attack: 1.5,
     Endure: 4,
     Mobility: 1.5,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 3.5,
+    Farm: 3.5,
+    Gank: 4,
+    CC: 3.5,
+    Smite: 1.5,
+    Sweep: 4
   },
   darkrai: {
     Attack: 4.5,
     Endure: 1.5,
     Mobility: 3,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 2,
+    Farm: 2.5,
+    Gank: 3.5,
+    CC: 4.5,
+    Smite: 2,
+    Sweep: 1
   },
   decidueye: {
     Attack: 3.5,
     Endure: 1.5,
     Mobility: 1.5,
     Score: 3.5,
-    Support: 3.5
+    Support: 3.5,
+    Invade: 0.5,
+    Farm: 3.5,
+    Gank: 2.5,
+    CC: 2,
+    Smite: 4,
+    Sweep: 4.5
   },
   delphox: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 3,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 2,
+    CC: 3.5,
+    Smite: 3.5,
+    Sweep: 4
   },
   dodrio: {
     Attack: 3,
     Endure: 2,
     Mobility: 4,
     Score: 4,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1.5,
+    Farm: 4,
+    Gank: 4,
+    CC: 2,
+    Smite: 2.5,
+    Sweep: 2.5
   },
   dragapult: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 4,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 2,
+    CC: 1.5,
+    Smite: 2,
+    Sweep: 3
   },
   dragonite: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 2.5,
+    Smite: 5,
+    Sweep: 0.5
   }, 
   duraludon: {
     Attack: 4.5,
     Endure: 2,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 1.5
+    Support: 1.5,
+    Invade: 0,
+    Farm: 2,
+    Gank: 1,
+    CC: 3.5,
+    Smite: 2.5,
+    Sweep: 1.5
   },  
   eldegoss: {
     Attack: 1.5,
     Endure: 2,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 4
+    Support: 4,
+    Invade: 3,
+    Farm: 1.5,
+    Gank: 0.5,
+    CC: 4,
+    Smite: 2,
+    Sweep: 4.5
   }, 
   empoleon: {
     Attack: 3.5,
     Endure: 3.5,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 1.5
+    Support: 1.5,
+    Invade: 3,
+    Farm: 4,
+    Gank: 4,
+    CC: 2,
+    Smite: 3,
+    Sweep: 1.5
   },
   espeon: {
     Attack: 4,
     Endure: 2,
     Mobility: 1.5,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 1,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 4,
+    Smite: 3.5,
+    Sweep: 3
   },
   falinks: {
     Attack: 3.5,
     Endure: 4.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 1.5,
+    Farm: 4,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 4.5,
+    Sweep: 1
   }, 
   garchomp: {
     Attack: 3.5,
     Endure: 3.5,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3.5,
+    CC: 2,
+    Smite: 2,
+    Sweep: 1
   },
   gardevoir: {
     Attack: 4.5,
     Endure: 1.5,
     Mobility: 1.5,
     Score: 3,
-    Support: 1.5
+    Support: 1.5,
+    Invade: 0.5,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 2,
+    Smite: 4,
+    Sweep: 5
   },
   gengar: {
     Attack: 3.5,
     Endure: 2,
     Mobility: 4,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0.5,
+    Farm: 4.5,
+    Gank: 4.5,
+    CC: 3,
+    Smite: 3,
+    Sweep: 2
   },
   glaceon: {
     Attack: 4,
@@ -12784,10 +12892,12 @@ const skillDamage = {
         CDR: 30,
         Shield: 20
       },
-      conditionalBuffs: {
-        requiredSkill: "s11",
+    },
+    conditionalBuffs: {
+      requiredSkill: "s11",
+      buffs: {
         ATK: "20%"
-      },
+      }
     },
 		formulas: [
 		{
