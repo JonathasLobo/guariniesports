@@ -5138,3 +5138,31 @@ textarea.form-control {
   font-size: 18px;
 }
 
+/* Chlorophyll Gauge - Leafeon */
+.chlorophyll-gauge-control {
+  background: rgba(76, 175, 80, 0.1);
+  border: 2px solid #4CAF50;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chlorophyll-gauge-control > div:first-child {
+  color: #4CAF50;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.chlorophyll-toggle {
+  border-color: #4CAF50 !important;
+  color: #4CAF50 !important;
+  background: rgba(76, 175, 80, 0.1) !important;
+  min-width: 120px;
+  transition: background 0.3s ease;
+}
+
+.chlorophyll-toggle:hover {
+  background: rgba(76, 175, 80, 0.2) !important;
+}

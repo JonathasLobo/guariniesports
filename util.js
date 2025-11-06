@@ -5347,6 +5347,7 @@ const skillDamage = {
     "s12": {
       name: "Sweet Scent",
       cooldown: 8,
+      buff:{},
       debuffs: {
         Speed: 30
       },
@@ -8180,7 +8181,7 @@ const skillDamage = {
 	},
 
     "s11": {
-      name: "Razor leaf",
+      name: "Razor Leaf",
       cooldown: 8,
       buff: {
         ATK: "10%",
@@ -12342,13 +12343,29 @@ const skillDamage = {
           name: "Chlorophyll",
           description: "Charges a gauge while out of tall grass; when full, grants 15% increased movement speed.",
           buff: {
-            Speed: "15%"
+          },
+          conditionalBuffs: {
+            notFull: {
+            },
+            full: {
+              Speed: "15%",
+            }
           },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{},
+    conditionalDebuffs: {
+      notFull: {},
+      full: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -12368,10 +12385,13 @@ const skillDamage = {
         }
       ]
 	},
-
     "s11": {
       name: "Razor Leaf",
       cooldown: 6,
+      buff: {
+        Speed: "20%",
+        DmgTaken: 70
+      },
       formulas: [
 		{
           label: "Damage (Outgoing - First Leaf)",
@@ -12403,6 +12423,22 @@ const skillDamage = {
     "s12": {
       name: "Solar Blade",
       cooldown: 8,
+      buff: {},
+      selfBuff: {
+        CooldownPercent: 50
+      },
+      conditionalBuffs: {
+        notFull: {},
+        full: {
+          CooldownPercent: 50
+        }
+      },
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          DmgTaken: 40
+        }
+      },
       formulas: [
 		{
           label: "Damage (1st Level Charge)",
@@ -12429,6 +12465,13 @@ const skillDamage = {
     "s21": {
       name: "Aerial Ace",
       cooldown: 5,
+      buff:{},
+      selfBuffPlus: {
+        levelRequired: 12,
+        buffs: {
+          CooldownFlat: 0.5
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -12440,6 +12483,19 @@ const skillDamage = {
     "s22": {
       name: "Leaf Blade",
       cooldown: 8.5,
+      buff:{},
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 12,
+        buffs:{
+          CooldownFlat: 1.2
+        }
+      },
       formulas: [
 		{
           label: "Damage (Inner Ring x3)",
@@ -12456,6 +12512,21 @@ const skillDamage = {
 	"ult": {
 		name: "Emerald Two-Step",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable"], 
+      buffs:{
+        Speed: "80%",
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
 		{
           label: "Damage (Initial leap)",
@@ -17282,6 +17353,12 @@ const skillDamage = {
   latios: {
     default: "Default",
     skin1: "Marine Style",
+  },
+  leafeon: {
+    default: "Default",
+    skin1: "Checkered Style",
+    skin2: "Wanderer Style",
+    skin3: "Noble Style"
   },
   // Adicione mais pokémon aqui
 };

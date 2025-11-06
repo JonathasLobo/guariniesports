@@ -204,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSkillSlot = null;
   let muscleGauge = 0; // Exclusivo para Buzzwole (0-6)
   let sweetGauge = false; // Exclusivo para Alcremie (false = Not Full, true = Full)
+  let chlorophyllGauge = false; // Exclusivo para Leafeon (false = Not Full, true = Full)
   let eonPower = 0;
   let eonPower2 = 0;
   let eonPowerlatios = 0;
@@ -1070,6 +1071,46 @@ const createSweetGaugeControl = () => {
   updateDisplay();
 };
 
+// Controle de Chlorophyll Gauge para Leafeon
+const createChlorophyllGaugeControl = () => {
+  if (selectedPokemon !== "leafeon") return;
+  
+  const skillsDiv = document.getElementById("skills-column");
+  if (!skillsDiv) return;
+  
+  // Remover controle existente
+  const existing = skillsDiv.querySelector(".chlorophyll-gauge-control");
+  if (existing) existing.remove();
+  
+  const gaugeHTML = `
+    <div class="chlorophyll-gauge-control" style="background: rgba(76, 175, 80, 0.1); border: 2px solid #4CAF50; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center;">
+      <div style="color: #4CAF50; font-size: 16px; font-weight: bold; margin-bottom: 12px;">🍃 Chlorophyll Gauge</div>
+      <div class="stack-label-new" style="color: #030303ff">Gauge Status:</div>
+      <div class="stack-controls-new" style="justify-content: center;">
+        <div class="stack-button chlorophyll-toggle" style="border-color: #4CAF50; color: #4CAF50; background: rgba(76, 175, 80, 0.1); min-width: 120px;">${chlorophyllGauge ? "FULL" : "NOT FULL"}</div>
+      </div>
+    </div>
+  `;
+  
+  skillsDiv.insertAdjacentHTML("afterbegin", gaugeHTML);
+  
+  const toggleBtn = skillsDiv.querySelector(".chlorophyll-toggle");
+  
+  const updateDisplay = () => {
+    toggleBtn.textContent = chlorophyllGauge ? "FULL" : "NOT FULL";
+    toggleBtn.style.background = chlorophyllGauge ? "rgba(76, 175, 80, 0.3)" : "rgba(76, 175, 80, 0.1)";
+    toggleBtn.classList.add("highlighted");
+    setTimeout(() => toggleBtn.classList.remove("highlighted"), 300);
+  };
+  
+  toggleBtn.addEventListener("click", () => {
+    chlorophyllGauge = !chlorophyllGauge;
+    updateDisplay();
+    calcular();
+  });
+  
+  updateDisplay();
+};
 // Controle de Eon Power para Latias (Dragon Pulse)
 const createEonPowerControl = () => {
   if (selectedPokemon !== "latias") return;
@@ -2435,55 +2476,225 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
       });
     }
 
-    // **1. PRIMEIRO: Processar buffs condicionais para Alcremie**
-    if (pokemon === "alcremie" && skill.conditionalBuffs) {
-      const gaugeState = sweetGauge ? "full" : "notFull";
-      const conditionalBuffsToApply = skill.conditionalBuffs[gaugeState];
-      if (conditionalBuffsToApply) {
-        Object.keys(conditionalBuffsToApply).forEach(stat => {
-          const skillName = skill.name || skillKey;
-          const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
-          
-          if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
-            const rawVal = conditionalBuffsToApply[stat];
-            const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-            const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
-
-            if (!Number.isFinite(numeric)) return;
-
-            if (stat === "FlatCDR") {
-              if (!modifiedStats[stat]) modifiedStats[stat] = 0;
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
-            }
-            else if (PERCENT_KEYS.has(stat)) {
-              if (stat === "Speed" && isPercentString) {
-                const bonusValue = baseStats.Speed * (numeric / 100);
-                modifiedStats.Speed += bonusValue;
-                addStatModifier("Speed", numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "speed-percent", iconPath);
-              } else {
-                modifiedStats[stat] += numeric;
-                addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
-              }
-            }
-            else if (stat === "DmgTaken") {
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
-            }
-            else {
-              if (isPercentString) {
-                const bonusValue = baseStats[stat] * (numeric / 100);
-                modifiedStats[stat] += bonusValue;
-                addStatModifier(stat, bonusValue, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "percent", iconPath);
-              } else {
-                modifiedStats[stat] += numeric;
-                addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
-              }
-            }
-          }
-        });
+ // **1. PROCESSAR buffs condicionais (Alcremie, Leafeon, etc)**
+// ⚠️ SÓ APLICA SE A SKILL ESTIVER ATIVA
+if (skill.conditionalBuffs && activeSkills[pokemon] && activeSkills[pokemon][skillKey]) {
+  let gaugeState = null;
+  
+  // Determinar estado do gauge baseado no pokémon
+  if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  } else if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  }
+  
+  // Se temos um estado válido, processar buffs
+  if (gaugeState && skill.conditionalBuffs[gaugeState]) {
+    const conditionalBuffsToApply = skill.conditionalBuffs[gaugeState];
+    
+    Object.keys(conditionalBuffsToApply).forEach(stat => {
+      if (stat === 'debuffLabels') return;
+      
+      const rawVal = conditionalBuffsToApply[stat];
+      if (rawVal === undefined || rawVal === null || rawVal === "") return;
+      
+      const skillName = skill.name || skillKey;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      
+      // ✅ PROCESSAMENTO ESPECIAL PARA CooldownPercent (SELF-BUFF)
+      if (stat === "CooldownPercent") {
+        const cooldownReduction = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+        
+        if (!Number.isFinite(cooldownReduction)) return;
+        
+        // Armazenar em self-buffs da skill (NÃO em stats globais)
+        if (!modifiedStats._selfBuffs) {
+          modifiedStats._selfBuffs = {};
+        }
+        
+        if (!modifiedStats._selfBuffs[skillKey]) {
+          modifiedStats._selfBuffs[skillKey] = {};
+        }
+        
+        if (!modifiedStats._selfBuffs[skillKey].CooldownPercent) {
+          modifiedStats._selfBuffs[skillKey].CooldownPercent = 0;
+        }
+        
+        // ✅ ACUMULAR o valor condicional
+        modifiedStats._selfBuffs[skillKey].CooldownPercent += cooldownReduction;
+        
+        // Adicionar ao rastreador visual
+        addStatModifier("CDR", cooldownReduction, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
       }
-    }
+      // Processamento normal para outros stats
+      else if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+        if (!Number.isFinite(numeric)) return;
+
+        if (stat === "FlatCDR") {
+          if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+        }
+        else if (PERCENT_KEYS.has(stat)) {
+          if (stat === "Speed" && isPercentString) {
+            const bonusValue = baseStats.Speed * (numeric / 100);
+            modifiedStats.Speed += bonusValue;
+            addStatModifier("Speed", numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "speed-percent", iconPath);
+          } else {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+          }
+        }
+        else if (stat === "DmgTaken") {
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+        }
+        else {
+          if (isPercentString) {
+            const bonusValue = baseStats[stat] * (numeric / 100);
+            modifiedStats[stat] += bonusValue;
+            addStatModifier(stat, bonusValue, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "percent", iconPath);
+          } else {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+          }
+        }
+      }
+    });
+  }
+}
+
+// **1.5 PROCESSAR debuffs condicionais**
+// ⚠️ SÓ APLICA SE A SKILL ESTIVER ATIVA
+if (skill.conditionalDebuffs && activeSkills[pokemon] && activeSkills[pokemon][skillKey]) {
+  let gaugeState = null;
+  
+  // Determinar estado do gauge
+  if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  } else if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  }
+  
+  if (gaugeState && skill.conditionalDebuffs[gaugeState]) {
+    const conditionalDebuffsToApply = skill.conditionalDebuffs[gaugeState];
+    
+    Object.keys(conditionalDebuffsToApply).forEach(debuffStat => {
+      if (debuffStat === 'debuffLabels') return;
+      
+      const debuffValue = conditionalDebuffsToApply[debuffStat];
+      if (debuffValue === undefined || debuffValue === null || debuffValue === "") return;
+      
+      const numericValue = parseFloat(String(debuffValue).replace(/[^\d.-]/g, ''));
+      if (!Number.isFinite(numericValue) || numericValue === 0) return;
+      
+      if (!debuffsAcumulados[debuffStat]) {
+        debuffsAcumulados[debuffStat] = {
+          total: 0,
+          skills: [],
+          customLabel: null
+        };
+      }
+      
+      debuffsAcumulados[debuffStat].total += numericValue;
+      debuffsAcumulados[debuffStat].skills.push({
+        name: `${skill.name || skillKey} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`,
+        value: numericValue
+      });
+      
+      if (skill.conditionalDebuffs.debuffLabels && skill.conditionalDebuffs.debuffLabels[debuffStat]) {
+        debuffsAcumulados[debuffStat].customLabel = skill.conditionalDebuffs.debuffLabels[debuffStat];
+      }
+    });
+  }
+}
+
+// **1.25 PROCESSAR conditionalBuffs GENÉRICO (incluindo Leafeon)**
+if (skill.conditionalBuffs) {
+  let gaugeState = null;
+  
+  // Determinar estado do gauge baseado no pokémon
+  if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  } else if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  }
+  
+  // Se temos um estado válido, processar buffs
+  if (gaugeState && skill.conditionalBuffs[gaugeState]) {
+    const conditionalBuffsToApply = skill.conditionalBuffs[gaugeState];
+    
+    Object.keys(conditionalBuffsToApply).forEach(stat => {
+      if (stat === 'debuffLabels') return;
+      
+      const rawVal = conditionalBuffsToApply[stat];
+      if (rawVal === undefined || rawVal === null || rawVal === "") return;
+      
+      const skillName = skill.name || skillKey;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      
+      // ✅ PROCESSAMENTO ESPECIAL PARA CooldownPercent
+      if (stat === "CooldownPercent") {
+        const cooldownReduction = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+        
+        if (!Number.isFinite(cooldownReduction)) return;
+        
+        // Armazenar em self-buffs da skill
+        if (!modifiedStats._selfBuffs[skillKey]) {
+          modifiedStats._selfBuffs[skillKey] = {};
+        }
+        
+        if (!modifiedStats._selfBuffs[skillKey].CooldownPercent) {
+          modifiedStats._selfBuffs[skillKey].CooldownPercent = 0;
+        }
+        modifiedStats._selfBuffs[skillKey].CooldownPercent += cooldownReduction;
+        
+        // Adicionar ao rastreador visual
+        addStatModifier("CDR", cooldownReduction, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+      }
+      // Processamento normal para outros stats
+      else if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+        if (!Number.isFinite(numeric)) return;
+
+        if (stat === "FlatCDR") {
+          if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+        }
+        else if (PERCENT_KEYS.has(stat)) {
+          if (stat === "Speed" && isPercentString) {
+            const bonusValue = baseStats.Speed * (numeric / 100);
+            modifiedStats.Speed += bonusValue;
+            addStatModifier("Speed", numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "speed-percent", iconPath);
+          } else {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+          }
+        }
+        else if (stat === "DmgTaken") {
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+        }
+        else {
+          if (isPercentString) {
+            const bonusValue = baseStats[stat] * (numeric / 100);
+            modifiedStats[stat] += bonusValue;
+            addStatModifier(stat, bonusValue, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "percent", iconPath);
+          } else {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${skillName} (${gaugeState === "full" ? "Full Gauge" : "Not Full"})`, "flat", iconPath);
+          }
+        }
+      }
+    });
+  }
+}
 
     if (pokemon === "buzzwole" && skill.conditionalGaugeBuffs && muscleGauge in skill.conditionalGaugeBuffs) {
         const gaugeBuffs = skill.conditionalGaugeBuffs[muscleGauge];
@@ -2504,88 +2715,86 @@ const applyActiveSkillBuffs = (stats, pokemon, baseStats) => {
       }
       
     // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
-    if (skill.buff && typeof skill.buff === 'object') {
-      Object.keys(skill.buff).forEach(stat => {
-        // Condições especiais para Blastoise
-        if (
-          pokemon === "blastoise" &&
-          skillKey === "s11" &&
-          !(activeSkills[pokemon]?.s22)
-        ) {
-          return;
-        }
-        if (
-          pokemon === "blastoise" &&
-          skillKey === "s12" &&
-          stat === "Speed" &&
-          !(activeSkills[pokemon]?.s22)
-        ) {
-          return;
-        }
-        if (
-          pokemon === "espeon" &&
-          skillKey === "s12" &&
-          stat === "HPRegen" &&
-          !(activeSkills[pokemon]?.s22)
-        ) {
-          return;
-        }
-
-        const skillName = skill.name || skillKey;
-        const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
-
-        if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
-          const rawVal = skill.buff[stat];
-          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-          
-          // CORREÇÃO: Preservar o sinal negativo
-          let numericStr = String(rawVal).replace("%","").replace(",", ".");
-          // Remover apenas o "+" se existir, mas MANTER o "-"
-          if (numericStr.startsWith("+")) {
-            numericStr = numericStr.substring(1);
-          }
-          const numeric = parseFloat(numericStr);
-
-          if (!Number.isFinite(numeric)) return;
-
-          if (stat === "FlatCDR") {
-            if (!modifiedStats[stat]) modifiedStats[stat] = 0;
-            modifiedStats[stat] += numeric;
-            addStatModifier(stat, numeric, skillName, "flat", iconPath);
-          }
-          // Para stats percentuais (Speed, AtkSPD, CDR, etc.)
-          else if (PERCENT_KEYS.has(stat)) {
-            // SPEED e HPRegen são híbridos: podem ser flat OU percent
-            if ((stat === "Speed" || stat === "HPRegen") && isPercentString) {
-              const bonusValue = baseStats[stat] * (numeric / 100);
-              modifiedStats[stat] += bonusValue;
-              addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
-            } else {
-              // Outros stats percentuais: adicionar diretamente
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            }
-          }
-          else if (stat === "DmgTaken") {
-            modifiedStats[stat] += numeric;
-            addStatModifier(stat, numeric, skillName, "flat", iconPath);
-          } 
-          // Para stats não-percentuais (HP, ATK, DEF, SpATK, SpDEF)
-          else {
-            if (isPercentString) {
-              // Se vier com %, calcular baseado no valor base
-              const bonusValue = baseStats[stat] * (numeric / 100);
-              modifiedStats[stat] += bonusValue;
-              addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
-            } else {
-              // Se for valor flat, adicionar diretamente
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            }
-          }
-        }
-      });
+if (skill.buff && typeof skill.buff === 'object') {
+  Object.keys(skill.buff).forEach(stat => {
+    // Condições especiais para Blastoise - s11
+    if (pokemon === "blastoise" && skillKey === "s11") {
+      if (!(activeSkills[pokemon]?.s22)) {
+        return;
+      }
     }
+    
+    // Condições especiais para Blastoise - s12 Speed
+    if (pokemon === "blastoise" && skillKey === "s12" && stat === "Speed") {
+      if (!(activeSkills[pokemon]?.s22)) {
+        return;
+      }
+    }
+    
+    // Condições especiais para Espeon - s12 HPRegen
+    if (pokemon === "espeon" && skillKey === "s12" && stat === "HPRegen") {
+      if (!(activeSkills[pokemon]?.s22)) {
+        return;
+      }
+    }
+
+    const skillName = skill.name || skillKey;
+    const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+
+    if (modifiedStats.hasOwnProperty(stat) || stat === "FlatCDR") {
+      const rawVal = skill.buff[stat];
+      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+      
+      // Preservar o sinal negativo
+      let numericStr = String(rawVal).replace("%","").replace(",", ".");
+      if (numericStr.startsWith("+")) {
+        numericStr = numericStr.substring(1);
+      }
+      const numeric = parseFloat(numericStr);
+
+      if (!Number.isFinite(numeric)) return;
+
+      if (stat === "FlatCDR") {
+        if (!modifiedStats[stat]) modifiedStats[stat] = 0;
+        modifiedStats[stat] += numeric;
+        addStatModifier(stat, numeric, skillName, "flat", iconPath);
+      }
+      // Para stats percentuais (Speed, AtkSPD, CDR, etc.)
+      else if (PERCENT_KEYS.has(stat)) {
+        // ✅ CORREÇÃO CRÍTICA: Para Speed e HPRegen com %, usar o VALOR JÁ MODIFICADO
+        if ((stat === "Speed" || stat === "HPRegen") && isPercentString) {
+          // ✅ USAR modifiedStats (valor atual) ao invés de baseStats (valor inicial)
+          const currentValue = modifiedStats[stat] || 0;
+          const bonusValue = currentValue * (numeric / 100);
+          modifiedStats[stat] += bonusValue;
+          addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
+        } else {
+          // Outros stats percentuais: adicionar diretamente
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, skillName, "flat", iconPath);
+        }
+      }
+      else if (stat === "DmgTaken") {
+        // ✅ CORREÇÃO: DmgTaken é percentual flat
+        modifiedStats[stat] += numeric;
+        addStatModifier(stat, numeric, skillName, "flat", iconPath);
+      } 
+      // Para stats não-percentuais (HP, ATK, DEF, SpATK, SpDEF)
+      else {
+        if (isPercentString) {
+          // ✅ CORREÇÃO: Usar baseStats APENAS para stats não-percentuais com %
+          const bonusValue = baseStats[stat] * (numeric / 100);
+          modifiedStats[stat] += bonusValue;
+          addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
+        } else {
+          // Se for valor flat, adicionar diretamente
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, skillName, "flat", iconPath);
+        }
+      }
+    }
+  });
+}
 
     // ✅ NOVO: Aplicar selfDamageMultiplier do buff básico
 if (skill.buff && skill.buff.selfDamageMultiplier) {
@@ -2747,55 +2956,50 @@ if (skill.conditionalEffects && selectedConditionalEffects[pokemon] && selectedC
         currentLevel >= (skill.buffPlus.levelRequired || 11)) {
       
     // Processar buffs normais do buffPlus
-    if (skill.buffPlus.buffs && typeof skill.buffPlus.buffs === 'object') {
-      Object.keys(skill.buffPlus.buffs).forEach(stat => {
-        if (modifiedStats.hasOwnProperty(stat)) {
-          const rawVal = skill.buffPlus.buffs[stat];
-          const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
-          
-          // CORREÇÃO: Preservar o sinal negativo
-          let numericStr = String(rawVal).replace("%","").replace(",", ".");
-          if (numericStr.startsWith("+")) {
-            numericStr = numericStr.substring(1);
-          }
-          const numeric = parseFloat(numericStr);
+if (skill.buffPlus.buffs && typeof skill.buffPlus.buffs === 'object') {
+  Object.keys(skill.buffPlus.buffs).forEach(stat => {
+    if (modifiedStats.hasOwnProperty(stat)) {
+      const rawVal = skill.buffPlus.buffs[stat];
+      const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+      
+      let numericStr = String(rawVal).replace("%","").replace(",", ".");
+      if (numericStr.startsWith("+")) {
+        numericStr = numericStr.substring(1);
+      }
+      const numeric = parseFloat(numericStr);
 
-          if (!Number.isFinite(numeric)) return;
+      if (!Number.isFinite(numeric)) return;
 
-          const skillName = `${skill.name || skillKey} (Plus)`;
-          const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      const skillName = `${skill.name || skillKey} (Plus)`;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
 
-          // Resto do código permanece igual...
-          if (PERCENT_KEYS.has(stat)) {
-            if (stat === "Speed" && isPercentString) {
-              const bonusValue = baseStats.Speed * (numeric / 100);
-              modifiedStats.Speed += bonusValue;
-              addStatModifier("Speed", numeric, skillName, "speed-percent", iconPath);
-            } else {
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            }
-          } else if (stat === "DmgTaken") {
-            if (isPercentString) {
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            } else {
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            }
-          } else {
-            if (isPercentString) {
-              const bonusValue = baseStats[stat] * (numeric / 100);
-              modifiedStats[stat] += bonusValue;
-              addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
-            } else {
-              modifiedStats[stat] += numeric;
-              addStatModifier(stat, numeric, skillName, "flat", iconPath);
-            }
-          }
+      if (PERCENT_KEYS.has(stat)) {
+        if (stat === "Speed" && isPercentString) {
+          // ✅ CORREÇÃO: Usar valor atual ao invés de baseStats
+          const currentValue = modifiedStats.Speed || 0;
+          const bonusValue = currentValue * (numeric / 100);
+          modifiedStats.Speed += bonusValue;
+          addStatModifier("Speed", bonusValue, skillName, "percent", iconPath);
+        } else {
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, skillName, "flat", iconPath);
         }
-      });
+      } else if (stat === "DmgTaken") {
+        modifiedStats[stat] += numeric;
+        addStatModifier(stat, numeric, skillName, "flat", iconPath);
+      } else {
+        if (isPercentString) {
+          const bonusValue = baseStats[stat] * (numeric / 100);
+          modifiedStats[stat] += bonusValue;
+          addStatModifier(stat, bonusValue, skillName, "percent", iconPath);
+        } else {
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, skillName, "flat", iconPath);
+        }
+      }
     }
+  });
+}
 
     // ✅ NOVO: Aplicar selfDamageMultiplier do buffPlus (se ativo)
     if (skill.buffPlus.selfDamageMultiplier) {
@@ -3122,6 +3326,64 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
         }
       });
     }
+
+// ✅ PROCESSAR buffs condicionais de gauge (Leafeon, Alcremie, etc)
+// ⚠️ SÓ APLICA SE A PASSIVA ESTIVER ATIVA
+if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemon][passiveKey]) {
+  let gaugeState;
+  
+  // Determinar estado do gauge baseado no pokémon
+  if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  } else if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  } else {
+    return; // Pokémon não suportado
+  }
+  
+  const conditionalBuffsToApply = passive.conditionalBuffs[gaugeState];
+  
+  if (conditionalBuffsToApply) {
+    Object.keys(conditionalBuffsToApply).forEach(stat => {
+      const gaugeLabel = gaugeState === "full" ? "Full Gauge" : "Not Full";
+      
+      if (modifiedStats.hasOwnProperty(stat)) {
+        const rawVal = conditionalBuffsToApply[stat];
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        const numeric = parseFloat(String(rawVal).replace("%","").replace("+","").replace(",", "."));
+
+        if (!Number.isFinite(numeric)) return;
+
+        if (PERCENT_KEYS.has(stat) && stat !== "DmgTaken") {
+          // Stats percentuais (Speed, CDR, etc)
+          if (stat === "Speed" && isPercentString) {
+            // Speed com % = percentual do base
+            const bonusValue = baseStats.Speed * (numeric / 100);
+            modifiedStats.Speed += bonusValue;
+            addStatModifier("Speed", bonusValue, `${passiveName} (${gaugeLabel})`, "percent", iconPath);
+          } else {
+            // Outros stats percentuais = valor direto
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${passiveName} (${gaugeLabel})`, "flat", iconPath);
+          }
+        } else if (stat === "DmgTaken") {
+          modifiedStats[stat] += numeric;
+          addStatModifier(stat, numeric, `${passiveName} (${gaugeLabel})`, "flat", iconPath);
+        } else {
+          // Stats numéricos (HP, ATK, DEF, etc)
+          if (isPercentString) {
+            const bonusValue = baseStats[stat] * (numeric / 100);
+            modifiedStats[stat] += bonusValue;
+            addStatModifier(stat, bonusValue, `${passiveName} (${gaugeLabel})`, "percent", iconPath);
+          } else {
+            modifiedStats[stat] += numeric;
+            addStatModifier(stat, numeric, `${passiveName} (${gaugeLabel})`, "flat", iconPath);
+          }
+        }
+      }
+    });
+  }
+}
 
     // ✅ NOVO: Processar debuffs da passiva
     if (passive.debuffs && typeof passive.debuffs === 'object') {
@@ -3564,6 +3826,7 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
 
     muscleGauge = 0;
     sweetGauge = false;
+    chlorophyllGauge = false;
     eonPower = 0;
     eonPower2 = 0;
     eonPowerlatios = 0;
@@ -5406,6 +5669,10 @@ if (incluirMapBuffs === "sim") {
     // Sweet Gauge para Alcremie - ADICIONE ESTE BLOCO
     if (selectedPokemon === "alcremie") {
       createSweetGaugeControl();
+    }
+
+    if (selectedPokemon === "leafeon") {
+      createChlorophyllGaugeControl();
     }
     
     if (selectedPokemon === "latias") {
