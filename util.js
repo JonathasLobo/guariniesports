@@ -12586,6 +12586,18 @@ const skillDamage = {
     "s11": {
       name: "Power-Up Punch",
       cooldown: 7,
+      buff: {
+        DmgTaken: 30,
+        Speed: "-15%"
+      },
+      selfBuff: {
+        CooldownFlat: 1
+      },
+      buffPlus:{
+        levelRequired: 11,
+        effects: ["Unstoppable"],
+        buffs:{},
+      },
       formulas: [
 		{
           label: "Damage - Uncharged",
@@ -12596,12 +12608,24 @@ const skillDamage = {
           label: "Damage - Fully Charged",
           formula: (ATK, Level) => 3.818 * ATK + 5 * (Level - 1) + 161,
           type: "physical"
+        },
+        {
+          label: "Damage - Execute",
+          type: "text-only",
+          additionalText: "12% of Enemy Missing HP"
         }
       ]
     },
     "s12": {
       name: "Extreme Speed",
       cooldown: 7.5,
+      buff: {},
+      buffPlus: {
+        levelRequired: 11,
+        buffs:{
+          ATK: "7.5%"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -12623,6 +12647,17 @@ const skillDamage = {
     "s21": {
       name: "Bone Rush",
       cooldown: 9,
+      effects: ["Stun"],
+      buff:{},
+      buffPlus: {
+        levelRequired: 13,
+        buffs:{
+      },
+        otherSkillsCooldownReduction: {
+          s12: 7.5, 
+          s11: 7 
+        }
+    },
       formulas: [
 		{
           label: "Damage - per Hit (4-7 Hits)",
@@ -12634,6 +12669,8 @@ const skillDamage = {
     "s22": {
       name: "Close Combat",
       cooldown: 7.5,
+      effects: ["Unstoppable"],
+      buff:{},
       formulas: [
 		{
           label: "Damage - per Hit (11 Hits)",
@@ -12655,6 +12692,20 @@ const skillDamage = {
 	"ult": {
 		name: "Aura Cannon",
     cooldown: 100,
+    buff: {},
+    buffPlus:{
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      conditionalBuffs: {
+        requiredSkill: "s11",
+        ATK: "20%"
+      },
+    },
 		formulas: [
 		{
           label: "Damage - per Tick",
@@ -17359,6 +17410,19 @@ const skillDamage = {
     skin1: "Checkered Style",
     skin2: "Wanderer Style",
     skin3: "Noble Style"
+  },
+  lucario: {
+    default: "Default",
+    skin1: "Space Style",
+    skin2: "Costume Party Style",
+    skin3: "Concert Style",
+    skin4: "Ruins Style",
+    skin5: "Martial Arts Style",
+    skin6: "Aristocrat Style",
+    skin7: "Captain Style",
+    skin8: "Wanderer Style",
+    skin9: "Martial Arts Style (White)",
+    skin10: "Neo Street Style"
   },
   // Adicione mais pokémon aqui
 };
