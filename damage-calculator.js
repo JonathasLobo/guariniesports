@@ -562,7 +562,9 @@ const updatePokemonImage = () => {
     Invade: '🥷',
     Farm: '🪙',
     Gank: '🗡️',
-    CC: '🎮'
+    CC: '🎮',
+    Smite: '🤜',
+    Sweep: '🌳'
   };
   
   // Mapeamento de nomes para classes CSS
@@ -575,7 +577,9 @@ const updatePokemonImage = () => {
     Invade: 'invade',
     Farm: 'farm',
     Gank: 'gank',
-    CC: 'cc'
+    CC: 'cc',
+    Smite: 'smite',
+    Sweep: 'sweep'
   };
   
   const ratingsHtml = Object.entries(ratings).map(([category, value]) => {

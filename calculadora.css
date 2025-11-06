@@ -3601,6 +3601,11 @@ textarea.form-control {
 .rating-bar-fill.score { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
 .rating-bar-fill.support { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
 .rating-bar-fill.invade { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
+.rating-bar-fill.farm { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
+.rating-bar-fill.gank { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
+.rating-bar-fill.cc { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
+.rating-bar-fill.smite { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
+.rating-bar-fill.sweep { background: linear-gradient(90deg, #fced65 0%, #fced65 100%); }
 
 .rating-value {
   min-width: 20px;

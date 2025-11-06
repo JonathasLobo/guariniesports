@@ -4177,98 +4177,181 @@ const pokemonRatings = {
     Mobility: 4,
     Score: 2.5,
     Support: 0.5,
-    Invade: 3
+    Invade: 2,
+    Farm: 3.5,
+    Gank: 3.5,
+    CC: 2,
+    Smite: 2.5,
+    Sweep: 1
   },
   aegislash: {
     Attack: 3.5,
     Endure: 2,
     Mobility: 4,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 3.5,
+    Gank: 2,
+    CC: 4,
+    Smite: 4.5,
+    Sweep: 0.5
   },
   alcremie: {
     Attack: 1.5,
     Endure: 2,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 4
+    Support: 4,
+    Invade: 0.5,
+    Farm: 1,
+    Gank: 0.5,
+    CC: 2,
+    Smite: 0.5,
+    Sweep: 3
   },
   armarouge: {
     Attack: 4,
     Endure: 2,
     Mobility: 2.5,
     Score: 2,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 4,
+    Sweep: 4
   },
   azumarill: {
     Attack: 3,
     Endure: 3,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 3,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 2.5,
+    Smite: 1,
+    Sweep: 1
   },
   blastoise: {
     Attack: 2,
     Endure: 3.5,
     Mobility: 2,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 3,
+    Farm: 3.5,
+    Gank: 2.5,
+    CC: 5,
+    Smite: 3.5,
+    Sweep: 3
   },
   blaziken: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 4,
     Score: 1,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1.5,
+    Farm: 3.5,
+    Gank: 4,
+    CC: 2.5,
+    Smite: 5,
+    Sweep: 2
   },
   blissey: {
     Attack: 1,
     Endure: 3.5,
     Mobility: 1.5,
     Score: 1.5,
-    Support: 4.5
+    Support: 4.5,
+    Invade: 2.5,
+    Farm: 1.5,
+    Gank: 0.5,
+    CC: 0.5,
+    Smite: 3,
+    Sweep: 2.5
   },
   buzzwole: {
     Attack: 4,
     Endure: 3,
     Mobility: 2.5,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 3,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 4.5,
+    Smite: 2,
+    Sweep: 0
   },
   ceruledge: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 3,
+    Sweep: 1.5
   },
   chandelure: {
     Attack: 5,
     Endure: 1,
     Mobility: 1,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 1.5,
+    Farm: 3.5,
+    Gank: 2,
+    CC: 2.5,
+    Smite: 4,
+    Sweep: 4
   },
   charizard: {
     Attack: 3.5,
     Endure: 3,
     Mobility: 2.5,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 2.5,
+    Gank: 2.5,
+    CC: 2,
+    Smite: 2,
+    Sweep: 3.5
   },
   megacharizardx: {
     Attack: 4,
     Endure: 3.5,
     Mobility: 2.5,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 2.5,
+    Gank: 3,
+    CC: 2,
+    Smite: 2,
+    Sweep: 1
   },
   cinderace: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 3,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 4,
+    Gank: 2.5,
+    CC: 1,
+    Smite: 5,
+    Sweep: 3
   },
   clefable: {
     Attack: 2,
