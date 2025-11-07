@@ -805,6 +805,12 @@ const STAT_EFFECT_CONFIG = {
   "inteleon": 150,
   // Pokémons padrão usam 100% (não precisam estar listados)
   };
+
+    // Configuração de quais skills podem dar crítico por Pokémon
+  const POKEMON_CRIT_SKILLS = {
+    "absol": ["s11", "s12", "s21", "s22", "ult"],
+    "aegislash": ["s12", "s22"],
+  };
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
     "zacian": "rustedsword",
@@ -1698,7 +1704,7 @@ const showSkillSelectionPanel = (options, slotContainer) => {
   // NOVO: Botão de limpar
   const clearButton = document.createElement("button");
   clearButton.className = "clear-skill-button";
-  clearButton.textContent = "🗑️ Limpar Seleção";
+  clearButton.textContent = "🗑️ Clear";
   clearButton.addEventListener("click", () => {
     clearSkillSelection();
   });
@@ -4727,7 +4733,21 @@ const formatPassiveEffects = (passive, pokemon = selectedPokemon) => {
       </div>
     </div>
   `;
+};
+// Função para verificar se uma skill pode dar crítico
+const canSkillCrit = (pokemon, skillKey) => {
+  // Nunca aplicar em passivas
+  if (skillKey === "passive" || skillKey === "passive1" || skillKey === "passive2") {
+    return false;
+  }
   
+  // Se o pokémon não está na lista, retorna false
+  if (!POKEMON_CRIT_SKILLS[pokemon]) {
+    return false;
+  }
+  
+  // Verifica se a skill está na lista do pokémon
+  return POKEMON_CRIT_SKILLS[pokemon].includes(skillKey);
 };
 
   // FUNÇÃO DE CÁLCULO
@@ -5778,6 +5798,11 @@ Object.keys(skills).forEach(key => {
   const cooldownBadge = effectiveCooldown ? 
     `<span class="skill-cooldown-badge">⏱️ ${effectiveCooldown.toFixed(1)}s</span>` : "";
 
+  const critIndicator = canSkillCrit(selectedPokemon, key) && showCritDamage ? 
+  `<span class="skill-crit-indicator" title="This skill can critically hit">
+    <img src="./estatisticas-shad/images/icons/crit.png" style="width: 16px; height: 16px; vertical-align: middle;" onerror="this.style.display='none'">
+  </span>` : "";
+
   const calculatedValues = [];
   
 // Primeiro passe: calcular valores não dependentes
@@ -6095,16 +6120,16 @@ const baseVal = customRound(values.base);
 const modVal = customRound(values.modified);
   const hasIncrease = modVal > baseVal;
 
-  // Calcular dano crítico se estiver ativo - APENAS para atkboosted
-    let critDamageValue = null;
-    const isBasicAttackForCrit = (key === "atkboosted");
+  // Calcular dano crítico se estiver ativo
+  let critDamageValue = null;
+  const isBasicAttackForCrit = (key === "atkboosted");
+  const isSkillWithCrit = canSkillCrit(selectedPokemon, key);
 
-    if (showCritDamage && isBasicAttackForCrit) {
-      // Usar diretamente o modified.CritDmg (já inclui base do Pokémon + itens)
-      const totalCritMultiplier = modified.CritDmg || 100;
-      
-      critDamageValue = customRound(modVal * (1 + (totalCritMultiplier / 100)));
-    }
+  // ✅ NOVO: Aplica crítico no ataque básico OU em skills específicas
+  if (showCritDamage && (isBasicAttackForCrit || isSkillWithCrit)) {
+    const totalCritMultiplier = modified.CritDmg || 100;
+    critDamageValue = customRound(modVal * (1 + (totalCritMultiplier / 100)));
+  }
   // ✅ CALCULAR percentIncrease CONSIDERANDO nextBasicAttackPercent
   let percentIncrease = 0;
 
@@ -6167,6 +6192,7 @@ const skillHtml = `
           <h4>
             ${s.name}
             ${cooldownBadge}
+            ${critIndicator}
             ${skillPlusIndicator}
           </h4>
         </div>

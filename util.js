@@ -13361,11 +13361,13 @@ const skillDamage = {
     "passive": {
           name: "Overgrow",
           description: "At 50% HP or below, taking damage triggers invisibility, a speed boost, and enhanced damage with lifesteal for 4s (60s cooldown).",
+          effects: ["Invisible"],
           buff: {
             Speed: "15%",
-            ATK: "15%",
             HPRegen: "15%"
           },
+          skillDamageMultiplier: 1.15,
+          affectsBasicAttack: true,
           formulas: [
           ]
         },
@@ -13388,6 +13390,13 @@ const skillDamage = {
     "s11": {
       name: "Flower Trick",
       cooldown: 5,
+      buff: {},
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          Speed: "30%"
+        }
+      },  
       formulas: [
         {
           label: "Damage - Explosion Base",
@@ -13398,17 +13407,40 @@ const skillDamage = {
           label: "Damage - Increased Explosion",
           formula: (ATK, Level) => 2.4 * ATK + 24 * (Level - 1) + 640,
           type: "physical"
+        },
+        {
+          label: "Damage - Execute",
+          type: "text-only",
+          additionalText: "18% of missing HP"
         }
       ]
     },
     "s12": {
       name: "Night Slash",
       cooldown: 6.5,
+      buff: {
+        CritRate: 50
+      },
+      selfBuff: {
+        CooldownFlat: 0.5
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CritRate: 15
+        }
+      },
       formulas: [
 		{
           label: "Damage",
           formula: (ATK, Level) => 0.73 * ATK + 6 * (Level - 1) + 250,
           type: "physical"
+        },
+        	{
+          label: "Damage - Subsequent Waves",
+          formula: (firstHitDamage, Level) => 0.5 * firstHitDamage, // 25% do primeiro hit
+          type: "dependent",
+          dependsOn: 0
         },
         {
           label: "Healing",
@@ -13425,6 +13457,10 @@ const skillDamage = {
     "s21": {
       name: "Double Team",
       cooldown: 8,
+      effects: ["Stun"],
+      buff:{
+        Speed: "70%"
+      },
       formulas: [
         {
           label: "Damage",
@@ -13436,6 +13472,22 @@ const skillDamage = {
     "s22": {
       name: "Trailblaze",
       cooldown: 6.5,
+      effects: ["Paralyze"],
+      buff: {
+        AtkSPD: 100,
+        Speed: "60%"
+      },
+      selfBuff: {
+        CooldownFlat: 6.5
+      },
+      debuffs: {
+        Speed: 40,
+        AtkSPD: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -13452,6 +13504,19 @@ const skillDamage = {
 	"ult": {
 		name: "Floral Flourish",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Invicible"],
+      buffs:{
+        Speed: "80%",
+        Shield: 20
+      },
+      otherSkillsCooldownReduction: {
+        s11: 1,
+        s12: 1
+      }
+    },
 		formulas: [
         {
           label: "Damage - per tick (max 13)",
@@ -17758,6 +17823,12 @@ const skillDamage = {
     skin5: "Tuxedo Style",
     skin6: "Explorer Style",
     skin7: "Marine Style",
+  },
+  meowscara: {
+    default: "Default",
+    skin1: "Phantom Thief Style",
+    skin2: "Dancer Style",
+    skin3: "Beach Style"
   },
   // Adicione mais pokémon aqui
 };
