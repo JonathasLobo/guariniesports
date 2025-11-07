@@ -4813,224 +4813,416 @@ const pokemonRatings = {
     Endure: 4,
     Mobility: 2.5,
     Score: 1,
-    Support: 1
+    Support: 1,
+    Invade: 1,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 3,
+    Smite: 2.5,
+    Sweep: 1.5
   },
   mew: {
     Attack: 4,
     Endure: 2,
     Mobility: 3,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 2,
+    Farm: 3,
+    Gank: 3,
+    CC: 2,
+    Smite: 4,
+    Sweep: 5
   },
   mewtwox: {
     Attack: 3,
     Endure: 3,
     Mobility: 2.5,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 1,
+    Farm: 2,
+    Gank: 3,
+    CC: 2,
+    Smite: 1.5,
+    Sweep: 4
   },
   mewtwoy: {
     Attack: 4,
     Endure: 2,
     Mobility: 3,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 2,
+    Farm: 2,
+    Gank: 3,
+    CC: 3,
+    Smite: 1.5,
+    Sweep: 4
   },
   mimikyu: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 3.5,
     Score: 1,
-    Support: 1
+    Support: 1,
+    Invade: 1.5,
+    Farm: 4,
+    Gank: 3.5,
+    CC: 3.5,
+    Smite: 2,
+    Sweep: 4.5
   },
   miraidon: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 4,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 3,
+    CC: 2,
+    Smite: 3,
+    Sweep: 4
   },
   mrmime: {
     Attack: 1.5,
     Endure: 4,
     Mobility: 1,
     Score: 1.5,
-    Support: 4
+    Support: 4,
+    Invade: 3.5,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 5,
+    Smite: 3,
+    Sweep: 3.5
   },
   ninetales: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 1.5,
     Score: 2.5,
-    Support: 3
+    Support: 3,
+    Invade: 2.5,
+    Farm: 4,
+    Gank: 2,
+    CC: 4,
+    Smite: 4,
+    Sweep: 3.5
   },
   pawmot: {
     Attack: 3.5,
     Endure: 2,
     Mobility: 3,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 3,
+    Sweep: 1
   },
   pikachu: {
     Attack: 4.5,
     Endure: 1.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 1.5
+    Support: 1.5,
+    Invade: 1,
+    Farm: 3,
+    Gank: 3,
+    CC: 4,
+    Smite: 3.5,
+    Sweep: 4.5
   },
   psyduck: {
     Attack: 4,
     Endure: 1,
     Mobility: 2,
     Score: 1,
-    Support: 3
+    Support: 3,
+    Invade: 3,
+    Farm: 2.5,
+    Gank: 3,
+    CC: 3.5,
+    Smite: 2,
+    Sweep: 3
   },
   raichu: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 3.5,
     Score: 3,
-    Support: 1
+    Support: 1,
+    Invade: 0.5,
+    Farm: 4,
+    Gank: 3,
+    CC: 3,
+    Smite: 4,
+    Sweep: 4
   },
   rapidash: {
     Attack: 4,
     Endure: 4,
     Mobility: 4,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 3,
+    Smite: 1.5,
+    Sweep: 1.5
   },
   sableye: {
     Attack: 1,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 3.5,
-    Support: 3.5
+    Support: 3.5,
+    Invade: 5,
+    Farm: 1.5,
+    Gank: 1.5,
+    CC: 3,
+    Smite: 2,
+    Sweep: 4
   },
   scizor: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 4,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 0.5,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 3,
+    Smite: 3,
+    Sweep: 1.5
   },
   scyther: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 4,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 3,
+    Smite: 3,
+    Sweep: 2
   },
   slowbro: {
     Attack: 1.5,
     Endure: 4,
     Mobility: 1.5,
     Score: 1.5,
-    Support: 4
+    Support: 4,
+    Invade: 2,
+    Farm: 3,
+    Gank: 3,
+    CC: 4.5,
+    Smite: 1.5,
+    Sweep: 2.5
   },
   snorlax: {
     Attack: 1.5,
     Endure: 5,
     Mobility: 2,
     Score: 1.5,
-    Support: 2.5
+    Support: 2.5,
+    Invade: 4.5,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 4,
+    Smite: 3,
+    Sweep: 3.5
   },
   suicune: {
     Attack: 5,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 2
+    Support: 2,
+    Invade: 2,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 4.5,
+    Smite: 2.5,
+    Sweep: 3
   },
   sylveon: {
     Attack: 3.5,
     Endure: 1.5,
     Mobility: 1.5,
     Score: 3.5,
-    Support: 3.5
+    Support: 3.5,
+    Invade: 1,
+    Farm: 3,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 1.5,
+    Sweep: 1.5
   },
   talonflame: {
     Attack: 2.5,
     Endure: 1.5,
     Mobility: 5,
     Score: 3.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 4,
+    Gank: 4,
+    CC: 2.5,
+    Smite: 4.5,
+    Sweep: 3
   },
   tinkaton: {
     Attack: 4,
     Endure: 3.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 4,
+    Smite: 4,
+    Sweep: 1.5
   },
   trevenant: {
     Attack: 2,
     Endure: 4,
     Mobility: 2,
     Score: 2.5,
-    Support: 2.5
+    Support: 2.5,
+    Invade: 2,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 4,
+    Smite: 2,
+    Sweep: 2.5
   },
   tsareena: {
     Attack: 3.5,
     Endure: 3,
     Mobility: 3,
     Score: 1.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 3.5,
+    Gank: 4,
+    CC: 3,
+    Smite: 2.5,
+    Sweep: 1.5
   },
   tyranitar: {
     Attack: 4,
     Endure: 4,
     Mobility: 2,
     Score: 1.5,
-    Support: 1
+    Support: 1,
+    Invade: 0,
+    Farm: 3,
+    Gank: 2,
+    CC: 1,
+    Smite: 3,
+    Sweep: 1
   },
   umbreon: {
     Attack: 1.5,
     Endure: 4,
     Mobility: 1.5,
     Score: 1.5,
-    Support: 4
+    Support: 4,
+    Invade: 2,
+    Farm: 1,
+    Gank: 1,
+    CC: 5,
+    Smite: 2,
+    Sweep: 2.5
   },
   urshifu: {
     Attack: 4.5,
     Endure: 3,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 1
+    Support: 1,
+    Invade: 0,
+    Farm: 3,
+    Gank: 4,
+    CC: 3.5,
+    Smite: 5,
+    Sweep: 1
   },
   venusaur: {
     Attack: 4.5,
     Endure: 2,
     Mobility: 2,
     Score: 2.5,
-    Support: 1
+    Support: 1,
+    Invade: 0.5,
+    Farm: 4,
+    Gank: 2,
+    CC: 2,
+    Smite: 4,
+    Sweep: 4
   },
   wigglytuff: {
     Attack: 1,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 2,
-    Support: 4.5
+    Support: 4.5,
+    Invade: 3,
+    Farm: 2,
+    Gank: 1.5,
+    CC: 4.5,
+    Smite: 2,
+    Sweep: 3
   },
   zacian: {
     Attack: 5,
     Endure: 4,
     Mobility: 3,
     Score: 1,
-    Support: 2
+    Support: 2,
+    Invade: 0,
+    Farm: 4.5,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 5,
+    Sweep: 0.5
   },
   zeraora: {
     Attack: 3.5,
     Endure: 1.5,
     Mobility: 4,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1.5,
+    Farm: 4,
+    Gank: 4,
+    CC: 3,
+    Smite: 3.5,
+    Sweep: 3
   },
   zoroark: {
     Attack: 3.5,
     Endure: 1.5,
     Mobility: 4,
     Score: 2,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0,
+    Farm: 3.5,
+    Gank: 4,
+    CC: 1.5,
+    Smite: 4,
+    Sweep: 2.5
   },
 }
 const skillDamage = {
