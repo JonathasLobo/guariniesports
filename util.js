@@ -4592,119 +4592,221 @@ const pokemonRatings = {
     Endure: 2,
     Mobility: 3,
     Score: 1,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 3,
+    Smite: 2,
+    Sweep: 1.5
   }, 
   goodra: {
     Attack: 2.5,
     Endure: 4,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 2
+    Support: 2,
+    Invade: 3,
+    Farm: 2.5,
+    Gank: 2.5,
+    CC: 4,
+    Smite: 2,
+    Sweep: 3
   }, 
   greedent: {
     Attack: 1.5,
     Endure: 5,
     Mobility: 2,
     Score: 1,
-    Support: 3.5
+    Support: 3.5,
+    Invade: 4,
+    Farm: 2,
+    Gank: 2,
+    CC: 3.5,
+    Smite: 3,
+    Sweep: 3
   },
   greninja: {
     Attack: 4,
     Endure: 2,
     Mobility: 3,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 0.5,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 2,
+    Smite: 4,
+    Sweep: 3.5
   },
   gyarados: {
     Attack: 4,
     Endure: 3,
     Mobility: 2.5,
     Score: 2,
-    Support: 1
+    Support: 1,
+    Invade: 0,
+    Farm: 3,
+    Gank: 4,
+    CC: 3,
+    Smite: 2.5,
+    Sweep: 1.5
   },
   hooh: {
     Attack: 3,
     Endure: 4,
     Mobility: 2,
     Score: 1,
-    Support: 3
+    Support: 3,
+    Invade: 1.5,
+    Farm: 2,
+    Gank: 2,
+    CC: 2,
+    Smite: 1.5,
+    Sweep: 4
   },
   hoopa: {
     Attack: 3,
     Endure: 2,
     Mobility: 3,
     Score: 2,
-    Support: 3.5
+    Support: 3.5,
+    Invade: 4,
+    Farm: 2,
+    Gank: 3,
+    CC: 3,
+    Smite: 2,
+    Sweep: 3
   }, 
   inteleon: {
     Attack: 4.5,
     Endure: 1.5,
     Mobility: 3.5,
     Score: 1.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 2,
+    Smite: 4,
+    Sweep: 4.5
   }, 
   lapras: {
     Attack: 3,
     Endure: 3.5,
     Mobility: 2,
     Score: 2,
-    Support: 3
+    Support: 3,
+    Invade: 2.5,
+    Farm: 3,
+    Gank: 2.5,
+    CC: 4.5,
+    Smite: 2,
+    Sweep: 3.5
   },
   latias: {
     Attack: 3.5,
     Endure: 2.5,
     Mobility: 4,
     Score: 2.5,
-    Support: 3
+    Support: 3,
+    Invade: 1.5,
+    Farm: 2.5,
+    Gank: 2,
+    CC: 3.5,
+    Smite: 2.5,
+    Sweep: 1.5
   },
   latios: {
     Attack: 4,
     Endure: 1.5,
     Mobility: 4,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 1,
+    Farm: 3,
+    Gank: 3,
+    CC: 2,
+    Smite: 3,
+    Sweep: 4
   },
   leafeon: {
     Attack: 3.5,
     Endure: 1.5,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 2.5
+    Support: 2.5,
+    Invade: 3,
+    Farm: 4.5,
+    Gank: 5,
+    CC: 2.5,
+    Smite: 3.5,
+    Sweep: 2
   },
   lucario: {
     Attack: 3,
     Endure: 2.5,
     Mobility: 3.5,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 3,
+    Gank: 3.5,
+    CC: 3,
+    Smite: 3.5,
+    Sweep: 1.5
   },
   megalucario: {
     Attack: 4.5,
     Endure: 2,
     Mobility: 3.5,
     Score: 3,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 4,
+    Gank: 3,
+    CC: 2.5,
+    Smite: 4,
+    Sweep: 1.5
   },
   machamp: {
     Attack: 4,
     Endure: 2.5,
     Mobility: 2.5,
     Score: 2.5,
-    Support: 1
+    Support: 1,
+    Invade: 2,
+    Farm: 4,
+    Gank: 3.5,
+    CC: 3,
+    Smite: 3,
+    Sweep: 1.5
   },
   mamoswine: {
     Attack: 2.5,
     Endure: 4,
     Mobility: 2,
     Score: 1.5,
-    Support: 2.5
+    Support: 2.5,
+    Invade: 3.5,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 4.5,
+    Smite: 1.5,
+    Sweep: 1
   },
   meowscara: {
     Attack: 4.5,
     Endure: 1,
     Mobility: 3,
     Score: 2.5,
-    Support: 0.5
+    Support: 0.5,
+    Invade: 2,
+    Farm: 4,
+    Gank: 3,
+    CC: 2,
+    Smite: 3,
+    Sweep: 1.5
   },
   metagross: {
     Attack: 3.5,
