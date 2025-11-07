@@ -13091,6 +13091,8 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    effects: ["Freeze"],
       formulas: [
         {
           label: "Damage - Basic",
@@ -13113,6 +13115,24 @@ const skillDamage = {
     "s11": {
       name: "Icicle Crash",
       cooldown: 8,
+      buff: {},
+      effects: ["Freeze"],
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      allyBuffs: {
+        Speed: 50
+      },
+      allyBuffLabels: {
+        Speed: "(ALLY BUFF) MoveSpeed Increase"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        effects: ["Stun"]
+      },
       formulas: [
 		{
           label: "Damage - Small Icicles (3x)",
@@ -13134,6 +13154,8 @@ const skillDamage = {
     "s12": {
       name: "Ice Fang",
       cooldown: 6,
+      buff:{},
+      effects: ["Stun", "Freeze"],
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -13150,6 +13172,8 @@ const skillDamage = {
     "s21": {
       name: "High Horsepower",
       cooldown: 8,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
 		{
           label: "Damage - Charge",
@@ -13171,6 +13195,17 @@ const skillDamage = {
     "s22": {
       name: "Earthquake",
       cooldown: 9,
+      buff: {},
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -13182,6 +13217,21 @@ const skillDamage = {
 	"ult": {
 		name: "Mammoth Mash",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs:{
+        Speed: "30%",
+        Shield: 40
+      },
+      debuffs:{
+        Speed: 90
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
 		{
           label: "Damage - First Stomp",
@@ -17698,6 +17748,16 @@ const skillDamage = {
     skin4: "Punk Style",
     skin5: "Tuxedo Style",
     skin6: "Neo Street Style"
+  },
+  mamoswine: {
+    default: "Default",
+    skin1: "Holiday Style",
+    skin2: "Hip-Hop Style",
+    skin3: "Knight Style",
+    skin4: "Practice Style",
+    skin5: "Tuxedo Style",
+    skin6: "Explorer Style",
+    skin7: "Marine Style",
   },
   // Adicione mais pokémon aqui
 };
