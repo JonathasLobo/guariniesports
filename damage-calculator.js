@@ -208,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let eonPower = 0;
   let eonPower2 = 0;
   let eonPowerlatios = 0;
-  let selectedRoute = null;
   let selectedSkins = {};
   let statModifiers = {}; // Rastreia todos os modificadores de cada stat
   let currentExpandedStat = null; // Controla qual stat está expandido
@@ -908,9 +907,12 @@ const createSkillBuildInResult = () => {
 
   skillSelector.appendChild(slotsContainer);
 
-  // Adicionar seletor de Route ABAIXO e CENTRALIZADO
-  const routeSelector = createRouteSelector();
-  skillSelector.appendChild(routeSelector);
+  const routesHTML = createRoutesDisplay();
+  if (routesHTML) {
+    const routesDiv = document.createElement("div");
+    routesDiv.innerHTML = routesHTML;
+    skillSelector.appendChild(routesDiv.firstElementChild);
+  }
 
   // Adicionar Meta Stats
   const metaStatsHTML = createMetaStatsHTML(selectedPokemon);
@@ -1486,154 +1488,6 @@ const createSkillSlot = (label, slotKey, pokemon) => {
   return slotContainer;
 };
 
-// Função para criar o seletor de Route
-const createRouteSelector = () => {
-  const routeContainer = document.createElement("div");
-  routeContainer.className = "route-selector";
-  routeContainer.style.cssText = `
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin: 15px 0;
-    position: relative;
-    z-index: 10;
-  `;
-  
-  const routeLabel = document.createElement("div");
-  routeLabel.className = "skill-slot-label";
-  routeLabel.textContent = "Route";
-  routeLabel.style.cssText = "color: #000; font-size: 12px; font-weight: bold;";
-  
-  const circle = document.createElement("div");
-  circle.className = "skill-selector-circle route-circle";
-  circle.style.cssText = "position: relative;";
-  
-  const routeName = document.createElement("div");
-  routeName.className = "skill-selection-name";
-  routeName.id = "selected-route-name";
-  
-  if (selectedRoute) {
-    circle.classList.add("has-selection");
-    
-    const img = document.createElement("img");
-    img.src = `./estatisticas-shad/images/lanes/${selectedRoute}.png`;
-    img.alt = selectedRoute;
-    img.style.cssText = "border: none !important; box-shadow: none !important; outline: none !important; margin: 0 !important; padding: 0 !important; width: 48px; height: 48px; border-radius: 50%; object-fit: cover;";
-    img.onerror = function() {
-      this.style.display = "none";
-    };
-    
-    circle.appendChild(img);
-    routeName.textContent = selectedRoute.charAt(0).toUpperCase() + selectedRoute.slice(1);
-    routeName.classList.add("selected");
-  } else {
-    circle.classList.add("empty");
-    circle.textContent = "+";
-  }
-  
-  circle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    openRouteSelectionPanel(routeContainer);
-  });
-  
-  routeContainer.appendChild(routeLabel);
-  routeContainer.appendChild(circle);
-  routeContainer.appendChild(routeName);
-  
-  return routeContainer;
-};
-
-// Função para abrir painel de seleção de rota
-const openRouteSelectionPanel = (routeContainer) => {
-  closeAllSelectionPanels();
-  closeRouteSelectionPanel();
-  const routes = ["top", "jungle", "bot"];
-  showRouteSelectionPanel(routes, routeContainer);
-};
-
-// Função para mostrar o painel de rotas
-const showRouteSelectionPanel = (routes, routeContainer) => {
-  const panel = document.createElement("div");
-  panel.className = "skill-selection-panel show";
-  panel.id = "route-selection-panel";
-  panel.style.cssText = `
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 8px;
-    z-index: 1000;
-  `;
-  
-  const title = document.createElement("div");
-  title.className = "skill-selection-title";
-  title.textContent = "Choose Route";
-  panel.appendChild(title);
-  
-  const optionsContainer = document.createElement("div");
-  optionsContainer.className = "skill-options";
-  
-  routes.forEach(route => {
-    const optionDiv = document.createElement("div");
-    optionDiv.className = "skill-option";
-    optionDiv.dataset.route = route;
-    
-    const img = document.createElement("img");
-    img.src = `./estatisticas-shad/images/lanes/${route}.png`;
-    img.alt = route;
-    img.onerror = function() {
-      this.style.display = "none";
-    };
-    
-    const name = document.createElement("div");
-    name.className = "skill-option-name";
-    name.textContent = route.charAt(0).toUpperCase() + route.slice(1);
-    
-    optionDiv.appendChild(img);
-    optionDiv.appendChild(name);
-    
-    optionDiv.addEventListener("click", () => {
-      selectRoute(route);
-    });
-    
-    optionsContainer.appendChild(optionDiv);
-  });
-  
-  panel.appendChild(optionsContainer);
-  routeContainer.appendChild(panel);
-  
-  setTimeout(() => {
-    document.addEventListener("click", handleRouteClickOutside);
-  }, 100);
-};
-
-// Função para selecionar rota
-const selectRoute = (route) => {
-  selectedRoute = route;
-  closeRouteSelectionPanel();
-  createSkillBuildInResult();
-};
-
-// Função para fechar painel de rota
-const closeRouteSelectionPanel = () => {
-  const panel = document.getElementById("route-selection-panel");
-  if (panel) {
-    panel.remove();
-  }
-  document.removeEventListener("click", handleRouteClickOutside);
-};
-
-// Handler para clique fora do painel de rota
-const handleRouteClickOutside = (e) => {
-  const panel = document.getElementById("route-selection-panel");
-  const routeSelector = document.querySelector(".route-selector");
-  
-  if (panel && !panel.contains(e.target) && (!routeSelector || !routeSelector.contains(e.target))) {
-    closeRouteSelectionPanel();
-  }
-};
-
 // Função para fechar TODOS os painéis abertos
 const closeAllSelectionPanels = () => {
   // Fechar painel de skills
@@ -1786,6 +1640,57 @@ const clearSkillSelection = () => {
   
   // Recalcular para mostrar todas as skills do slot novamente
   calcular();
+};
+
+// Função para criar a exibição das rotas com porcentagens
+const createRoutesDisplay = () => {
+  if (!selectedPokemon || !pokemonRoutesEffectiveness[selectedPokemon]) {
+    return ''; // Retorna vazio se não houver dados
+  }
+  
+  const routes = pokemonRoutesEffectiveness[selectedPokemon];
+  
+  const routesHTML = `
+    <div class="routes-display-container">
+      <div class="routes-display-title">Best Routes</div>
+      <div class="routes-grid">
+        <div class="route-item">
+          <img src="./estatisticas-shad/images/lanes/top.png" 
+               alt="Top Lane" 
+               class="route-image"
+               onerror="this.style.display='none'">
+          <div class="route-name">Top</div>
+          <div class="route-percentage" data-value="${routes.top}">
+            ${routes.top}%
+          </div>
+        </div>
+        
+        <div class="route-item">
+          <img src="./estatisticas-shad/images/lanes/jungle.png" 
+               alt="Jungle" 
+               class="route-image"
+               onerror="this.style.display='none'">
+          <div class="route-name">Jungle</div>
+          <div class="route-percentage" data-value="${routes.jungle}">
+            ${routes.jungle}%
+          </div>
+        </div>
+        
+        <div class="route-item">
+          <img src="./estatisticas-shad/images/lanes/bot.png" 
+               alt="Bot Lane" 
+               class="route-image"
+               onerror="this.style.display='none'">
+          <div class="route-name">Bot</div>
+          <div class="route-percentage" data-value="${routes.bot}">
+            ${routes.bot}%
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return routesHTML;
 };
 
 // Função para fechar painel

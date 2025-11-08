@@ -111,7 +111,6 @@ textarea.form-control {
 .resultado-image img {
   max-width: 160px;
   height: auto;
-  border: 4px solid rgba(255, 255, 255, 0.8);
   border-radius: 16px;
   margin-bottom: 15px;
   display: block;
@@ -125,32 +124,6 @@ textarea.form-control {
   box-shadow: 
     0 12px 24px rgba(0, 0, 0, 0.16),
     0 4px 8px rgba(0, 0, 0, 0.12);
-}
-
-/* Gradiente da role na borda da imagem */
-.resultado-image.role-speedster img {
-  border: 3px solid;
-  border-image: linear-gradient(45deg, #2492c9, #1a7ba8, #2492c9) 1;
-}
-
-.resultado-image.role-allrounder img {
-  border: 3px solid;
-  border-image: linear-gradient(45deg, #ce5fd3, #b84bc4, #ce5fd3) 1;
-}
-
-.resultado-image.role-support img {
-  border: 3px solid;
-  border-image: linear-gradient(45deg, #e1b448, #d4a335, #e1b448) 1;
-}
-
-.resultado-image.role-defender img {
-  border: 3px solid;
-  border-image: linear-gradient(45deg, #9bd652, #87c43f, #9bd652) 1;
-}
-
-.resultado-image.role-attacker img {
-  border: 3px solid;
-  border-image: linear-gradient(45deg, #f16c38, #e55a25, #f16c38) 1;
 }
 
 .resultado-container::after {
@@ -5171,4 +5144,131 @@ textarea.form-control {
 
 .chlorophyll-toggle:hover {
   background: rgba(76, 175, 80, 0.2) !important;
+}
+
+/* ========================================
+   SISTEMA DE ROTAS - NOVO DESIGN
+======================================== */
+
+.routes-display-container {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.routes-display-title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
+
+.route-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.route-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.route-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.route-item:hover .route-image {
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.route-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.route-percentage {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  min-width: 50px;
+  text-align: center;
+}
+
+/* Cores dinâmicas baseadas no valor */
+.route-percentage[data-value="60"],
+.route-percentage[data-value="70"],
+.route-percentage[data-value="80"],
+.route-percentage[data-value="90"],
+.route-percentage[data-value="100"] {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  box-shadow: 0 2px 8px rgba(56, 239, 125, 0.3);
+}
+
+.route-percentage[data-value="40"],
+.route-percentage[data-value="50"] {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+}
+
+.route-percentage[data-value="10"],
+.route-percentage[data-value="15"],
+.route-percentage[data-value="20"],
+.route-percentage[data-value="25"],
+.route-percentage[data-value="30"] {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  box-shadow: 0 2px 8px rgba(254, 225, 64, 0.3);
+}
+
+/* Dark mode support */
+.dark-mode .routes-display-title,
+.dark-mode .route-name {
+  color: #fff;
+}
+
+.dark-mode .routes-display-container {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .route-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .routes-grid {
+    gap: 10px;
+  }
+  
+  .route-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .route-percentage {
+    font-size: 14px;
+    padding: 3px 10px;
+  }
 }
