@@ -788,6 +788,10 @@ const STAT_EFFECT_CONFIG = {
   greedent: {
     s1: ["1a", "1b"],
     s2: ["2a", "2b"]
+  },
+  mew: {
+    s1: ["s1a", "s1b", "s1c"],
+    s2: ["s2a", "s2b", "s2c"]
   }
   }
   const SKILL_KEY_ALIASES = {
@@ -841,19 +845,19 @@ const createSkillBuildInResult = () => {
     existingSelector.remove();
   }
   
-  // NOVO: Remover ratings existentes
+  // Remover ratings existentes
   const existingRatings = document.querySelector(".pokemon-ratings-container");
   if (existingRatings) {
     existingRatings.remove();
   }
 
-  // NOVO: Remover meta stats antigas
+  // Remover meta stats antigas
   const existingMetaStats = document.querySelector(".meta-stats-week");
   if (existingMetaStats) {
     existingMetaStats.remove();
   }
   
-  // Verificar se temos dados de skills para este PokÃ©mon
+  // Verificar se temos dados de skills para este Pokémon
   if (!selectedPokemon || !skillDamage[selectedPokemon]) {
     return;
   }
@@ -863,26 +867,29 @@ const createSkillBuildInResult = () => {
   
   const skills = skillDamage[selectedPokemon];
 
-  // ✅ NOVO: Função auxiliar para buscar skill com nomenclatura alternativa
-  const getSkillByKey = (pokemon, standardKey) => {
-    // Se tem aliases definidos, buscar pela nomenclatura alternativa
-    if (SKILL_KEY_ALIASES[pokemon]) {
-      // Procurar qual key alternativa corresponde ao padrão
-      for (const [altKey, stdKey] of Object.entries(SKILL_KEY_ALIASES[pokemon])) {
-        if (stdKey === standardKey) {
-          return skills[altKey]; // Retorna pela nomenclatura alternativa
-        }
-      }
+  // ✅ NOVA LÓGICA: Detectar skills por mapeamento customizado OU lógica padrão
+  let hasS1Skills = false;
+  let hasS2Skills = false;
+
+  if (CUSTOM_SKILL_MAPPING[selectedPokemon]) {
+    // Pokémon com mapeamento customizado (Mew, Absol, Greedent, etc)
+    const mapping = CUSTOM_SKILL_MAPPING[selectedPokemon];
+    
+    if (mapping.s1) {
+      // Verifica se PELO MENOS UMA das skills do slot 1 existe
+      hasS1Skills = mapping.s1.some(skillKey => skills[skillKey]);
     }
-    // Se não tem alias, buscar normalmente
-    return skills[standardKey];
-  };
+    
+    if (mapping.s2) {
+      // Verifica se PELO MENOS UMA das skills do slot 2 existe
+      hasS2Skills = mapping.s2.some(skillKey => skills[skillKey]);
+    }
+  } else {
+    // Lógica padrão para pokémons normais (2 skills por slot)
+    hasS1Skills = skills.s11 || skills.s12;
+    hasS2Skills = skills.s21 || skills.s22;
+  }
   
-  // Verificar se existem skills s11/s12 e s21/s22
-  const hasS1Skills = getSkillByKey(selectedPokemon, "s11") || getSkillByKey(selectedPokemon, "s12");
-  const hasS2Skills = getSkillByKey(selectedPokemon, "s21") || getSkillByKey(selectedPokemon, "s22") || 
-                     (selectedPokemon === "megalucario" && skills.U11) || 
-                     (selectedPokemon === "megacharizardx" && skills.U12);
   if (!hasS1Skills && !hasS2Skills) return;
   
   // Criar container do seletor
@@ -893,13 +900,13 @@ const createSkillBuildInResult = () => {
   const slotsContainer = document.createElement("div");
   slotsContainer.className = "skill-build-slots";
 
-  // Criar slot 1 (s11/s12) se existir
+  // Criar slot 1 se existir
   if (hasS1Skills) {
     const slot1 = createSkillSlot("S1", "s1", selectedPokemon);
     slotsContainer.appendChild(slot1);
   }
 
-  // Criar slot 2 (s21/s22) se existir
+  // Criar slot 2 se existir
   if (hasS2Skills) {
     const slot2 = createSkillSlot("S2", "s2", selectedPokemon);
     slotsContainer.appendChild(slot2);
@@ -922,70 +929,65 @@ const createSkillBuildInResult = () => {
     skillSelector.appendChild(metaStatsDiv.firstElementChild);
   }
   
-// Inserir o seletor após a role badge
-const roleBadge = resultImage.querySelector(".role-badge");
-if (roleBadge) {
-  // ✅ REMOVER SELETOR DE CRIT EXISTENTE ANTES DE CRIAR NOVO
-  const existingCritSelector = resultImage.querySelector(".crit-selector-container");
-  if (existingCritSelector) {
-    existingCritSelector.remove();
-  }
-  
-  // PRIMEIRO: Adicionar o seletor de crit
-  const critSelector = createCritDamageSelector();
-  roleBadge.insertAdjacentHTML("afterend", critSelector);
-  
-  // Event listener para o checkbox de crit
-  setTimeout(() => {
-    const critCheckbox = document.getElementById("crit-damage-checkbox");
-    if (critCheckbox) {
-      // ✅ REMOVER LISTENERS ANTIGOS (prevenir múltiplos listeners)
-      const newCheckbox = critCheckbox.cloneNode(true);
-      critCheckbox.parentNode.replaceChild(newCheckbox, critCheckbox);
-      
-      // Adicionar listener novo
-      newCheckbox.addEventListener("change", (e) => {
-        showCritDamage = e.target.checked;
-        calcular();
-      });
+  // Inserir o seletor após a role badge
+  const roleBadge = resultImage.querySelector(".role-badge");
+  if (roleBadge) {
+    // Remover seletor de crit existente
+    const existingCritSelector = resultImage.querySelector(".crit-selector-container");
+    if (existingCritSelector) {
+      existingCritSelector.remove();
     }
-  }, 100);
-  
-  // SEGUNDO: Adicionar ratings
-  const ratingsHtml = createPokemonRatings(selectedPokemon);
-  if (ratingsHtml) {
-    const critContainer = resultImage.querySelector(".crit-selector-container");
-    // ... resto do código (manter como está)
-    if (critContainer) {
-      critContainer.insertAdjacentHTML("afterend", ratingsHtml);
-      
-      // Agora inserir o skill selector após os ratings
-      const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
-      if (ratingsContainer) {
-        ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+    
+    // Adicionar o seletor de crit
+    const critSelector = createCritDamageSelector();
+    roleBadge.insertAdjacentHTML("afterend", critSelector);
+    
+    // Event listener para o checkbox de crit
+    setTimeout(() => {
+      const critCheckbox = document.getElementById("crit-damage-checkbox");
+      if (critCheckbox) {
+        const newCheckbox = critCheckbox.cloneNode(true);
+        critCheckbox.parentNode.replaceChild(newCheckbox, critCheckbox);
+        
+        newCheckbox.addEventListener("change", (e) => {
+          showCritDamage = e.target.checked;
+          calcular();
+        });
+      }
+    }, 100);
+    
+    // Adicionar ratings
+    const ratingsHtml = createPokemonRatings(selectedPokemon);
+    if (ratingsHtml) {
+      const critContainer = resultImage.querySelector(".crit-selector-container");
+      if (critContainer) {
+        critContainer.insertAdjacentHTML("afterend", ratingsHtml);
+        
+        const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
+        if (ratingsContainer) {
+          ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+        }
+      } else {
+        roleBadge.insertAdjacentHTML("afterend", ratingsHtml);
+        const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
+        if (ratingsContainer) {
+          ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+        } else {
+          roleBadge.insertAdjacentElement("afterend", skillSelector);
+        }
       }
     } else {
-      roleBadge.insertAdjacentHTML("afterend", ratingsHtml);
-      const ratingsContainer = resultImage.querySelector(".pokemon-ratings-container");
-      if (ratingsContainer) {
-        ratingsContainer.insertAdjacentElement("afterend", skillSelector);
+      const critContainer = resultImage.querySelector(".crit-selector-container");
+      if (critContainer) {
+        critContainer.insertAdjacentElement("afterend", skillSelector);
       } else {
         roleBadge.insertAdjacentElement("afterend", skillSelector);
       }
     }
   } else {
-    const critContainer = resultImage.querySelector(".crit-selector-container");
-    if (critContainer) {
-      critContainer.insertAdjacentElement("afterend", skillSelector);
-    } else {
-      roleBadge.insertAdjacentElement("afterend", skillSelector);
-    }
+    resultImage.appendChild(skillSelector);
   }
-} else {
-  resultImage.appendChild(skillSelector);
-}
 };
-
 // Controle de Muscle Gauge para Buzzwole
 const createMuscleGaugeControl = () => {
   if (selectedPokemon !== "buzzwole") return;
@@ -1565,9 +1567,10 @@ const showSkillSelectionPanel = (options, slotContainer) => {
   panel.appendChild(clearButton);
   
   // Opções
-  const optionsContainer = document.createElement("div");
+   const optionsContainer = document.createElement("div");
   optionsContainer.className = "skill-options";
   
+  // ✅ SUBSTITUIR O LOOP DE OPTIONS POR ESTE:
   options.forEach(option => {
     const optionDiv = document.createElement("div");
     optionDiv.className = "skill-option";
@@ -1587,7 +1590,6 @@ const showSkillSelectionPanel = (options, slotContainer) => {
     optionDiv.appendChild(img);
     optionDiv.appendChild(name);
     
-    // Selecionar skill ao clicar
     optionDiv.addEventListener("click", () => {
       selectSkill(option.key);
     });
@@ -1652,7 +1654,7 @@ const createRoutesDisplay = () => {
   
   const routesHTML = `
     <div class="routes-display-container">
-      <div class="routes-display-title">Best Routes</div>
+      <div class="routes-display-title">recommended Routes</div>
       <div class="routes-grid">
         <div class="route-item">
           <img src="./estatisticas-shad/images/lanes/top.png" 
