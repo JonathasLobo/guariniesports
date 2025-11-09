@@ -13919,6 +13919,12 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+      otherSkillsCooldownReduction: {
+        s11: "20%",
+        s12: "20%"
+      },
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -13936,6 +13942,13 @@ const skillDamage = {
     "s11": {
       name: "Meteor Mash",
       cooldown: 7,
+      buff:{},
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Shield (per charge stack)",
@@ -14002,12 +14015,26 @@ const skillDamage = {
           label: "Shield - per stack(max 6)",
           formula: (ATK, Level) => 0.78 * ATK + 2 * (Level - 1) + 120,
           type: "physical"
-        }
+        },
+                {
+          label: "Heal Skill Plus",
+          formula: (firstHitDamage, Level) => 0.3 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 1
+        },
+
       ]
     },
     "s21": {
       name: "Zen Headbutt",
       cooldown: 5,
+      buff: {},
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          DmgTaken: 20
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -14019,6 +14046,15 @@ const skillDamage = {
     "s22": {
       name: "Magnet Rise",
       cooldown: 9,
+      buff:{
+        Speed: "60%"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs:{
+          DmgTaken: 30
+        }
+      },
       formulas: [
 		  {
           label: "Damage - Grounding",
@@ -14030,6 +14066,16 @@ const skillDamage = {
 	"ult": {
 		name: "Compute and Crush",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 30
+      }
+    },
 		formulas: [
         {
           label: "Damage (2 punches)",
@@ -14040,6 +14086,11 @@ const skillDamage = {
           label: "Damage - Wall Creation",
           formula: (ATK, Level) => 2.28 * ATK + 7 * (Level - 1) + 460,
           type: "physical"
+        },
+        {
+          label: "Damage - Execute",
+          type: "text-only",
+          additionalText: "20% missing HP"
         },
         {
           label: "Shield - Per Enemy",
@@ -18210,6 +18261,11 @@ const skillDamage = {
     skin2: "Dancer Style",
     skin3: "Beach Style"
   },
+  metagross: {
+    default: "Default",
+    skin1: "Phantom Thief Style",
+    skin2: "Darkness Style"
+    },
   // Adicione mais pokémon aqui
 };
 
