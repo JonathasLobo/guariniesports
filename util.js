@@ -14841,6 +14841,16 @@ const skillDamage = {
     "s11": {
       name: "Charge Beam",
       cooldown: 8.5,
+      buff: {
+        SpATK: "10%",
+        HindRed: 100
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 0.5
+        }
+      },
       formulas: [
         {
           label: "Damage - Regular",
@@ -14857,6 +14867,15 @@ const skillDamage = {
     "s12": {
       name: "Electro Drift",
       cooldown: 12,
+      buff: {
+        HindRed: 100
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 4
+        }
+      },
       formulas: [
 	    	{
           label: "Damage - Regular",
@@ -14873,6 +14892,22 @@ const skillDamage = {
     "s21": {
       name: "Thunder",
       cooldown: 10,
+      buff: {},
+      debuffs: {
+        Speed: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 10
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage (x5)",
@@ -14885,6 +14920,13 @@ const skillDamage = {
     "s22": {
       name: "Parabolic Charge",
       cooldown: 11,
+      buff: {},
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -14916,6 +14958,17 @@ const skillDamage = {
 	"ult": {
 		name: "Bright Future Meteor Storm",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs:{
+        HindRed: 100,
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20  
+      },
+      selfDamageMultiplier: 1.8,
+    },
 		formulas: [
         {
           label: "Damage - Base per meteorite",
@@ -18584,6 +18637,12 @@ const skillDamage = {
     skin2: "Pastel Style",
     skin3: "Noble Style",
     skin4: "Palace Style"
+  },
+  miraidon: {
+    default: "Default",
+    skin1: "Tuxedo Style",
+    skin2: "Wanderer Style",
+    skin3: "Bronze Style"
   },
   // Adicione mais pokémon aqui
 };
