@@ -14409,10 +14409,10 @@ const skillDamage = {
           name: "Pressure",
           description: "Basic attacks build Mega Gauge to boost Sp. Atk and attack speed. At max stacks, Mega Evolution consumes Aeos energy for enhanced stats and extended duration.",
           buff: {
-          SpATK: "10%",
+          SpATK: "11.5%",
           Speed: "5%",
           HP: "10%",
-          AtkSPD: "35%"
+          AtkSPD: "38%"
           },
           formulas: [
           ]
@@ -14436,6 +14436,21 @@ const skillDamage = {
     "s11": {
       name: "Future Sight",
       cooldown: 8.5,
+      effects: ["Stun"],
+      buff:{},
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      skillDamageMultiplier: 1.1,
+      affectsBasicAttack: true,
+      buffPlus: {
+        levelRequired: 11,
+        skillDamageMultiplier: 1.0221,
+        affectsBasicAttack: true
+      },
       formulas: [
         {
           label: "Damage - Shove",
@@ -14452,6 +14467,23 @@ const skillDamage = {
     "s12": {
       name: "Psystrike",
       cooldown: 9,
+      buff:{},
+      effects: ["Unstoppable"],
+      debuffs: {
+        Speed: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 5
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    	{
           label: "Damage (x5)",
@@ -14467,6 +14499,22 @@ const skillDamage = {
     "s21": {
       name: "Recover",
       cooldown: 11,
+      buff:{
+        Speed: "30%",
+        HPRegen: 40,
+        otherSkillsCooldownReduction: {
+          s11: "25%",
+          s12: "25%",
+          s21: "25%",
+          s22: "25%"
+        }
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          HPRegen: 10
+        }
+      },
       formulas: [
         {
           label: "Shield",
@@ -14484,6 +14532,16 @@ const skillDamage = {
     "s22": {
       name: "Teleport",
       cooldown: 11,
+      buff:{
+        Speed: "20%",
+      },
+      skillDamageMultiplier: 1.1,
+      affectsBasicAttack: true,
+      buffPlus: {
+        levelRequired: 13,
+        skillDamageMultiplier: 1.0449,
+        affectsBasicAttack: true
+      },
       formulas: [
 		  
       ]
@@ -14491,6 +14549,22 @@ const skillDamage = {
 	"ult": {
 		name: "Infinite Psyburn",
     cooldown: 134,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Invisible Reveal", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        SpDEF: 15
+      },
+      debuffLabels: {
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage ",
@@ -18353,6 +18427,13 @@ const skillDamage = {
     skin2: "Martial Arts Style (X)",
     skin3: "Pokébuki Style (X)",
     skin4: "Dark Lord Style (X)"
+  },
+  mewtwoy: {
+    default: "Default",
+    skin1: "Mega Style",
+    skin2: "Martial Arts Style (Y)",
+    skin3: "Pokébuki Style (Y)",
+    skin4: "Dark Lord Style (Y)"
   },
   // Adicione mais pokémon aqui
 };
