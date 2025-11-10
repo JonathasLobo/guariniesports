@@ -14115,13 +14115,15 @@ const skillDamage = {
           name: "Move Reset",
           description: "Can reset and change moves every 25s, with cooldown reduced by KOs, assists, or scoring. Using it also charges the Unite Move.",
           buff: {
-          CDR: "40%"
           },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      selfDamageMultiplier: 1.04
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -14139,6 +14141,27 @@ const skillDamage = {
     "s1a": {
       name: "Electro Ball",
       cooldown: 5,
+      buff: {},
+      effects: ["Paralyze"],
+      debuffs: {
+        Speed: 40,
+        AtkSPD: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 10,
+        debuffs: {
+          Speed: 20,
+          AtkSPD: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction",
+          AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+        },
+      },
       formulas: [
         {
           label: "Damage (No Light Screen Boost)",
@@ -14146,15 +14169,27 @@ const skillDamage = {
           type: "special"
         },
         {
-          label: "Damage (Light Screen Boost):",
+          label: "Damage (Light Screen Boost)",
           formula: (SpATK, Level) => 1.49 * SpATK + 15 * (Level - 1) + 340,
           type: "special"
+        },
+        {
+          label: "Damage - Execute",
+          type: "text-only",
+          additionalText: "9.5% of enemy missing HP"
         }
       ]
     },
     "s1b": {
       name: "Solar Beam",
       cooldown: 9,
+      buff:{},
+      selfBuffPlus: {
+        levelRequired: 10,
+        buffs: {
+          CooldownFlat: 0.5
+        }
+      },
       formulas: [
 	    	{
           label: "Damage - per Tick (max 3)",
@@ -14171,6 +14206,10 @@ const skillDamage = {
     "s1c": {
       name: "Surf",
       cooldown: 12,
+      buff: {
+        HindRed: 100
+      },
+      effects: ["Stun"],
       formulas: [
 	    	{
           label: "Damage ",
@@ -14192,6 +14231,29 @@ const skillDamage = {
     "s2a": {
       name: "Coaching",
       cooldown: 7,
+      buff:{
+        AtkSPD: 40,
+        otherSkillsCooldownReduction: {
+          s1a: 1,
+          s1b: 1,
+          s1c: 1
+        }
+      },
+      selfBuff: {
+        CooldownPercent: 90
+      },
+      allyBuffs: {
+        AtkSPD: 40
+      },
+      allyBuffLabels: {
+        AtkSPD: "(ALLY BUFF) AttackSpeed Increase"
+      },
+      selfBuffPlus: {
+        levelRequired: 12,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Shield",
@@ -14203,18 +14265,34 @@ const skillDamage = {
     "s2b": {
       name: "Light Screen",
       cooldown: 9,
+      buff: {
+        DmgTaken: 25
+      },
       formulas: [  
       ]
     },
     "s2c": {
       name: "Agility",
       cooldown: 10,
+      buff: {
+        Speed: "5%"
+      },
       formulas: [	  
       ]
     },
 	"ult": {
 		name: "Mystical Mirage",
     cooldown: 123,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Invicible", "Invisible"],
+      buffs:{
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage ",
@@ -18421,6 +18499,18 @@ const skillDamage = {
     skin1: "Phantom Thief Style",
     skin2: "Darkness Style"
     },
+  mew: {
+    default: "Default",
+    skin1: "Elegant Style",
+    skin2: "Orange Unite Style",
+    skin3: "Purple Unite Style",
+    skin4: "Fashionable Style",
+    skin5: "Detective Style",
+    skin6: "Fashionable Style (Dark Blue)",
+    skin7: "Kimono Style",
+    skin8: "Holiday Style",
+    skin9: "Costume Party Style"
+  },
   mewtwox: {
     default: "Default",
     skin1: "Mega Style",
