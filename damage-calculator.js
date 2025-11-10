@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     skillDamage: typeof skillDamage
   });
   loadMetaData();
+  loadAllMetaData(); // Carregar histórico de meta
 
   // Elementos do seletor de Pokémon
   const pokemonCircle = document.getElementById("pokemon-circle");
@@ -214,7 +215,273 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedConditionalEffects = {};
   let selectedMapBuffs = {};
   let currentMetaData = null;
+  let allMetaDataHistory = []; 
   let showCritDamage = false; // Controla se mostra dano crítico
+
+// Função para carregar TODOS os arquivos de meta disponíveis
+async function loadAllMetaData() {
+  try {
+    console.log('🔍 Iniciando carregamento de histórico de meta...');
+    
+    // Lista de arquivos conhecidos (você pode expandir isso)
+    const metaFiles = [
+      'meta02-11-2025.json',
+      'meta10-11-2025.json',
+      // Adicione mais arquivos conforme criar
+      // 'meta17-11-2025.json',
+      // 'meta24-11-2025.json',
+    ];
+    
+    const loadedData = [];
+    
+    for (const fileName of metaFiles) {
+      try {
+        console.log(`📥 Tentando carregar: ${fileName}`);
+        const response = await fetch(`./${fileName}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`✅ ${fileName} carregado com sucesso`);
+          loadedData.push({
+            date: data.data || fileName.replace('meta', '').replace('.json', ''),
+            data: data
+          });
+        } else {
+          console.log(`⚠️ Arquivo ${fileName} não encontrado (${response.status})`);
+        }
+      } catch (error) {
+        console.log(`❌ Erro ao carregar ${fileName}:`, error.message);
+      }
+    }
+    
+    // Ordenar por data (mais antigo primeiro)
+    loadedData.sort((a, b) => {
+      const dateA = new Date(a.date.split('-').reverse().join('-'));
+      const dateB = new Date(b.date.split('-').reverse().join('-'));
+      return dateA - dateB;
+    });
+    
+    allMetaDataHistory = loadedData;
+    console.log(`✅ Total de arquivos de meta carregados: ${allMetaDataHistory.length}`);
+    
+    return allMetaDataHistory;
+  } catch (error) {
+    console.error('❌ Erro ao carregar histórico de meta:', error);
+    return [];
+  }
+}
+
+// Função para extrair dados de um pokémon específico do histórico
+function extractPokemonMetaHistory(pokemonName) {
+  if (allMetaDataHistory.length === 0) {
+    console.log('⚠️ Nenhum dado de meta carregado');
+    return null;
+  }
+  
+  const normalizedName = normalizePokemonName(pokemonName);
+  console.log(`📊 Extraindo histórico para: ${pokemonName} (normalizado: ${normalizedName})`);
+  
+  const history = {
+    dates: [],
+    winrates: [],
+    pickrates: [],
+    banrates: []
+  };
+  
+  allMetaDataHistory.forEach(metaEntry => {
+    const date = metaEntry.date;
+    const data = metaEntry.data;
+    
+    // Buscar winrate
+    const winrateEntry = data.taxaVitoria.find(
+      entry => normalizePokemonName(entry.nome) === normalizedName
+    );
+    
+    // Buscar pickrate
+    const pickrateEntry = data.taxaSelecao.find(
+      entry => normalizePokemonName(entry.nome) === normalizedName
+    );
+    
+    // Buscar banrate
+    const banrateEntry = data.taxaBanimento.find(
+      entry => normalizePokemonName(entry.nome) === normalizedName
+    );
+    
+    // Adicionar aos arrays (mesmo que seja null)
+    history.dates.push(date);
+    history.winrates.push(winrateEntry ? winrateEntry.taxa : null);
+    history.pickrates.push(pickrateEntry ? pickrateEntry.taxa : null);
+    history.banrates.push(banrateEntry ? banrateEntry.taxa : null);
+  });
+  
+  console.log('📈 Histórico extraído:', history);
+  return history;
+}
+
+// Função para criar um gráfico de linha
+function createMetaChart(canvasId, label, data, color) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) {
+    console.error(`❌ Canvas ${canvasId} não encontrado`);
+    return null;
+  }
+  
+  // Destruir gráfico anterior se existir
+  const existingChart = Chart.getChart(canvasId);
+  if (existingChart) {
+    existingChart.destroy();
+  }
+  
+  // Configuração do gráfico
+  const config = {
+    type: 'line',
+    data: {
+      labels: data.dates,
+      datasets: [{
+        label: label,
+        data: data.values,
+        borderColor: color,
+        backgroundColor: color + '20', // Adiciona transparência
+        borderWidth: 3,
+        tension: 0.4, // Suaviza a linha
+        fill: true,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: color,
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: color,
+          borderWidth: 2,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return `${label}: ${context.parsed.y.toFixed(2)}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          },
+          ticks: {
+            callback: function(value) {
+              return value + '%';
+            },
+            color: '#666',
+            font: {
+              size: 11
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            color: '#666',
+            font: {
+              size: 10
+            },
+            maxRotation: 45,
+            minRotation: 45
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  };
+  
+  return new Chart(ctx, config);
+}
+
+// Função para renderizar a coluna de Meta Comparison
+function renderMetaComparison(pokemonName) {
+  const metaColumn = document.getElementById('meta-comparison-column');
+  const metaChartsContainer = document.getElementById('meta-charts-container');
+  
+  if (!metaColumn || !metaChartsContainer) {
+    console.error('❌ Elementos de meta comparison não encontrados');
+    return;
+  }
+  
+  // Verificar se há dados suficientes
+  if (allMetaDataHistory.length < 2) {
+    metaColumn.classList.remove('show');
+    console.log('⚠️ Menos de 2 arquivos de meta - não exibindo comparação');
+    return;
+  }
+  
+  // Extrair histórico do pokémon
+  const history = extractPokemonMetaHistory(pokemonName);
+  
+  if (!history || history.dates.length === 0) {
+    metaColumn.classList.remove('show');
+    console.log('⚠️ Sem histórico para este pokémon');
+    return;
+  }
+  
+  // Mostrar coluna
+  metaColumn.classList.add('show');
+  
+  // Limpar container
+  metaChartsContainer.innerHTML = `
+    <div class="meta-chart-container">
+      <div class="meta-chart-title">📈 Winrate Trend</div>
+      <canvas id="winrate-chart" class="meta-chart-canvas"></canvas>
+    </div>
+    
+    <div class="meta-chart-container">
+      <div class="meta-chart-title">🎯 Pickrate Trend</div>
+      <canvas id="pickrate-chart" class="meta-chart-canvas"></canvas>
+    </div>
+    
+    <div class="meta-chart-container">
+      <div class="meta-chart-title">🚫 Banrate Trend</div>
+      <canvas id="banrate-chart" class="meta-chart-canvas"></canvas>
+    </div>
+  `;
+  
+  // Aguardar renderização do DOM
+  setTimeout(() => {
+    // Criar gráficos
+    createMetaChart('winrate-chart', 'Winrate', {
+      dates: history.dates,
+      values: history.winrates
+    }, '#28a745');
+    
+    createMetaChart('pickrate-chart', 'Pickrate', {
+      dates: history.dates,
+      values: history.pickrates
+    }, '#007bff');
+    
+    createMetaChart('banrate-chart', 'Banrate', {
+      dates: history.dates,
+      values: history.banrates
+    }, '#dc3545');
+    
+    console.log('✅ Gráficos de meta comparison criados');
+  }, 100);
+}
 
   async function loadMetaData() {
   try {
@@ -5160,6 +5427,7 @@ if (incluirMapBuffs === "sim") {
     updatePokemonImage();
     makeImageClickable();
   createSkillBuildInResult();
+  renderMetaComparison(selectedPokemon);
 
 // Status Final - Novo Design com Sistema de Expansão
 statusFinalDiv.innerHTML = STAT_KEYS
