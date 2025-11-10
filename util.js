@@ -5279,8 +5279,8 @@ const pokemonRoutesEffectiveness = {
   meowscara: { top: 20, jungle: 60, bot: 20 },
   metagross: { top: 50, jungle: 50, bot: 0 },
   mew: { top: 10, jungle: 25, bot: 65 },
-  mewtwonitex: { top: 70, jungle: 10, bot: 20 },
-  mewtwonitey: { top: 10, jungle: 20, bot: 70 },
+  mewtwox: { top: 70, jungle: 10, bot: 20 },
+  mewtwoy: { top: 10, jungle: 20, bot: 70 },
   mimikyu: { top: 40, jungle: 50, bot: 10 },
   miraidon: { top: 0, jungle: 20, bot: 80 },
   mrmime: { top: 35, jungle: 0, bot: 65 },
@@ -14230,11 +14230,11 @@ const skillDamage = {
           name: "Pressure",
           description: "Building Mega Gauge through attacks boosts stats and enables Mega Evolution, which consumes Aeos energy to extend duration and grants massive stat increases.",
           buff: {
-          ATK: "18%",
-          DEF: "18%",
-          SpDEF: "18%",
+          ATK: "20%",
+          DEF: "20%",
+          SpDEF: "20%",
           HP: "10%",
-          AtkSPD: "5%"
+          Speed: "5%"
           },
           formulas: [
           ]
@@ -14263,17 +14263,56 @@ const skillDamage = {
     "s11": {
       name: "Future Sight",
       cooldown: 9,
+      effects: ["Stun"],
+      buff:{},
+      debuffs: {
+        Speed: 25
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      skillDamageMultiplier: 1.2,
+      affectsBasicAttack: true,
+      buffPlus: {
+        levelRequired: 11,
+        skillDamageMultiplier: 1.0401,
+        affectsBasicAttack: true
+      },
       formulas: [
         {
           label: "Damage - Pull and Explosion",
           formula: (ATK, Level) => 0.6 * ATK + 5 * (Level - 1) + 120,
           type: "physical"
+        },
+        {
+          label: "Damage - Explosion (Additional)",
+          type: "text-only",
+          additionalText: "50% of damage dealt while target is locked-on"
         }
       ]
     },
     "s12": {
       name: "Psystrike",
       cooldown: 9,
+      buff:{
+        DmgTaken: 15
+      },
+      effects: ["Unstoppable"],
+      debuffs: {
+        Speed: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 5
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    	{
           label: "Damage (x5)",
@@ -14290,6 +14329,22 @@ const skillDamage = {
     "s21": {
       name: "Recover",
       cooldown: 10,
+      buff:{
+        Speed: "30%",
+        HPRegen: 20,
+        otherSkillsCooldownReduction: {
+          s11: "25%",
+          s12: "25%",
+          s21: "25%",
+          s22: "25%"
+        }
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          HPRegen: 10
+        }
+      },
       formulas: [
         {
           label: "Shield",
@@ -14307,12 +14362,38 @@ const skillDamage = {
     "s22": {
       name: "Teleport",
       cooldown: 10,
+      buff:{
+        Speed: "20%",
+      },
+      skillDamageMultiplier: 1.1,
+      affectsBasicAttack: true,
+      buffPlus: {
+        levelRequired: 13,
+        skillDamageMultiplier: 1.0449,
+        affectsBasicAttack: true
+      },
       formulas: [
       ]
     },
 	"ult": {
 		name: "Infinite Psyburn",
     cooldown: 134,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Invisible Reveal", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        DEF: 20
+      },
+      debuffLabels: {
+        DEF: "(DEBUFF) Defense Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage ",
@@ -18266,6 +18347,13 @@ const skillDamage = {
     skin1: "Phantom Thief Style",
     skin2: "Darkness Style"
     },
+  mewtwox: {
+    default: "Default",
+    skin1: "Mega Style",
+    skin2: "Martial Arts Style (X)",
+    skin3: "Pokébuki Style (X)",
+    skin4: "Dark Lord Style (X)"
+  },
   // Adicione mais pokémon aqui
 };
 
