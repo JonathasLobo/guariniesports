@@ -14683,6 +14683,22 @@ const skillDamage = {
     "s11": {
       name: "Play Rough",
       cooldown: 7.5,
+      buff: {
+        DmgTaken: 70
+      },
+      effects: ["Invicible"],
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          Speed: "20%"
+        }
+      },
       formulas: [
         {
           label: "Damage - Pull and Explosion",
@@ -14694,6 +14710,16 @@ const skillDamage = {
     "s12": {
       name: "Shadow Claw",
       cooldown: 4,
+      buff: {},
+      selfBuff: {
+        CooldownFlat: 1
+      },
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage - Last Hit",
@@ -14704,12 +14730,21 @@ const skillDamage = {
           label: "Healing - Per Hit",
           formula: (ATK, Level) => 0.18 * ATK + 0 * (Level - 1) + 48,
           type: "physical"
-        }
+        },
+        {
+          label: "Damage - Additional Skill Plus",
+          formula: (HP, Level) => 0.1 * HP,
+          type: "hp"
+        },
       ]
     },
     "s21": {
       name: "Shadow Sneak",
       cooldown: 9,
+      buff: {},
+      selfBuffPlus: {
+        CooldownFlat: 1
+      },
       formulas: [
         {
           label: "Damage - After Teleporting",
@@ -14718,8 +14753,8 @@ const skillDamage = {
         },
         {
           label: "Damage - Additional to Marked Targets",
-          type: "text-only",
-		  additionalText: "4% Missing HP"
+          formula: (HP, Level) => 0.04 * HP,
+          type: "hp"
         },
 		{
           label: "Healing",
@@ -14737,12 +14772,30 @@ const skillDamage = {
     "s22": {
       name: "Trick Room",
       cooldown: 7,
+      buff:{
+        DmgTaken: 70 
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs:{
+          CooldownFlat: 1
+        }
+      },
       formulas: [
       ]
     },
 	"ult": {
 		name: "Play With Me...",
     cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+    },
 		formulas: [
         {
           label: "Damage - per hit",
@@ -18524,6 +18577,13 @@ const skillDamage = {
     skin2: "Martial Arts Style (Y)",
     skin3: "Pokébuki Style (Y)",
     skin4: "Dark Lord Style (Y)"
+  },
+  mimikyu: {
+    default: "Default",
+    skin1: "Costume Party Style	",
+    skin2: "Pastel Style",
+    skin3: "Noble Style",
+    skin4: "Palace Style"
   },
   // Adicione mais pokémon aqui
 };
