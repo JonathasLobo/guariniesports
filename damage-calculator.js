@@ -435,7 +435,7 @@ function renderMetaComparison(pokemonName) {
   }
   
   // Verificar se há dados suficientes
-  if (allMetaDataHistory.length < 2) {
+  if (allMetaDataHistory.length < 1) {
     metaColumn.classList.remove('show');
     console.log('⚠️ Menos de 2 arquivos de meta - não exibindo comparação');
     return;
