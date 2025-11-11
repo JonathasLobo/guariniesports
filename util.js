@@ -15008,12 +15008,31 @@ const skillDamage = {
     "s11": {
       name: "Barrier",
       cooldown: 8,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
       ]
     },
     "s12": {
       name: "Psychic",
       cooldown: 6.5,
+      buff: {},
+      effects: ["Stun"],
+      debuffs: {
+        SpDEF: 40
+      },
+      debuffLabels: {
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    	{
           label: "Damage - per Pulse",
@@ -15030,6 +15049,8 @@ const skillDamage = {
     "s21": {
       name: "Confusion",
       cooldown: 5,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -15067,6 +15088,48 @@ const skillDamage = {
     "s22": {
       name: "Power Swap",
       cooldown: 4.5,
+      buff: {
+        Speed: "10%",
+      },
+      allyBuffs: {
+        Speed: 8,
+        ATK: 15,
+        SpATK: 15
+      },
+      allyBuffLabels: {
+        Speed: "(ALLY BUFF) MoveSpeed Increase",
+        ATK: "(ALLY BUFF) Attack Increase",
+        SpATK: "(ALLY BUFF) SpecialAttack Increase"
+      },
+      debuffs: {
+        Speed: 8,
+        ATK: 15,
+        SpATK: 15
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        allyBuffs: {
+        ATK: 5,
+        SpATK: 5
+      },
+      allyBuffLabels: {
+        ATK: "(ALLY BUFF) Attack Increase",
+        SpATK: "(ALLY BUFF) SpecialAttack Increase"
+      },
+      debuffs: {
+        ATK: 5,
+        SpATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      },
       formulas: [
 		{
           label: "Damage - per Tick",
@@ -15084,6 +15147,15 @@ const skillDamage = {
 	"ult": {
 		name: "Showtime",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Stun", "Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        Shield: 30
+      }
+    },
 		formulas: [
         {
           label: "Damage - First 3 Hits",
@@ -18643,6 +18715,16 @@ const skillDamage = {
     skin1: "Tuxedo Style",
     skin2: "Wanderer Style",
     skin3: "Bronze Style"
+  },
+  mrmime: {
+    default: "Default",
+    skin1: "Magician Style",
+    skin2: "Cook Style",
+    skin3: "Guardian Style",
+    skin4: "Aristocrat Style",
+    skin5: "Warm Style",
+    skin6: "Pastel Style",
+    skin7: "Space Style"
   },
   // Adicione mais pokémon aqui
 };

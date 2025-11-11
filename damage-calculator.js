@@ -1106,7 +1106,11 @@ const STAT_EFFECT_CONFIG = {
   mew: {
     s1: ["s1a", "s1b", "s1c"],
     s2: ["s2a", "s2b", "s2c"]
-  }
+  },
+  mrmime: {
+    s1: ["s21", "s12"],
+    s2: ["s11", "s22"]
+  },
   }
   const SKILL_KEY_ALIASES = {
   greedent: {
