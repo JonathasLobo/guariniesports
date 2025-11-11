@@ -3553,6 +3553,48 @@ const applyPassiveBuff = (stats, pokemon, baseStats, targetLevel) => {
       });
     }
 
+// ✅ PROCESSAR DEBUFFS DA PASSIVA (CORRIGIDO)
+if (passive.debuffs && typeof passive.debuffs === 'object') {
+  Object.keys(passive.debuffs).forEach(debuffStat => {
+    let debuffValue = passive.debuffs[debuffStat];
+    
+    // Converter string para número se necessário
+    if (typeof debuffValue === 'string') {
+      debuffValue = parseFloat(debuffValue.replace(/[^\d.-]/g, ''));
+    }
+    
+    if (!Number.isFinite(debuffValue) || debuffValue === 0) return;
+    
+    if (!modifiedStats._debuffsAcumulados) {
+      modifiedStats._debuffsAcumulados = {};
+    }
+    
+    if (!modifiedStats._debuffsAcumulados[debuffStat]) {
+      modifiedStats._debuffsAcumulados[debuffStat] = {
+        label: `(DEBUFF) ${debuffStat} Reduction`,  // ✅ ADICIONAR LABEL PADRÃO
+        value: 0,
+        total: 0,
+        stat: debuffStat,
+        skills: [],
+        customLabel: null
+      };
+    }
+    
+    modifiedStats._debuffsAcumulados[debuffStat].total += debuffValue;
+    modifiedStats._debuffsAcumulados[debuffStat].value += debuffValue;
+    modifiedStats._debuffsAcumulados[debuffStat].skills.push({
+      name: passiveName,
+      value: debuffValue
+    });
+    
+    // ✅ USAR debuffLabels SE DISPONÍVEL (sobrescreve o padrão)
+    if (passive.debuffLabels && passive.debuffLabels[debuffStat]) {
+      modifiedStats._debuffsAcumulados[debuffStat].customLabel = passive.debuffLabels[debuffStat];
+      modifiedStats._debuffsAcumulados[debuffStat].label = passive.debuffLabels[debuffStat];
+    }
+  });
+}
+
 // ✅ PROCESSAR buffs condicionais de gauge (Leafeon, Alcremie, etc)
 // ⚠️ SÓ APLICA SE A PASSIVA ESTIVER ATIVA
 if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemon][passiveKey]) {
@@ -3610,38 +3652,6 @@ if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemo
     });
   }
 }
-
-    // ✅ NOVO: Processar debuffs da passiva
-    if (passive.debuffs && typeof passive.debuffs === 'object') {
-      Object.keys(passive.debuffs).forEach(debuffStat => {
-        const debuffValue = parseFloat(passive.debuffs[debuffStat]);
-        
-        if (!Number.isFinite(debuffValue)) return;
-        
-        if (!modifiedStats._debuffsAcumulados) {
-          modifiedStats._debuffsAcumulados = {};
-        }
-        
-        if (!modifiedStats._debuffsAcumulados[debuffStat]) {
-          modifiedStats._debuffsAcumulados[debuffStat] = {
-            total: 0,
-            skills: [],
-            customLabel: null
-          };
-        }
-        
-        modifiedStats._debuffsAcumulados[debuffStat].total += debuffValue;
-        modifiedStats._debuffsAcumulados[debuffStat].skills.push({
-          name: passiveName,
-          value: debuffValue
-        });
-        
-        // Usar debuffLabels se disponível
-        if (passive.debuffLabels && passive.debuffLabels[debuffStat]) {
-          modifiedStats._debuffsAcumulados[debuffStat].customLabel = passive.debuffLabels[debuffStat];
-        }
-      });
-    }
     if (passive.formulas && passive.formulas.length > 0) {
       passive.formulas.forEach((f, index) => {
         if (f.type === "text-only" || f.type === "dependent") {
@@ -5618,40 +5628,44 @@ expandableStats.forEach(statLine => {
   });
 });
 
-    // Mostrar debuffs ativos
-    if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
-      Object.values(modified._debuffsAcumulados).forEach(debuff => {
-        const baseValue = 0;
-        const modifiedValue = debuff.value;
-        
-        // Tratamento especial para Unstoppable - exibir em segundos (BUFF positivo)
-        if (debuff.stat === "Unstoppable") {
-          statusFinalDiv.insertAdjacentHTML("beforeend", `
-            <div class="stat-line">
-              <span class="stat-label">${debuff.label}</span>
-              <span class="stat-value">
-                <span class="base-value">${baseValue}s</span>
-                <span class="arrow-up">▲</span>
-                <span class="modified-up">${modifiedValue}s</span>
-                <span class="percent-increase">+100%</span>
-              </span>
-            </div>
-          `);
-        } else {
-          // DEBUFFS (reduções) - mostrar em vermelho
-          statusFinalDiv.insertAdjacentHTML("beforeend", `
-            <div class="stat-line">
-              <span class="stat-label">${debuff.label}</span>
-              <span class="stat-value">
-                <span class="base-value">${baseValue}%</span>
-                <span class="arrow-down">▼</span>
-                <span class="modified-down">-${modifiedValue}%</span>
-              </span>
-            </div>
-          `);
-        }
-      });
+ // Mostrar debuffs ativos
+if (modified._debuffsAcumulados && Object.keys(modified._debuffsAcumulados).length > 0) {
+  Object.values(modified._debuffsAcumulados).forEach(debuff => {
+    const baseValue = 0;
+    const modifiedValue = debuff.value;
+    
+    // ✅ USAR customLabel SE DISPONÍVEL, SENÃO USA label PADRÃO
+    const displayLabel = debuff.customLabel || debuff.label || `(DEBUFF) ${debuff.stat} Reduction`;
+    
+    // Tratamento especial para Unstoppable - exibir em segundos (BUFF positivo)
+    if (debuff.stat === "Unstoppable") {
+      statusFinalDiv.insertAdjacentHTML("beforeend", `
+        <div class="stat-line">
+          <span class="stat-label">${displayLabel}</span>
+          <span class="stat-value">
+            <span class="base-value">${baseValue}s</span>
+            <span class="arrow-up">▲</span>
+            <span class="modified-up">${modifiedValue}s</span>
+            <span class="percent-increase">+100%</span>
+          </span>
+        </div>
+      `);
+    } else {
+      // DEBUFFS (reduções) - mostrar em vermelho
+      statusFinalDiv.insertAdjacentHTML("beforeend", `
+        <div class="stat-line">
+          <span class="stat-label">${displayLabel}</span>
+          <span class="stat-value">
+            <span class="base-value">${baseValue}%</span>
+            <span class="arrow-down">▼</span>
+            <span class="modified-down">-${modifiedValue}%</span>
+          </span>
+        </div>
+      `);
     }
+  });
+}
+
     // NOVO: Mostrar ally buffs ativos (buffs para aliados)
     if (modified._allyBuffsAcumulados && Object.keys(modified._allyBuffsAcumulados).length > 0) {
       Object.values(modified._allyBuffsAcumulados).forEach(allyBuff => {

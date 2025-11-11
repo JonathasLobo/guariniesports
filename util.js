@@ -15177,6 +15177,13 @@ const skillDamage = {
           description: "Attacks sling snow to slow enemies; hitting the same target 4 times freezes them.",
           buff: {
           },
+          effects: ["Freeze"],
+          debuffs: {
+            Speed: 30
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
+          },
           formulas: [
           {
           label: "Damage",
@@ -15204,6 +15211,16 @@ const skillDamage = {
     "s11": {
       name: "Avalanche",
       cooldown: 7.5,
+      buff:{},
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 50
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage - Wind or Wall",
@@ -15215,6 +15232,8 @@ const skillDamage = {
     "s12": {
       name: "Dazzling Gleam",
       cooldown: 7.5,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
 	    	{
           label: "Damage",
@@ -15231,6 +15250,13 @@ const skillDamage = {
     "s21": {
       name: "Blizzard",
       cooldown: 7.5,
+      buff: {},
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - Initial Blast",
@@ -15240,8 +15266,7 @@ const skillDamage = {
 		{
           label: "Damage - Second Hit",
           formula: (SpATK, Level) => 0.78 * SpATK + 8 * (Level - 1) + 500,
-          type: "special",
-		  additionalText: "Deals twice the damage of the first hit."
+          type: "special"
         },
 		{
           label: "Damage - Area (8 Ticks)",
@@ -15256,8 +15281,7 @@ const skillDamage = {
 		{
           label: "Damage - Second Hit Skill Plus",
           formula: (SpATK, Level) => 0.82 * SpATK + 12 * (Level - 1) + 540,
-          type: "special",
-		  additionalText: "Deals twice the damage of the first hit."
+          type: "special"
         },
 		{
           label: "Damage - Area (8 Ticks) Skill Plus",
@@ -15270,6 +15294,29 @@ const skillDamage = {
     "s22": {
       name: "Aurora Veil",
       cooldown: 13,
+      buff: {
+        DmgTaken: 35,
+        AtkSPD: 15,
+        Speed: "10%"
+      },
+      allyBuffs: {
+        DmgTaken: 35
+      },
+      allyBuffLabels: {
+        DmgTaken: "(ALLY BUFF) DamageTaken Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          DmgTaken: 5
+        }
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 2
+        }
+      },
       formulas: [
 		{
           label: "Heal - per Boosted Attack",
@@ -15281,6 +15328,16 @@ const skillDamage = {
 	"ult": {
 		name: "Snow Globe",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Frozen Enemies",
@@ -18725,6 +18782,17 @@ const skillDamage = {
     skin5: "Warm Style",
     skin6: "Pastel Style",
     skin7: "Space Style"
+  },
+  ninetales: {
+    default: "Default",
+    skin1: "Sacred Style",
+    skin2: "Checkered Style",
+    skin3: "Theater Style",
+    skin4: "Tuxedo Style",
+    skin5: "Holiday Style",
+    skin6: "Theater Style (Blue)",
+    skin7: "Tea Party Style",
+    skin8: "Aurora Style"
   },
   // Adicione mais pokémon aqui
 };
