@@ -424,8 +424,18 @@ function renderMetaComparison(pokemonName) {
     return;
   }
   
+  // 🛑 PREVENIR RECARGA DESNECESSÁRIA
+  // Verificar se já existem gráficos e se é o mesmo pokémon
+  const existingCharts = metaChartsContainer.querySelectorAll('canvas');
+  const currentPokemon = metaColumn.dataset.currentPokemon;
+  
+  if (existingCharts.length > 0 && currentPokemon === pokemonName) {
+    console.log('⚡ Gráficos já renderizados para', pokemonName);
+    return; // Não recarregar se já está mostrando o mesmo pokémon
+  }
+  
   // Verificar se há dados suficientes
-  if (allMetaDataHistory.length < 1) {
+  if (allMetaDataHistory.length < 2) {
     metaColumn.classList.remove('show');
     console.log('⚠️ Menos de 2 arquivos de meta - não exibindo comparação');
     return;
@@ -440,8 +450,22 @@ function renderMetaComparison(pokemonName) {
     return;
   }
   
+  // ✅ VERIFICAR SE HÁ DADOS VÁLIDOS (NÃO-NULOS)
+  const hasValidData = history.winrates.some(v => v !== null) || 
+                       history.pickrates.some(v => v !== null) || 
+                       history.banrates.some(v => v !== null);
+  
+  if (!hasValidData) {
+    metaColumn.classList.remove('show');
+    console.log('⚠️ Nenhum dado válido encontrado para', pokemonName);
+    return;
+  }
+  
   // Mostrar coluna
   metaColumn.classList.add('show');
+  
+  // ✅ MARCAR POKEMON ATUAL NO DATASET
+  metaColumn.dataset.currentPokemon = pokemonName;
   
   // Limpar container
   metaChartsContainer.innerHTML = `
@@ -463,23 +487,46 @@ function renderMetaComparison(pokemonName) {
   
   // Aguardar renderização do DOM
   setTimeout(() => {
-    // Criar gráficos
+    // ✅ FILTRAR APENAS PONTOS VÁLIDOS (NÃO-NULOS)
+    const validIndices = [];
+    const validDates = [];
+    const validWinrates = [];
+    const validPickrates = [];
+    const validBanrates = [];
+    
+    history.dates.forEach((date, index) => {
+      // Incluir apenas se pelo menos um dos valores for válido
+      if (history.winrates[index] !== null || 
+          history.pickrates[index] !== null || 
+          history.banrates[index] !== null) {
+        validIndices.push(index);
+        validDates.push(date);
+        validWinrates.push(history.winrates[index] || 0);
+        validPickrates.push(history.pickrates[index] || 0);
+        validBanrates.push(history.banrates[index] || 0);
+      }
+    });
+    
+    console.log('✅ Datas válidas encontradas:', validDates);
+    console.log('✅ Total de pontos:', validDates.length);
+    
+    // Criar gráficos COM DADOS FILTRADOS
     createMetaChart('winrate-chart', 'Winrate', {
-      dates: history.dates,
-      values: history.winrates
+      dates: validDates,
+      values: validWinrates
     }, '#28a745');
     
     createMetaChart('pickrate-chart', 'Pickrate', {
-      dates: history.dates,
-      values: history.pickrates
+      dates: validDates,
+      values: validPickrates
     }, '#007bff');
     
     createMetaChart('banrate-chart', 'Banrate', {
-      dates: history.dates,
-      values: history.banrates
+      dates: validDates,
+      values: validBanrates
     }, '#dc3545');
     
-    console.log('✅ Gráficos de meta comparison criados');
+    console.log('✅ Gráficos de meta comparison criados para', pokemonName);
   }, 100);
 }
 
