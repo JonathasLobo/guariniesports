@@ -15357,7 +15357,13 @@ const skillDamage = {
           name: "Iron Fist",
           description: "Hitting with a move empowers the next basic attack, dealing bonus damage and healing. In Fighter Mode, it also dashes to the target and boosts attack speed with stacking potential.",
           buff: {
-          AtkSPD: "30%"
+          },
+          conditionalBuffs: {
+            normalMode: {
+            },
+            fighterMode: {
+              AtkSPD: 30
+            }
           },
           formulas: [
 		{
@@ -15396,6 +15402,20 @@ const skillDamage = {
     "s11": {
       name: "Thunder Punch",
       cooldown: 6,
+      buff: {},
+      conditionalDebuffs: {
+        normalMode: {
+          Speed: 40,
+          AtkSPD: 10
+        },
+        fighterMode: {
+          AtkSPD: 10
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction",
+          AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -15422,6 +15442,39 @@ const skillDamage = {
     "s12": {
       name: "Supercell Slam",
       cooldown: 6,
+      buff: {
+      },
+      effects: ["Unstoppable"],
+      conditionalBuffs: {
+        normalMode: {
+          DmgTaken: 30
+        },
+        fighterMode: {
+        }
+      },
+      conditionalDebuffs: {
+        normalMode: {
+          Speed: 30,
+        },
+        fighterMode: {
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction",
+        }
+      },
+      buffPlus :{
+        levelRequired: 11,
+        conditionalDebuffs: {
+        normalMode: {
+          Speed: 10,
+        },
+        fighterMode: {
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction",
+        }
+      },
+      },
       formulas: [
 	    {
           label: "Damage - First Use",
@@ -15468,6 +15521,19 @@ const skillDamage = {
     "s21": {
       name: "Volt Switch",
       cooldown: 8,
+      buff: {},
+      conditionalBuffs:{
+        normalMode: {},
+        fighterMode: {
+          Speed: "40%"
+        }
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs:{
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -15485,6 +15551,8 @@ const skillDamage = {
     "s22": {
       name: "Mach Punch",
       cooldown: 7,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
 		{
           label: "Damage",
@@ -15505,6 +15573,27 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Zip Zap Full-Charge Spark",
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        otherSkillsCooldownReduction: {
+          s11: 6,
+          s12: 6,
+          s21: 8,
+          s22: 7
+        },
+        Speed: "50%",
+        AtkSPD: 35,
+        Shield: 20,
+      },
+        conditionalBuffs: {
+          normalMode: {},
+          fighterMode: {
+            Lifesteal: 30
+        }
+      },
+    },
 		formulas: [
         {
           label: "Damage",
@@ -18793,6 +18882,10 @@ const skillDamage = {
     skin6: "Theater Style (Blue)",
     skin7: "Tea Party Style",
     skin8: "Aurora Style"
+  },
+  pawmot: {
+    default: "Default",
+    skin1: "Concert Style"
   },
   // Adicione mais pokémon aqui
 };

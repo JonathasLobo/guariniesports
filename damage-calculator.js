@@ -206,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let muscleGauge = 0; // Exclusivo para Buzzwole (0-6)
   let sweetGauge = false; // Exclusivo para Alcremie (false = Not Full, true = Full)
   let chlorophyllGauge = false; // Exclusivo para Leafeon (false = Not Full, true = Full)
+  let pawmotMode = false; // ✅ NOVO: Exclusivo para Pawmot (false = Normal Mode, true = Fighter Mode)
   let eonPower = 0;
   let eonPower2 = 0;
   let eonPowerlatios = 0;
@@ -1443,6 +1444,48 @@ const createChlorophyllGaugeControl = () => {
   
   updateDisplay();
 };
+
+// Controle de Pawmot Mode para Pawmot
+const createPawmotModeControl = () => {
+  if (selectedPokemon !== "pawmot") return;
+  
+  const skillsDiv = document.getElementById("skills-column");
+  if (!skillsDiv) return;
+  
+  // Remover controle existente
+  const existing = skillsDiv.querySelector(".pawmot-mode-control");
+  if (existing) existing.remove();
+  
+  const modeHTML = `
+    <div class="pawmot-mode-control" style="background: rgba(255, 193, 7, 0.1); border: 2px solid #FFC107; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center;">
+      <div style="color: #FFC107; font-size: 16px; font-weight: bold; margin-bottom: 12px;">⚡ Battle Mode</div>
+      <div class="stack-label-new" style="color: #030303ff">Current Mode:</div>
+      <div class="stack-controls-new" style="justify-content: center;">
+        <div class="stack-button pawmot-toggle" style="border-color: #FFC107; color: #FFC107; background: rgba(255, 193, 7, 0.1); min-width: 140px;">${pawmotMode ? "FIGHTER MODE" : "NORMAL MODE"}</div>
+      </div>
+    </div>
+  `;
+  
+  skillsDiv.insertAdjacentHTML("afterbegin", modeHTML);
+  
+  const toggleBtn = skillsDiv.querySelector(".pawmot-toggle");
+  
+  const updateDisplay = () => {
+    toggleBtn.textContent = pawmotMode ? "FIGHTER MODE" : "NORMAL MODE";
+    toggleBtn.style.background = pawmotMode ? "rgba(255, 193, 7, 0.3)" : "rgba(255, 193, 7, 0.1)";
+    toggleBtn.classList.add("highlighted");
+    setTimeout(() => toggleBtn.classList.remove("highlighted"), 300);
+  };
+  
+  toggleBtn.addEventListener("click", () => {
+    pawmotMode = !pawmotMode;
+    updateDisplay();
+    calcular();
+  });
+  
+  updateDisplay();
+};
+
 // Controle de Eon Power para Latias (Dragon Pulse)
 const createEonPowerControl = () => {
   if (selectedPokemon !== "latias") return;
@@ -2816,6 +2859,8 @@ if (skill.conditionalDebuffs && activeSkills[pokemon] && activeSkills[pokemon][s
     gaugeState = chlorophyllGauge ? "full" : "notFull";
   } else if (pokemon === "alcremie") {
     gaugeState = sweetGauge ? "full" : "notFull";
+  } else if (pokemon === "pawmot") { // ✅ NOVO
+    gaugeState = pawmotMode ? "fighterMode" : "normalMode";
   }
   
   if (gaugeState && skill.conditionalDebuffs[gaugeState]) {
@@ -2868,6 +2913,64 @@ if (skill.conditionalDebuffs && activeSkills[pokemon] && activeSkills[pokemon][s
           });
         }
       }
+
+      // ✅ NOVO: PROCESSAR conditionalBuffs (buffs que dependem do modo/gauge)
+if (skill.conditionalBuffs && activeSkills[pokemon] && activeSkills[pokemon][skillKey]) {
+  let gaugeState = null;
+  
+  // Determinar estado do gauge baseado no pokémon
+  if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  } else if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  } else if (pokemon === "pawmot") {
+    gaugeState = pawmotMode ? "fighterMode" : "normalMode";
+  }
+  
+  // Aplicar os buffs condicionais aos stats
+  if (gaugeState && skill.conditionalBuffs[gaugeState]) {
+    const conditionalBuffsToApply = skill.conditionalBuffs[gaugeState];
+    
+    Object.keys(conditionalBuffsToApply).forEach(stat => {
+      const rawVal = conditionalBuffsToApply[stat];
+      if (rawVal === undefined || rawVal === null || rawVal === "") return;
+      
+      const numericValue = parseFloat(String(rawVal).replace(/[^\d.-]/g, ''));
+      if (!Number.isFinite(numericValue) || numericValue === 0) return;
+      
+      const skillName = skill.name || skillKey;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      
+      if (modifiedStats.hasOwnProperty(stat)) {
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        
+        // Stats percentuais (CDR, AtkSPD, CritRate, etc)
+        if (PERCENT_KEYS.has(stat)) {
+          modifiedStats[stat] += numericValue;
+          addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+        }
+        // Damage Taken Reduction
+        else if (stat === "DmgTaken") {
+          modifiedStats[stat] += numericValue;
+          addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+        }
+        // Stats numéricos (HP, ATK, DEF, etc)
+        else {
+          if (isPercentString) {
+            // Buff percentual baseado no valor base
+            const bonusValue = baseStats[stat] * (numericValue / 100);
+            modifiedStats[stat] += bonusValue;
+            addStatModifier(stat, bonusValue, `${skillName} (${gaugeState})`, "percent", iconPath);
+          } else {
+            // Buff flat
+            modifiedStats[stat] += numericValue;
+            addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+          }
+        }
+      }
+    });
+  }
+}
       
     // Aplicar buffs básicos GLOBAIS da skill (afetam o personagem inteiro)
 if (skill.buff && typeof skill.buff === 'object') {
@@ -3274,7 +3377,110 @@ if (skill.buffPlus.debuffs && typeof skill.buffPlus.debuffs === 'object') {
           }
         });
       }
+
+      // ✅ NOVO: PROCESSAR conditionalDebuffs DO BUFFPLUS
+      if (skill.buffPlus.conditionalDebuffs && activeSkills[pokemon] && activeSkills[pokemon][skillKey]) {
+        let gaugeState = null;
+        
+        // Determinar estado do gauge baseado no pokémon
+        if (pokemon === "leafeon") {
+          gaugeState = chlorophyllGauge ? "full" : "notFull";
+        } else if (pokemon === "alcremie") {
+          gaugeState = sweetGauge ? "full" : "notFull";
+        } else if (pokemon === "pawmot") {
+          gaugeState = pawmotMode ? "fighterMode" : "normalMode";
+        }
+        
+        if (gaugeState && skill.buffPlus.conditionalDebuffs[gaugeState]) {
+          const conditionalDebuffsToApply = skill.buffPlus.conditionalDebuffs[gaugeState];
+          
+          Object.keys(conditionalDebuffsToApply).forEach(debuffStat => {
+            if (debuffStat === 'debuffLabels') return;
+            
+            const debuffValue = conditionalDebuffsToApply[debuffStat];
+            if (debuffValue === undefined || debuffValue === null || debuffValue === "") return;
+            
+            const numericValue = parseFloat(String(debuffValue).replace(/[^\d.-]/g, ''));
+            if (!Number.isFinite(numericValue) || numericValue === 0) return;
+            
+            if (!debuffsAcumulados[debuffStat]) {
+              debuffsAcumulados[debuffStat] = {
+                total: 0,
+                skills: [],
+                customLabel: null
+              };
+            }
+            
+            debuffsAcumulados[debuffStat].total += numericValue;
+            debuffsAcumulados[debuffStat].skills.push({
+              name: `${skill.name} (Plus - ${gaugeState === "full" ? "Full Gauge" : "Not Full"})`,
+              value: numericValue
+            });
+            
+            if (skill.buffPlus.conditionalDebuffs.debuffLabels && skill.buffPlus.conditionalDebuffs.debuffLabels[debuffStat]) {
+              debuffsAcumulados[debuffStat].customLabel = skill.buffPlus.conditionalDebuffs.debuffLabels[debuffStat];
+            }
+          });
+        }
+      }
+      // ✅ NOVO: PROCESSAR conditionalBuffs DO BUFFPLUS
+if (skill.buffPlus.conditionalBuffs && activeSkills[pokemon] && activeSkills[pokemon][skillKey]) {
+  let gaugeState = null;
+  
+  // Determinar estado do gauge baseado no pokémon
+  if (pokemon === "leafeon") {
+    gaugeState = chlorophyllGauge ? "full" : "notFull";
+  } else if (pokemon === "alcremie") {
+    gaugeState = sweetGauge ? "full" : "notFull";
+  } else if (pokemon === "pawmot") {
+    gaugeState = pawmotMode ? "fighterMode" : "normalMode";
+  }
+  
+  // Aplicar os buffs condicionais aos stats
+  if (gaugeState && skill.buffPlus.conditionalBuffs[gaugeState]) {
+    const conditionalBuffsToApply = skill.buffPlus.conditionalBuffs[gaugeState];
+    
+    Object.keys(conditionalBuffsToApply).forEach(stat => {
+      const rawVal = conditionalBuffsToApply[stat];
+      if (rawVal === undefined || rawVal === null || rawVal === "") return;
       
+      const numericValue = parseFloat(String(rawVal).replace(/[^\d.-]/g, ''));
+      if (!Number.isFinite(numericValue) || numericValue === 0) return;
+      
+      const skillName = `${skill.name || skillKey} (Plus)`;
+      const iconPath = `./estatisticas-shad/images/skills/${pokemon}_${skillKey}.png`;
+      
+      if (modifiedStats.hasOwnProperty(stat)) {
+        const isPercentString = (typeof rawVal === "string" && rawVal.includes("%"));
+        
+        // Stats percentuais (CDR, AtkSPD, CritRate, etc)
+        if (PERCENT_KEYS.has(stat)) {
+          modifiedStats[stat] += numericValue;
+          addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+        }
+        // Damage Taken Reduction
+        else if (stat === "DmgTaken") {
+          modifiedStats[stat] += numericValue;
+          addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+        }
+        // Stats numéricos (HP, ATK, DEF, etc)
+        else {
+          if (isPercentString) {
+            // Buff percentual baseado no valor base
+            const bonusValue = baseStats[stat] * (numericValue / 100);
+            modifiedStats[stat] += bonusValue;
+            addStatModifier(stat, bonusValue, `${skillName} (${gaugeState})`, "percent", iconPath);
+          } else {
+            // Buff flat
+            modifiedStats[stat] += numericValue;
+            addStatModifier(stat, numericValue, `${skillName} (${gaugeState})`, "flat", iconPath);
+          }
+        }
+      }
+    });
+  }
+}
+
       // ✅ ADICIONE ESTE BLOCO COMPLETO AQUI (LOGO APÓS O FECHAMENTO ACIMA)
       if (skill.buffPlus.allyBuffs && typeof skill.buffPlus.allyBuffs === 'object') {
         Object.keys(skill.buffPlus.allyBuffs).forEach(buffStat => {
@@ -3600,13 +3806,14 @@ if (passive.debuffs && typeof passive.debuffs === 'object') {
 if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemon][passiveKey]) {
   let gaugeState;
   
-  // Determinar estado do gauge baseado no pokémon
-  if (pokemon === "leafeon") {
+if (pokemon === "leafeon") {
     gaugeState = chlorophyllGauge ? "full" : "notFull";
   } else if (pokemon === "alcremie") {
     gaugeState = sweetGauge ? "full" : "notFull";
+  } else if (pokemon === "pawmot") { // ✅ ADICIONE ESTA LINHA
+    gaugeState = pawmotMode ? "fighterMode" : "normalMode"; // ✅ E ESTA
   } else {
-    return; // Pokémon não suportado
+    return;
   }
   
   const conditionalBuffsToApply = passive.conditionalBuffs[gaugeState];
@@ -4063,6 +4270,7 @@ if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemo
     muscleGauge = 0;
     sweetGauge = false;
     chlorophyllGauge = false;
+    pawmotMode = false;
     eonPower = 0;
     eonPower2 = 0;
     eonPowerlatios = 0;
@@ -4097,6 +4305,8 @@ if (passive.conditionalBuffs && activePassives[pokemon] && activePassives[pokemo
                 skill.dynamicBuffs || 
                 skill.nextBasicAttackPercent !== undefined || // ✅ ADICIONAR
                 skill.buffPlus?.nextBasicAttackPercent !== undefined ||
+                skill.buffPlus?.buffs ||
+                skill.buffPlus?.conditionalBuffs ||
                 (skill.formulas && skill.formulas.some(f => f.activatable)) ||
                 skillKey.startsWith('ult')) {
               activeSkills[poke][skillKey] = false;
@@ -5928,6 +6138,10 @@ if (incluirMapBuffs === "sim") {
 
     if (selectedPokemon === "leafeon") {
       createChlorophyllGaugeControl();
+    }
+
+    if (selectedPokemon === "pawmot") { // ✅ NOVO
+      createPawmotModeControl();
     }
     
     if (selectedPokemon === "latias") {
