@@ -225,8 +225,8 @@ async function loadAllMetaData() {
     
     // Lista de arquivos conhecidos (você pode expandir isso)
     const metaFiles = [
-      'meta02112025.json',
-      'meta10112025.json',
+      'meta02-11-2025.json',
+      'meta10-11-2025.json',
       // Adicione mais arquivos conforme criar
       // 'meta17-11-2025.json',
       // 'meta24-11-2025.json',
@@ -237,7 +237,7 @@ async function loadAllMetaData() {
     for (const fileName of metaFiles) {
       try {
         console.log(`📥 Tentando carregar: ${fileName}`);
-        const response = await fetch(`./${fileName}`);
+        const response = await fetch(`./meta/${fileName}`);
         
         if (response.ok) {
           const data = await response.json();
