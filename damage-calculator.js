@@ -1112,6 +1112,10 @@ const STAT_EFFECT_CONFIG = {
     s1: ["s21", "s12"],
     s2: ["s11", "s22"]
   },
+  pikachu: {
+    s1: ["s12", "u11"],
+    s2: ["s21", "s11"]
+  },
   }
   const SKILL_KEY_ALIASES = {
   greedent: {

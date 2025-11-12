@@ -15610,11 +15610,30 @@ const skillDamage = {
           description: "When damaged, paralyzes nearby enemies, slowing their movement and attack speed (30s cooldown).",
           buff: {
           },
+          effects: ["Paralyze"],
+          debuffs: {
+            Speed: 30,
+            AtkSPD: 10
+          },
+          debuffLabels :{
+            Speed: "(DEBUFF) MoveSpeed Reduction",
+            AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+          },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    effects: ["Paralyze"],
+    debuffs: {
+      Speed: 30,
+      AtkSPD: 10
+          },
+    debuffLabels :{
+      Speed: "(DEBUFF) MoveSpeed Reduction",
+      AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -15632,6 +15651,8 @@ const skillDamage = {
     "s11": {
       name: "Thunderbolt",
       cooldown: 7,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
 		{
           label: "Damage - per Bolt",
@@ -15648,6 +15669,16 @@ const skillDamage = {
     "s12": {
       name: "Electro Ball",
       cooldown: 5.5,
+      buff: {},
+      effects: ["Paralyze"],
+      debuffs: {
+        Speed: 50,
+        AtkSPD: 10
+      },
+      debuffLabels :{
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage - Area",
@@ -15656,9 +15687,9 @@ const skillDamage = {
         },
         {
           label: "Damage - Execute",
-		  type: "text-only",
-		  additionalText: "6% of enemy missing HP."
-        },
+          type: "text-only",
+          additionalText: "6% of enemy missing HP."
+            },
 		{
           label: "Damage - Area Skill Plus",
           formula: (SpATK, Level) => 0.727 * SpATK + 28 * (Level - 1) + 608,
@@ -15674,6 +15705,16 @@ const skillDamage = {
     "s21": {
       name: "Volt Tackle",
       cooldown: 9,
+      buff: {
+        Speed: "60%"
+      },
+      selfBuffPlus :{
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 2
+        }
+      },
+      effects: ["Unstoppable"],
       formulas: [
         {
           label: "Damage (5x)",
@@ -15697,6 +15738,16 @@ const skillDamage = {
 	"ult": {
 		name: "Thunderstorm",
     cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 30
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -18886,6 +18937,21 @@ const skillDamage = {
   pawmot: {
     default: "Default",
     skin1: "Concert Style"
+  },
+  pikachu: {
+    default: "Default",
+    skin1: "Hip-Hop Style",
+    skin2: "Fashionable Style",
+    skin3: "Festival Style",
+    skin4: "Orange Unite Style",
+    skin5: "Purple Unite Style",
+    skin6: "Holiday Style",
+    skin7: "Concert Style",
+    skin8: "Cook Style",
+    skin9: "Band Style",
+    skin10: "Holiday Style (Blue)",
+    skin11: "Tourist Style",
+    skin12: "Stage Style",
   },
   // Adicione mais pokémon aqui
 };
