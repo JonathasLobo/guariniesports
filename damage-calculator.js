@@ -4792,53 +4792,58 @@ const formatActiveEffects = (skill, isPlusActive, currentLevel, pokemon = select
     });
   };
 
-  // ✅ FUNÇÃO PARA PROCESSAR COOLDOWNS (USA O SET COMPARTILHADO)
-  const processOtherSkillsCooldown = (reductions, source = "") => {
-    if (!reductions || typeof reductions !== 'object') return;
+  // ✅ NOVA VERSÃO: Acumula reduções de cooldown por skill ANTES de exibir
+const cooldownReductionsBySkill = {}; // Objeto para acumular reduções por skill
+
+const processOtherSkillsCooldown = (reductions, source = "") => {
+  if (!reductions || typeof reductions !== 'object') return;
+  
+  Object.keys(reductions).forEach(targetSkillKey => {
+    const reductionValue = reductions[targetSkillKey];
     
-    Object.keys(reductions).forEach(targetSkillKey => {
-      const reductionValue = reductions[targetSkillKey];
-      
-      // ✅ CHAVE ÚNICA: skill + valor + source
-      const uniqueKey = `${targetSkillKey}:${reductionValue}:${source}`;
-      
-      // ✅ SE JÁ FOI ADICIONADO, PULAR
-      if (addedCooldownReductions.has(uniqueKey)) {
-        console.log(`⏭️ Pulando duplicata: ${uniqueKey}`); // Debug
-        return;
-      }
-      
-      // ✅ MARCAR COMO ADICIONADO
-      addedCooldownReductions.add(uniqueKey);
-      console.log(`✅ Adicionado: ${uniqueKey}`); // Debug
-      
-      // Buscar nome da skill afetada
-      const targetSkillName = skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey;
-      
-      // Tratamento correto do valor
-      const isPercent = typeof reductionValue === "string" && reductionValue.includes("%");
-      const numericValue = parseFloat(String(reductionValue).replace("%", ""));
-      
-      let displayValue;
-      if (isPercent) {
-        displayValue = `${Math.abs(numericValue)}%`;
-      } else {
-        displayValue = `${Math.abs(numericValue)}s`;
-      }
-      
-      effects.push({
-        icon: "🔗",
-        label: `${targetSkillName} Cooldown`,
-        value: displayValue,
-        arrow: "▼",
-        arrowClass: "effect-arrow-down",
-        color: "#20c997",
-        source: source,
-        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`,
-        isOtherSkill: true
-      });
-    });
-  };
+    const isPercent = typeof reductionValue === "string" && reductionValue.includes("%");
+    const numericValue = parseFloat(String(reductionValue).replace("%", ""));
+    
+    // ✅ ACUMULAR valores por skill ao invés de criar efeitos separados
+    if (!cooldownReductionsBySkill[targetSkillKey]) {
+      cooldownReductionsBySkill[targetSkillKey] = {
+        total: 0,
+        isPercent: isPercent,
+        skillName: skillDamage[pokemon]?.[targetSkillKey]?.name || targetSkillKey,
+        skillImage: `./estatisticas-shad/images/skills/${pokemon}_${targetSkillKey}.png`
+      };
+    }
+    
+    cooldownReductionsBySkill[targetSkillKey].total += numericValue;
+  });
+};
+
+// ✅ 10. PROCESSAR otherSkillsCooldownReduction (BUFF BÁSICO)
+if (skill.buff?.otherSkillsCooldownReduction) {
+  processOtherSkillsCooldown(skill.buff.otherSkillsCooldownReduction, "");
+}
+
+// ✅ 11. PROCESSAR otherSkillsCooldownReduction (BUFFPLUS - SE ATIVO)
+if (isPlusActive && skill.buffPlus?.otherSkillsCooldownReduction) {
+  processOtherSkillsCooldown(skill.buffPlus.otherSkillsCooldownReduction, " (Plus)");
+}
+
+// ✅ DEPOIS de processar TUDO, criar os efeitos visuais com valores acumulados
+Object.keys(cooldownReductionsBySkill).forEach(targetSkillKey => {
+  const data = cooldownReductionsBySkill[targetSkillKey];
+  
+  effects.push({
+    icon: "🔗",
+    label: `${data.skillName} Cooldown`,
+    value: data.isPercent ? `${Math.abs(data.total)}%` : `${Math.abs(data.total)}s`,
+    arrow: "▼",
+    arrowClass: "effect-arrow-down",
+    color: "#20c997",
+    source: "", // Removemos o "(Plus)" pois agora é o total
+    skillImage: data.skillImage,
+    isOtherSkill: true
+  });
+});
   
   // 1. Processar buffs básicos (GLOBAIS)
   if (skill.buff) {

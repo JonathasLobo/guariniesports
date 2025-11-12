@@ -16132,6 +16132,22 @@ const skillDamage = {
     "s11": {
       name: "Dazzling Gleam",
       cooldown: 4.5,
+      buff: {
+        Speed: "99%",
+        otherSkillsCooldownReduction: {
+          s21: "30%",
+          s22: "30%"
+        }
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+        },
+        otherSkillsCooldownReduction: {
+          s21: "20%",
+          s22: "20%"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -16143,6 +16159,16 @@ const skillDamage = {
     "s12": {
       name: "Fairy Wind",
       cooldown: 7,
+      buff: {},
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 20
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    {
           label: "Damage - First 2 Hits (per Hit)",
@@ -16159,6 +16185,8 @@ const skillDamage = {
     "s21": {
       name: "Smart Strike",
       cooldown: 9,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -16170,12 +16198,31 @@ const skillDamage = {
 	"s22": {
       name: "Agility",
       cooldown: 2,
+      buff:{
+        Speed: "80%"
+      },
       formulas: [
+        {
+          label: "Healing Skill Plus",
+          formula: (HP, Level) => 0.02 * HP,
+          type: "hp"
+        }
       ]
     },
 	"ult": {
 		name: "Triad Blitz",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
+
 		formulas: [
         {
           label: "Damage",
@@ -19101,6 +19148,11 @@ const skillDamage = {
   raichu: {
     default: "Default",
     skin1: "Beach Style",
+  },
+  rapidash: {
+    default: "Default",
+    skin1: "Sacred Style",
+    skin2: "Elegant Style"
   },
   // Adicione mais pokémon aqui
 };
