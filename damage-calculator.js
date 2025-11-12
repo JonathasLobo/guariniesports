@@ -945,6 +945,8 @@ const updatePokemonImage = () => {
   "Fire": { icon: "🔥", label: "Fire" },
   "Blind": { icon: "🕶️", label: "Blind" },
   "Poison": { icon: "🩻", label: "Poison" },
+  "Fear": { icon: "😱", label: "Fear" },
+  "Copfusion": { icon: "😵‍💫", label: "Confusion" },
 };
 
 const STAT_EFFECT_CONFIG = {

@@ -16240,11 +16240,20 @@ const skillDamage = {
           buff: {
             Speed: "10%"
           },
+          effects: ["Invisible"],
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{},
+    effects: ["Fear"],
+    debuffs: {
+      Speed: 40
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -16262,17 +16271,38 @@ const skillDamage = {
     "s11": {
       name: "Knock Off",
       cooldown: 8.5,
+      buff: {
+        DmgTaken: 40
+      },
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          Speed: "40%",
+          HPRegen: 9
+        }
+      },
       formulas: [
         {
           label: "Damage (per Hit)",
           formula: (ATK, Level) => 0.56 * ATK + 6 * (Level - 1) + 240,
           type: "physical"
-        }
+        },
       ]
     },
     "s12": {
       name: "Shadow Sneak",
       cooldown: 12,
+      buff: {
+        Speed: "10%"
+      },
+      effects: ["Invisible"],
+      buffPlus: {
+        levelRequired: 10,
+        buffs: {
+          HPRegen: 1
+        }
+      },
       formulas: [
 	    {
           label: "Damage - Additional",
@@ -16284,6 +16314,13 @@ const skillDamage = {
     "s21": {
       name: "Feint Attack",
       cooldown: 7,
+      buff: {},
+      debuffs: {
+        Speed: 70
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - per Tick (9 Ticks)",
@@ -16296,7 +16333,16 @@ const skillDamage = {
     "s22": {
 		name: "Confuse Ray",
     cooldown: 10,
-      	formulas: [
+    buff: {},
+    effects: ["Confusion", "Stun"],
+    buffPlus: {
+      levelRequired: 12,
+      buffs: {
+        Speed: "30%",
+        AtkSPD: 50
+      }
+    },
+    formulas: [
         {
           label: "Damage",
           formula: (ATK, Level) => 1.05 * ATK + 12 * (Level - 1) + 450,
@@ -16308,6 +16354,22 @@ const skillDamage = {
 	"ult": {
 		name: "Chaos Glower",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -19153,6 +19215,14 @@ const skillDamage = {
     default: "Default",
     skin1: "Sacred Style",
     skin2: "Elegant Style"
+  },
+  sableye: {
+    default: "Default",
+    skin1: "Noble Style",
+    skin2: "Performer Style",
+    skin3: "Noble Style (Green)",
+    skin4: "Dark Magician Style	",
+    skin5: "Zirco Trading Style",
   },
   // Adicione mais pokémon aqui
 };
