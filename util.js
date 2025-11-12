@@ -16552,6 +16552,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      Speed: "40%"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -16588,7 +16591,7 @@ const skillDamage = {
 		{
           label: "Damage - Execute",
       	  type: "text-only",
-          additionalText: "20% of enemy missing HP. Against Wild Pokemon: The total damage is capped at 1200."
+          additionalText: "20% of enemy missing HP"
         },
 		{
           label: "Healing",
@@ -16611,6 +16614,13 @@ const skillDamage = {
     "s21": {
       name: "Double Hit",
       cooldown: 7,
+      buff: {},
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -16622,6 +16632,15 @@ const skillDamage = {
     "s22": {
       name: "Swords Dance",
       cooldown: 8.5,
+      buff: {
+        ATK: "20%"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          DmgTaken: 50
+        }
+      },
       formulas: [
         {
           label: "Damage - Eighth Attack",
@@ -16634,6 +16653,14 @@ const skillDamage = {
 	"ult": {
 		name: "Green Illusion Dive",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "80%",
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Initial, Dash, & Copy Dash",
@@ -19291,6 +19318,9 @@ const skillDamage = {
     skin5: "Aristocrat Style",
     skin6: "Fairy-Tale Style",
     skin7: "Festival Style"
+  },
+  scyther: {
+    default: "Default"
   },
   // Adicione mais pokémon aqui
 };
