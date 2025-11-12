@@ -15951,6 +15951,7 @@ const skillDamage = {
           name: "Surge Surfer",
           description: "Can attack while moving but is slowed when attacking or using certain moves. Gains a dash after using a move or boosted attack.",
           buff: {
+            Speed: "-30%"
           },
           formulas: [
           ]
@@ -15974,6 +15975,18 @@ const skillDamage = {
     "s11": {
       name: "Stored Power",
       cooldown: 6,
+      buff: {
+        AtkSPD: 35
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          SpDEF: 30
+        },
+        debuffLabels: {
+          SpDEF: "(DEBUFF) SpecialDefense Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -16006,6 +16019,20 @@ const skillDamage = {
     "s21": {
       name: "Thunderbolt",
       cooldown: 6,
+      buff: {},
+      effects: ["Paralyze"],
+      debuffs: {
+        Speed: 30,
+        AtkSPD: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        effects: ["Paralyze"]
+      },
       formulas: [
         {
           label: "Damage",
@@ -16017,6 +16044,13 @@ const skillDamage = {
 	"s22": {
       name: "Psychic",
       cooldown: 9,
+      buff: {},
+      debuffs: {
+        Speed: 23
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -16038,6 +16072,21 @@ const skillDamage = {
 	"ult": {
 		name: "Thunderstorm Aerial",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "30%",
+        AtkSPD: 35,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -19048,6 +19097,10 @@ const skillDamage = {
     skin1: "Beach Style",
     skin2: "Colored Suit Style",
     skin3: "Super Suit Style"
+  },
+  raichu: {
+    default: "Default",
+    skin1: "Beach Style",
   },
   // Adicione mais pokémon aqui
 };
