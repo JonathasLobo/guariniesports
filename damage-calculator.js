@@ -285,7 +285,7 @@ function extractPokemonMetaHistory(pokemonName) {
     console.log("📊 Meta: Scyther → Usando dados do Scizor");
   }
   
-  const normalizedName = normalizePokemonName(pokemonName);
+  const normalizedName = normalizePokemonName(searchName);
   console.log(`📊 Extraindo histórico para: ${pokemonName} (normalizado: ${normalizedName})`);
   
   const history = {
@@ -604,13 +604,14 @@ function normalizePokemonName(name) {
 function getPokemonMetaStats(pokemonName) {
   if (!currentMetaData) return null;
 
+  // ✅ APLICAR ALIAS ANTES DE NORMALIZAR
   let searchName = pokemonName;
   if (pokemonName.toLowerCase() === "scyther") {
     searchName = "scizor";
     console.log("📊 Meta: Scyther → Usando dados do Scizor");
   }
 
-  const normalizedName = normalizePokemonName(pokemonName);
+  const normalizedName = normalizePokemonName(searchName);
   const stats = { winrate: null, pickrate: null, banrate: null };
 
   const winrateEntry = currentMetaData.taxaVitoria.find(
