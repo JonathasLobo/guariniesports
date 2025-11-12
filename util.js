@@ -1947,6 +1947,20 @@ const baseStats = {
 		"Speed": 4300,
 		"CritDmg": 0,
 	},
+  "scizor": {
+		"HP": 8100,
+		"ATK": 460,
+		"DEF": 510,
+		"SpATK": 115,
+		"SpDEF": 410,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 30,
+		"HPRegen": 15,
+		"EnergyRate": 0,
+		"Speed": 4250,
+		"CritDmg": 0,
+	},
   "scyther": {
 		"HP": 6450,
 		"ATK": 630,
@@ -16396,6 +16410,15 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      DEF: "40%"
+    },
+    debuffs: {
+      Speed: 30
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -16413,6 +16436,10 @@ const skillDamage = {
     "s12": {
       name: "Bullet Punch",
       cooldown: 4.5,
+      buff: {},
+      selfBuff: {
+        CooldownPercent: 40
+      },
       formulas: [
         {
           label: "Damage - Initial Punch",
@@ -16440,6 +16467,13 @@ const skillDamage = {
     "s21": {
       name: "Double Hit",
       cooldown: 7,
+      buff: {},
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -16451,6 +16485,15 @@ const skillDamage = {
     "s22": {
       name: "Swords Dance",
       cooldown: 8.5,
+      buff: {
+        ATK: "20%"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs:{
+          DmgTaken: 50
+        }
+      },
       formulas: [
         {
           label: "Damage - Eighth Attack",
@@ -16463,6 +16506,21 @@ const skillDamage = {
 	"ult": {
 		name: "Red Illusion Dive",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage - Initial Punch, Ground Punch, & Copy Contact",
@@ -19223,6 +19281,16 @@ const skillDamage = {
     skin3: "Noble Style (Green)",
     skin4: "Dark Magician Style	",
     skin5: "Zirco Trading Style",
+  },
+  scizor: {
+    default: "Default",
+    skin1: "Ranger Style",
+    skin2: "Rider Style",
+    skin3: "Knight Style",
+    skin4: "Wanderer Style",
+    skin5: "Aristocrat Style",
+    skin6: "Fairy-Tale Style",
+    skin7: "Festival Style"
   },
   // Adicione mais pokémon aqui
 };
