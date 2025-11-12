@@ -15763,7 +15763,15 @@ const skillDamage = {
           name: "Swift Swim",
           description: "Gains speed when damaged. Taking damage fills a headache gauge; when full, triggers a powerful unstoppable burst that shoves enemies, resets cooldowns, and empowers moves.",
           buff: {
-            Speed: "40%"
+            Speed: "40%",
+            CDR: 20
+          },
+          effects: ["Unstoppable"],
+          debuffs: {
+            Speed: 30
+          },
+          debuffLabels: {
+            Speed: "(DEBUFF) MoveSpeed Reduction"
           },
           formulas: [
           ]
@@ -15782,6 +15790,27 @@ const skillDamage = {
     "s11": {
       name: "Surf",
       cooldown: 7.5,
+      buff: {
+        Speed: "30%"
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      allyBuffs: {
+        Speed: 70
+      },
+      allyBuffLabels :{
+        Speed: "(ALLY BUFF) MoveSpeed Increase"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          DmgTaken: 25
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -15798,6 +15827,25 @@ const skillDamage = {
 	"s12": {
       name: "Bubble Beam",
       cooldown: 6.5,
+      buff: {},
+      effects: ["Stun"],
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+        },
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -15824,6 +15872,14 @@ const skillDamage = {
     "s21": {
       name: "Disable",
       cooldown: 8,
+      buff: {},
+      effects: ["Stun"],
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -15835,6 +15891,23 @@ const skillDamage = {
     "s22": {
       name: "Psychic",
       cooldown: 7.5,
+      buff: {},
+      effects: ["Stun"],
+      debuffs: {
+        Speed: 10
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          SpDEF: 25
+        },
+        debuffLabels: {
+          SpDEF: "(DEBUFF) SpecialDefense Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -15846,6 +15919,23 @@ const skillDamage = {
 	"ult": {
 		name: "Full-Power Psy-ay-ay!",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        ATK: 25,
+        SpATK: 25
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -18952,6 +19042,12 @@ const skillDamage = {
     skin10: "Holiday Style (Blue)",
     skin11: "Tourist Style",
     skin12: "Stage Style",
+  },
+  psyduck: {
+    default: "Default",
+    skin1: "Beach Style",
+    skin2: "Colored Suit Style",
+    skin3: "Super Suit Style"
   },
   // Adicione mais pokémon aqui
 };
