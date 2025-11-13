@@ -16682,12 +16682,25 @@ const skillDamage = {
           description: "Stores lost HP temporarily and deals damage to reduce enemy Sp. Def with certain moves, stacking up to 5 times.",
           buff: {
           },
+          debuffs: {
+            SpDEF: "4%"
+          },
+          debuffLabels: {
+            SpDEF: "(DEBUFF) SpecialDefense Reduction"
+          },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
-      formulas: [
+    buff: {},
+    debuffs: {
+      Speed: 30
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
+    formulas: [
 		{
           label: "Damage - Basic",
           formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
@@ -16704,6 +16717,18 @@ const skillDamage = {
     "s11": {
       name: "Scald",
       cooldown: 5,
+      buff: {
+        HPRegen: 10
+      },
+      effects: ["Burn"],
+      debuffs: {
+        Speed: 80,
+        ATK: 60
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        ATK: "(DEBUFF) Attack Reduction"
+      },
       formulas: [
 		{
           label: "Damage - per Hit (3 Hits)",
@@ -16720,6 +16745,15 @@ const skillDamage = {
     "s12": {
       name: "Surf",
       cooldown: 7,
+      buff: {
+        HPRegen: 10
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage - per Wave (3 Waves)",
@@ -16731,18 +16765,41 @@ const skillDamage = {
     "s21": {
       name: "Amnesia",
       cooldown: 9,
+      buff: {
+        DEF: 250,
+        HPRegen: 17.5
+      },
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          SpDEF: 125
+        }
+      },
       formulas: [
       ]
     },
 	"s22": {
       name: "Telekinesis",
       cooldown: 7.5,
+      buff: {
+        HPRegen: 15
+      },
       formulas: [
       ]
     },
 	"ult": {
 		name: "Slowbeam",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Bound", "Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        Shield: 50
+      }
+    },
 		formulas: [
         {
           label: "Damage (x6)",
@@ -19321,6 +19378,18 @@ const skillDamage = {
   },
   scyther: {
     default: "Default"
+  },
+  slowbro: {
+    default: "Default",
+    skin1: "Training Style",
+    skin2: "Bonfire Style",
+    skin3: "Tuxedo Style",
+    skin4: "Gardening Style",
+    skin5: "Professor Style",
+    skin6: "Wanderer Style",
+    skin7: "Porcelain Style",
+    skin8: "Champion Style",
+    skin9: "Beach Style"
   },
   // Adicione mais pokémon aqui
 };
