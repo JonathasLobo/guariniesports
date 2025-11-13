@@ -219,157 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let allMetaDataHistory = []; 
   let showCritDamage = false; // Controla se mostra dano crítico
 
-// 🔧 SUBSTITUIR (linha ~467)
-const normalizeSkillNameForFile = (skillName) => {
-  if (!skillName) return '';
-  
-  return skillName
-    .trim()
-    .replace(/['']/g, '')           // Remove apóstrofos
-    .replace(/[^\w\s-]/g, '')       // Remove caracteres especiais
-    .replace(/\s+/g, '')            // Remove espaços
-    .replace(/-/g, '');             // Remove hífens
-};
-
-// Função para criar preview de GIF ao passar o mouse sobre skills
-const createSkillGifPreview = (skillBox, pokemon, skillName) => {
-  console.log('🎯 createSkillGifPreview chamada:', { skillBox, pokemon, skillName }); // ✅ ADICIONAR
-  
-  if (!skillName || !pokemon) {
-    console.error('❌ Faltam parâmetros:', { skillName, pokemon }); // ✅ ADICIONAR
-    return;
-  }
-  
-  let previewContainer = null;
-  let isLoading = false;
-  let hasError = false;
-  let showTimeout = null;
-  let hideTimeout = null;
-  
-  const showPreview = () => {
-    console.log('👁️ showPreview ativado para:', skillName); // ✅ ADICIONAR
-    
-    // Cancelar timeout de esconder se existir
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-      hideTimeout = null;
-    }
-    
-    // Delay de 300ms antes de mostrar (evita flicker)
-    showTimeout = setTimeout(() => {
-      console.log('⏰ Timeout executado, criando preview...'); // ✅ ADICIONAR
-      
-      if (!previewContainer) {
-        // Criar container do preview
-        previewContainer = document.createElement('div');
-        previewContainer.className = 'skill-gif-preview';
-        
-        const content = document.createElement('div');
-        content.className = 'skill-gif-preview-content';
-        
-        // Mostrar loading
-        const loading = document.createElement('div');
-        loading.className = 'skill-gif-preview-loading';
-        loading.textContent = 'Loading preview...';
-        content.appendChild(loading);
-        
-        previewContainer.appendChild(content);
-        skillBox.style.position = 'relative';
-        skillBox.appendChild(previewContainer);
-        
-        console.log('📦 Preview container criado e anexado'); // ✅ ADICIONAR
-        
-        // Tentar carregar o GIF
-        const normalizedName = normalizeSkillNameForFile(skillName);
-        const gifPath = `./estatisticas-shad/images/gifs/${pokemon}_${normalizedName}.gif`;
-        
-        console.log('🖼️ Tentando carregar GIF:', gifPath); // ✅ ADICIONAR
-        
-        const img = new Image();
-        
-        img.onload = () => {
-          console.log('✅ GIF carregado com sucesso!'); // ✅ ADICIONAR
-          if (previewContainer && previewContainer.parentNode) {
-            content.innerHTML = '';
-            content.appendChild(img);
-            previewContainer.classList.add('show');
-            isLoading = false;
-          }
-        };
-        
-        img.onerror = () => {
-          console.error('❌ Erro ao carregar GIF:', gifPath); // ✅ ADICIONAR
-          if (previewContainer && previewContainer.parentNode) {
-            hasError = true;
-            content.innerHTML = '';
-            const error = document.createElement('div');
-            error.className = 'skill-gif-preview-error';
-            error.textContent = `Preview not available for ${skillName}`;
-            content.appendChild(error);
-            previewContainer.classList.add('show');
-            isLoading = false;
-          }
-        };
-        
-        img.src = gifPath;
-        img.alt = skillName;
-        isLoading = true;
-      } else {
-        // Mostrar preview existente
-        console.log('♻️ Reutilizando preview existente'); // ✅ ADICIONAR
-        previewContainer.classList.add('show');
-      }
-    }, 300);
-  };
-  
-  const hidePreview = () => {
-    console.log('🙈 hidePreview ativado'); // ✅ ADICIONAR
-    
-    // Cancelar timeout de mostrar se existir
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-      showTimeout = null;
-    }
-    
-    // Delay de 200ms antes de esconder (permite mover entre skills)
-    hideTimeout = setTimeout(() => {
-      if (previewContainer) {
-        previewContainer.classList.remove('show');
-      }
-    }, 200);
-  };
-  
-  const removePreview = () => {
-    if (showTimeout) clearTimeout(showTimeout);
-    if (hideTimeout) clearTimeout(hideTimeout);
-    if (previewContainer && previewContainer.parentNode) {
-      previewContainer.remove();
-      previewContainer = null;
-    }
-  };
-  
-  // Event listeners
-  skillBox.addEventListener('mouseenter', showPreview);
-  skillBox.addEventListener('mouseleave', hidePreview);
-  
-  console.log('✅ Event listeners adicionados'); // ✅ ADICIONAR
-  
-  // Cleanup quando a skill box for removida
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.removedNodes.forEach((node) => {
-        if (node === skillBox) {
-          removePreview();
-          observer.disconnect();
-        }
-      });
-    });
-  });
-  
-  if (skillBox.parentNode) {
-    observer.observe(skillBox.parentNode, { childList: true });
-  }
-};
 // Função para carregar TODOS os arquivos de meta disponíveis
 async function loadAllMetaData() {
   try {
@@ -6394,17 +6243,6 @@ if (incluirMapBuffs === "sim") {
       `;
         
         skillsDiv.insertAdjacentHTML("beforeend", passiveHtml);
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const allPassives = skillsDiv.querySelectorAll('.skill-box.passive');
-            const insertedPassiveBox = allPassives[allPassives.length - 1];
-            
-            if (insertedPassiveBox && p.name) {
-              createSkillGifPreview(insertedPassiveBox, selectedPokemon, p.name);
-            }
-          });
-        });
       });
 
   // Renderizar outras skills (substitua toda a seção Object.keys(skills).forEach na função calcular)
@@ -6849,24 +6687,6 @@ const skillHtml = `
 `;
 
 skillsDiv.insertAdjacentHTML("beforeend", skillHtml);
-
-requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    // Buscar a última skill-box adicionada de forma mais robusta
-    const allSkillBoxes = skillsDiv.querySelectorAll('.skill-box');
-    const insertedSkillBox = allSkillBoxes[allSkillBoxes.length - 1];
-    
-    console.log('🔍 Skill box encontrada:', insertedSkillBox);
-    console.log('📝 Nome da skill:', s.name);
-    
-    if (insertedSkillBox && s.name) {
-      createSkillGifPreview(insertedSkillBox, selectedPokemon, s.name);
-    } else {
-      console.warn('⚠️ Não foi possível criar preview:', { insertedSkillBox, skillName: s.name });
-    }
-  });
-});
-
 });
 
     // Event listeners para passivas clicáveis
