@@ -1367,8 +1367,8 @@ textarea.form-control {
   left: 50%;
   transform: translateX(-50%);
   width: 90vw;
-  max-width: 1000px;
-  max-height: 800px;
+  max-width: 1300px;
+  max-height: 1100px;
   background: rgba(0, 0, 0, 0.95);
   border: 2px solid #ffcb05;
   border-radius: 15px;

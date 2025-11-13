@@ -16818,15 +16818,32 @@ const skillDamage = {
             Speed: "25%"
           },
           formulas: [
+          {
+          label: "Heal - Sitrus Berry",
+          formula: (HP, Level) => 0.6 * HP,
+          type: "hp"
+        },
             {
-          label: "Heal - Additional",
+          label: "Heal - (from Greedent Cheek Pouch)",
           formula: (HP, Level) => 0.01 * HP + 0 * (Level - 1) + 23,
+          type: "hp"
+        },
+        {
+          label: "Heal - Alcremie Recover Additional",
+          formula: (HP, Level) => 0.1 * HP,
           type: "hp"
         },
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    debuffs: {
+      Speed: 20
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -16844,6 +16861,21 @@ const skillDamage = {
     "s11": {
       name: "Flail",
       cooldown: 7,
+      buff: {
+        Speed: "80%"
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          HPRegen: 30
+        }
+      },
       formulas: [
         {
           label: "Basic Attack - Above 80% HP",
@@ -16967,6 +16999,17 @@ const skillDamage = {
     "s22": {
       name: "Block",
       cooldown: 8,
+      buff:{
+        Speed: "-30%"
+      },
+      effects: ["Unstoppable", "Stun"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          DEF: "35%",
+          SpDEF: "35%"
+        }
+      },
       formulas: [
         {
           label: "Shield",
@@ -16979,6 +17022,17 @@ const skillDamage = {
 	"s2": {
       name: "Yawn",
       cooldown: 10.5,
+      buff: {},
+      effects: ["Sleep"],
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 35
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
       ]
     },
@@ -19390,6 +19444,24 @@ const skillDamage = {
     skin7: "Porcelain Style",
     skin8: "Champion Style",
     skin9: "Beach Style"
+  },
+  snorlax: {
+    default: "Default",
+    skin1: "Beach Style",
+    skin2: "Berry Style",
+    skin3: "Purple Unite Style",
+    skin4: "Orange Unite Style",
+    skin5: "Cook Style",
+    skin6: "Concert Style",
+    skin7: "Bedtime Style",
+    skin8: "Sunshine Style",
+    skin9: "Martial Arts Style",
+    skin10: "Guardian Style",
+    skin11: "Pink Unite Style",
+    skin12: "Beach Style (Blue)",
+    skin13: "Concert Style (Pink)",
+    skin14: "Stage Style",
+    skin15: "Space Style",
   },
   // Adicione mais pokémon aqui
 };
