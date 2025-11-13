@@ -17539,6 +17539,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      HPRegen: 20
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -17562,6 +17565,16 @@ const skillDamage = {
     "s11": {
       name: "Gigaton Hammer",
       cooldown: 6,
+      buff: {
+        Speed: "-50%"
+      },
+      effects: ["Unstoppable"],
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage - Low charge",
@@ -17587,6 +17600,21 @@ const skillDamage = {
     "s12": {
       name: "Smack Down",
       cooldown: 6,
+      buff: {
+        Speed: "-50%"
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -17603,6 +17631,28 @@ const skillDamage = {
     "s21": {
       name: "Ice Hammer",
       cooldown: 5,
+      buff: {},
+      debuffs: {
+        Speed: 50,
+        ATK: 30,
+        SpATK: 15
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      buffPlus: {
+      levelRequired: 11,
+      debuffs: {
+        ATK: 20,
+        SpATK: 15
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
+      },
       formulas: [
         {
           label: "Damage",
@@ -17614,6 +17664,34 @@ const skillDamage = {
     "s22": {
       name: "Thief",
       cooldown: 7,
+      buff: {
+        Speed: "40%",
+        DEF: "50%",
+        SpDEF: "50%"
+      },
+      debuffs: {
+        DEF: 10,
+        SpDEF: 10
+      },
+      debuffLabels: {
+        DEF: "(DEBUFF) Defense Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          DEF: "75%",
+          SpDEF: "75%"
+        },
+        debuffs: {
+          DEF: 15,
+          SpDEF: 15
+        },
+        debuffLabels: {
+        DEF: "(DEBUFF) Defense Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+        },
+      },
       formulas: [
         {
           label: "Damage",
@@ -17626,6 +17704,16 @@ const skillDamage = {
 	"ult": {
 		name: "Kiss Bliss Kaboom",
     cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Stun"],
+      buffs:{
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Kiss Bliss",
@@ -19640,6 +19728,10 @@ const skillDamage = {
     skin4: "Bonfire Style",
     skin5: "Tuxedo Style",
     skin6: "Graceful Style"
+  },
+  tinkaton: {
+    default: "Default",
+    skin1: "Holiday Style"
   },
   // Adicione mais pokémon aqui
 };
