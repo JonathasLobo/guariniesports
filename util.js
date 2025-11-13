@@ -2647,10 +2647,10 @@ const pokemonDamageHealedRate = {
 };
 
 const pokemonTierListUDB = {
-	absol: 'A',
-    aegislash: 'B+',
+	absol: 'B+',
+    aegislash: 'A',
 	alcremie: 'A+',
-	raichu: 'A',
+	raichu: 'S',
 	armarouge: 'A',
     azumarill: 'C',
     blastoise: 'B+',
@@ -2658,28 +2658,28 @@ const pokemonTierListUDB = {
     blissey: 'S',
     buzzwole: 'A',
     chandelure: 'C',
-    charizard: 'A+',
-    megacharizardx: 'TBD',
-	ceruledge: 'B+',
+    charizard: 'B',
+    megacharizardx: 'S',
+	ceruledge: 'A',
     cinderace: 'B',
     clefable: 'A',
     comfey: 'A',
     cramorant: 'C',
     crustle: 'A',
-	darkrai: 'B+',
+	darkrai: 'S',
     decidueye: 'B',
-    delphox: 'C',
+    delphox: 'B+',
     dodrio: 'A+',
-    dragapult: 'C',
+    dragapult: 'B',
     dragonite: 'B',
     duraludon: 'C',
     eldegoss: 'A+',
-    empoleon: 'TBD',
+    empoleon: 'A',
     espeon: 'B+',
 	falinks: 'C',
     garchomp: 'A',
     gardevoir: 'C',
-    gengar: 'B',
+    gengar: 'B+',
     glaceon: 'B',
     goodra: 'D',
     greedent: 'C',
@@ -2689,26 +2689,26 @@ const pokemonTierListUDB = {
     hoopa: 'A+',
     inteleon: 'A',
     lapras: 'B',
-	latias: 'B',
-	latios: 'A',
+	latias: 'A+',
+	latios: 'B+',
     leafeon: 'A+',
-    lucario: 'B+',
+    lucario: 'A',
     machamp: 'C',
     mamoswine: 'B+',
-    megalucario: 'TBD',
-	meowscara: 'B',
+    megalucario: 'S',
+	meowscara: 'B+',
 	metagross: 'B+',
-    mew: 'A+',
+    mew: 'S',
 	mewtwox: 'D',
-	mewtwoy: 'A',
+	mewtwoy: 'B',
 	mimikyu: 'B+',
 	miraidon: 'B+',
     mrmime: 'B',
     ninetales: 'B',
-	pawmot: 'TBD',
+	pawmot: 'A+',
     pikachu: 'B+',
 	psyduck: 'A',
-	rapidash: 'A',
+	rapidash: 'B',
     sableye: 'B+',
     scizor: 'A+',
     slowbro: 'B+',
@@ -2716,13 +2716,13 @@ const pokemonTierListUDB = {
 	suicune: 'S',
     sylveon: 'C',
     talonflame: 'B+',
-	tinkaton: 'D',
-    trevenant: 'B+',
+	tinkaton: 'B',
+    trevenant: 'A',
     tsareena: 'S',
     tyranitar: 'C',
-    umbreon: 'A',
-    urshifu: 'A',
-    venusaur: 'C',
+    umbreon: 'A+',
+    urshifu: 'B+',
+    venusaur: 'A',
     wigglytuff: 'C',
     zacian: 'A',
     zeraora: 'B+',
@@ -17232,14 +17232,17 @@ const skillDamage = {
           name: "Pixilate",
           description: "Dealing or taking damage increases Sp. Atk and Sp. Def, stacking up to 6 times.",
           buff: {
-            SpATK: "2.5%",
-            SpDEF: "2.5%"
+            SpATK: "15%",
+            SpDEF: "15%"
           },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff:{
+      Speed: "75%"
+    },
       formulas: [
 		{
           label: "Damage - Basic",
@@ -17257,6 +17260,18 @@ const skillDamage = {
     "s11": {
       name: "Mystical Fire",
       cooldown: 7,
+      buff: {
+        selfDamageMultiplier: 1.28,
+      },
+      selfBuff: {
+        CooldownPercent: 12
+      },
+      debuffs: {
+        SpATK: 60
+      },
+      debuffLabels: {
+        SpATK: "(DEBUFF) SpecialAttack Reduction"
+      },
       formulas: [
 		{
           label: "Damage - First Hit",
@@ -17268,6 +17283,22 @@ const skillDamage = {
     "s12": {
       name: "Hyper Voice",
       cooldown: 5.5,
+      buff: {},
+      debuffs: {
+        SpDEF: 80
+      },
+      debuffLabels: {
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
+      buffPlus: {
+        levelRequired: 10,
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    {
           label: "Damage - Near (6x)",
@@ -17284,6 +17315,13 @@ const skillDamage = {
     "s21": {
       name: "Draining Kiss",
       cooldown: 9,
+      buff: {},
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 		{
           label: "Damage (3x)",
@@ -17305,6 +17343,11 @@ const skillDamage = {
 	"s22": {
       name: "Calm Mind",
       cooldown: 9.5,
+      buff: {
+        Speed: "30%",
+        SpATK: "40%",
+        SpDEF: "10%"
+      },
       formulas: [
 		{
           label: "Shield",
@@ -17316,11 +17359,26 @@ const skillDamage = {
 	"ult": {
 		name: "Fairy Frolic",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Invincible"],
+      buffs:{
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage",
           formula: (SpATK, Level) => 1.3 * SpATK + 13 * (Level - 1) + 750,
           type: "special"
+        },
+        {
+          label: "Damage",
+          type: "text-only",
+          additionalText: "50% damage dealt converted into HP"
         }
 	 ]
 	}
@@ -19520,6 +19578,16 @@ const skillDamage = {
   suicune: {
     default: "Default",
     skin1: "Fairy-Tale Style"
+  },
+  sylveon: {
+    default: "Default",
+    skin1: "Poncho Style",
+    skin2: "Checkered Style",
+    skin3: "Theater Style",
+    skin4: "Knight Style",
+    skin5: "New Year Style",
+    skin6: "Poncho Style (Light Green)",
+    skin7: "Elegant Style"
   },
   // Adicione mais pokémon aqui
 };
