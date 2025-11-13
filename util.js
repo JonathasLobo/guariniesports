@@ -17435,6 +17435,18 @@ const skillDamage = {
     "s12": {
       name: "Flame Charge",
       cooldown: 6.5,
+      buff:{
+        Speed: "30%"
+      },
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          Speed: 30
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -17451,6 +17463,13 @@ const skillDamage = {
     "s21": {
       name: "Fly",
       cooldown: 12,
+      buff: {
+        Speed: "65%"
+      },
+      selfBuff: {
+        CooldownPercent: 40
+      },
+      effects: ["Untargetable"],
       formulas: [
         {
           label: "Damage",
@@ -17462,6 +17481,20 @@ const skillDamage = {
     "s22": {
       name: "Brave Bird",
       cooldown: 8.5,
+      buff: {
+        HP: "-5%",
+        otherSkillsCooldownReduction: {
+          s11: 5,
+          s12: 6.5
+        }
+      },
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          DmgTaken: 75
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -17474,6 +17507,16 @@ const skillDamage = {
 	"ult": {
 		name: "Flame Sweep",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        DmgTaken: 50,
+        Speed: "80%",
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage (2x)",
@@ -19588,6 +19631,15 @@ const skillDamage = {
     skin5: "New Year Style",
     skin6: "Poncho Style (Light Green)",
     skin7: "Elegant Style"
+  },
+  talonflame: {
+    default: "Default",
+    skin1: "Pilot Style",
+    skin2: "Purple Unite Style",
+    skin3: "Orange Unite Style",
+    skin4: "Bonfire Style",
+    skin5: "Tuxedo Style",
+    skin6: "Graceful Style"
   },
   // Adicione mais pokémon aqui
 };
