@@ -17061,7 +17061,9 @@ const skillDamage = {
           name: "Pressure",
           description: "Executes frozen low-HP enemies with bonus true damage. Moves grant shields and create/flood areas to freeze and mark enemies for additional effects.",
           buff: {
+            SpATK: "15%"
           },
+          effects: ["True Damage", "Freeze"],
           formulas: [
             {
           label: "Shield",
@@ -17099,6 +17101,19 @@ const skillDamage = {
     "s11": {
       name: "Whirlpool",
       cooldown: 7.5,
+      buff:{},
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 		{
           label: "Damage - Per tick",
@@ -17131,6 +17146,22 @@ const skillDamage = {
     "s21": {
       name: "Ice Beam",
       cooldown: 7.5,
+      buff: {},
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 10
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      },
       formulas: [
 		{
           label: "Damage Skill Plus",
@@ -17142,6 +17173,19 @@ const skillDamage = {
 	"s22": {
       name: "Icy Wind",
       cooldown: 5,
+      buff: {},
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 		{
           label: "Damage",
@@ -17158,6 +17202,16 @@ const skillDamage = {
 	"ult": {
 		name: "Endless Ice Spikes",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Cleanses", "Freeze"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Spike Creation",
@@ -19462,6 +19516,10 @@ const skillDamage = {
     skin13: "Concert Style (Pink)",
     skin14: "Stage Style",
     skin15: "Space Style",
+  },
+  suicune: {
+    default: "Default",
+    skin1: "Fairy-Tale Style"
   },
   // Adicione mais pokémon aqui
 };
