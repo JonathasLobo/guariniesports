@@ -18223,6 +18223,10 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      Lifesteal: 5
+    },
+    effects: ["True Damage"],
       formulas: [
         {
           label: "Damage - Basic",
@@ -18240,6 +18244,14 @@ const skillDamage = {
     "s11": {
       name: "Dark Pulse",
       cooldown: 5.5,
+      buff: {},
+      effects: ["Immobilized"],
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -18283,6 +18295,11 @@ const skillDamage = {
     "s21": {
       name: "Ancient Power",
       cooldown: 11,
+      buff: {
+        Speed: "20%",
+        DEFPen: 100
+      },
+      effects: ["Stun", "True Damage"],
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -18319,6 +18336,17 @@ const skillDamage = {
     "s22": {
       name: "Sand Tomb",
       cooldown: 10,
+      buff: {
+        DmgTaken: 15,
+        DEFPen: 100
+      },
+      effects: ["Stun", "True Damage"],
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage - Leap",
@@ -18336,6 +18364,17 @@ const skillDamage = {
 	"ult": {
 		name: "Tyrannical Rampage",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "True Damage"],
+      buffs: {
+        HindRed: 50,
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Basic",
@@ -19855,6 +19894,12 @@ const skillDamage = {
     skin5: "Captain Style",
     skin6: "Champion Style",
     skin7: "Kimono Style",
+  },
+  tyranitar: {
+    default: "Default",
+    skin1: "Tuxedo Style",
+    skin2: "Hip-Hop Style",
+    skin3: "Pokébuki Style"
   },
   // Adicione mais pokémon aqui
 };
