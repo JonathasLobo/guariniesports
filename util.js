@@ -17987,6 +17987,13 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    debuffs: {
+      DEF: 20
+    },
+    debuffLabels: {
+      DEF: "(DEBUFF) Defense Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -18003,6 +18010,9 @@ const skillDamage = {
     "s11": {
       name: "Triple Axel",
       cooldown: 7,
+      buff: {
+        selfDamageMultiplier: 1.48
+      },
       formulas: [
         {
           label: "Damage - per Hit",
@@ -18040,6 +18050,8 @@ const skillDamage = {
     "s12": {
       name: "Stomp",
       cooldown: 7,
+      buff: {},
+      effects: ["Stun"],
       formulas: [
 	    {
           label: "Damage",
@@ -18071,6 +18083,15 @@ const skillDamage = {
     "s21": {
       name: "Trop Kick",
       cooldown: 7,
+      buff: {},
+      debuffs: {
+        ATK: 25,
+        Speed: 35
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -18154,6 +18175,16 @@ const skillDamage = {
 	"ult": {
 		name: "Queen Ascendant",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Untargetable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage (9x)",
@@ -19814,6 +19845,16 @@ const skillDamage = {
     skin5: "Gardening Style",
     skin6: "Subway Style (Red)",
     skin7: "Costume Party Style",
+  },
+  tsareena: {
+    default: "Default",
+    skin1: "Concert Style",
+    skin2: "Frontier Style",
+    skin3: "Sacred Style",
+    skin4: "Guardian Style",
+    skin5: "Captain Style",
+    skin6: "Champion Style",
+    skin7: "Kimono Style",
   },
   // Adicione mais pokémon aqui
 };
