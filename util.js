@@ -3211,21 +3211,21 @@ const levelStats = {
   },
 
     "espeon": {
-    1: { HP: 3200, ATK: 134, DEF: 35, SpATK: 50, SpDEF: 27, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    2: { HP: 3269, ATK: 137, DEF: 39, SpATK: 71, SpDEF: 30, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    3: { HP: 3349, ATK: 141, DEF: 44, SpATK: 95, SpDEF: 34, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    4: { HP: 3753, ATK: 161, DEF: 69, SpATK: 218, SpDEF: 54, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    5: { HP: 3858, ATK: 166, DEF: 75, SpATK: 250, SpDEF: 59, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3850 },
-    6: { HP: 3979, ATK: 172, DEF: 82, SpATK: 287, SpDEF: 65, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3850 },
-    7: { HP: 4118, ATK: 179, DEF: 90, SpATK: 329, SpDEF: 72, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4000 },
-    8: { HP: 4278, ATK: 187, DEF: 100, SpATK: 378, SpDEF: 80, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4000 },
-    9: { HP: 4462, ATK: 196, DEF: 111, SpATK: 434, SpDEF: 89, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4150 },
-    10: { HP: 4674, ATK: 207, DEF: 124, SpATK: 499, SpDEF: 99, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4150 },
-    11: { HP: 4918, ATK: 219, DEF: 139, SpATK: 573, SpDEF: 111, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
-    12: { HP: 5199, ATK: 233, DEF: 156, SpATK: 658, SpDEF: 125, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
-    13: { HP: 5522, ATK: 249, DEF: 176, SpATK: 756, SpDEF: 141, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
-    14: { HP: 5893, ATK: 268, DEF: 199, SpATK: 869, SpDEF: 159, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
-    15: { HP: 6320, ATK: 289, DEF: 225, SpATK: 999, SpDEF: 180, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 }
+    1: { HP: 3400, ATK: 134, DEF: 70, SpATK: 50, SpDEF: 65, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3473, ATK: 137, DEF: 75, SpATK: 71, SpDEF: 69, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    3: { HP: 3557, ATK: 141, DEF: 80, SpATK: 95, SpDEF: 73, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    4: { HP: 3984, ATK: 161, DEF: 106, SpATK: 218, SpDEF: 94, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    5: { HP: 4096, ATK: 166, DEF: 113, SpATK: 250, SpDEF: 100, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3850 },
+    6: { HP: 4224, ATK: 172, DEF: 121, SpATK: 287, SpDEF: 106, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3850 },
+    7: { HP: 4371, ATK: 179, DEF: 130, SpATK: 329, SpDEF: 114, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4000 },
+    8: { HP: 4541, ATK: 187, DEF: 141, SpATK: 378, SpDEF: 122, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4000 },
+    9: { HP: 4736, ATK: 196, DEF: 153, SpATK: 434, SpDEF: 132, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4150 },
+    10: { HP: 4961, ATK: 207, DEF: 167, SpATK: 499, SpDEF: 143, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4150 },
+    11: { HP: 5219, ATK: 219, DEF: 183, SpATK: 573, SpDEF: 156, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
+    12: { HP: 5515, ATK: 233, DEF: 201, SpATK: 658, SpDEF: 171, CritRate: 0 , CDR: 15 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
+    13: { HP: 5856, ATK: 249, DEF: 223, SpATK: 756, SpDEF: 188, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
+    14: { HP: 6249, ATK: 268, DEF: 247, SpATK: 869, SpDEF: 207, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 },
+    15: { HP: 6700, ATK: 289, DEF: 275, SpATK: 999, SpDEF: 230, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 4300 }
   },
 
     "falinks": {
@@ -3679,21 +3679,21 @@ const levelStats = {
   },
 
     "mimikyu": {
-    1: { HP: 3150, ATK: 155, DEF: 80, SpATK: 20, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    2: { HP: 3301, ATK: 164, DEF: 91, SpATK: 23, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.71 , Speed: 3700 },
-    3: { HP: 3467, ATK: 174, DEF: 104, SpATK: 27, SpDEF: 91, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.49 , Speed: 3700 },
-    4: { HP: 3650, ATK: 185, DEF: 118, SpATK: 31, SpDEF: 103, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.35 , Speed: 3700 },
-    5: { HP: 3851, ATK: 198, DEF: 133, SpATK: 35, SpDEF: 117, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 13.3 , Speed: 3850 },
-    6: { HP: 4072, ATK: 212, DEF: 150, SpATK: 40, SpDEF: 132, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.34 , Speed: 3850 },
-    7: { HP: 4315, ATK: 227, DEF: 168, SpATK: 45, SpDEF: 149, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.49 , Speed: 4000 },
-    8: { HP: 4583, ATK: 244, DEF: 188, SpATK: 51, SpDEF: 167, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.75 , Speed: 4000 },
-    9: { HP: 4879, ATK: 263, DEF: 210, SpATK: 58, SpDEF: 187, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.14 , Speed: 4150 },
-    10: { HP: 5205, ATK: 283, DEF: 234, SpATK: 65, SpDEF: 209, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 19.67 , Speed: 4150 },
-    11: { HP: 5564, ATK: 305, DEF: 261, SpATK: 73, SpDEF: 234, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 21.36 , Speed: 4300 },
-    12: { HP: 5959, ATK: 330, DEF: 291, SpATK: 82, SpDEF: 261, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 23.22 , Speed: 4300 },
-    13: { HP: 6394, ATK: 357, DEF: 324, SpATK: 92, SpDEF: 291, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 25.27 , Speed: 4300 },
-    14: { HP: 6873, ATK: 387, DEF: 360, SpATK: 103, SpDEF: 324, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.52 , Speed: 4300 },
-    15: { HP: 7400, ATK: 420, DEF: 400, SpATK: 115, SpDEF: 360, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4300 }
+    1: { HP: 3300, ATK: 155, DEF: 100, SpATK: 20, SpDEF: 90, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3461, ATK: 164, DEF: 113, SpATK: 23, SpDEF: 102, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.71 , Speed: 3700 },
+    3: { HP: 3638, ATK: 174, DEF: 127, SpATK: 27, SpDEF: 115, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.49 , Speed: 3700 },
+    4: { HP: 3833, ATK: 185, DEF: 143, SpATK: 31, SpDEF: 129, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.35 , Speed: 3700 },
+    5: { HP: 4046, ATK: 198, DEF: 160, SpATK: 35, SpDEF: 145, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 13.3 , Speed: 3850 },
+    6: { HP: 4282, ATK: 212, DEF: 179, SpATK: 40, SpDEF: 162, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.34 , Speed: 3850 },
+    7: { HP: 4541, ATK: 227, DEF: 199, SpATK: 45, SpDEF: 181, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.49 , Speed: 4000 },
+    8: { HP: 4826, ATK: 244, DEF: 222, SpATK: 51, SpDEF: 202, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.75 , Speed: 4000 },
+    9: { HP: 5139, ATK: 263, DEF: 247, SpATK: 58, SpDEF: 225, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.14 , Speed: 4150 },
+    10: { HP: 5484, ATK: 283, DEF: 275, SpATK: 65, SpDEF: 250, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 19.67 , Speed: 4150 },
+    11: { HP: 5863, ATK: 305, DEF: 305, SpATK: 73, SpDEF: 278, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 21.36 , Speed: 4300 },
+    12: { HP: 6280, ATK: 330, DEF: 338, SpATK: 82, SpDEF: 309, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 23.22 , Speed: 4300 },
+    13: { HP: 6793, ATK: 357, DEF: 375, SpATK: 92, SpDEF: 342, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 25.27 , Speed: 4300 },
+    14: { HP: 7244, ATK: 387, DEF: 416, SpATK: 103, SpDEF: 379, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.52 , Speed: 4300 },
+    15: { HP: 7800, ATK: 420, DEF: 460, SpATK: 115, SpDEF: 420, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4300 }
   },
 
     "miraidon": {
@@ -4129,20 +4129,20 @@ const levelStats = {
   },
 
     "zacian": {
-    1: { HP: 3600, ATK: 160, DEF: 100, SpATK: 20, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 25.00 , Speed: 3800 },
-    2: { HP: 3757, ATK: 175, DEF: 112, SpATK: 23, SpDEF: 90, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 25.53 , Speed: 3800 },
-    3: { HP: 3929, ATK: 191, DEF: 125, SpATK: 27, SpDEF: 101, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 26.12 , Speed: 3800 },
-    4: { HP: 4118, ATK: 209, DEF: 140, SpATK: 31, SpDEF: 113, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 26.77 , Speed: 3800 },
-    5: { HP: 4326, ATK: 229, DEF: 156, SpATK: 35, SpDEF: 126, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 27.48 , Speed: 3950 },
-    6: { HP: 4555, ATK: 251, DEF: 174, SpATK: 40, SpDEF: 140, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 28.26 , Speed: 3950 },
-    7: { HP: 4807, ATK: 275, DEF: 193, SpATK: 45, SpDEF: 155, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 29.12 , Speed: 4100 },
-    8: { HP: 5085, ATK: 302, DEF: 214, SpATK: 51, SpDEF: 172, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 30.07 , Speed: 4100 },
-    9: { HP: 5391, ATK: 331, DEF: 238, SpATK: 58, SpDEF: 191, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 31.11 , Speed: 4250 },
-    10: { HP: 5728, ATK: 363, DEF: 264, SpATK: 65, SpDEF: 212, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 32.26 , Speed: 4250 },
-    11: { HP: 6100, ATK: 399, DEF: 293, SpATK: 73, SpDEF: 235, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 33.53 , Speed: 4400 },
-    12: { HP: 6509, ATK: 438, DEF: 325, SpATK: 82, SpDEF: 260, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 34.92 , Speed: 4400 },
-    13: { HP: 6959, ATK: 481, DEF: 360, SpATK: 92, SpDEF: 287, CritRate: 10 , CDR: 0 , Lifesteal: 15 , AtkSPD: 36.45 , Speed: 4400 },
-    14: { HP: 7455, ATK: 528, DEF: 398, SpATK: 103, SpDEF: 317, CritRate: 10 , CDR: 0 , Lifesteal: 15 , AtkSPD: 38.14 , Speed: 4400 },
+    1: { HP: 3600, ATK: 160, DEF: 100, SpATK: 20, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 20.00 , Speed: 3800 },
+    2: { HP: 3757, ATK: 175, DEF: 112, SpATK: 23, SpDEF: 90, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 20.72 , Speed: 3800 },
+    3: { HP: 3929, ATK: 191, DEF: 125, SpATK: 27, SpDEF: 101, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 21.5 , Speed: 3800 },
+    4: { HP: 4118, ATK: 209, DEF: 140, SpATK: 31, SpDEF: 113, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 22.37 , Speed: 3800 },
+    5: { HP: 4326, ATK: 229, DEF: 156, SpATK: 35, SpDEF: 126, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 23.32 , Speed: 3950 },
+    6: { HP: 4555, ATK: 251, DEF: 174, SpATK: 40, SpDEF: 140, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 24.36 , Speed: 3950 },
+    7: { HP: 4807, ATK: 275, DEF: 193, SpATK: 45, SpDEF: 155, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 25.51 , Speed: 4100 },
+    8: { HP: 5085, ATK: 302, DEF: 214, SpATK: 51, SpDEF: 172, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 26.78 , Speed: 4100 },
+    9: { HP: 5391, ATK: 331, DEF: 238, SpATK: 58, SpDEF: 191, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 28.17 , Speed: 4250 },
+    10: { HP: 5728, ATK: 363, DEF: 264, SpATK: 65, SpDEF: 212, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 29.71 , Speed: 4250 },
+    11: { HP: 6100, ATK: 399, DEF: 293, SpATK: 73, SpDEF: 235, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 31.39 , Speed: 4400 },
+    12: { HP: 6509, ATK: 438, DEF: 325, SpATK: 82, SpDEF: 260, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 33.24 , Speed: 4400 },
+    13: { HP: 6959, ATK: 481, DEF: 360, SpATK: 92, SpDEF: 287, CritRate: 10 , CDR: 0 , Lifesteal: 15 , AtkSPD: 35.29 , Speed: 4400 },
+    14: { HP: 7455, ATK: 528, DEF: 398, SpATK: 103, SpDEF: 317, CritRate: 10 , CDR: 0 , Lifesteal: 15 , AtkSPD: 37.53 , Speed: 4400 },
     15: { HP: 8000, ATK: 580, DEF: 440, SpATK: 115, SpDEF: 350, CritRate: 10 , CDR: 0 , Lifesteal: 15 , AtkSPD: 40.00 , Speed: 4400 }
   },
 
@@ -7493,19 +7493,19 @@ const skillDamage = {
           name: "Tough Claws",
           description: "Mega Evolution grants Tough Claws, boosting defenses and move damage. Move hits build stacks for guaranteed crits, and basic attacks on burned enemies heal missing HP.",
           buff: {
-            DEF: "50%",
-            SpDEF: "50%",
-            HPRegen: 8
+            DEF: "30%",
+            SpDEF: "30%",
+            HPRegen: 6
           },
           formulas: [
           {
           label: "Damage - Added to Move",
-          formula: (ATK, Level) => 1.4 * ATK + 6 * (Level - 1) + 160,
+          formula: (ATK, Level) => 1.06 * ATK + 4 * (Level - 1) + 120,
           type: "physical"
         },
         {
           label: "Damage - Added to Move (Mega)",
-          formula: (ATK, Level) => 2.8 * ATK + 12 * (Level - 1) + 320,
+          formula: (ATK, Level) => 2.12 * ATK + 8 * (Level - 1) + 240,
           type: "physical"
         },
           ]
@@ -7590,7 +7590,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Seismic Slam",
-    cooldown: 89,
+    cooldown: 112,
     buff:{},
     buffPlus: {
       levelRequired: 9,
@@ -7809,6 +7809,7 @@ const skillDamage = {
     "s12": {
       name: "Draining Kiss",
       cooldown: 4,
+      buff: {},
       formulas: [
         {
           label: "Damage",
@@ -7817,13 +7818,15 @@ const skillDamage = {
         },
         {
           label: "HP restoration",
-          type: "text-only",
-		      additionalText: "Restores its HP for 140% of the damage dealt."
+          formula: (firstHitDamage, Level) => 1.8 * firstHitDamage,
+          type: "dependent",
+		      dependsOn: 0
         },
         {
           label: "HP restoration Skill Plus",
-          type: "text-only",
-		      additionalText: "Restores its HP for 160% of the damage dealt."
+          formula: (firstHitDamage, Level) => 2 * firstHitDamage,
+          type: "dependent",
+		      dependsOn: 0
         },
       ]
     },
@@ -9225,12 +9228,12 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - Initial",
-          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 170,
+          formula: (ATK, Level) => 0.66 * ATK + 4 * (Level - 1) + 154,
           type: "physical"
         },
         {
           label: "Damage - Slam",
-          formula: (ATK, Level) => 0.74 * ATK + 4 * (Level - 1) + 170,
+          formula: (ATK, Level) => 0.66 * ATK + 4 * (Level - 1) + 154,
           type: "physical"
         }
       ]
@@ -10258,12 +10261,12 @@ const skillDamage = {
         },
 		{
           label: "Damage - Subsequent Hits",
-          formula: (SPATK, Level) => 0.196 * SPATK + 2 * (Level - 1) + 90, // 25% do primeiro hit
+          formula: (SPATK, Level) => 0.196 * SPATK + 2 * (Level - 1) + 90,
 		  type: "special",
         },
 		{
           label: "Damage - Additional",
-          formula: (SPATK, Level) => 0.26 * SPATK + 5 * (Level - 1) + 135, // 25% do primeiro hit
+          formula: (SPATK, Level) => 0.26 * SPATK + 5 * (Level - 1) + 135,
 		  type: "special",
         }
       ]
@@ -10312,7 +10315,7 @@ const skillDamage = {
       {
           label: "Damage - Execute",
           type: "text-only",
-		      additionalText: "10% of enemy missing HP."
+		      additionalText: "15% of enemy missing HP."
         },
       ]
     },
@@ -13021,7 +13024,7 @@ const skillDamage = {
       buffPlus: {
         levelRequired: 10,
         buffs: {
-          DmgTaken: 40
+          DmgTaken: 50
         }
       },
       formulas: [
@@ -13067,7 +13070,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Leaf Blade",
-      cooldown: 8.5,
+      cooldown: 7.5,
       buff:{},
       debuffs: {
         Speed: 40
@@ -13651,7 +13654,7 @@ const skillDamage = {
           name: "Justified",
           description: "When damaged, Attack increases by 12.5% for 4s, stacking up to 4 times.",
           buff: {
-            ATK: "12.5%",
+            ATK: "8%",
           },
           formulas: [
           ]
@@ -13660,7 +13663,7 @@ const skillDamage = {
           name: "Adaptability",
           description: "Mega Evolution grants Adaptability, stacking Attack by 7% per move hit (up to 10 times).",
           buff: {
-            ATK: "7%",
+            ATK: "5%",
           },
           formulas: [
           ]
@@ -13705,6 +13708,11 @@ const skillDamage = {
     "U11": {
       name: "Close Combat",
       cooldown: 6.5,
+      buff:{},
+      selfBuff: {
+        CooldownFlat: 0.4
+      },
+      effects: ["Unstoppable"],
       formulas: [
 		{
           label: "Damage - per Hit (11 Hits)",
@@ -14767,7 +14775,7 @@ const skillDamage = {
         },
         {
           label: "Damage - Additional to Marked Targets",
-          formula: (HP, Level) => 0.04 * HP,
+          formula: (HP, Level) => 0.06 * HP,
           type: "hp"
         },
 		{
@@ -14776,8 +14784,8 @@ const skillDamage = {
           type: "physical"
         },
 		{
-          label: "Healing - Additional",
-          formula: (HP) => 0.1 * HP,
+          label: "Damage - Additional",
+          formula: (HP) => 0.12 * HP,
           type: "physical"
         },
       ]
@@ -17330,19 +17338,19 @@ const skillDamage = {
         },
 		{
           label: "Healing (3x)",
-          formula: (SpATK, Level) => 0.202 * SpATK + 0 * (Level - 1) + 166,
+          formula: (SpATK, Level) => 0.23 * SpATK + 0 * (Level - 1) + 190,
           type: "special"
         },
 		{
           label: "Healing (3x) Skill Plus",
-          formula: (SpATK, Level) => 0.303 * SpATK + 0 * (Level - 1) + 249,
+          formula: (SpATK, Level) => 0.345 * SpATK + 0 * (Level - 1) + 285,
           type: "special"
         }
       ]
     },
 	"s22": {
       name: "Calm Mind",
-      cooldown: 9.5,
+      cooldown: 9,
       buff: {
         Speed: "30%",
         SpATK: "40%",
@@ -17376,9 +17384,10 @@ const skillDamage = {
           type: "special"
         },
         {
-          label: "Damage",
-          type: "text-only",
-          additionalText: "50% damage dealt converted into HP"
+          label: "HP Steal",
+          formula: (firstHitDamage, Level) => 0.5 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 0
         }
 	 ]
 	}
@@ -17734,6 +17743,12 @@ const skillDamage = {
           name: "Natural Cure",
           description: "At low HP, dealing or taking damage triggers healing and cooldown reduction, with a long cooldown reduced by damaging enemies.",
           buff: {
+            otherSkillsCooldownReduction: {
+              s11: 1,
+              s12: 1,
+              s21: 1,
+              s22: 1
+            }
           },
           formulas: [
             {
@@ -17745,6 +17760,9 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      HPRegen: 5
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -17762,6 +17780,21 @@ const skillDamage = {
     "s11": {
       name: "Wood Hammer",
       cooldown: 9,
+      buff: {
+        HP: "-5%"
+      },
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 11,
+        debuffs: {
+          ATK: 20,
+          SpATK: 20
+        },
+        debuffLabels: {
+          ATK: "(DEBUFF) Attack Reduction",
+          SpATK: "(DEBUFF) SpecialAttack Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage - Both Hits",
@@ -17790,6 +17823,14 @@ const skillDamage = {
     "s12": {
       name: "Curse",
       cooldown: 6,
+      buff: {
+        HP: "-2%",
+        otherSkillsCooldownReduction: {
+          s21: 9,
+          s22: 10
+        }
+      },
+      effects: ["Stun"],
       formulas: [
 	    {
           label: "Damage - per Tick",
@@ -17804,23 +17845,34 @@ const skillDamage = {
         {
           label: "Slow Above 70% HP",
           type: "text-only",
-          additionalText: "10% Slow"
+          additionalText: "12% Slow"
         },
 		{
           label: "Slow Between 40%-70% HP",
           type: "text-only",
-          additionalText: "14% Slow"
+          additionalText: "17% Slow"
         },
         {
           label: "Slow Below 40% HP",
           type: "text-only",
-          additionalText: "18% Slow"
+          additionalText: "22% Slow"
         }
       ]
     },
     "s21": {
       name: "Horn Leech",
       cooldown: 9,
+      buff: {},
+      selfBuff: {
+        CooldownFlat: 0.5
+      },
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          Speed: "30%"
+        }
+      },
       formulas: [
         {
           label: "Damage - 2 Hits",
@@ -17835,23 +17887,27 @@ const skillDamage = {
         {
           label: "Heal (Over 3s) Above 70% HP",
           type: "text-only",
-          additionalText: "12% Max HP"
+          additionalText: "15% Max HP"
         },
 		    {
           label: "Heal (Over 3s) Between 40%-70% HP",
           type: "text-only",
-          additionalText: "15% Max HP"
+          additionalText: "18% Max HP"
         },
         {
           label: "Heal (Over 3s) Below 40% HP",
           type: "text-only",
-          additionalText: "18% Max HP"
+          additionalText: "21% Max HP"
         }
       ]
     },
     "s22": {
       name: "Pain Split",
       cooldown: 10,
+      buff: {
+        Speed: "35%"
+      },
+      effects: ["True Damage"],
       formulas: [
         {
           label: "Damage - per conditional tick",
@@ -17861,17 +17917,17 @@ const skillDamage = {
         {
           label: "Damage - Redirected (per damage instance) Above 70% HP",
           type: "text-only",
-          additionalText: "25% incoming"
+          additionalText: "30% incoming"
         },
 		    {
           label: "Damage - Redirected (per damage instance) Between 40%-70% HP",
           type: "text-only",
-          additionalText: "35% incoming"
+          additionalText: "40% incoming"
         },
         {
           label: "Damage - Redirected (per damage instance) Below 40% HP",
           type: "text-only",
-          additionalText: "45% incoming"
+          additionalText: "50% incoming"
         },
         {
           label: "Heal",
@@ -17884,6 +17940,22 @@ const skillDamage = {
 	"ult": {
 		name: "Phantom Forest",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        HPRegen: 50,
+        Speed: "30%",
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -19732,6 +19804,16 @@ const skillDamage = {
   tinkaton: {
     default: "Default",
     skin1: "Holiday Style"
+  },
+  trevenant: {
+    default: "Default",
+    skin1: "Subway Style",
+    skin2: "Happi Style",
+    skin3: "Rock n Roll Style",
+    skin4: "Ranger Style",
+    skin5: "Gardening Style",
+    skin6: "Subway Style (Red)",
+    skin7: "Costume Party Style",
   },
   // Adicione mais pokémon aqui
 };
