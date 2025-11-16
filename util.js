@@ -30,6 +30,7 @@ const pokemonBaseImages = {
 	darkrai: 'darkrai-left-bg',
     decidueye: 'decidueye-left-bg',
     delphox: 'delphox-left-bg',
+    dhelmise: 'dhelmise-left-bg',
     dodrio: 'dodrio-left-bg',
     dragapult: 'dragapult-left-bg',
     dragonite: 'dragonite-left-bg',
@@ -112,6 +113,7 @@ const pokemonRoles = {
 	darkrai: 'Speedster',
     decidueye: 'Attacker',
     delphox: 'Attacker',
+    dhelmise: 'All Rounder',
     dodrio: 'Speedster',
     dragapult: 'Attacker',
     dragonite: 'All Rounder',
@@ -197,6 +199,7 @@ const pokemonLanes = {
 	darkrai: 'Jungle',
     decidueye: 'Bot',
     delphox: 'Bot',
+    dhelmise: 'Top',
     dodrio: 'Jungle',
     dragapult: 'Bot',
     dragonite: 'Jungle',
@@ -281,6 +284,7 @@ const pokemonBasedType  = {
 	darkrai: 'SpATK',
     decidueye: 'ATK',
     delphox: 'SpATK',
+    dhelmise: 'ATK',
     dodrio: 'ATK',
     dragapult: 'ATK',
     dragonite: 'ATK',
@@ -492,6 +496,12 @@ const pokemonSkills = {
 		"s12": "Mystical Fire",
 		"s21": "Fire Spin",
 		"s22": "Flame Charge"
+    },
+    "dhelmise": {
+		"s11": "Power Whip",
+		"s12": "Whirlpool",
+		"s21": "Anchor Shot",
+		"s22": "Heavy Slam"
     },
     "dodrio": {
 		"s11": "Tri Attack",
@@ -986,6 +996,7 @@ const defaultHeldItems = {
 	darkrai: ['curseincense','shellbell','choicespecs'],
     decidueye: ['muscleband','attackweight','floatstone'],
     delphox: ['curseincense','energyamplifier','drivelens'],
+    dhelmise: ['accelbracer','weaknesspolice','floatstone'],
     dodrio: ['amuletcoin','attackweight','razorclaw'],
     dragapult: ['muscleband','rapidscarf','scopelens'],
     dragonite: ['muscleband','focusband','weaknesspolice'],
@@ -1352,6 +1363,20 @@ const baseStats = {
 		"CDR": 25,
 		"AtkSPD": 25,
 		"HPRegen": 0,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
+  "dhelmise": {
+		"HP": 7600,
+		"ATK": 480,
+		"DEF": 480,
+		"SpATK": 115,
+		"SpDEF": 350,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 30,
+		"HPRegen": 15,
 		"EnergyRate": 0,
 		"Speed": 4300,
 		"CritDmg": 0,
@@ -2254,6 +2279,7 @@ const pokemonKillsRate = {
 	"darkrai": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"decidueye": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"delphox": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
+  "dhelmise": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"dodrio": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"dragapult": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"dragonite": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2337,6 +2363,7 @@ const pokemonAssistRate = {
 	"darkrai": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"decidueye": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"delphox": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "dhelmise": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"dodrio": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"dragapult": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"dragonite": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2420,6 +2447,7 @@ const pokemonDamageDoneRate = {
 	"darkrai": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"decidueye": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"delphox": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
+  "dhelmise": {inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"dodrio": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"dragapult": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"dragonite": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
@@ -2503,6 +2531,7 @@ const pokemonDamageTakenRate = {
 	"darkrai": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"decidueye": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"delphox": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
+  "dhelmise": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"dodrio": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"dragapult": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"dragonite": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2586,6 +2615,7 @@ const pokemonDamageHealedRate = {
 	"darkrai": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"decidueye": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"delphox": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
+  "dhelmise": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"dodrio": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"dragapult": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"dragonite": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
@@ -2669,6 +2699,7 @@ const pokemonTierListUDB = {
 	darkrai: 'S',
     decidueye: 'B',
     delphox: 'B+',
+    dhelmise: 'TBD',
     dodrio: 'A+',
     dragapult: 'B',
     dragonite: 'B',
@@ -3100,6 +3131,24 @@ const levelStats = {
     13: { HP: 5448, ATK: 248, DEF: 134, SpATK: 705, SpDEF: 169, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 20.77 , Speed: 4300 },
     14: { HP: 5831, ATK: 268, DEF: 152, SpATK: 816, SpDEF: 194, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 22.69 , Speed: 4300 },
     15: { HP: 6290, ATK: 292, DEF: 175, SpATK: 950, SpDEF: 225, CritRate: 0 , CDR: 25 , Lifesteal: 0 , AtkSPD: 24.99 , Speed: 4300 },
+  },
+
+    "dhelmise": {
+    1: { HP: 3250, ATK: 165, DEF: 90, SpATK: 20, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3405, ATK: 176, DEF: 104, SpATK: 23, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.71 , Speed: 3700 },
+    3: { HP: 3575, ATK: 188, DEF: 119, SpATK: 27, SpDEF: 91, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.49 , Speed: 3700 },
+    4: { HP: 3762, ATK: 202, DEF: 136, SpATK: 31, SpDEF: 103, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.35 , Speed: 3700 },
+    5: { HP: 3968, ATK: 217, DEF: 154, SpATK: 35, SpDEF: 116, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 13.3 , Speed: 3850 },
+    6: { HP: 4195, ATK: 233, DEF: 174, SpATK: 40, SpDEF: 131, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.34 , Speed: 3850 },
+    7: { HP: 4444, ATK: 251, DEF: 196, SpATK: 45, SpDEF: 147, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.49 , Speed: 4000 },
+    8: { HP: 4718, ATK: 271, DEF: 221, SpATK: 51, SpDEF: 165, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.75 , Speed: 4000 },
+    9: { HP: 5021, ATK: 293, DEF: 248, SpATK: 58, SpDEF: 184, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.14 , Speed: 4150 },
+    10: { HP: 5355, ATK: 317, DEF: 278, SpATK: 65, SpDEF: 205, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 19.67 , Speed: 4150 },
+    11: { HP: 5722, ATK: 344, DEF: 311, SpATK: 73, SpDEF: 229, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 21.36 , Speed: 4300 },
+    12: { HP: 6126, ATK: 373, DEF: 347, SpATK: 82, SpDEF: 255, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 23.22 , Speed: 4300 },
+    13: { HP: 6571, ATK: 405, DEF: 387, SpATK: 92, SpDEF: 284, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 25.27 , Speed: 4300 },
+    14: { HP: 7061, ATK: 441, DEF: 431, SpATK: 103, SpDEF: 315, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.52 , Speed: 4300 },
+    15: { HP: 7600, ATK: 480, DEF: 480, SpATK: 115, SpDEF: 350, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4300 }
   },
 
     "dodrio": {
@@ -4458,6 +4507,19 @@ const pokemonRatings = {
     Smite: 3.5,
     Sweep: 4
   },
+  dhelmise: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 1,
+    Score: 1,
+    Support: 1,
+    Invade: 0.5,
+    Farm: 2.5,
+    Gank: 4,
+    CC: 3.5,
+    Smite: 1,
+    Sweep: 5
+  },
   dodrio: {
     Attack: 3,
     Endure: 2,
@@ -5263,6 +5325,7 @@ const pokemonRoutesEffectiveness = {
   darkrai: { top: 10, jungle: 60, bot: 30 },
   decidueye: { top: 10, jungle: 30, bot: 60 },
   delphox: { top: 10, jungle: 25, bot: 65 },
+  dhelmise: { top: 40, jungle: 30, bot: 30 },
   dodrio: { top: 40, jungle: 50, bot: 10 },
   dragapult: { top: 10, jungle: 50, bot: 40 },
   dragonite: { top: 15, jungle: 55, bot: 30 },
@@ -9081,6 +9144,161 @@ const skillDamage = {
           formula: (SPATK, Level) => 0.25 * SPATK + 3 * (Level - 1) + 150,
           type: "special"
         }
+	]
+	}
+  },
+
+  "dhelmise": {
+      "passive": {
+          name: "Steelworker",
+          description: "Dealing damage with moves grants a shield and empowers the next basic attack. Expired shields also convert to healing.",
+          buff: {
+          },
+          formulas: [
+          {
+            label: "Damage - Additional",
+            formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+            type: "physical"
+          },
+          {
+            label: "Shield",
+            formula: (ATK, Level) => 2.4 * ATK + 0 * (Level - 1) + 360,
+            type: "physical"
+          },
+          {
+            label: "Healing",
+            formula: (firstHitDamage, Level) => 0.2 * firstHitDamage,
+            type: "dependent",
+            dependsOn: 1
+          }
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+      ]
+	},
+
+    "s11": {
+      name: "Power Whip",
+      cooldown: 6,
+      buff: {},
+      effects: ["Stun"],
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.14 * ATK + 11 * (Level - 1) + 320,
+          type: "physical"
+        },
+		{
+          label: "Damage - Additional (Edge)",
+          formula: (ATK, Level) => 2.14 * ATK + 11 * (Level - 1) + 320,
+          type: "physical"
+        },
+		{
+          label: "Shield",
+          formula: (ATK, Level) => 2.76 * ATK + 0 * (Level - 1) + 414,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Whirlpool",
+      cooldown: 6,
+      buff:{},
+      selfBuff: {
+        CooldownFlat: 0.5
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs:{
+          CooldownFlat: 0.5
+        }
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.7 * ATK + 14 * (Level - 1) + 408,
+          type: "physical"
+        },
+        {
+          label: "Damage - Whirlpool (per Tick)",
+          formula: (ATK, Level) => 0.87 * ATK + 5 * (Level - 1) + 130,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Anchor Shot",
+      cooldown: 8.5,
+      buff:{},
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 11,
+      debuffs: {
+        DEF: 50,
+        SpDEF: 50
+      },
+      debuffLabels :{
+        DEF: "(DEBUFF) Defense Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.6 * ATK + 14 * (Level - 1) + 390,
+          type: "physical"
+        }
+      ]
+    },
+    "s22": {
+      name: "Heavy Slam",
+      cooldown: 7,
+      buff:{},
+      effects: ["Stun"],
+      formulas: [
+		{
+		      label: "Damage - First Hit",
+          formula: (ATK, Level) => 1.8 * ATK + 10 * (Level - 1) + 270,
+          type: "physical"
+		},
+		{
+		      label: "Damage - Second Hit",
+          formula: (ATK, Level) => 1.8 * ATK + 10 * (Level - 1) + 270,
+          type: "physical"
+		}
+      ]
+    },
+	"ult": {
+		name: "Fanciful Fireworks",
+    cooldown: 84,
+    buff:{},
+      buffPlus: {
+        levelRequired: 9,
+        effects: ["Stun"],
+        buffs: {
+          Speed: "30%",
+          CDR: 30,
+          Shield: 20
+        },
+      },
+		formulas: [
+ 		{
+		      label: "Damage - First Hit",
+          formula: (ATK, Level) => 1.3 * ATK + 7 * (Level - 1) + 195,
+          type: "physical"
+		},
+		{
+		      label: "Damage - Second Hit",
+          formula: (ATK, Level) => 1.3 * ATK + 7 * (Level - 1) + 195,
+          type: "physical"
+		}
 	]
 	}
   },
@@ -19453,6 +19671,10 @@ const skillDamage = {
     skin4: "Sacred Style",
     skin5: "Tea Party Style",
     skin6: "Dark Magician Style"
+  },
+  dhelmise: {
+    default: "Default",
+    skin1: "Marine Style"
   },
   dodrio: {
     default: "Default",
