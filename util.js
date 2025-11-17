@@ -19004,6 +19004,14 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    effects: ["Stun"],
+    debuffs: {
+      Speed: 20
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
       formulas: [
 		{
           label: "Damage - Basic",
@@ -19021,6 +19029,16 @@ const skillDamage = {
     "s11": {
       name: "Sludge Bomb",
       cooldown: 6,
+      buff: {},
+      effects: ["Poison"],
+      debuffs: {
+        Speed: 50,
+        SpDEF: 40
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
       formulas: [
 		{
           label: "Damage",
@@ -19037,6 +19055,9 @@ const skillDamage = {
     "s12": {
       name: "Giga Drain",
       cooldown: 7,
+      buff: {
+        DmgTaken: 40
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -19058,22 +19079,36 @@ const skillDamage = {
     "s21": {
       name: "Solar Beam",
       cooldown: 9,
+      buff: {},
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
 		{
           label: "Damage - per tick (x5)",
-          formula: (SpATK, Level) => 0.275 * SpATK + 6 * (Level - 1) + 230,
+          formula: (SpATK, Level) => 0.25 * SpATK + 6 * (Level - 1) + 210,
           type: "special"
         },
 		{
           label: "Damage - Additional per tick (x5)",
           type: "text-only",
-          additionalText: "1.5% Enemy Max HP"
+          additionalText: "2.5% Enemy Max HP"
         },
       ]
     },
 	"s22": {
       name: "Petal Dance",
       cooldown: 8,
+      buff: {
+        Speed: "80%",
+        otherSkillsCooldownReduction: {
+          s11: "30%",
+          s12: "30%"
+        }
+      },
       formulas: [
 		{
           label: "Damage - Aura (16 Ticks)",
@@ -19085,6 +19120,22 @@ const skillDamage = {
 	"ult": {
 		name: "Verdant Anger",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      debuffs: {
+        Speed: 35
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage - Initial",
@@ -20256,6 +20307,18 @@ const skillDamage = {
     skin3: "Ninja Style",
     skin4: "Dark Suit Style",
     skin5: "Guardian Style"
+  },
+  venusaur: {
+    default: "Default",
+    skin1: "Beach Style",
+    skin2: "Suit Style",
+    skin3: "Sunshine Style",
+    skin4: "Marine Style",
+    skin5: "Masquerade Style",
+    skin6: "Tuxedo Style",
+    skin7: "Holiday Style",
+    skin8: "Beach Style (Pink)",
+    skin9: "Stage Style"
   },
   // Adicione mais pokémon aqui
 };
