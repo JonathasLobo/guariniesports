@@ -19527,13 +19527,25 @@ const skillDamage = {
           name: "Volt Absorb",
           description: "Converts 8% of damage taken into bonus Attack for 4s, up to a maximum of 200 bonus Attack.",
           buff: {
-            ATK: "8%"
+            ATK: 200
           },
           formulas: [
           ]
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {
+      HPRegen: 10
+    },
+    effects: ["Paralyze"],
+    debuffs: {
+      Speed: 15,
+      AtkSPD: 25
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction",
+      AtkSPD: "(DEBUFF) AttackSpeed Reduction"
+    },
       formulas: [
         {
           label: "Damage - Basic",
@@ -19551,6 +19563,15 @@ const skillDamage = {
     "s11": {
       name: "Volt Switch",
       cooldown: 8,
+      buff: {
+        AtkSPD: 45
+      },
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          AtkSPD: 15
+        }
+      },
       formulas: [
         {
           label: "Damage - Initial Dash",
@@ -19578,6 +19599,14 @@ const skillDamage = {
     "s12": {
       name: "Spark",
       cooldown: 9,
+      buff: {},
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          HPRegen: 15
+        }
+      },
       formulas: [
 	    {
           label: "Damage - Jump",
@@ -19589,22 +19618,23 @@ const skillDamage = {
           formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 0,
           type: "physical",
           additionalText: "If an auto attack is used before the leap ends, deal 110% Atk as damage instead."
-        },
-        {
-          label: "Damage (Boosted) - Circle Draw",
-          formula: (ATK, Level) => 0.675 * ATK + 6 * (Level - 1) + 118,
-          type: "physical"
-        },
-        {
-          label: "Damage (Boosted) - Flurry (x3 hits)",
-          formula: (ATK, Level) => 0.45 * ATK + 4 * (Level - 1) + 75,
-          type: "physical"
-        },
+        }
       ]
     },
     "s21": {
       name: "Discharge",
       cooldown: 8,
+      buff: {},
+      effects: ["Stun"],
+      buffPlus: {
+        levelRequired: 13,
+        debuffs: {
+          Speed: 25
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
         {
           label: "Damage - per Tick (6 Ticks)",
@@ -19631,6 +19661,10 @@ const skillDamage = {
     "s22": {
       name: "Wild Charge",
       cooldown: 8,
+      buff: {
+        HP: "-1%"
+      },
+      effects: ["Untargetable"],
       formulas: [
         {
           label: "Damage - Initial Hit",
@@ -19639,8 +19673,9 @@ const skillDamage = {
         },
         {
           label: "Damage - Subsequent Hits",
-          type: "text-only",
-          additionalText: "Deals half damage."
+          formula: (firstHitDamage, Level) => 0.5 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 0
         }
       ]
     },
@@ -19648,6 +19683,17 @@ const skillDamage = {
 	"ult": {
 		name: "Plasma Gale",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Paralyze"],
+      buffs: {
+        Speed: "30%",
+        AtkSPD: 20,
+        CDR: 15,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - Trail",
@@ -20449,6 +20495,15 @@ const skillDamage = {
     skin1: "Special Style",
     skin2: "Captain Style",
     skin3: "Neo Street Style"
+  },
+  zeraora: {
+    default: "Default",
+    skin1: "Space Style",
+    skin2: "Training Style",
+    skin3: "Power Plant Style",
+    skin4: "Frontier Style",
+    skin5: "Band Style",
+    skin6: "Fashionable Style"
   },
   // Adicione mais pokémon aqui
 };
