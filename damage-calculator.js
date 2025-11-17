@@ -1152,6 +1152,17 @@ const STAT_EFFECT_CONFIG = {
   const POKEMON_CRIT_SKILLS = {
     "absol": ["s11", "s12", "s21", "s22", "ult"],
     "aegislash": ["s12", "s22"],
+    "cinderace": ["s12"],
+    "crustle": ["s22"],
+    "decidueye": ["s11"],
+    "dragapult": ["s21"],
+    "duraludon": ["s11"],
+    "glaceon": ["s12", "s21"],
+    "inteleon": ["s21", "s22"],
+    "machamp": ["s12"],
+    "umbreon": ["s11"],
+    "urshifu": ["s11", "s12"],
+    "zeraora": ["s12"],
   };
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
