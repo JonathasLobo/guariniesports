@@ -18923,7 +18923,7 @@ const skillDamage = {
       ]
     },
 	
-	"ult1": {
+	"ult": {
 		name: "Ebon Fist",
     cooldown: 112,
     buff: {},
@@ -18957,7 +18957,7 @@ const skillDamage = {
         }
 	 ]
 	},
-  "ult2": {
+  "ult1": {
 		name: "Flowing Fists",
     cooldown: 112,
     buff: {},
@@ -19360,6 +19360,21 @@ const skillDamage = {
     "s11": {
       name: "Metal Claw",
       cooldown: 7.5,
+      buff: {
+        AtkSPD: 80
+      },
+      debuffs: {
+        Speed: 45
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage - Shockwave",
@@ -19388,6 +19403,18 @@ const skillDamage = {
     "s12": {
       name: "Sacred Sword",
       cooldown: 8,
+      buff: {
+        DmgTaken: 30,
+        ATK: "20%",
+        DEFPen: 10
+      },
+      effects: ["Unstoppable", "Stun"],
+      debuffs: {
+        Speed: 20
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage - Circle Draw",
@@ -19414,6 +19441,15 @@ const skillDamage = {
     "s21": {
       name: "Agility",
       cooldown: 10,
+      buff: {
+        Speed: "30%"
+      },
+      buffPlus: {
+        levelRequired: 13,
+        buffs: {
+          Speed: "10%"
+        }
+      },
       formulas: [
         {
           label: "Boosted Shield (3s)",
@@ -19425,6 +19461,10 @@ const skillDamage = {
     "s22": {
       name: "Play Rough",
       cooldown: 9,
+      buff: {
+        DmgTaken: 25
+      },
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -19442,6 +19482,16 @@ const skillDamage = {
 	"ult": {
 		name: "Sovereign Sword",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "20%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage (<=10 Energy Charged)",
@@ -20393,6 +20443,12 @@ const skillDamage = {
     skin7: "New Year Style",
     skin8: "Marine Style",
     skin9: "Bonfire Style (Midnight Blue)"
+  },
+  zacian: {
+    default: "Default",
+    skin1: "Special Style",
+    skin2: "Captain Style",
+    skin3: "Neo Street Style"
   },
   // Adicione mais pokémon aqui
 };

@@ -3047,6 +3047,7 @@ textarea.form-control {
   line-height: 1.2;
   max-width: 50%;
   word-wrap: break-word;
+  text-align: left; /* ✅ Label fica à esquerda */
 }
 
 .skill-damage-number {
@@ -3054,9 +3055,11 @@ textarea.form-control {
   font-weight: 800;
   color: #1d1dd1;
   display: flex;
-  align-items: center;
+  align-items: center; /* ✅ MUDANÇA: de "left" para "center" */
+  justify-content: flex-end; /* ✅ NOVO: Alinha à direita */
   gap: 6px;
   flex-shrink: 0;
+  text-align: right; /* ✅ NOVO: Texto alinhado à direita */
 }
 
 .skill-damage-percent {
@@ -3064,6 +3067,7 @@ textarea.form-control {
   font-weight: 600;
   color: #007b29;
   margin-left: 4px;
+  white-space: nowrap; /* ✅ NOVO: Evita quebra */
 }
 
 /* Info text */
@@ -4853,27 +4857,35 @@ textarea.form-control {
 .crit-damage-value {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-end; /* ✅ Alinha à direita */
   gap: 4px;
   color: #dc3545;
   font-size: 14px;
   font-weight: bold;
   width: 100%;
+  text-align: right; /* ✅ Texto à direita */
 }
 
 .crit-damage-value img {
   width: 16px;
   height: 16px;
   object-fit: contain;
+  flex-shrink: 0; /* ✅ Impede que o ícone encolha */
 }
 
 .skill-damage-number.has-crit {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end; /* ✅ Alinha tudo à direita */
   gap: 4px;
+  width: 100%;
 }
 
+.skill-damage-value > div[style*="color:#888"] {
+  text-align: right;
+  width: 100%;
+  margin-top: 4px;
+}
 
 /* Dark mode */
 .dark-mode .crit-checkbox-label {

@@ -1988,7 +1988,6 @@ const showSkillSelectionPanel = (options, slotContainer) => {
 };
 
 // Função para selecionar skill
-// Função para selecionar skill
 const selectSkill = (skillKey) => {
   // ✅ LÓGICA ESPECIAL PARA URSHIFU
   if (currentSkillSlot.pokemon === "urshifu") {
@@ -2017,10 +2016,22 @@ const selectSkill = (skillKey) => {
       selectedSkills[pokemon][otherSlot] = linkedSkill;
     }
     
+    // ✅ NOVO: Controlar visibilidade das ults baseado na seleção
+    if (!selectedSkills[pokemon]._urshifuUltMode) {
+      selectedSkills[pokemon]._urshifuUltMode = null;
+    }
+    
+    // Determinar qual ult mostrar baseado nas skills selecionadas
+    if (skillKey === 's11' || skillKey === 's21') {
+      selectedSkills[pokemon]._urshifuUltMode = 'ult'; // Mostrar ult, esconder ult1
+    } else if (skillKey === 's12' || skillKey === 's22') {
+      selectedSkills[pokemon]._urshifuUltMode = 'ult1'; // Mostrar ult1, esconder ult
+    }
+    
     closeSkillSelectionPanel();
     createSkillBuildInResult();
     calcular();
-    return; // ✅ IMPORTANTE: Sair aqui para não executar o código padrão
+    return;
   }
   
   // ✅ COMPORTAMENTO PADRÃO PARA TODOS OS OUTROS POKÉMONS (código original)
@@ -2036,17 +2047,17 @@ const selectSkill = (skillKey) => {
 };
 
 // Função para limpar seleção de skill
-// Função para limpar seleção de skill
 const clearSkillSelection = () => {
   if (!currentSkillSlot) return;
   
   const { pokemon, slotKey } = currentSkillSlot;
   
-  // ✅ LÓGICA ESPECIAL PARA URSHIFU - Limpar ambos os slots
+  // ✅ LÓGICA ESPECIAL PARA URSHIFU - Limpar ambos os slots e resetar ults
   if (pokemon === "urshifu") {
     if (selectedSkills[pokemon]) {
       delete selectedSkills[pokemon].s1;
       delete selectedSkills[pokemon].s2;
+      delete selectedSkills[pokemon]._urshifuUltMode; // ✅ NOVO: Resetar modo de ult
     }
   } else {
     // ✅ COMPORTAMENTO PADRÃO PARA OUTROS POKÉMONS (código original)
@@ -2142,6 +2153,10 @@ const handleClickOutside = (e) => {
 // Função para resetar seleções ao trocar de Pokémon
 const resetSkillSelections = () => {
   if (selectedPokemon && selectedSkills[selectedPokemon]) {
+    // ✅ NOVO: Se for Urshifu, limpar também o controle de ults
+    if (selectedPokemon === "urshifu") {
+      delete selectedSkills[selectedPokemon]._urshifuUltMode;
+    }
     selectedSkills[selectedPokemon] = {};
   }
 };
@@ -4709,27 +4724,44 @@ if (pokemon === "leafeon") {
     createResetButton();
   };
 
-  // Função para determinar se uma skill deve ser exibida
-  const shouldShowSkill = (pokemon, skillKey) => {
-    // Se não há seleção de skills para este pokémon, mostrar todas
-    if (!selectedSkills[pokemon]) return true;
+ // Função para determinar se uma skill deve ser exibida
+const shouldShowSkill = (pokemon, skillKey) => {
+  // ✅ LÓGICA ESPECIAL PARA URSHIFU - Controle de visibilidade das ults
+  if (pokemon === "urshifu") {
+    const ultMode = selectedSkills[pokemon]?._urshifuUltMode;
     
-    // Determinar qual slot esta skill pertence
-    const skillSlot = getSkillSlot(pokemon, skillKey);
-    
-    // Se a skill não pertence a nenhum slot (ex: unite), sempre mostrar
-    if (!skillSlot) return true;
-    
-    // Se há uma seleção para este slot
-    const selectedSkillForSlot = selectedSkills[pokemon][skillSlot];
-    if (selectedSkillForSlot) {
-      // Mostrar apenas se for a skill selecionada
-      return skillKey === selectedSkillForSlot;
+    // Se houver um modo de ult definido, aplicar filtro
+    if (ultMode) {
+      // Se o modo é 'ult', esconder 'ult1'
+      if (ultMode === 'ult' && skillKey === 'ult1') {
+        return false;
+      }
+      // Se o modo é 'ult1', esconder 'ult'
+      if (ultMode === 'ult1' && skillKey === 'ult') {
+        return false;
+      }
     }
-    
-    // Se não há seleção para este slot, mostrar todas do slot
-    return true;
-  };
+  }
+
+  // Se não há seleção de skills para este pokémon, mostrar todas
+  if (!selectedSkills[pokemon]) return true;
+  
+  // Determinar qual slot esta skill pertence
+  const skillSlot = getSkillSlot(pokemon, skillKey);
+  
+  // Se a skill não pertence a nenhum slot (ex: unite), sempre mostrar
+  if (!skillSlot) return true;
+  
+  // Se há uma seleção para este slot
+  const selectedSkillForSlot = selectedSkills[pokemon][skillSlot];
+  if (selectedSkillForSlot) {
+    // Mostrar apenas se for a skill selecionada
+    return skillKey === selectedSkillForSlot;
+  }
+  
+  // Se não há seleção para este slot, mostrar todas do slot
+  return true;
+};
 
   // Função para criar seletor de efeito condicional
 const createConditionalEffectSelector = (pokemon, skillKey, conditionalEffects) => {
