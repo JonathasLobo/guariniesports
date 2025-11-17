@@ -18611,6 +18611,7 @@ const skillDamage = {
             DEF: "30%",
             SpDEF: "30%"
           },
+          effects: ["Unstopppable"],
           formulas: [
           ]
         },
@@ -18638,6 +18639,13 @@ const skillDamage = {
     "s11": {
       name: "Mean Look",
       cooldown: 9,
+      buff: {},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage",
@@ -18650,6 +18658,13 @@ const skillDamage = {
     "s12": {
       name: "Foul Play",
       cooldown: 7,
+      buff: {},
+      debuffs: {
+        Speed: 45
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -18666,6 +18681,15 @@ const skillDamage = {
     "s21": {
       name: "Wish",
       cooldown: 6,
+      buff: {
+        DmgTaken: 15
+      },
+      buffPlus: {
+        levelRequired: 12,
+        buffs: {
+          DmgTaken: 10
+        }
+      },
       formulas: [
         {
           label: "Heal",
@@ -18675,14 +18699,30 @@ const skillDamage = {
         },
         {
           label: "Heal Skill Plus",
-          formula: (ATK, Level) => 3.8 * ATK + 18 * (Level - 1) + 700,
-          type: "physical"
+          formula: (attribute, Level) => 3.8 * attribute + 18 * (Level - 1) + 700,
+          type: "heal",
+          healAttribute: "ATK"
         }
       ]
     },
     "s22": {
       name: "Snarl",
       cooldown: 10,
+      buff: {
+        HindRed: 100,
+        Speed: "-30%"
+      },
+      effects: ["Stun"],
+      debuffs: {
+        ATK: 18,
+        SpATK: 18,
+        Speed: 15
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction",
+        SpATK: "(DEBUFF) SpecilAttack Reduction",
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       formulas: [
         {
           label: "Damage (8x)",
@@ -18705,6 +18745,22 @@ const skillDamage = {
 	"ult": {
 		name: "Moonlight Prance",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+        Shield: 60,
+        HPRegen: 1,
+        Speed: "30%"
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      }
+    },
 		formulas: [
         {
           label: "Damage",
@@ -20122,6 +20178,13 @@ const skillDamage = {
     skin1: "Tuxedo Style",
     skin2: "Hip-Hop Style",
     skin3: "Pokébuki Style"
+  },
+  umbreon: {
+    default: "Default",
+    skin1: "Checkered Style",
+    skin2: "Noble Style",
+    skin3: "Graceful Style",
+    skin4: "Ninja Style"
   },
   // Adicione mais pokémon aqui
 };
