@@ -19715,6 +19715,7 @@ const skillDamage = {
           description: "Disguises as the nearest enemy, becoming unstoppable briefly. The illusion breaks upon taking damage, attacking, scoring, or recalling.",
           buff: {
           },
+          effects: ["Cleanses", "Unstoppable"],
           formulas: [
           ]
         },
@@ -19737,6 +19738,12 @@ const skillDamage = {
     "s11": {
       name: "Shadow Claw",
       cooldown: 4.5,
+      buff: {
+        otherSkillsCooldownReduction: {
+          s21: 5.5
+        }
+      },
+      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
@@ -19749,6 +19756,11 @@ const skillDamage = {
     "s12": {
       name: "Cut",
       cooldown: 4.5,
+      buff: {
+        otherSkillsCooldownReduction: {
+          s21: 5.5
+        }
+      },
       formulas: [
 	    {
           label: "Damage",
@@ -19771,6 +19783,14 @@ const skillDamage = {
     "s21": {
       name: "Night Slash",
       cooldown: 8,
+      buff: {},
+      effects: ["Cleanses", "Invincible"],
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage - Dash",
@@ -19793,6 +19813,19 @@ const skillDamage = {
     "s22": {
       name: "Feint Attack",
       cooldown: 6,
+      buff: {
+        otherSkillsCooldownReduction: {
+          s11: 4.5,
+          s12: 4.5
+        },
+      },
+      effects: ["Unstoppable"],
+      selfBuffPlus: {
+        levelRequired: 11,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage - Dash",
@@ -19811,6 +19844,15 @@ const skillDamage = {
 	"ult": {
 		name: "Nightfall Daze",
     cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+        Speed: "80%",
+        Shield: 20
+      }
+    },
 		formulas: [
         {
           label: "Damage - per Shockwave",
@@ -20504,6 +20546,16 @@ const skillDamage = {
     skin4: "Frontier Style",
     skin5: "Band Style",
     skin6: "Fashionable Style"
+  },
+  zoroark: {
+    default: "Default",
+    skin1: "Costume Party Style",
+    skin2: "Ghost Style",
+    skin3: "Costume Party Style (Green)",
+    skin4: "Dancer Style",
+    skin5: "Ninja Style",
+    skin6: "Neo Street Style",
+    skin7: "Frontier Style"
   },
   // Adicione mais pokémon aqui
 };
