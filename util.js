@@ -19162,6 +19162,8 @@ const skillDamage = {
         },
 	"atkboosted": {
 	  name: "Basic Attack",
+    buff: {},
+    effects: ["Stun"],
       formulas: [
 		{
           label: "Damage - Basic",
@@ -19178,6 +19180,13 @@ const skillDamage = {
 
     "s11": {
       name: "Doubleslap",
+      buff: {},
+      debuffs: {
+        Speed: 45
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
       cooldown: 5,
       formulas: [
 		{
@@ -19190,6 +19199,16 @@ const skillDamage = {
     "s12": {
       name: "Dazzling Gleam",
       cooldown: 4,
+      buff: {},
+      buffPlus: {
+        levelRequired: 10,
+        debuffs: {
+          Speed: 40
+        },
+        debuffLabels: {
+          Speed: "(DEBUFF) MoveSpeed Reduction"
+        }
+      },
       formulas: [
 	    {
           label: "Damage - First Hit",
@@ -19206,23 +19225,66 @@ const skillDamage = {
     "s21": {
       name: "Rollout",
       cooldown: 10,
+      buff: {
+        otherSkillsCooldownReduction: {
+          s11: 5,
+          s12: 4
+        }
+      },
+      effects: ["Unstoppable"],
       formulas: [
 		{
           label: "Damage - per Hit",
           formula: (SpATK, Level) => 0.47 * SpATK + 14 * (Level - 1) + 590,
           type: "special"
-        }
+        },
+        	{
+          label: "Shield",
+          formula: (HP, Level) => 0.25 * HP,
+          type: "hp"
+        },
       ]
     },
 	"s22": {
       name: "Sing",
       cooldown: 8,
+      buff: {
+        Speed: "30%"
+      },
+      effects: ["Sleep"],
+      debuffs: {
+        Speed: 15,
+        DEF: 25,
+        SpDEF: 25
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction",
+        DEF: "(DEBUFF) Defense Reduction",
+        SpDEF: "(DEBUFF) SpecialDefense Reduction"
+      },
       formulas: [
       ]
     },
 	"ult": {
 		name: "Starlight Recital",
     cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      effects: ["Unstoppable", "Cleanses"],
+      buffs: {
+        HindRed: 100,
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+      allyBuffs: {
+        HPRegen: 50
+      },
+      allyBuffLabels: {
+        HPRegen: "(ALLY BUFF) HPRegen Increase"
+      }
+    },
 		formulas: [
         {
           label: "Shield",
@@ -20319,6 +20381,18 @@ const skillDamage = {
     skin7: "Holiday Style",
     skin8: "Beach Style (Pink)",
     skin9: "Stage Style"
+  },
+  wigglytuff: {
+    default: "Default",
+    skin1: "Bonfire Style",
+    skin2: "Bedtime Style",
+    skin3: "Frontier Style",
+    skin4: "Pastel Style",
+    skin5: "Songstress Style",
+    skin6: "Holiday Style",
+    skin7: "New Year Style",
+    skin8: "Marine Style",
+    skin9: "Bonfire Style (Midnight Blue)"
   },
   // Adicione mais pokémon aqui
 };
