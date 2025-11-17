@@ -1988,8 +1988,42 @@ const showSkillSelectionPanel = (options, slotContainer) => {
 };
 
 // Função para selecionar skill
+// Função para selecionar skill
 const selectSkill = (skillKey) => {
-  // Salvar seleção
+  // ✅ LÓGICA ESPECIAL PARA URSHIFU
+  if (currentSkillSlot.pokemon === "urshifu") {
+    const { pokemon, slotKey } = currentSkillSlot;
+    
+    // Mapeamento de skills vinculadas
+    const linkedSkills = {
+      's11': 's21', // Se selecionar s11, auto-selecionar s21
+      's12': 's22', // Se selecionar s12, auto-selecionar s22
+      's21': 's11', // Se selecionar s21, auto-selecionar s11
+      's22': 's12'  // Se selecionar s22, auto-selecionar s12
+    };
+    
+    // Inicializar se necessário
+    if (!selectedSkills[pokemon]) {
+      selectedSkills[pokemon] = {};
+    }
+    
+    // Selecionar a skill atual
+    selectedSkills[pokemon][slotKey] = skillKey;
+    
+    // Auto-selecionar a skill vinculada no outro slot
+    if (linkedSkills[skillKey]) {
+      const linkedSkill = linkedSkills[skillKey];
+      const otherSlot = slotKey === 's1' ? 's2' : 's1';
+      selectedSkills[pokemon][otherSlot] = linkedSkill;
+    }
+    
+    closeSkillSelectionPanel();
+    createSkillBuildInResult();
+    calcular();
+    return; // ✅ IMPORTANTE: Sair aqui para não executar o código padrão
+  }
+  
+  // ✅ COMPORTAMENTO PADRÃO PARA TODOS OS OUTROS POKÉMONS (código original)
   if (!selectedSkills[currentSkillSlot.pokemon]) {
     selectedSkills[currentSkillSlot.pokemon] = {};
   }
@@ -1997,31 +2031,32 @@ const selectSkill = (skillKey) => {
   selectedSkills[currentSkillSlot.pokemon][currentSkillSlot.slotKey] = skillKey;
   
   closeSkillSelectionPanel();
-  
-  // Recriar o seletor para mostrar a nova seleção
   createSkillBuildInResult();
-  
-  // IMPORTANTE: Recalcular para filtrar as skills exibidas
   calcular();
 };
 
+// Função para limpar seleção de skill
 // Função para limpar seleção de skill
 const clearSkillSelection = () => {
   if (!currentSkillSlot) return;
   
   const { pokemon, slotKey } = currentSkillSlot;
   
-  // Limpar a seleção do slot
-  if (selectedSkills[pokemon] && selectedSkills[pokemon][slotKey]) {
-    delete selectedSkills[pokemon][slotKey];
+  // ✅ LÓGICA ESPECIAL PARA URSHIFU - Limpar ambos os slots
+  if (pokemon === "urshifu") {
+    if (selectedSkills[pokemon]) {
+      delete selectedSkills[pokemon].s1;
+      delete selectedSkills[pokemon].s2;
+    }
+  } else {
+    // ✅ COMPORTAMENTO PADRÃO PARA OUTROS POKÉMONS (código original)
+    if (selectedSkills[pokemon] && selectedSkills[pokemon][slotKey]) {
+      delete selectedSkills[pokemon][slotKey];
+    }
   }
   
   closeSkillSelectionPanel();
-  
-  // Recriar o seletor para mostrar o estado vazio
   createSkillBuildInResult();
-  
-  // Recalcular para mostrar todas as skills do slot novamente
   calcular();
 };
 

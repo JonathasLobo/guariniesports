@@ -18777,6 +18777,7 @@ const skillDamage = {
           description: "Deals bonus damage to shielded enemies, converting 30% of shield damage to HP damage.",
           buff: {
           },
+          effects: ["True Damage"],
           formulas: [
           ]
         },
@@ -18814,6 +18815,18 @@ const skillDamage = {
     "s11": {
       name: "Wicked Blow",
       cooldown: 7,
+      buff: {
+        DmgTaken: 20,
+        Speed: "-30%"
+      },
+      effects: ["Unstoppable"],
+      buffPlus: {
+        levelRequired: 11,
+        effects: ["Stun"],
+        buffs: {
+          DmgTaken: 20,
+        }
+      },
       formulas: [
         {
           label: "Damage (Uncharged)",
@@ -18823,14 +18836,12 @@ const skillDamage = {
         {
           label: "Damage - Center (Charged)",
           formula: (ATK, Level) => 1.75 * ATK + 12 * (Level - 1) + 280,
-          type: "physical",
-          additionalText: "Damage is always a critical and deals additional damage equal to 10% of the enemies missing HP. Against Wild Pokemon: This additional damage is capped at 1200."
+          type: "physical"
         },
         {
           label: "Damage - Conal (Charged)",
           formula: (ATK, Level) => 1.75 * ATK + 12 * (Level - 1) + 280,
-          type: "physical",
-          additionalText: "Deals additional damage equal to 5% of the enemies' missing HP. Against Wild Pokemon: This additional damage is capped at 600."
+          type: "physical"
         }
       ]
     },
@@ -18838,6 +18849,13 @@ const skillDamage = {
     "s12": {
       name: "Surging Strikes",
       cooldown: 10,
+      buff: {},
+      buffPlus: {
+        levelRequired: 11,
+        buffs: {
+          DmgTaken: 30
+        }
+      },
       formulas: [
 	    {
           label: "Damage - per Hit",
@@ -18854,6 +18872,14 @@ const skillDamage = {
     "s21": {
       name: "Throat Chop",
       cooldown: 7,
+      buff: {},
+      effects: ["Stun"],
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownPercent: 40
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -18865,6 +18891,19 @@ const skillDamage = {
     "s22": {
       name: "Liquidation",
       cooldown: 10,
+      buff: {},
+      debuffs: {
+        DEF: 30
+      },
+      debuffLabels: {
+        DEF: "(DEBUFF) Defense Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
       formulas: [
         {
           label: "Damage",
@@ -18887,6 +18926,19 @@ const skillDamage = {
 	"ult1": {
 		name: "Ebon Fist",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+       Speed: "30%",
+       CDR: 30,
+       Shield: 20
+      },
+      otherSkillsCooldownReduction: {
+        s11: 7
+      }, 
+    },
 		formulas: [
         {
           label: "Damage",
@@ -18908,6 +18960,17 @@ const skillDamage = {
   "ult2": {
 		name: "Flowing Fists",
     cooldown: 112,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs: {
+       DmgTaken: 30,
+       Speed: "30%",
+       CDR: 30,
+       Shield: 20
+      },
+    },
 		formulas: [
         {
           label: "Damage (Initial Hit)",
@@ -20185,6 +20248,14 @@ const skillDamage = {
     skin2: "Noble Style",
     skin3: "Graceful Style",
     skin4: "Ninja Style"
+  },
+  urshifu: {
+    default: "Default",
+    skin1: "Holiday Style",
+    skin2: "Ghost Style",
+    skin3: "Ninja Style",
+    skin4: "Dark Suit Style",
+    skin5: "Guardian Style"
   },
   // Adicione mais pokémon aqui
 };
