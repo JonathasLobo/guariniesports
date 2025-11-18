@@ -81,11 +81,22 @@
     </div>
   </header>
 
-  <!-- Info do usuário e botão de login/logout -->
-  <div class="user-container">
-    <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
-    <div class="user-info" id="userInfo">
-      Olá, <span id="userName"></span>!
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Olá, visitante!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
     </div>
   </div>
 
@@ -332,30 +343,58 @@
     const auth = getAuth(app);
 
     // Elementos do DOM
-    const loginLogoutBtn = document.getElementById('loginLogoutBtn');
-    const userInfo = document.getElementById('userInfo');
-    const userName = document.getElementById('userName');
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Fechar dropdown ao clicar em um link
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
 
     // Função para atualizar a interface com base no estado do usuário
     function updateUI(user) {
       if (user) {
         // Usuário está logado
-        loginLogoutBtn.textContent = 'Logout';
-        loginLogoutBtn.onclick = handleLogout;
-        
-        // Mostrar informações do usuário
         const displayName = user.displayName || user.email.split('@')[0];
-        userName.textContent = displayName;
-        userInfo.style.display = 'block';
+        userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+        authLink.textContent = 'Logout';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogout();
+        };
+        perfilLink.style.display = 'block'; // Mostrar link de perfil
         
         console.log('Usuário logado:', user.email);
       } else {
         // Usuário não está logado
-        loginLogoutBtn.textContent = 'Login';
-        loginLogoutBtn.onclick = handleLogin;
-        
-        // Esconder informações do usuário
-        userInfo.style.display = 'none';
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogin();
+        };
+        perfilLink.style.display = 'none'; // Esconder link de perfil quando deslogado
         
         console.log('Usuário não logado');
       }
@@ -368,13 +407,16 @@
 
     // Função para fazer logout
     async function handleLogout() {
-      try {
-        await signOut(auth);
-        alert('Logout realizado com sucesso!');
-        // A interface será atualizada automaticamente pelo onAuthStateChanged
-      } catch (error) {
-        console.error('Erro no logout:', error);
-        alert('Erro ao fazer logout. Tente novamente.');
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+          // A interface será atualizada automaticamente pelo onAuthStateChanged
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
       }
     }
 
