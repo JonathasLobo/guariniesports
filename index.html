@@ -376,8 +376,14 @@
     function updateUI(user) {
       if (user) {
         // Usuário está logado
-        const displayName = user.displayName || user.email.split('@')[0];
-        userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+        const savedName = localStorage.getItem('userDisplayName');
+        const displayName = savedName || user.displayName || user.email.split('@')[0];
+        const savedAvatar = localStorage.getItem('userAvatar') || './estatisticas-shad/images/sprits/pikachu.png';
+        
+        userDropdownHeader.innerHTML = `
+          <img src="${savedAvatar}" alt="Avatar" class="dropdown-avatar">
+          <span>Olá, ${displayName}!</span>
+        `;
         authLink.textContent = 'Logout';
         authLink.onclick = function(e) {
           e.preventDefault();

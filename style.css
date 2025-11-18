@@ -971,3 +971,23 @@ html {
 .flag-br { background-image: url('https://flagcdn.com/w20/br.png'); }
 .flag-us { background-image: url('https://flagcdn.com/w20/us.png'); }
 .flag-jp { background-image: url('https://flagcdn.com/w20/jp.png'); }
+
+/* Avatar no dropdown */
+.dropdown-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid #ff7500;
+  object-fit: cover;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.user-dropdown-header {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 117, 0, 0.3);
+  background: rgba(255, 117, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

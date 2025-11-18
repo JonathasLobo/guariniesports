@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Perfil do usuário - Guarini e-sport">
+  <title>Meu Perfil - Guarini e-sport</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="perfil.css">
+  <meta name="theme-color" content="#ffad00">
+</head>
+
+<body>
+  <a id="topo"></a>
+
+  <header>
+    <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Logo Central -->
+      <div class="logo-center">
+        <a href="index.html" aria-label="Início">
+          <img src="./logos/Guarini.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <!-- Navegação Desktop - Direita -->
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="material.html">Material</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Botão Menu Mobile -->
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Menu Mobile -->
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="material.html">Material</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Olá, visitante!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="perfil.html" id="perfilLink" class="ativo">Perfil</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main>
+    <section class="perfil-section">
+      <h2>Perfil</h2>
+      
+      <!-- Card de Perfil -->
+      <div class="perfil-card">
+        <!-- Foto de Perfil -->
+        <div class="perfil-avatar-container">
+          <div class="perfil-avatar" id="perfilAvatar">
+            <img src="./estatisticas-shad/images/sprits/pikachu.png" alt="Avatar do usuário" id="avatarImg">
+          </div>
+        </div>
+
+        <!-- Informações do Usuário -->
+        <div class="perfil-info">
+          <div class="perfil-nome-container">
+            <h3 id="perfilNomeDisplay">Nome do Usuário</h3>
+            <button class="btn-edit-nome" id="btnEditNome" title="Editar nome">
+              ✏️
+            </button>
+          </div>
+          <input type="text" id="perfilNomeInput" class="perfil-nome-input" style="display: none;" maxlength="30">
+          <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
+        </div>
+      </div>
+
+      <!-- Área para futuras informações -->
+      <div class="perfil-content">
+        <h3>Configurações e Dados</h3>
+        <p class="perfil-placeholder">Esta área será usada para salvar informações adicionais do site.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Seleção de Avatar -->
+  <div class="modal-overlay" id="modalAvatar">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Escolha seu Avatar</h3>
+        <button class="modal-close" id="btnCloseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="avatar-grid" id="avatarGrid">
+          <!-- As imagens serão carregadas aqui dinamicamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase e Autenticação -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Função para carregar todas as imagens da pasta sprites
+    async function carregarImagensSprites() {
+      const avatares = [];
+      const pastaPrincial = './estatisticas-shad/images/backgrounds/';
+      
+      // Lista de possíveis nomes de Pokémon e outros sprites
+      // Esta lista será expandida automaticamente ao detectar novas imagens
+      const nomesBase = [
+          'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill',
+          'blastoise', 'blaziken', 'blissey', 'buzzwole', 'ceruledge',
+          'chandelure', 'charizard', 'cinderace', 'clefable', 'comfey',
+          'cramorant', 'crustle', 'darkrai', 'decidueye', 'delphox',
+          'dhelmise', 'dodrio', 'dragapult', 'dragonite', 'duraludon',
+          'eldegoss', 'empoleon', 'espeon', 'falinks', 'garchomp',
+          'gardevoir', 'gengar', 'glaceon', 'goodra', 'greninja',
+          'gyarados', 'hooh', 'hoopa', 'inteleon', 'lapras',
+          'latias', 'latios', 'leafeon', 'lucario', 'machamp',
+          'mamoswine', 'megacharizardx', 'megalucario', 'metagross', 'meowscara',
+          'mew', 'mewtwox', 'mewtwoy', 'mimikyu', 'miraidon',
+          'mrmime', 'ninetales', 'pawmot', 'pikachu', 'psyduck',
+          'raichu', 'rapidash', 'sableye', 'scizor', 'scyther',
+          'slowbro', 'snorlax', 'suicune', 'sylveon', 'talonflame',
+          'tinkaton', 'trevenant', 'tsareena', 'tyranitar', 'umbreon',
+          'urshifu', 'venusaur', 'wigglytuff', 'zacian', 'zeraora',
+          'zoroark'
+      ];
+      
+      // Verificar cada imagem se existe
+      for (const nome of nomesBase) {
+        const img = new Image();
+        img.src = `${pastaPrincial}${nome}.png`;
+        
+        await new Promise((resolve) => {
+          img.onload = () => {
+            avatares.push(nome);
+            resolve();
+          };
+          img.onerror = () => {
+            console.log(`Imagem ${nome}.png não encontrada`);
+            resolve();
+          };
+          
+          // Timeout de 2 segundos
+          setTimeout(resolve, 2000);
+        });
+      }
+      
+      return avatares.length > 0 ? avatares : nomesBase;
+    }
+
+    let pokemonList = [];
+
+    // Elementos do DOM
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+    const perfilNomeDisplay = document.getElementById('perfilNomeDisplay');
+    const perfilNomeInput = document.getElementById('perfilNomeInput');
+    const btnEditNome = document.getElementById('btnEditNome');
+    const perfilEmail = document.getElementById('perfilEmail');
+    const avatarImg = document.getElementById('avatarImg');
+    const btnChangeAvatar = document.getElementById('btnChangeAvatar');
+    const modalAvatar = document.getElementById('modalAvatar');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const avatarGrid = document.getElementById('avatarGrid');
+
+    let currentUser = null;
+
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Fechar dropdown ao clicar em um link
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+
+    // Carregar avatares no modal
+    async function loadAvatars() {
+      avatarGrid.innerHTML = '<p style="color: #ffad00; text-align: center; grid-column: 1/-1;">Carregando avatares...</p>';
+      
+      // Carregar lista de pokémons se ainda não foi carregada
+      if (pokemonList.length === 0) {
+        pokemonList = await carregarImagensSprites();
+      }
+      
+      avatarGrid.innerHTML = '';
+      
+      if (pokemonList.length === 0) {
+        avatarGrid.innerHTML = '<p style="color: #ff7500; text-align: center; grid-column: 1/-1;">Nenhum avatar disponível</p>';
+        return;
+      }
+      
+      pokemonList.forEach(pokemon => {
+        const avatarOption = document.createElement('div');
+        avatarOption.className = 'avatar-option';
+        avatarOption.innerHTML = `<img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" alt="${pokemon}" onerror="this.parentElement.style.display='none'">`;
+        avatarOption.addEventListener('click', () => selectAvatar(pokemon));
+        avatarGrid.appendChild(avatarOption);
+      });
+    }
+
+    // Selecionar avatar
+    function selectAvatar(pokemon) {
+      const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
+      avatarImg.src = avatarPath;
+      
+      localStorage.setItem('userAvatar', avatarPath);
+      
+      modalAvatar.classList.remove('show');
+      
+      console.log('Avatar selecionado:', pokemon);
+    }
+
+    // Abrir modal ao clicar no avatar
+    const perfilAvatar = document.getElementById('perfilAvatar');
+    perfilAvatar.addEventListener('click', () => {
+      loadAvatars();
+      modalAvatar.classList.add('show');
+    });
+
+    // Fechar modal
+    btnCloseModal.addEventListener('click', () => {
+      modalAvatar.classList.remove('show');
+    });
+
+    // Fechar modal ao clicar fora
+    modalAvatar.addEventListener('click', (e) => {
+      if (e.target === modalAvatar) {
+        modalAvatar.classList.remove('show');
+      }
+    });
+
+    // Editar nome
+    btnEditNome.addEventListener('click', () => {
+      perfilNomeInput.value = perfilNomeDisplay.textContent;
+      perfilNomeDisplay.style.display = 'none';
+      btnEditNome.style.display = 'none';
+      perfilNomeInput.style.display = 'block';
+      perfilNomeInput.focus();
+    });
+
+    // Salvar nome ao pressionar Enter ou perder foco
+    function salvarNome() {
+      const novoNome = perfilNomeInput.value.trim();
+      if (novoNome && novoNome !== perfilNomeDisplay.textContent) {
+        perfilNomeDisplay.textContent = novoNome;
+        
+        // Salvar no localStorage
+        localStorage.setItem('userDisplayName', novoNome);
+        
+        // Atualizar no Firebase se estiver logado
+        if (currentUser) {
+          updateProfile(currentUser, {
+            displayName: novoNome
+          }).then(() => {
+            console.log('Nome atualizado no Firebase');
+            updateUI(currentUser);
+          }).catch(error => {
+            console.error('Erro ao atualizar nome:', error);
+          });
+        }
+      }
+      
+      perfilNomeInput.style.display = 'none';
+      perfilNomeDisplay.style.display = 'block';
+      btnEditNome.style.display = 'inline-block';
+    }
+
+    perfilNomeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        salvarNome();
+      }
+    });
+
+    perfilNomeInput.addEventListener('blur', salvarNome);
+
+    // Função para atualizar a interface
+    function updateUI(user) {
+      currentUser = user;
+      
+      if (user) {
+        // Usuário está logado
+        const savedName = localStorage.getItem('userDisplayName');
+        const displayName = savedName || user.displayName || user.email.split('@')[0];
+        const savedAvatar = localStorage.getItem('userAvatar');
+        
+        perfilNomeDisplay.textContent = displayName;
+        perfilEmail.textContent = user.email;
+        
+        if (savedAvatar) {
+          avatarImg.src = savedAvatar;
+        }
+        
+        userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+        authLink.textContent = 'Logout';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogout();
+        };
+        perfilLink.style.display = 'block';
+        
+        // Habilitar edição
+        btnChangeAvatar.disabled = false;
+        btnEditNome.disabled = false;
+        
+        console.log('Usuário logado:', user.email);
+      } else {
+        // Usuário não está logado - redirecionar para login
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+          window.location.href = 'index.html';
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
+      }
+    }
+
+   onAuthStateChanged(auth, (user) => {
+    updateUI(user);
+    
+    // Carregar lista de avatares ao iniciar
+    carregarImagensSprites().then(lista => {
+      pokemonList = lista;
+      console.log(`${pokemonList.length} avatares carregados`);
+    });
+  });
+  </script>
+
+  <!-- Scripts principais -->
+  <script>
+    // Funcionalidade do menu mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('ativo');
+      mobileMenu.classList.toggle('ativo');
+    });
+
+    // Fechar menu ao clicar em um link
+    const mobileLinks = document.querySelectorAll('.mobile-menu a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      });
+    });
+
+    // Fechar menu ao redimensionar para desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      }
+    });
+  </script>
+
+</body>
+</html>

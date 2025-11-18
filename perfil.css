@@ -1,0 +1,455 @@
+/* ============================================
+   PÁGINA DE PERFIL - GUARINI E-SPORT
+   ============================================ */
+
+/* Seção Principal de Perfil */
+.perfil-section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.perfil-section h2 {
+  color: #ffad00;
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Card de Perfil */
+.perfil-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #ff7500;
+  border-radius: 15px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  box-shadow: 0 8px 25px rgba(255, 117, 0, 0.3);
+  margin-bottom: 30px;
+}
+
+/* Container do Avatar */
+.perfil-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.perfil-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #ff7500;
+  overflow: hidden;
+  background: rgba(255, 173, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(255, 117, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* ADICIONE ESTA LINHA */
+}
+
+.perfil-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 117, 0, 0.7);
+}
+
+.perfil-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-change-avatar {
+  display: none; /* Ocultar o botão */
+}
+
+.btn-change-avatar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Informações do Usuário */
+.perfil-info {
+  flex: 1;
+}
+
+.perfil-nome-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.perfil-nome-container h3 {
+  color: #ffad00;
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.btn-edit-nome {
+  background: rgba(255, 117, 0, 0.2);
+  border: 2px solid #ff7500;
+  color: #ffad00;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.btn-edit-nome:hover {
+  background: rgba(255, 117, 0, 0.4);
+  transform: scale(1.1);
+}
+
+.perfil-nome-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #ff7500;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.perfil-nome-input:focus {
+  outline: none;
+  border-color: #ffad00;
+  box-shadow: 0 0 10px rgba(255, 173, 0, 0.5);
+}
+
+.perfil-email {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Área de Conteúdo Adicional */
+.perfil-content {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 117, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  min-height: 200px;
+}
+
+.perfil-content h3 {
+  color: #fe8a01;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.perfil-placeholder {
+  color: #aaa;
+  font-size: 1.1rem;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ============================================
+   MODAL DE SELEÇÃO DE AVATAR
+   ============================================ */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: rgba(26, 26, 26, 0.98);
+  border: 3px solid #ff7500;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  background: rgba(255, 117, 0, 0.2);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ff7500;
+}
+
+.modal-header h3 {
+  color: #ffad00;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: rgba(255, 0, 0, 0.3);
+  border: 2px solid #ff0000;
+  color: #fff;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: rgba(255, 0, 0, 0.6);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Grid de Avatares */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.avatar-option {
+  width: 100px;
+  height: 100px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 173, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-option:hover {
+  border-color: #ff7500;
+  transform: scale(1.1);
+  box-shadow: 0 5px 20px rgba(255, 117, 0, 0.6);
+}
+
+.avatar-option img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .perfil-section {
+    padding: 15px;
+  }
+
+  .perfil-section h2 {
+    font-size: 2rem;
+  }
+
+  .perfil-card {
+    flex-direction: column;
+    padding: 30px 20px;
+    gap: 25px;
+    text-align: center;
+  }
+
+  .perfil-nome-container {
+    justify-content: center;
+  }
+
+  .perfil-nome-container h3 {
+    font-size: 1.7rem;
+  }
+
+  .perfil-content {
+    padding: 25px 15px;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+  }
+
+  .avatar-option {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .perfil-section {
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  .perfil-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .perfil-card {
+    padding: 25px 15px;
+    gap: 20px;
+  }
+
+  .perfil-avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .perfil-nome-container h3 {
+    font-size: 1.5rem;
+  }
+
+  .perfil-nome-input {
+    font-size: 1.3rem;
+  }
+
+  .perfil-email {
+    font-size: 1rem;
+  }
+
+  .perfil-content {
+    padding: 20px 12px;
+  }
+
+  .perfil-content h3 {
+    font-size: 1.5rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 15px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .avatar-option {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 480px) {
+  .perfil-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .perfil-card {
+    padding: 20px 10px;
+  }
+
+  .perfil-avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .btn-change-avatar {
+    font-size: 12px;
+    padding: 8px 15px;
+  }
+
+  .perfil-nome-container h3 {
+    font-size: 1.3rem;
+  }
+
+  .btn-edit-nome {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .perfil-nome-input {
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .modal-close {
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+  }
+
+  .avatar-option {
+    width: 70px;
+    height: 70px;
+  }
+}
