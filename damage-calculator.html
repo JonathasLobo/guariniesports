@@ -35,8 +35,26 @@ function googleTranslateElementInit() {
 
   gtag('config', 'G-84NHN394WF');
 </script>
-<body>
+<!-- Menu dropdown do usuário -->
+<div class="user-menu-container">
+  <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   
+  <div class="user-dropdown" id="userDropdown">
+    <div class="user-dropdown-header" id="userDropdownHeader">
+      <span>Olá, visitante!</span>
+    </div>
+    <ul class="user-dropdown-list">
+      <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+      <li><a href="#" id="authLink">Login</a></li>
+    </ul>
+  </div>
+</div>
+
+<body>
   <main class="calculadora-container">
     <section class="container calculadora">
       <a href="material.html" class="calculadora-voltar">← Back to home</a>
@@ -253,5 +271,118 @@ function googleTranslateElementInit() {
     </section>
   </main>
   <script src="damage-calculator.js"></script>
+  
+  <!-- Firebase Authentication -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elementos do DOM
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Fechar dropdown ao clicar em um link
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+
+    // Função para atualizar a interface com base no estado do usuário
+    function updateUI(user) {
+      if (user) {
+        // Usuário está logado
+        const savedName = localStorage.getItem('userDisplayName');
+        const displayName = savedName || user.displayName || user.email.split('@')[0];
+        const savedAvatar = localStorage.getItem('userAvatar') || './estatisticas-shad/images/sprits/pikachu.png';
+        
+        userDropdownHeader.innerHTML = `
+          <img src="${savedAvatar}" alt="Avatar" class="dropdown-avatar">
+          <span>Olá, ${displayName}!</span>
+        `;
+        authLink.textContent = 'Logout';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogout();
+        };
+        perfilLink.style.display = 'block';
+        
+        console.log('Usuário logado:', user.email);
+      } else {
+        // Usuário não está logado
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogin();
+        };
+        perfilLink.style.display = 'none';
+        
+        console.log('Usuário não logado');
+      }
+    }
+
+    // Função para fazer login
+    function handleLogin() {
+      window.location.href = 'login.html';
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
+      }
+    }
+
+    // Monitorar mudanças no estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+  </script>
+</body>
+</html>
 </body>
 </html>
