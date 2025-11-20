@@ -7657,7 +7657,6 @@ if (btnConfirmSave) {
   });
 }
 
-// Botão: Carregar Build
 if (btnLoadBuild) {
   btnLoadBuild.addEventListener("click", async () => {
     try {
@@ -7689,11 +7688,22 @@ if (btnLoadBuild) {
           minute: '2-digit'
         });
         
+        // Definir caminho da imagem do Pokémon
+        const pokemonImage = build.pokemon ? 
+          `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+          `./estatisticas-shad/images/backgrounds/placeholder.png`;
+        
         return `
           <div class="build-card" data-build-id="${build.id}">
             <div class="build-info">
               <div class="build-name">${build.buildName}</div>
-              <div class="build-pokemon">🎮 ${safeCap(build.pokemon)} (Lv. ${build.level})</div>
+              <div class="build-pokemon" style="display: flex; align-items: center; gap: 8px;">
+                <img src="${pokemonImage}" 
+                     alt="${safeCap(build.pokemon)}" 
+                     style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;"
+                     onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+                <span>${safeCap(build.pokemon)}</span>
+              </div>
               <div class="build-date">📅 ${formattedDate}</div>
             </div>
             <div class="build-actions">
