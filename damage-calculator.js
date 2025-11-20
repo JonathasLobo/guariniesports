@@ -275,32 +275,62 @@ function restaurarEstadoBuild(buildState) {
 function setupBuildManager(firebase) {
   const { collection, doc, setDoc, getDoc, getDocs, serverTimestamp, updateDoc, deleteDoc } = firebase;
 
-  BuildManager = {
+BuildManager = {
     async salvarBuild(buildName) {
       if (!currentUserAuth) throw new Error("Usuário não está logado");
       if (!selectedPokemon) throw new Error("Nenhum Pokémon selecionado");
       
       try {
         const buildState = capturarEstadoBuild();
-        const buildDoc = {
-          userId: currentUserAuth.uid,
-          buildName: buildName || `${selectedPokemon} Build`,
-          ...buildState,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        };
         
+        // Se está editando uma build existente
         if (currentBuildId) {
+          console.log("📝 Atualizando build existente:", currentBuildId);
+          
           const buildRef = doc(db, "usuarios", currentUserAuth.uid, "builds", currentBuildId);
-          await updateDoc(buildRef, { ...buildDoc, createdAt: undefined });
-          console.log("✅ Build atualizada:", currentBuildId);
+          
+          // Buscar a build atual para pegar o createdAt original
+          const buildSnap = await getDoc(buildRef);
+          
+          if (!buildSnap.exists()) {
+            throw new Error("Build não encontrada para atualização");
+          }
+          
+          const existingData = buildSnap.data();
+          
+          // Atualizar apenas os campos necessários, mantendo createdAt original
+          const updateData = {
+            userId: currentUserAuth.uid,
+            buildName: buildName || existingData.buildName || `${selectedPokemon} Build`,
+            ...buildState,
+            createdAt: existingData.createdAt,
+            updatedAt: serverTimestamp()
+          };
+          
+          await updateDoc(buildRef, updateData);
+          
+          console.log("✅ Build atualizada com sucesso:", currentBuildId);
           return currentBuildId;
-        } else {
+        } 
+        // Se está criando uma nova build
+        else {
+          console.log("💾 Criando nova build");
+          
           const buildsRef = collection(db, "usuarios", currentUserAuth.uid, "builds");
           const newBuildRef = doc(buildsRef);
-          await setDoc(newBuildRef, buildDoc);
+          
+          const newBuildDoc = {
+            userId: currentUserAuth.uid,
+            buildName: buildName || `${selectedPokemon} Build`,
+            ...buildState,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          };
+          
+          await setDoc(newBuildRef, newBuildDoc);
+          
           currentBuildId = newBuildRef.id;
-          console.log("✅ Nova build salva:", currentBuildId);
+          console.log("✅ Nova build criada:", currentBuildId);
           return currentBuildId;
         }
       } catch (error) {
