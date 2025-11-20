@@ -47,8 +47,34 @@ async function initializeFirebase() {
 let currentUserAuth = null;
 let currentBuildId = null;
 
-// ===== FUNÇÃO PARA CAPTURAR ESTADO DA BUILD =====
-function capturarEstadoBuild() {
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // ===== INICIALIZAR FIREBASE PRIMEIRO =====
+  const firebase = await initializeFirebase();
+  
+  if (!firebase) {
+    console.warn("⚠️ Firebase não disponível - sistema de builds desabilitado");
+    habilitarBotoesBuild(false);
+  } else {
+    // Configurar BuildManager
+    setupBuildManager(firebase);
+    
+    // Monitorar autenticação
+    firebase.onAuthStateChanged(auth, (user) => {
+      currentUserAuth = user;
+      
+      if (user) {
+        console.log("👤 Usuário logado:", user.email);
+        habilitarBotoesBuild(true);
+      } else {
+        console.log("👤 Usuário não logado");
+        habilitarBotoesBuild(false);
+        currentBuildId = null;
+      }
+    });
+  }
+
+  function capturarEstadoBuild() {
   if (!selectedPokemon) {
     throw new Error("Nenhum Pokémon selecionado");
   }
@@ -358,32 +384,6 @@ function habilitarBotoesBuild(enabled) {
   if (btnSave) btnSave.disabled = !enabled;
   if (btnLoad) btnLoad.disabled = !enabled;
 };
-
-document.addEventListener("DOMContentLoaded", async () => {
-  // ===== INICIALIZAR FIREBASE PRIMEIRO =====
-  const firebase = await initializeFirebase();
-  
-  if (!firebase) {
-    console.warn("⚠️ Firebase não disponível - sistema de builds desabilitado");
-    habilitarBotoesBuild(false);
-  } else {
-    // Configurar BuildManager
-    setupBuildManager(firebase);
-    
-    // Monitorar autenticação
-    firebase.onAuthStateChanged(auth, (user) => {
-      currentUserAuth = user;
-      
-      if (user) {
-        console.log("👤 Usuário logado:", user.email);
-        habilitarBotoesBuild(true);
-      } else {
-        console.log("👤 Usuário não logado");
-        habilitarBotoesBuild(false);
-        currentBuildId = null;
-      }
-    });
-  }
 
   // Verificação de dependências
   console.log("Verificando dados:", {
