@@ -1,4 +1,390 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ===== CONFIGURAÇÃO DO FIREBASE (INÍCIO) =====
+let auth, db, BuildManager;
+
+// Função para inicializar Firebase
+async function initializeFirebase() {
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+    const { 
+      getFirestore, 
+      collection, 
+      doc, 
+      setDoc, 
+      getDoc,
+      getDocs,
+      query,
+      where,
+      serverTimestamp,
+      updateDoc,
+      deleteDoc
+    } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      databaseURL: "https://site-grn-default-rtdb.firebaseio.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+
+    console.log("✅ Firebase inicializado com sucesso!");
+    return { auth, db, collection, doc, setDoc, getDoc, getDocs, query, where, serverTimestamp, updateDoc, deleteDoc, onAuthStateChanged };
+  } catch (error) {
+    console.error("❌ Erro ao inicializar Firebase:", error);
+    return null;
+  }
+}
+
+// ===== VARIÁVEIS GLOBAIS PARA CONTROLE DE BUILDS =====
+let currentUserAuth = null;
+let currentBuildId = null;
+
+// ===== FUNÇÃO PARA CAPTURAR ESTADO DA BUILD =====
+function capturarEstadoBuild() {
+  if (!selectedPokemon) {
+    throw new Error("Nenhum Pokémon selecionado");
+  }
+
+  const buildState = {
+    // Informações básicas
+    pokemon: selectedPokemon,
+    level: currentLevel,
+    skin: selectedSkins[selectedPokemon] || "default",
+    
+    // Held Items (com stacks)
+    heldItems: selectedHeldItems.map(item => ({
+      key: item.key,
+      name: item.name,
+      stacks: item.stacks || 0
+    })),
+    
+    // Battle Item
+    battleItem: activeBattleItem || null,
+    battleItemActive: isBattleItemActive,
+    
+    // Emblems
+    includeEmblems: document.querySelector('input[name="emblemas"]:checked')?.value === "sim",
+    selectedEmblems: { ...selectedEmblems },
+    
+    // Map Buffs
+    includeMapBuffs: document.querySelector('input[name="mapbuffs"]:checked')?.value === "sim",
+    selectedMapBuffs: { ...selectedMapBuffs },
+    
+    // Skills selecionadas
+    selectedSkills: selectedSkills[selectedPokemon] ? { ...selectedSkills[selectedPokemon] } : {},
+    
+    // Estados de passivas ativas
+    activePassives: activePassives[selectedPokemon] ? { ...activePassives[selectedPokemon] } : {},
+    
+    // Estados de skills ativas
+    activeSkills: activeSkills[selectedPokemon] ? { ...activeSkills[selectedPokemon] } : {},
+    
+    // Estados de passivas de itens
+    activeItemPassives: { ...activeItemPassives },
+    
+    // Efeitos condicionais selecionados
+    selectedConditionalEffects: selectedConditionalEffects[selectedPokemon] ? 
+      { ...selectedConditionalEffects[selectedPokemon] } : {},
+    
+    // Gauges especiais
+    muscleGauge: muscleGauge,
+    sweetGauge: sweetGauge,
+    chlorophyllGauge: chlorophyllGauge,
+    pawmotMode: pawmotMode,
+    eonPower: eonPower,
+    eonPower2: eonPower2,
+    eonPowerlatios: eonPowerlatios,
+    
+    // Configuração de crit
+    showCritDamage: showCritDamage,
+    
+    // Timestamp
+    lastModified: new Date().toISOString()
+  };
+
+  return buildState;
+}
+
+// ===== FUNÇÃO PARA RESTAURAR ESTADO DA BUILD =====
+function restaurarEstadoBuild(buildState) {
+  console.log("🔄 Restaurando build:", buildState);
+  
+  try {
+    // 1. Selecionar Pokémon
+    if (buildState.pokemon) {
+      selectPokemon(buildState.pokemon);
+    }
+    
+    // 2. Definir nível
+    if (buildState.level) {
+      currentLevel = buildState.level;
+      updateLevelDisplay();
+    }
+    
+    // 3. Definir skin
+    if (buildState.skin && buildState.skin !== "default") {
+      selectedSkins[buildState.pokemon] = buildState.skin;
+      updatePokemonImage();
+    }
+    
+    // 4. Restaurar Held Items (incluindo stacks)
+    if (buildState.heldItems && Array.isArray(buildState.heldItems)) {
+      selectedHeldItems = buildState.heldItems.map(item => ({
+        key: item.key,
+        name: item.name,
+        stacks: item.stacks || 0
+      }));
+      updateGridDisplay();
+      updateSelectedItemsDisplay();
+    }
+    
+    // 5. Restaurar Battle Item
+    if (buildState.battleItem) {
+      activeBattleItem = buildState.battleItem;
+      isBattleItemActive = buildState.battleItemActive || false;
+      
+      const battleRadio = document.querySelector(`input[name="battle"][value="${buildState.battleItem}"]`);
+      if (battleRadio) {
+        battleRadio.checked = true;
+        lastSelectedBattleItem = buildState.battleItem;
+      }
+    }
+    
+    // 6. Restaurar Emblems
+    if (buildState.includeEmblems) {
+      const emblemRadio = document.querySelector('input[name="emblemas"][value="sim"]');
+      if (emblemRadio) {
+        emblemRadio.checked = true;
+        emblemasContainer.style.display = "block";
+        selectedEmblems = { ...buildState.selectedEmblems };
+        createEmblemsGrid();
+        updateEmblemDescription();
+      }
+    }
+    
+    // 7. Restaurar Map Buffs
+    if (buildState.includeMapBuffs) {
+      const mapBuffRadio = document.querySelector('input[name="mapbuffs"][value="sim"]');
+      if (mapBuffRadio) {
+        mapBuffRadio.checked = true;
+        const mapBuffsContainer = document.getElementById("map-buffs-selector");
+        if (mapBuffsContainer) {
+          mapBuffsContainer.style.display = "block";
+          selectedMapBuffs = { ...buildState.selectedMapBuffs };
+          createMapBuffsGrid();
+          updateMapBuffDescription();
+        }
+      }
+    }
+    
+    // 8. Restaurar Skills Selecionadas
+    if (buildState.selectedSkills) {
+      if (!selectedSkills[buildState.pokemon]) {
+        selectedSkills[buildState.pokemon] = {};
+      }
+      selectedSkills[buildState.pokemon] = { ...buildState.selectedSkills };
+    }
+    
+    // 9. Restaurar estados de passivas
+    if (buildState.activePassives) {
+      if (!activePassives[buildState.pokemon]) {
+        activePassives[buildState.pokemon] = {};
+      }
+      activePassives[buildState.pokemon] = { ...buildState.activePassives };
+    }
+    
+    // 10. Restaurar estados de skills ativas
+    if (buildState.activeSkills) {
+      if (!activeSkills[buildState.pokemon]) {
+        activeSkills[buildState.pokemon] = {};
+      }
+      activeSkills[buildState.pokemon] = { ...buildState.activeSkills };
+    }
+    
+    // 11. Restaurar passivas de itens
+    if (buildState.activeItemPassives) {
+      activeItemPassives = { ...buildState.activeItemPassives };
+    }
+    
+    // 12. Restaurar efeitos condicionais
+    if (buildState.selectedConditionalEffects) {
+      if (!selectedConditionalEffects[buildState.pokemon]) {
+        selectedConditionalEffects[buildState.pokemon] = {};
+      }
+      selectedConditionalEffects[buildState.pokemon] = { ...buildState.selectedConditionalEffects };
+    }
+    
+    // 13. Restaurar gauges especiais
+    muscleGauge = buildState.muscleGauge || 0;
+    sweetGauge = buildState.sweetGauge || false;
+    chlorophyllGauge = buildState.chlorophyllGauge || false;
+    pawmotMode = buildState.pawmotMode || false;
+    eonPower = buildState.eonPower || 0;
+    eonPower2 = buildState.eonPower2 || 0;
+    eonPowerlatios = buildState.eonPowerlatios || 0;
+    
+    // 14. Restaurar configuração de crit
+    showCritDamage = buildState.showCritDamage || false;
+    
+    // 15. Recalcular tudo
+    calcular();
+    
+    console.log("✅ Build restaurada com sucesso!");
+    
+  } catch (error) {
+    console.error("❌ Erro ao restaurar build:", error);
+    throw error;
+  }
+}
+
+// ===== SETUP DO BUILD MANAGER =====
+function setupBuildManager(firebase) {
+  const { collection, doc, setDoc, getDoc, getDocs, serverTimestamp, updateDoc, deleteDoc } = firebase;
+
+  BuildManager = {
+    async salvarBuild(buildName) {
+      if (!currentUserAuth) throw new Error("Usuário não está logado");
+      if (!selectedPokemon) throw new Error("Nenhum Pokémon selecionado");
+      
+      try {
+        const buildState = capturarEstadoBuild();
+        const buildDoc = {
+          userId: currentUserAuth.uid,
+          buildName: buildName || `${selectedPokemon} Build`,
+          ...buildState,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        
+        if (currentBuildId) {
+          const buildRef = doc(db, "usuarios", currentUserAuth.uid, "builds", currentBuildId);
+          await updateDoc(buildRef, { ...buildDoc, createdAt: undefined });
+          console.log("✅ Build atualizada:", currentBuildId);
+          return currentBuildId;
+        } else {
+          const buildsRef = collection(db, "usuarios", currentUserAuth.uid, "builds");
+          const newBuildRef = doc(buildsRef);
+          await setDoc(newBuildRef, buildDoc);
+          currentBuildId = newBuildRef.id;
+          console.log("✅ Nova build salva:", currentBuildId);
+          return currentBuildId;
+        }
+      } catch (error) {
+        console.error("❌ Erro ao salvar build:", error);
+        throw error;
+      }
+    },
+
+    async carregarBuild(buildId) {
+      if (!currentUserAuth) throw new Error("Usuário não está logado");
+      
+      try {
+        const buildRef = doc(db, "usuarios", currentUserAuth.uid, "builds", buildId);
+        const buildSnap = await getDoc(buildRef);
+        
+        if (!buildSnap.exists()) throw new Error("Build não encontrada");
+        
+        const buildData = buildSnap.data();
+        currentBuildId = buildId;
+        restaurarEstadoBuild(buildData);
+        console.log("✅ Build carregada:", buildId);
+        return buildData;
+      } catch (error) {
+        console.error("❌ Erro ao carregar build:", error);
+        throw error;
+      }
+    },
+
+    async listarBuilds() {
+      if (!currentUserAuth) throw new Error("Usuário não está logado");
+      
+      try {
+        const buildsRef = collection(db, "usuarios", currentUserAuth.uid, "builds");
+        const buildsSnap = await getDocs(buildsRef);
+        const builds = [];
+        
+        buildsSnap.forEach(doc => {
+          builds.push({ id: doc.id, ...doc.data() });
+        });
+        
+        console.log(`✅ ${builds.length} builds encontradas`);
+        return builds;
+      } catch (error) {
+        console.error("❌ Erro ao listar builds:", error);
+        throw error;
+      }
+    },
+
+    async deletarBuild(buildId) {
+      if (!currentUserAuth) throw new Error("Usuário não está logado");
+      
+      try {
+        const buildRef = doc(db, "usuarios", currentUserAuth.uid, "builds", buildId);
+        await deleteDoc(buildRef);
+        
+        if (currentBuildId === buildId) {
+          currentBuildId = null;
+        }
+        
+        console.log("✅ Build deletada:", buildId);
+      } catch (error) {
+        console.error("❌ Erro ao deletar build:", error);
+        throw error;
+      }
+    },
+
+    getCurrentBuildId: () => currentBuildId,
+    setCurrentBuildId: (id) => { currentBuildId = id; },
+    isUserLoggedIn: () => !!currentUserAuth
+  };
+
+  // Expor globalmente
+  window.BuildManager = BuildManager;
+}
+
+// ===== FUNÇÃO PARA HABILITAR/DESABILITAR BOTÕES =====
+function habilitarBotoesBuild(enabled) {
+  const btnSave = document.getElementById("btn-save-build");
+  const btnLoad = document.getElementById("btn-load-build");
+  
+  if (btnSave) btnSave.disabled = !enabled;
+  if (btnLoad) btnLoad.disabled = !enabled;
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // ===== INICIALIZAR FIREBASE PRIMEIRO =====
+  const firebase = await initializeFirebase();
+  
+  if (!firebase) {
+    console.warn("⚠️ Firebase não disponível - sistema de builds desabilitado");
+    habilitarBotoesBuild(false);
+  } else {
+    // Configurar BuildManager
+    setupBuildManager(firebase);
+    
+    // Monitorar autenticação
+    firebase.onAuthStateChanged(auth, (user) => {
+      currentUserAuth = user;
+      
+      if (user) {
+        console.log("👤 Usuário logado:", user.email);
+        habilitarBotoesBuild(true);
+      } else {
+        console.log("👤 Usuário não logado");
+        habilitarBotoesBuild(false);
+        currentBuildId = null;
+      }
+    });
+  }
+
   // Verificação de dependências
   console.log("Verificando dados:", {
     pokemonRoles: typeof pokemonRoles,
@@ -7160,4 +7546,275 @@ battleRadios.forEach(r => {
       applyTheme(newTheme);
     });
   }
+
+  // ===== EVENT LISTENERS PARA SISTEMA DE BUILDS =====
+// Adicione este código no final do DOMContentLoaded, antes do fechamento
+
+// Elementos dos modais
+const modalSaveBuild = document.getElementById("modal-save-build");
+const modalLoadBuild = document.getElementById("modal-load-build");
+const btnSaveBuild = document.getElementById("btn-save-build");
+const btnLoadBuild = document.getElementById("btn-load-build");
+const btnNewBuild = document.getElementById("btn-new-build");
+const btnCloseSaveModal = document.getElementById("btn-close-save-modal");
+const btnCloseLoadModal = document.getElementById("btn-close-load-modal");
+const btnCancelSave = document.getElementById("btn-cancel-save");
+const btnConfirmSave = document.getElementById("btn-confirm-save");
+const buildNameInput = document.getElementById("build-name-input");
+const buildsList = document.getElementById("builds-list");
+const saveMessage = document.getElementById("save-build-message");
+
+// Função auxiliar para mostrar mensagem
+function showSaveMessage(message, type = "success") {
+  saveMessage.textContent = message;
+  saveMessage.className = `save-build-message ${type}`;
+  saveMessage.style.display = "block";
+  
+  setTimeout(() => {
+    saveMessage.style.display = "none";
+  }, 3000);
+}
+
+// Botão: Salvar Build
+if (btnSaveBuild) {
+  btnSaveBuild.addEventListener("click", () => {
+    if (!selectedPokemon) {
+      alert("⚠️ Selecione um Pokémon primeiro!");
+      return;
+    }
+    
+    // Sugerir nome baseado no Pokémon e build atual
+    const suggestedName = currentBuildId ? 
+      buildNameInput.value : 
+      `${safeCap(selectedPokemon)} Build`;
+    
+    buildNameInput.value = suggestedName;
+    modalSaveBuild.style.display = "flex";
+    buildNameInput.focus();
+  });
+}
+
+// Botão: Confirmar Salvar
+if (btnConfirmSave) {
+  btnConfirmSave.addEventListener("click", async () => {
+    const buildName = buildNameInput.value.trim();
+    
+    if (!buildName) {
+      showSaveMessage("⚠️ Digite um nome para a build!", "error");
+      return;
+    }
+    
+    try {
+      btnConfirmSave.disabled = true;
+      btnConfirmSave.textContent = "Saving...";
+      
+      const buildId = await BuildManager.salvarBuild(buildName);
+      
+      showSaveMessage("✅ Build saved successfully!", "success");
+      
+      setTimeout(() => {
+        modalSaveBuild.style.display = "none";
+        btnConfirmSave.disabled = false;
+        btnConfirmSave.textContent = "Save";
+      }, 1500);
+      
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      showSaveMessage(`❌ Error saving: ${error.message}`, "error");
+      btnConfirmSave.disabled = false;
+      btnConfirmSave.textContent = "Save";
+    }
+  });
+}
+
+// Botão: Carregar Build
+if (btnLoadBuild) {
+  btnLoadBuild.addEventListener("click", async () => {
+    try {
+      modalLoadBuild.style.display = "flex";
+      buildsList.innerHTML = '<p style="color: #999; text-align: center;">Loading builds...</p>';
+      
+      const builds = await BuildManager.listarBuilds();
+      
+      if (builds.length === 0) {
+        buildsList.innerHTML = '<p style="color: #888; text-align: center; font-style: italic;">No builds saved yet. Create your first build!</p>';
+        return;
+      }
+      
+      // Ordenar por data de modificação (mais recente primeiro)
+      builds.sort((a, b) => {
+        const dateA = a.updatedAt?.toDate() || new Date(0);
+        const dateB = b.updatedAt?.toDate() || new Date(0);
+        return dateB - dateA;
+      });
+      
+      // Renderizar lista de builds
+      buildsList.innerHTML = builds.map(build => {
+        const date = build.updatedAt?.toDate() || new Date();
+        const formattedDate = date.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        return `
+          <div class="build-card" data-build-id="${build.id}">
+            <div class="build-info">
+              <div class="build-name">${build.buildName}</div>
+              <div class="build-pokemon">🎮 ${safeCap(build.pokemon)} (Lv. ${build.level})</div>
+              <div class="build-date">📅 ${formattedDate}</div>
+            </div>
+            <div class="build-actions">
+              <button class="btn-build-card btn-load-card" data-action="load">
+                📂 Load
+              </button>
+              <button class="btn-build-card btn-delete-card" data-action="delete">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Event listeners para cada build
+      const buildCards = buildsList.querySelectorAll('.build-card');
+      buildCards.forEach(card => {
+        const buildId = card.dataset.buildId;
+        
+        // Botão Load
+        const btnLoad = card.querySelector('[data-action="load"]');
+        btnLoad.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          
+          try {
+            btnLoad.disabled = true;
+            btnLoad.textContent = "Loading...";
+            
+            await BuildManager.carregarBuild(buildId);
+            
+            modalLoadBuild.style.display = "none";
+            
+            // Feedback visual
+            setTimeout(() => {
+              alert("✅ Build loaded successfully!");
+            }, 100);
+            
+          } catch (error) {
+            console.error("Erro ao carregar:", error);
+            alert(`❌ Error loading build: ${error.message}`);
+          } finally {
+            btnLoad.disabled = false;
+            btnLoad.textContent = "📂 Load";
+          }
+        });
+        
+        // Botão Delete
+        const btnDelete = card.querySelector('[data-action="delete"]');
+        btnDelete.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          
+          const buildName = card.querySelector('.build-name').textContent;
+          const confirmDelete = confirm(`Are you sure you want to delete the build "${buildName}"?`);
+          
+          if (!confirmDelete) return;
+          
+          try {
+            await BuildManager.deletarBuild(buildId);
+            
+            // Remover card da lista
+            card.remove();
+            
+            // Se não há mais builds, mostrar mensagem
+            if (buildsList.children.length === 0) {
+              buildsList.innerHTML = '<p style="color: #888; text-align: center; font-style: italic;">No builds saved yet.</p>';
+            }
+            
+          } catch (error) {
+            console.error("Erro ao deletar:", error);
+            alert(`❌ Error deleting build: ${error.message}`);
+          }
+        });
+      });
+      
+    } catch (error) {
+      console.error("Erro ao listar builds:", error);
+      buildsList.innerHTML = `<p style="color: #ff6b6b; text-align: center;">❌ Error loading builds: ${error.message}</p>`;
+    }
+  });
+}
+
+// Botão: Nova Build
+if (btnNewBuild) {
+  btnNewBuild.addEventListener("click", () => {
+    const confirmNew = confirm("⚠️ Start a new build? Unsaved changes will be lost.");
+    
+    if (confirmNew) {
+      // Resetar tudo
+      window.BuildManager.setCurrentBuildId(null);
+      selectedPokemon = "";
+      resetSkillSelections();
+      resetHeldItems();
+      selectedEmblems = {};
+      selectedMapBuffs = {};
+      currentLevel = 1;
+      updateLevelDisplay();
+      
+      // Limpar seleção visual de Pokémon
+      pokemonGrid.querySelectorAll(".pokemon-grid-item").forEach(item => {
+        item.classList.remove("selected");
+      });
+      
+      // Resetar imagem
+      selectedPokemonImage.style.display = "none";
+      pokemonPlaceholder.style.display = "block";
+      selectedPokemonName.textContent = "Selecione um Pokémon";
+      
+      // Ocultar resultado
+      resultado.style.display = "none";
+      
+      alert("✅ New build started!");
+    }
+  });
+}
+
+// Fechar modais
+if (btnCloseSaveModal) {
+  btnCloseSaveModal.addEventListener("click", () => {
+    modalSaveBuild.style.display = "none";
+  });
+}
+
+if (btnCloseLoadModal) {
+  btnCloseLoadModal.addEventListener("click", () => {
+    modalLoadBuild.style.display = "none";
+  });
+}
+
+if (btnCancelSave) {
+  btnCancelSave.addEventListener("click", () => {
+    modalSaveBuild.style.display = "none";
+  });
+}
+
+// Fechar modal ao clicar fora
+modalSaveBuild?.addEventListener("click", (e) => {
+  if (e.target === modalSaveBuild) {
+    modalSaveBuild.style.display = "none";
+  }
+});
+
+modalLoadBuild?.addEventListener("click", (e) => {
+  if (e.target === modalLoadBuild) {
+    modalLoadBuild.style.display = "none";
+  }
+});
+
+// Permitir salvar com Enter no input de nome
+buildNameInput?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    btnConfirmSave.click();
+  }
+});
 });

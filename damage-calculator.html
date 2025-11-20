@@ -35,25 +35,6 @@ function googleTranslateElementInit() {
 
   gtag('config', 'G-84NHN394WF');
 </script>
-<!-- Menu dropdown do usuário -->
-<div class="user-menu-container">
-  <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-  
-  <div class="user-dropdown" id="userDropdown">
-    <div class="user-dropdown-header" id="userDropdownHeader">
-      <span>Olá, visitante!</span>
-    </div>
-    <ul class="user-dropdown-list">
-      <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
-      <li><a href="#" id="authLink">Login</a></li>
-    </ul>
-  </div>
-</div>
-
 <body>
   <main class="calculadora-container">
     <section class="container calculadora">
@@ -249,6 +230,67 @@ function googleTranslateElementInit() {
         <button id="btn-download" class="btn">📷 Download Result as Image</button>
       </div>
 
+      <!-- Adicione este código APÓS a linha 122 do damage-calculator.html -->
+      <!-- Logo após o container de botões de ação existente -->
+
+      <div class="build-actions-container" style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+        <button id="btn-save-build" class="btn-build-action" disabled>
+          💾 Save Build
+        </button>
+        
+        <button id="btn-load-build" class="btn-build-action" disabled>
+          📂 Load Build
+        </button>
+        
+        <button id="btn-new-build" class="btn-build-action">
+          ➕ New Build
+        </button>
+      </div>
+
+      <!-- Modal para salvar build -->
+      <div class="modal-overlay" id="modal-save-build" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+          <div class="modal-header">
+            <h3>💾 Save Build</h3>
+            <button class="modal-close" id="btn-close-save-modal">✕</button>
+          </div>
+          <div class="modal-body" style="padding: 20px;">
+            <label for="build-name-input" style="color: #ffad00; font-weight: bold; display: block; margin-bottom: 10px;">
+              Build Name:
+            </label>
+            <input 
+              type="text" 
+              id="build-name-input" 
+              class="form-control" 
+              placeholder="Ex: Pikachu DPS Build" 
+              maxlength="50"
+              style="width: 100%; margin-bottom: 20px;"
+            >
+            <div id="save-build-message" style="margin-bottom: 15px; padding: 10px; border-radius: 6px; display: none;"></div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button id="btn-cancel-save" class="btn" style="background: #666;">Cancel</button>
+              <button id="btn-confirm-save" class="btn" style="background: linear-gradient(135deg, #28a745, #20c997);">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para carregar build -->
+      <div class="modal-overlay" id="modal-load-build" style="display: none;">
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh;">
+          <div class="modal-header">
+            <h3>📂 Load Build</h3>
+            <button class="modal-close" id="btn-close-load-modal">✕</button>
+          </div>
+          <div class="modal-body" style="padding: 20px; overflow-y: auto;">
+            <div id="builds-list" style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Builds serão listadas aqui dinamicamente -->
+              <p style="color: #999; text-align: center; font-style: italic;">Loading builds...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Footer with watermark -->
       <footer style="text-align: center; padding: 20px; margin-top: 40px; color: #fe8a01; border-top: 1px solid #fe8a01;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
@@ -270,119 +312,6 @@ function googleTranslateElementInit() {
 
     </section>
   </main>
-  <script src="damage-calculator.js"></script>
-  
-  <!-- Firebase Authentication -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
-      authDomain: "site-grn.firebaseapp.com",
-      projectId: "site-grn",
-      storageBucket: "site-grn.firebasestorage.app",
-      messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
-      measurementId: "G-84NHN394WF"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Elementos do DOM
-    const userMenuToggle = document.getElementById('userMenuToggle');
-    const userDropdown = document.getElementById('userDropdown');
-    const userDropdownHeader = document.getElementById('userDropdownHeader');
-    const authLink = document.getElementById('authLink');
-    const perfilLink = document.getElementById('perfilLink');
-
-    // Toggle do menu dropdown
-    userMenuToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.classList.toggle('active');
-      userDropdown.classList.toggle('show');
-    });
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(e) {
-      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
-        userMenuToggle.classList.remove('active');
-        userDropdown.classList.remove('show');
-      }
-    });
-
-    // Fechar dropdown ao clicar em um link
-    userDropdown.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function() {
-        userMenuToggle.classList.remove('active');
-        userDropdown.classList.remove('show');
-      });
-    });
-
-    // Função para atualizar a interface com base no estado do usuário
-    function updateUI(user) {
-      if (user) {
-        // Usuário está logado
-        const savedName = localStorage.getItem('userDisplayName');
-        const displayName = savedName || user.displayName || user.email.split('@')[0];
-        const savedAvatar = localStorage.getItem('userAvatar') || './estatisticas-shad/images/sprits/pikachu.png';
-        
-        userDropdownHeader.innerHTML = `
-          <img src="${savedAvatar}" alt="Avatar" class="dropdown-avatar">
-          <span>Olá, ${displayName}!</span>
-        `;
-        authLink.textContent = 'Logout';
-        authLink.onclick = function(e) {
-          e.preventDefault();
-          handleLogout();
-        };
-        perfilLink.style.display = 'block';
-        
-        console.log('Usuário logado:', user.email);
-      } else {
-        // Usuário não está logado
-        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
-        authLink.textContent = 'Login';
-        authLink.onclick = function(e) {
-          e.preventDefault();
-          handleLogin();
-        };
-        perfilLink.style.display = 'none';
-        
-        console.log('Usuário não logado');
-      }
-    }
-
-    // Função para fazer login
-    function handleLogin() {
-      window.location.href = 'login.html';
-    }
-
-    // Função para fazer logout
-    async function handleLogout() {
-      const confirmar = confirm('Deseja realmente fazer logout?');
-      if (confirmar) {
-        try {
-          await signOut(auth);
-          alert('Logout realizado com sucesso!');
-        } catch (error) {
-          console.error('Erro no logout:', error);
-          alert('Erro ao fazer logout. Tente novamente.');
-        }
-      }
-    }
-
-    // Monitorar mudanças no estado de autenticação
-    onAuthStateChanged(auth, (user) => {
-      updateUI(user);
-    });
-  </script>
-</body>
-</html>
+  <script type="module" src="damage-calculator.js"></script>
 </body>
 </html>
