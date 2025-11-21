@@ -4421,6 +4421,7 @@ textarea.form-control {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
   border-color: rgba(102, 126, 234, 0.3);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: #e0e0e0;
 }
 
 /* Pokemon ratings no dark mode */
