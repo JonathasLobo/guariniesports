@@ -51,6 +51,26 @@ let currentBuildId = null;
 document.addEventListener("DOMContentLoaded", async () => {
   // ===== INICIALIZAR FIREBASE PRIMEIRO =====
   const firebase = await initializeFirebase();
+
+  // ===== AUTO-CARREGAR BUILD AO ENTRAR NA PÁGINA =====
+  const loadBuildId = localStorage.getItem('loadBuildId');
+  if (loadBuildId) {
+    console.log('🔄 Carregando build automaticamente:', loadBuildId);
+    
+    // Aguardar Firebase estar pronto
+    setTimeout(async () => {
+      try {
+        if (BuildManager && BuildManager.isUserLoggedIn()) {
+          await BuildManager.carregarBuild(loadBuildId);
+          localStorage.removeItem('loadBuildId'); // Limpar após carregar
+          console.log('✅ Build carregada automaticamente');
+        }
+      } catch (error) {
+        console.error('❌ Erro ao auto-carregar build:', error);
+        localStorage.removeItem('loadBuildId');
+      }
+    }, 1500);
+  }
   
   if (!firebase) {
     console.warn("⚠️ Firebase não disponível - sistema de builds desabilitado");
@@ -283,6 +303,14 @@ BuildManager = {
       try {
         const buildState = capturarEstadoBuild();
         
+        if (!currentBuildId) {
+          const buildsRef = collection(db, "usuarios", currentUserAuth.uid, "builds");
+          const buildsSnap = await getDocs(buildsRef);
+          
+          if (buildsSnap.size >= 5) {
+            throw new Error("Limite de 5 builds atingido! Delete uma build existente para criar uma nova.");
+          }
+        }
         // Se está editando uma build existente
         if (currentBuildId) {
           console.log("📝 Atualizando build existente:", currentBuildId);
@@ -7648,7 +7676,15 @@ if (btnConfirmSave) {
       
     } catch (error) {
       console.error("Erro ao salvar:", error);
-      showSaveMessage(`❌ Error saving: ${error.message}`, "error");
+      if (error.message.includes("Limite de 5 builds")) {
+        showSaveMessage(error.message, "error");
+        // Manter modal aberto para o usuário ler a mensagem
+        setTimeout(() => {
+          modalSaveBuild.style.display = "none";
+        }, 4000); // 4 segundos para ler
+      } else {
+        showSaveMessage(`❌ Error saving: ${error.message}`, "error");
+      }
       btnConfirmSave.disabled = false;
       btnConfirmSave.textContent = "Save";
     }

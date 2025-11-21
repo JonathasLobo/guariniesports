@@ -105,10 +105,14 @@
         </div>
       </div>
 
-      <!-- Área para futuras informações -->
+      <!-- Área para builds salvas -->
       <div class="perfil-content">
-        <h3>Configurações e Dados</h3>
-        <p class="perfil-placeholder">Em breve...</p>
+        <h3>Builds</h3>
+        <div id="builds-container-perfil" class="builds-container">
+          <div class="builds-loading">
+            Carregando builds...
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -404,6 +408,201 @@
         }
       }
     }
+
+        // ===== SISTEMA DE EXIBIÇÃO DE BUILDS NO PERFIL =====
+
+    // Função para carregar e exibir as builds do usuário
+    async function carregarBuildsUsuario(userId) {
+      const buildsContainer = document.getElementById('builds-container-perfil');
+      
+      if (!buildsContainer) {
+        console.error('Container de builds não encontrado');
+        return;
+      }
+      
+      try {
+        buildsContainer.innerHTML = '<div class="builds-loading">Carregando builds...</div>';
+        
+        // Importar Firestore
+        const { getFirestore, collection, getDocs, deleteDoc, doc } = 
+          await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
+        
+        const db = getFirestore();
+        
+        // Buscar builds do usuário
+        const buildsRef = collection(db, "usuarios", userId, "builds");
+        const buildsSnap = await getDocs(buildsRef);
+        
+        if (buildsSnap.empty) {
+          buildsContainer.innerHTML = `
+            <div class="no-builds-message">
+              Nenhuma build salva ainda.<br>
+              Crie sua primeira build na calculadora!
+            </div>
+          `;
+          return;
+        }
+        
+        // Processar builds
+        const builds = [];
+        buildsSnap.forEach(docSnap => {
+          builds.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        
+        // Ordenar por data de atualização (mais recente primeiro)
+        builds.sort((a, b) => {
+          const dateA = a.updatedAt?.toDate() || new Date(0);
+          const dateB = b.updatedAt?.toDate() || new Date(0);
+          return dateB - dateA;
+        });
+        
+        // Renderizar builds
+        buildsContainer.innerHTML = builds.map(build => createBuildCard(build)).join('');
+        
+        // Adicionar event listeners
+        builds.forEach(build => {
+          // Botão Editar
+          const btnEdit = document.getElementById(`edit-build-${build.id}`);
+          if (btnEdit) {
+            btnEdit.addEventListener('click', () => editarBuild(build.id));
+          }
+          
+          // Botão Excluir
+          const btnDelete = document.getElementById(`delete-build-${build.id}`);
+          if (btnDelete) {
+            btnDelete.addEventListener('click', () => excluirBuild(build.id, userId));
+          }
+        });
+        
+      } catch (error) {
+        console.error('Erro ao carregar builds:', error);
+        buildsContainer.innerHTML = `
+          <div class="no-builds-message" style="color: #ff6b6b;">
+            ❌ Erro ao carregar builds: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // Função para criar o HTML de um card de build
+    function createBuildCard(build) {
+      const pokemonImage = build.pokemon ? 
+        `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+        './estatisticas-shad/images/backgrounds/placeholder.png';
+      
+      // Battle Item
+      const battleItemHTML = build.battleItem ? `
+        <div class="build-item-circle">
+          <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+              alt="Battle Item"
+              onerror="this.style.display='none'">
+        </div>
+      ` : '';
+      
+      // Held Items (máximo 3)
+      const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+        build.heldItems.slice(0, 3).map(item => `
+          <div class="build-item-circle">
+            <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+                alt="${item.name}"
+                title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+                onerror="this.style.display='none'">
+          </div>
+        `).join('') : 
+        '<span style="color: #888; font-size: 12px;">Sem itens</span>';
+      
+      return `
+        <div class="build-card-perfil">
+          <div class="build-pokemon-image">
+            <img src="${pokemonImage}" 
+                alt="${capitalizeFirst(build.pokemon)}"
+                onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+          </div>
+          
+          <div class="build-details">
+            <h4 class="build-name-header">${build.buildName}</h4>
+            
+            <div class="build-items-section">
+              ${battleItemHTML ? `
+                <div class="build-battle-item">
+                  ${battleItemHTML}
+                </div>
+              ` : ''}
+              
+              <div class="build-held-items">
+                ${heldItemsHTML}
+              </div>
+            </div>
+            
+            <div class="build-actions-perfil">
+              <button class="btn-build-action-perfil btn-edit-perfil" id="edit-build-${build.id}">
+                ✏️ Editar
+              </button>
+              <button class="btn-build-action-perfil btn-delete-perfil" id="delete-build-${build.id}">
+                🗑️ Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Função auxiliar para capitalizar primeira letra
+    function capitalizeFirst(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Função para editar build (redireciona para calculadora)
+    function editarBuild(buildId) {
+      // Salvar o ID da build no localStorage para a calculadora carregar
+      localStorage.setItem('loadBuildId', buildId);
+      
+      // Redirecionar para a calculadora
+      window.location.href = 'damage-calculator.html';
+    }
+
+    // Função para excluir build
+    async function excluirBuild(buildId, userId) {
+      const confirmacao = confirm('Tem certeza que deseja excluir esta build? Esta ação não pode ser desfeita.');
+      
+      if (!confirmacao) return;
+      
+      try {
+        // Importar Firestore
+        const { getFirestore, deleteDoc, doc } = 
+          await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
+        
+        const db = getFirestore();
+        
+        // Deletar documento
+        const buildRef = doc(db, "usuarios", userId, "builds", buildId);
+        await deleteDoc(buildRef);
+        
+        console.log('✅ Build deletada:', buildId);
+        
+        // Recarregar lista de builds
+        await carregarBuildsUsuario(userId);
+        
+        // Feedback visual
+        alert('✅ Build excluída com sucesso!');
+        
+      } catch (error) {
+        console.error('❌ Erro ao excluir build:', error);
+        alert(`❌ Erro ao excluir build: ${error.message}`);
+      }
+    }
+
+    // Modificar a função updateUI existente para carregar builds quando usuário estiver logado
+    const originalUpdateUI = updateUI;
+    updateUI = function(user) {
+      originalUpdateUI(user);
+      
+      if (user) {
+        // Carregar builds do usuário
+        carregarBuildsUsuario(user.uid);
+      }
+    };
 
    onAuthStateChanged(auth, (user) => {
     updateUI(user);
