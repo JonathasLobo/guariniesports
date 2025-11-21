@@ -3176,37 +3176,37 @@ const updateMapBuffDescription = () => {
   };
 
   const updateEmblemDescription = () => {
-    const descContainer = document.getElementById("emblem-description");
-    if (!descContainer) return;
+  const descContainer = document.getElementById("emblem-description");
+  if (!descContainer) return;
+  
+  const selectedKeys = Object.keys(selectedEmblems);
+  
+  if (selectedKeys.length === 0) {
+    descContainer.className = "emblem-description empty";
+    descContainer.innerHTML = "Selecione um emblema e seu nível para ver a descrição do buff";
+    return;
+  }
+  
+  descContainer.className = "emblem-description active";
+  
+  // Cria cada linha de emblema separadamente
+  const emblemLines = selectedKeys.map(emblemKey => {
+    const emblem = EMBLEM_DATA[emblemKey];
+    const level = selectedEmblems[emblemKey];
+    const bonus = emblem.levels[level];
     
-    const selectedKeys = Object.keys(selectedEmblems);
+    const indicator = `<span class="emblem-color-indicator" style="background-color: ${emblem.color}; ${emblem.color === '#ffffff' ? 'border: 1px solid #ccc;' : ''}"></span>`;
     
-    if (selectedKeys.length === 0) {
-      descContainer.className = "emblem-description empty";
-      descContainer.innerHTML = "Selecione um emblema e seu nível para ver a descrição do buff";
-      return;
+    // ✅ REMOVER A COR FIXA PRETA - deixar o CSS controlar
+    if (emblemKey === "gray") {
+      return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> -${bonus} Dmg Taken</span></div>`;
+    } else {
+      return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> +${bonus}% ${emblem.stat}</span></div>`;
     }
-    
-    descContainer.className = "emblem-description active";
-    
-    // Cria cada linha de emblema separadamente
-    const emblemLines = selectedKeys.map(emblemKey => {
-      const emblem = EMBLEM_DATA[emblemKey];
-      const level = selectedEmblems[emblemKey];
-      const bonus = emblem.levels[level];
-      
-      const indicator = `<span class="emblem-color-indicator" style="background-color: ${emblem.color}; ${emblem.color === '#ffffff' ? 'border: 1px solid #ccc;' : ''}"></span>`;
-      
-      // Cada emblema em sua própria linha com estrutura organizada
-      if (emblemKey === "gray") {
-        return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> -${bonus} Dmg Taken</span></div>`;
-      } else {
-        return `<div class="emblem-info-line">${indicator}<span><strong>${emblem.name} Nv.${level}:</strong> +${bonus}% ${emblem.stat}</span></div>`;
-      }
-    }).join("");
-    
-    descContainer.innerHTML = emblemLines;
-  };
+  }).join("");
+  
+  descContainer.innerHTML = emblemLines;
+};
 
   // Função para atualizar o display e botões do nível
   const updateLevelDisplay = () => {
@@ -6585,6 +6585,7 @@ if (skillDamage[selectedPokemon]) {
     }
 
     // Mostrar emblemas ativos
+// Mostrar emblemas ativos
 if (incluirEmblemas === "sim") {
   const selectedEmblemKeys = Object.keys(selectedEmblems);
   if (selectedEmblemKeys.length > 0) {
@@ -6596,14 +6597,14 @@ if (incluirEmblemas === "sim") {
       const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #333;" : "";
       
       if (emblemKey === "gray") {
-        return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
-          <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 8px; flex-shrink: 0; ${borderStyle}"></span>
-          <span style="color: #000; font-size: 12px; font-weight: 500;">${emblem.name} Lv.${level} (-${bonus})</span>
+        return `<div class="emblem-display-line">
+          <span class="emblem-color-dot" style="background-color: ${emblem.color}; ${borderStyle}"></span>
+          <span class="emblem-display-text">${emblem.name} Lv.${level} (-${bonus})</span>
         </div>`;
       } else {
-        return `<div style="display: flex; align-items: center; width: 100%; margin-bottom: 4px;">
-          <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${emblem.color}; margin-right: 8px; flex-shrink: 0; ${borderStyle}"></span>
-          <span style="color: #000; font-size: 12px; font-weight: 500;">${emblem.name} Lv.${level} (+${bonus}%)</span>
+        return `<div class="emblem-display-line">
+          <span class="emblem-color-dot" style="background-color: ${emblem.color}; ${borderStyle}"></span>
+          <span class="emblem-display-text">${emblem.name} Lv.${level} (+${bonus}%)</span>
         </div>`;
       }
     }).join("");
@@ -7109,7 +7110,7 @@ if (key === "s12" && selectedPokemon === "blastoise" && isActiveSkill && modifie
 // Criar HTML dos valores de dano destacados
 const damageValuesHtml = s.formulas.map((f, index) => {
   if (f.type === "text-only") {
-    return `<div class="skill-info-text"><strong>${f.label}:</strong> <span style="color:#000; font-style:italic;">${f.additionalText}</span></div>`;
+    return `<div class="skill-info-text"><strong>${f.label}:</strong> <span style="color:#FF6F42;">${f.additionalText}</span></div>`;
   }
   
   const values = calculatedValues[index];

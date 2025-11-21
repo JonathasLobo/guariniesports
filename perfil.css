@@ -455,7 +455,7 @@
 }
 
 /* ============================================
-   CARDS DE BUILDS SALVAS
+   CARDS DE BUILDS SALVAS - LAYOUT MELHORADO
    ============================================ */
 
 .builds-container {
@@ -482,20 +482,22 @@
   box-shadow: 0 8px 25px rgba(255, 117, 0, 0.5);
 }
 
+/* ✅ IMAGEM DO POKÉMON SEM BORDAS */
 .build-pokemon-image {
   width: 120px;
   height: 120px;
-  border-radius: 12px;
-  border: 2px solid #ffad00;
-  overflow: hidden;
   flex-shrink: 0;
-  background: rgba(255, 173, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* Sem fundo */
 }
 
 .build-pokemon-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* Mantém proporção sem cortar */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)); /* Sombra suave */
 }
 
 .build-details {
@@ -505,12 +507,15 @@
   gap: 10px;
 }
 
+/* ✅ NOME DA BUILD CENTRALIZADO */
 .build-name-header {
   color: #ffad00;
   font-size: 1.2rem;
   font-weight: 700;
   margin: 0;
   word-break: break-word;
+  text-align: center; /* Centralizado */
+  padding: 0 10px;
 }
 
 .build-items-section {
@@ -554,23 +559,24 @@
   gap: 10px;
 }
 
+/* ✅ BOTÕES MENORES */
 .build-actions-perfil {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: auto;
 }
 
 .btn-build-action-perfil {
   flex: 1;
-  padding: 10px 15px;
+  padding: 6px 12px; /* Reduzido de 10px 15px */
   border: 2px solid;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px; /* Mais compacto */
+  font-size: 12px; /* Reduzido de 14px */
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .btn-edit-perfil {
@@ -612,7 +618,10 @@
   padding: 40px 20px;
 }
 
-/* Responsividade */
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+
 @media (max-width: 768px) {
   .builds-container {
     grid-template-columns: 1fr;
@@ -630,7 +639,32 @@
     height: 100px;
   }
   
+  .build-name-header {
+    font-size: 1rem;
+  }
+  
   .build-actions-perfil {
     width: 100%;
+  }
+  
+  .btn-build-action-perfil {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .build-pokemon-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .build-name-header {
+    font-size: 0.95rem;
+  }
+  
+  .build-item-circle {
+    width: 40px;
+    height: 40px;
   }
 }

@@ -106,15 +106,17 @@
       </div>
 
       <!-- Área para builds salvas -->
-      <div class="perfil-content">
-        <h3>Builds</h3>
-        <div id="builds-container-perfil" class="builds-container">
-          <div class="builds-loading">
-            Carregando builds...
+      <section class="perfil-section">
+        <h2>Saved Builds</h2>
+        
+        <div class="perfil-content">
+          <div id="builds-container-perfil" class="builds-container">
+            <div class="builds-loading">
+              Working...
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
   </main>
 
   <!-- Modal de Seleção de Avatar -->
@@ -142,478 +144,455 @@
     </div>
   </footer>
 
-  <!-- Firebase e Autenticação -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged, 
+    signOut,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    getDocs, 
+    deleteDoc, 
+    doc 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
-      authDomain: "site-grn.firebaseapp.com",
-      projectId: "site-grn",
-      storageBucket: "site-grn.firebasestorage.app",
-      messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
-      measurementId: "G-84NHN394WF"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+    authDomain: "site-grn.firebaseapp.com",
+    projectId: "site-grn",
+    storageBucket: "site-grn.firebasestorage.app",
+    messagingSenderId: "27613322806",
+    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+    measurementId: "G-84NHN394WF"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore();
 
-    // Função para carregar todas as imagens da pasta sprites
-    async function carregarImagensSprites() {
-      const avatares = [];
-      const pastaPrincial = './estatisticas-shad/images/backgrounds/';
-      
-      // Lista de possíveis nomes de Pokémon e outros sprites
-      // Esta lista será expandida automaticamente ao detectar novas imagens
-      const nomesBase = [
-          'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill',
-          'blastoise', 'blaziken', 'blissey', 'buzzwole', 'ceruledge',
-          'chandelure', 'charizard', 'cinderace', 'clefable', 'comfey',
-          'cramorant', 'crustle', 'darkrai', 'decidueye', 'delphox',
-          'dhelmise', 'dodrio', 'dragapult', 'dragonite', 'duraludon',
-          'eldegoss', 'empoleon', 'espeon', 'falinks', 'garchomp',
-          'gardevoir', 'gengar', 'glaceon', 'goodra', 'greninja',
-          'gyarados', 'hooh', 'hoopa', 'inteleon', 'lapras',
-          'latias', 'latios', 'leafeon', 'lucario', 'machamp',
-          'mamoswine', 'megacharizardx', 'megalucario', 'metagross', 'meowscara',
-          'mew', 'mewtwox', 'mewtwoy', 'mimikyu', 'miraidon',
-          'mrmime', 'ninetales', 'pawmot', 'pikachu', 'psyduck',
-          'raichu', 'rapidash', 'sableye', 'scizor', 'scyther',
-          'slowbro', 'snorlax', 'suicune', 'sylveon', 'talonflame',
-          'tinkaton', 'trevenant', 'tsareena', 'tyranitar', 'umbreon',
-          'urshifu', 'venusaur', 'wigglytuff', 'zacian', 'zeraora',
-          'zoroark'
-      ];
-      
-      // Verificar cada imagem se existe
-      for (const nome of nomesBase) {
-        const img = new Image();
-        img.src = `${pastaPrincial}${nome}.png`;
+  // ===== FUNÇÕES DE BUILDS =====
+  
+  // Função auxiliar para capitalizar primeira letra
+  function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // Função para criar o HTML de um card de build
+  function createBuildCard(build) {
+    const pokemonImage = build.pokemon ? 
+      `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+      './estatisticas-shad/images/backgrounds/placeholder.png';
+    
+    // Battle Item
+    const battleItemHTML = build.battleItem ? `
+      <div class="build-item-circle">
+        <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+             alt="Battle Item"
+             onerror="this.style.display='none'">
+      </div>
+    ` : '';
+    
+    // Held Items (máximo 3)
+    const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+      build.heldItems.slice(0, 3).map(item => `
+        <div class="build-item-circle">
+          <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+               alt="${item.name}"
+               title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+               onerror="this.style.display='none'">
+        </div>
+      `).join('') : 
+      '<span style="color: #888; font-size: 12px;">Sem itens</span>';
+    
+    return `
+      <div class="build-card-perfil">
+        <div class="build-pokemon-image">
+          <img src="${pokemonImage}" 
+               alt="${capitalizeFirst(build.pokemon)}"
+               onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+        </div>
         
-        await new Promise((resolve) => {
-          img.onload = () => {
-            avatares.push(nome);
-            resolve();
-          };
-          img.onerror = () => {
-            console.log(`Imagem ${nome}.png não encontrada`);
-            resolve();
-          };
+        <div class="build-details">
+          <h4 class="build-name-header">${build.buildName}</h4>
           
-          // Timeout de 2 segundos
-          setTimeout(resolve, 2000);
-        });
-      }
-      
-      return avatares.length > 0 ? avatares : nomesBase;
-    }
-
-    let pokemonList = [];
-
-    // Elementos do DOM
-    const userMenuToggle = document.getElementById('userMenuToggle');
-    const userDropdown = document.getElementById('userDropdown');
-    const userDropdownHeader = document.getElementById('userDropdownHeader');
-    const authLink = document.getElementById('authLink');
-    const perfilLink = document.getElementById('perfilLink');
-    const perfilNomeDisplay = document.getElementById('perfilNomeDisplay');
-    const perfilNomeInput = document.getElementById('perfilNomeInput');
-    const btnEditNome = document.getElementById('btnEditNome');
-    const perfilEmail = document.getElementById('perfilEmail');
-    const avatarImg = document.getElementById('avatarImg');
-    const btnChangeAvatar = document.getElementById('btnChangeAvatar');
-    const modalAvatar = document.getElementById('modalAvatar');
-    const btnCloseModal = document.getElementById('btnCloseModal');
-    const avatarGrid = document.getElementById('avatarGrid');
-
-    let currentUser = null;
-
-    // Toggle do menu dropdown
-    userMenuToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.classList.toggle('active');
-      userDropdown.classList.toggle('show');
-    });
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(e) {
-      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
-        userMenuToggle.classList.remove('active');
-        userDropdown.classList.remove('show');
-      }
-    });
-
-    // Fechar dropdown ao clicar em um link
-    userDropdown.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function() {
-        userMenuToggle.classList.remove('active');
-        userDropdown.classList.remove('show');
-      });
-    });
-
-    // Carregar avatares no modal
-    async function loadAvatars() {
-      avatarGrid.innerHTML = '<p style="color: #ffad00; text-align: center; grid-column: 1/-1;">Carregando avatares...</p>';
-      
-      // Carregar lista de pokémons se ainda não foi carregada
-      if (pokemonList.length === 0) {
-        pokemonList = await carregarImagensSprites();
-      }
-      
-      avatarGrid.innerHTML = '';
-      
-      if (pokemonList.length === 0) {
-        avatarGrid.innerHTML = '<p style="color: #ff7500; text-align: center; grid-column: 1/-1;">Nenhum avatar disponível</p>';
-        return;
-      }
-      
-      pokemonList.forEach(pokemon => {
-        const avatarOption = document.createElement('div');
-        avatarOption.className = 'avatar-option';
-        avatarOption.innerHTML = `<img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" alt="${pokemon}" onerror="this.parentElement.style.display='none'">`;
-        avatarOption.addEventListener('click', () => selectAvatar(pokemon));
-        avatarGrid.appendChild(avatarOption);
-      });
-    }
-
-    // Selecionar avatar
-    function selectAvatar(pokemon) {
-      const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
-      avatarImg.src = avatarPath;
-      
-      localStorage.setItem('userAvatar', avatarPath);
-      
-      modalAvatar.classList.remove('show');
-      
-      console.log('Avatar selecionado:', pokemon);
-    }
-
-    // Abrir modal ao clicar no avatar
-    const perfilAvatar = document.getElementById('perfilAvatar');
-    perfilAvatar.addEventListener('click', () => {
-      loadAvatars();
-      modalAvatar.classList.add('show');
-    });
-
-    // Fechar modal
-    btnCloseModal.addEventListener('click', () => {
-      modalAvatar.classList.remove('show');
-    });
-
-    // Fechar modal ao clicar fora
-    modalAvatar.addEventListener('click', (e) => {
-      if (e.target === modalAvatar) {
-        modalAvatar.classList.remove('show');
-      }
-    });
-
-    // Editar nome
-    btnEditNome.addEventListener('click', () => {
-      perfilNomeInput.value = perfilNomeDisplay.textContent;
-      perfilNomeDisplay.style.display = 'none';
-      btnEditNome.style.display = 'none';
-      perfilNomeInput.style.display = 'block';
-      perfilNomeInput.focus();
-    });
-
-    // Salvar nome ao pressionar Enter ou perder foco
-    function salvarNome() {
-      const novoNome = perfilNomeInput.value.trim();
-      if (novoNome && novoNome !== perfilNomeDisplay.textContent) {
-        perfilNomeDisplay.textContent = novoNome;
-        
-        // Salvar no localStorage
-        localStorage.setItem('userDisplayName', novoNome);
-        
-        // Atualizar no Firebase se estiver logado
-        if (currentUser) {
-          updateProfile(currentUser, {
-            displayName: novoNome
-          }).then(() => {
-            console.log('Nome atualizado no Firebase');
-            updateUI(currentUser);
-          }).catch(error => {
-            console.error('Erro ao atualizar nome:', error);
-          });
-        }
-      }
-      
-      perfilNomeInput.style.display = 'none';
-      perfilNomeDisplay.style.display = 'block';
-      btnEditNome.style.display = 'inline-block';
-    }
-
-    perfilNomeInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        salvarNome();
-      }
-    });
-
-    perfilNomeInput.addEventListener('blur', salvarNome);
-
-    // Função para atualizar a interface
-    function updateUI(user) {
-      currentUser = user;
-      
-      if (user) {
-        // Usuário está logado
-        const savedName = localStorage.getItem('userDisplayName');
-        const displayName = savedName || user.displayName || user.email.split('@')[0];
-        const savedAvatar = localStorage.getItem('userAvatar');
-        
-        perfilNomeDisplay.textContent = displayName;
-        perfilEmail.textContent = user.email;
-        
-        if (savedAvatar) {
-          avatarImg.src = savedAvatar;
-        }
-        
-        userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
-        authLink.textContent = 'Logout';
-        authLink.onclick = function(e) {
-          e.preventDefault();
-          handleLogout();
-        };
-        perfilLink.style.display = 'block';
-        
-        // Habilitar edição
-        btnChangeAvatar.disabled = false;
-        btnEditNome.disabled = false;
-        
-        console.log('Usuário logado:', user.email);
-      } else {
-        // Usuário não está logado - redirecionar para login
-        window.location.href = 'login.html';
-      }
-    }
-
-    // Função para fazer logout
-    async function handleLogout() {
-      const confirmar = confirm('Deseja realmente fazer logout?');
-      if (confirmar) {
-        try {
-          await signOut(auth);
-          alert('Logout realizado com sucesso!');
-          window.location.href = 'index.html';
-        } catch (error) {
-          console.error('Erro no logout:', error);
-          alert('Erro ao fazer logout. Tente novamente.');
-        }
-      }
-    }
-
-        // ===== SISTEMA DE EXIBIÇÃO DE BUILDS NO PERFIL =====
-
-    // Função para carregar e exibir as builds do usuário
-    async function carregarBuildsUsuario(userId) {
-      const buildsContainer = document.getElementById('builds-container-perfil');
-      
-      if (!buildsContainer) {
-        console.error('Container de builds não encontrado');
-        return;
-      }
-      
-      try {
-        buildsContainer.innerHTML = '<div class="builds-loading">Carregando builds...</div>';
-        
-        // Importar Firestore
-        const { getFirestore, collection, getDocs, deleteDoc, doc } = 
-          await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
-        
-        const db = getFirestore();
-        
-        // Buscar builds do usuário
-        const buildsRef = collection(db, "usuarios", userId, "builds");
-        const buildsSnap = await getDocs(buildsRef);
-        
-        if (buildsSnap.empty) {
-          buildsContainer.innerHTML = `
-            <div class="no-builds-message">
-              Nenhuma build salva ainda.<br>
-              Crie sua primeira build na calculadora!
+          <div class="build-items-section">
+            ${battleItemHTML ? `
+              <div class="build-battle-item">
+                ${battleItemHTML}
+              </div>
+            ` : ''}
+            
+            <div class="build-held-items">
+              ${heldItemsHTML}
             </div>
-          `;
-          return;
-        }
-        
-        // Processar builds
-        const builds = [];
-        buildsSnap.forEach(docSnap => {
-          builds.push({ id: docSnap.id, ...docSnap.data() });
-        });
-        
-        // Ordenar por data de atualização (mais recente primeiro)
-        builds.sort((a, b) => {
-          const dateA = a.updatedAt?.toDate() || new Date(0);
-          const dateB = b.updatedAt?.toDate() || new Date(0);
-          return dateB - dateA;
-        });
-        
-        // Renderizar builds
-        buildsContainer.innerHTML = builds.map(build => createBuildCard(build)).join('');
-        
-        // Adicionar event listeners
-        builds.forEach(build => {
-          // Botão Editar
-          const btnEdit = document.getElementById(`edit-build-${build.id}`);
-          if (btnEdit) {
-            btnEdit.addEventListener('click', () => editarBuild(build.id));
-          }
+          </div>
           
-          // Botão Excluir
-          const btnDelete = document.getElementById(`delete-build-${build.id}`);
-          if (btnDelete) {
-            btnDelete.addEventListener('click', () => excluirBuild(build.id, userId));
-          }
-        });
-        
-      } catch (error) {
-        console.error('Erro ao carregar builds:', error);
+          <div class="build-actions-perfil">
+            <button class="btn-build-action-perfil btn-edit-perfil" data-build-id="${build.id}">
+              ✏️ Edit
+            </button>
+            <button class="btn-build-action-perfil btn-delete-perfil" data-build-id="${build.id}">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Função para editar build (redireciona para calculadora)
+  function editarBuild(buildId) {
+    localStorage.setItem('loadBuildId', buildId);
+    window.location.href = 'damage-calculator.html';
+  }
+
+  // Função para excluir build
+  async function excluirBuild(buildId, userId) {
+    const confirmacao = confirm('Tem certeza que deseja excluir esta build? Esta ação não pode ser desfeita.');
+    
+    if (!confirmacao) return;
+    
+    try {
+      const buildRef = doc(db, "usuarios", userId, "builds", buildId);
+      await deleteDoc(buildRef);
+      
+      console.log('✅ Build deletada:', buildId);
+      alert('✅ Build excluída com sucesso!');
+      
+      // Recarregar lista de builds
+      await carregarBuildsUsuario(userId);
+      
+    } catch (error) {
+      console.error('❌ Erro ao excluir build:', error);
+      alert(`❌ Erro ao excluir build: ${error.message}`);
+    }
+  }
+
+  // Função para carregar e exibir as builds do usuário
+  async function carregarBuildsUsuario(userId) {
+    const buildsContainer = document.getElementById('builds-container-perfil');
+    
+    if (!buildsContainer) {
+      console.error('❌ Container de builds não encontrado');
+      return;
+    }
+    
+    try {
+      buildsContainer.innerHTML = '<div class="builds-loading">Carregando builds...</div>';
+      
+      console.log('🔄 Carregando builds do usuário:', userId);
+      
+      // Buscar builds do usuário
+      const buildsRef = collection(db, "usuarios", userId, "builds");
+      const buildsSnap = await getDocs(buildsRef);
+      
+      console.log('📦 Builds encontradas:', buildsSnap.size);
+      
+      if (buildsSnap.empty) {
         buildsContainer.innerHTML = `
-          <div class="no-builds-message" style="color: #ff6b6b;">
-            ❌ Erro ao carregar builds: ${error.message}
+          <div class="no-builds-message">
+            Nenhuma build salva ainda.<br>
+            Crie sua primeira build na calculadora!
           </div>
         `;
+        return;
       }
-    }
-
-    // Função para criar o HTML de um card de build
-    function createBuildCard(build) {
-      const pokemonImage = build.pokemon ? 
-        `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-        './estatisticas-shad/images/backgrounds/placeholder.png';
       
-      // Battle Item
-      const battleItemHTML = build.battleItem ? `
-        <div class="build-item-circle">
-          <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
-              alt="Battle Item"
-              onerror="this.style.display='none'">
-        </div>
-      ` : '';
+      // Processar builds
+      const builds = [];
+      buildsSnap.forEach(docSnap => {
+        builds.push({ id: docSnap.id, ...docSnap.data() });
+      });
       
-      // Held Items (máximo 3)
-      const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
-        build.heldItems.slice(0, 3).map(item => `
-          <div class="build-item-circle">
-            <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
-                alt="${item.name}"
-                title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
-                onerror="this.style.display='none'">
-          </div>
-        `).join('') : 
-        '<span style="color: #888; font-size: 12px;">Sem itens</span>';
+      // Ordenar por data de atualização (mais recente primeiro)
+      builds.sort((a, b) => {
+        const dateA = a.updatedAt?.toDate() || new Date(0);
+        const dateB = b.updatedAt?.toDate() || new Date(0);
+        return dateB - dateA;
+      });
       
-      return `
-        <div class="build-card-perfil">
-          <div class="build-pokemon-image">
-            <img src="${pokemonImage}" 
-                alt="${capitalizeFirst(build.pokemon)}"
-                onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
-          </div>
-          
-          <div class="build-details">
-            <h4 class="build-name-header">${build.buildName}</h4>
-            
-            <div class="build-items-section">
-              ${battleItemHTML ? `
-                <div class="build-battle-item">
-                  ${battleItemHTML}
-                </div>
-              ` : ''}
-              
-              <div class="build-held-items">
-                ${heldItemsHTML}
-              </div>
-            </div>
-            
-            <div class="build-actions-perfil">
-              <button class="btn-build-action-perfil btn-edit-perfil" id="edit-build-${build.id}">
-                ✏️ Editar
-              </button>
-              <button class="btn-build-action-perfil btn-delete-perfil" id="delete-build-${build.id}">
-                🗑️ Excluir
-              </button>
-            </div>
-          </div>
+      // Renderizar builds
+      buildsContainer.innerHTML = builds.map(build => createBuildCard(build)).join('');
+      
+      // Adicionar event listeners
+      const editButtons = buildsContainer.querySelectorAll('.btn-edit-perfil');
+      const deleteButtons = buildsContainer.querySelectorAll('.btn-delete-perfil');
+      
+      editButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const buildId = btn.getAttribute('data-build-id');
+          editarBuild(buildId);
+        });
+      });
+      
+      deleteButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const buildId = btn.getAttribute('data-build-id');
+          excluirBuild(buildId, userId);
+        });
+      });
+      
+      console.log('✅ Builds carregadas com sucesso!');
+      
+    } catch (error) {
+      console.error('❌ Erro ao carregar builds:', error);
+      buildsContainer.innerHTML = `
+        <div class="no-builds-message" style="color: #ff6b6b;">
+          ❌ Erro ao carregar builds: ${error.message}
         </div>
       `;
     }
+  }
 
-    // Função auxiliar para capitalizar primeira letra
-    function capitalizeFirst(str) {
-      if (!str) return '';
-      return str.charAt(0).toUpperCase() + str.slice(1);
+  // ===== RESTO DO CÓDIGO ORIGINAL (NÃO MODIFICAR) =====
+  
+  // Função para carregar todas as imagens da pasta sprites
+  async function carregarImagensSprites() {
+    const avatares = [];
+    const pastaPrincial = './estatisticas-shad/images/backgrounds/';
+    
+    const nomesBase = [
+        'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill',
+        'blastoise', 'blaziken', 'blissey', 'buzzwole', 'ceruledge',
+        'chandelure', 'charizard', 'cinderace', 'clefable', 'comfey',
+        'cramorant', 'crustle', 'darkrai', 'decidueye', 'delphox',
+        'dhelmise', 'dodrio', 'dragapult', 'dragonite', 'duraludon',
+        'eldegoss', 'empoleon', 'espeon', 'falinks', 'garchomp',
+        'gardevoir', 'gengar', 'glaceon', 'goodra', 'greninja',
+        'gyarados', 'hooh', 'hoopa', 'inteleon', 'lapras',
+        'latias', 'latios', 'leafeon', 'lucario', 'machamp',
+        'mamoswine', 'megacharizardx', 'megalucario', 'metagross', 'meowscara',
+        'mew', 'mewtwox', 'mewtwoy', 'mimikyu', 'miraidon',
+        'mrmime', 'ninetales', 'pawmot', 'pikachu', 'psyduck',
+        'raichu', 'rapidash', 'sableye', 'scizor', 'scyther',
+        'slowbro', 'snorlax', 'suicune', 'sylveon', 'talonflame',
+        'tinkaton', 'trevenant', 'tsareena', 'tyranitar', 'umbreon',
+        'urshifu', 'vaporeon','venusaur', 'wigglytuff', 'zacian', 'zeraora',
+        'zoroark'
+    ];
+    
+    for (const nome of nomesBase) {
+      const img = new Image();
+      img.src = `${pastaPrincial}${nome}.png`;
+      
+      await new Promise((resolve) => {
+        img.onload = () => {
+          avatares.push(nome);
+          resolve();
+        };
+        img.onerror = () => {
+          console.log(`Imagem ${nome}.png não encontrada`);
+          resolve();
+        };
+        setTimeout(resolve, 2000);
+      });
     }
+    
+    return avatares.length > 0 ? avatares : nomesBase;
+  }
 
-    // Função para editar build (redireciona para calculadora)
-    function editarBuild(buildId) {
-      // Salvar o ID da build no localStorage para a calculadora carregar
-      localStorage.setItem('loadBuildId', buildId);
-      
-      // Redirecionar para a calculadora
-      window.location.href = 'damage-calculator.html';
+  let pokemonList = [];
+
+  // Elementos do DOM
+  const userMenuToggle = document.getElementById('userMenuToggle');
+  const userDropdown = document.getElementById('userDropdown');
+  const userDropdownHeader = document.getElementById('userDropdownHeader');
+  const authLink = document.getElementById('authLink');
+  const perfilLink = document.getElementById('perfilLink');
+  const perfilNomeDisplay = document.getElementById('perfilNomeDisplay');
+  const perfilNomeInput = document.getElementById('perfilNomeInput');
+  const btnEditNome = document.getElementById('btnEditNome');
+  const perfilEmail = document.getElementById('perfilEmail');
+  const avatarImg = document.getElementById('avatarImg');
+  const btnChangeAvatar = document.getElementById('btnChangeAvatar');
+  const modalAvatar = document.getElementById('modalAvatar');
+  const btnCloseModal = document.getElementById('btnCloseModal');
+  const avatarGrid = document.getElementById('avatarGrid');
+
+  let currentUser = null;
+
+  // Toggle do menu dropdown
+  userMenuToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    this.classList.toggle('active');
+    userDropdown.classList.toggle('show');
+  });
+
+  // Fechar dropdown ao clicar fora
+  document.addEventListener('click', function(e) {
+    if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+      userMenuToggle.classList.remove('active');
+      userDropdown.classList.remove('show');
     }
+  });
 
-    // Função para excluir build
-    async function excluirBuild(buildId, userId) {
-      const confirmacao = confirm('Tem certeza que deseja excluir esta build? Esta ação não pode ser desfeita.');
+  // Fechar dropdown ao clicar em um link
+  userDropdown.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function() {
+      userMenuToggle.classList.remove('active');
+      userDropdown.classList.remove('show');
+    });
+  });
+
+  // Carregar avatares no modal
+  async function loadAvatars() {
+    avatarGrid.innerHTML = '<p style="color: #ffad00; text-align: center; grid-column: 1/-1;">Carregando avatares...</p>';
+    
+    if (pokemonList.length === 0) {
+      pokemonList = await carregarImagensSprites();
+    }
+    
+    avatarGrid.innerHTML = '';
+    
+    if (pokemonList.length === 0) {
+      avatarGrid.innerHTML = '<p style="color: #ff7500; text-align: center; grid-column: 1/-1;">Nenhum avatar disponível</p>';
+      return;
+    }
+    
+    pokemonList.forEach(pokemon => {
+      const avatarOption = document.createElement('div');
+      avatarOption.className = 'avatar-option';
+      avatarOption.innerHTML = `<img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" alt="${pokemon}" onerror="this.parentElement.style.display='none'">`;
+      avatarOption.addEventListener('click', () => selectAvatar(pokemon));
+      avatarGrid.appendChild(avatarOption);
+    });
+  }
+
+  // Selecionar avatar
+  function selectAvatar(pokemon) {
+    const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
+    avatarImg.src = avatarPath;
+    localStorage.setItem('userAvatar', avatarPath);
+    modalAvatar.classList.remove('show');
+    console.log('Avatar selecionado:', pokemon);
+  }
+
+  // Abrir modal ao clicar no avatar
+  const perfilAvatar = document.getElementById('perfilAvatar');
+  perfilAvatar.addEventListener('click', () => {
+    loadAvatars();
+    modalAvatar.classList.add('show');
+  });
+
+  // Fechar modal
+  btnCloseModal.addEventListener('click', () => {
+    modalAvatar.classList.remove('show');
+  });
+
+  // Fechar modal ao clicar fora
+  modalAvatar.addEventListener('click', (e) => {
+    if (e.target === modalAvatar) {
+      modalAvatar.classList.remove('show');
+    }
+  });
+
+  // Editar nome
+  btnEditNome.addEventListener('click', () => {
+    perfilNomeInput.value = perfilNomeDisplay.textContent;
+    perfilNomeDisplay.style.display = 'none';
+    btnEditNome.style.display = 'none';
+    perfilNomeInput.style.display = 'block';
+    perfilNomeInput.focus();
+  });
+
+  // Salvar nome ao pressionar Enter ou perder foco
+  function salvarNome() {
+    const novoNome = perfilNomeInput.value.trim();
+    if (novoNome && novoNome !== perfilNomeDisplay.textContent) {
+      perfilNomeDisplay.textContent = novoNome;
+      localStorage.setItem('userDisplayName', novoNome);
       
-      if (!confirmacao) return;
+      if (currentUser) {
+        updateProfile(currentUser, {
+          displayName: novoNome
+        }).then(() => {
+          console.log('Nome atualizado no Firebase');
+          updateUI(currentUser);
+        }).catch(error => {
+          console.error('Erro ao atualizar nome:', error);
+        });
+      }
+    }
+    
+    perfilNomeInput.style.display = 'none';
+    perfilNomeDisplay.style.display = 'block';
+    btnEditNome.style.display = 'inline-block';
+  }
+
+  perfilNomeInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      salvarNome();
+    }
+  });
+
+  perfilNomeInput.addEventListener('blur', salvarNome);
+
+  // Função para atualizar a interface
+  function updateUI(user) {
+    currentUser = user;
+    
+    if (user) {
+      const savedName = localStorage.getItem('userDisplayName');
+      const displayName = savedName || user.displayName || user.email.split('@')[0];
+      const savedAvatar = localStorage.getItem('userAvatar');
       
+      perfilNomeDisplay.textContent = displayName;
+      perfilEmail.textContent = user.email;
+      
+      if (savedAvatar) {
+        avatarImg.src = savedAvatar;
+      }
+      
+      userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+      authLink.textContent = 'Logout';
+      authLink.onclick = function(e) {
+        e.preventDefault();
+        handleLogout();
+      };
+      perfilLink.style.display = 'block';
+      
+      if (btnChangeAvatar) btnChangeAvatar.disabled = false;
+      btnEditNome.disabled = false;
+      
+      console.log('Usuário logado:', user.email);
+      
+      // ✅ CARREGAR BUILDS AQUI
+      carregarBuildsUsuario(user.uid);
+      
+    } else {
+      window.location.href = 'login.html';
+    }
+  }
+
+  // Função para fazer logout
+  async function handleLogout() {
+    const confirmar = confirm('Deseja realmente fazer logout?');
+    if (confirmar) {
       try {
-        // Importar Firestore
-        const { getFirestore, deleteDoc, doc } = 
-          await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
-        
-        const db = getFirestore();
-        
-        // Deletar documento
-        const buildRef = doc(db, "usuarios", userId, "builds", buildId);
-        await deleteDoc(buildRef);
-        
-        console.log('✅ Build deletada:', buildId);
-        
-        // Recarregar lista de builds
-        await carregarBuildsUsuario(userId);
-        
-        // Feedback visual
-        alert('✅ Build excluída com sucesso!');
-        
+        await signOut(auth);
+        alert('Logout realizado com sucesso!');
+        window.location.href = 'index.html';
       } catch (error) {
-        console.error('❌ Erro ao excluir build:', error);
-        alert(`❌ Erro ao excluir build: ${error.message}`);
+        console.error('Erro no logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
       }
     }
+  }
 
-    // Modificar a função updateUI existente para carregar builds quando usuário estiver logado
-    const originalUpdateUI = updateUI;
-    updateUI = function(user) {
-      originalUpdateUI(user);
-      
-      if (user) {
-        // Carregar builds do usuário
-        carregarBuildsUsuario(user.uid);
-      }
-    };
-
-   onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, (user) => {
     updateUI(user);
     
-    // Carregar lista de avatares ao iniciar
     carregarImagensSprites().then(lista => {
       pokemonList = lista;
       console.log(`${pokemonList.length} avatares carregados`);
     });
   });
-  </script>
+</script>
 
   <!-- Scripts principais -->
   <script>

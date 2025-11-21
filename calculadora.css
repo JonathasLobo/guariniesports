@@ -636,6 +636,49 @@ textarea.form-control {
   #emblemas-container label { font-size: 13px; margin-bottom: 6px; }
 }
 
+/* ===== EMBLEMS DISPLAY IN STATS ===== */
+.emblem-display-line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.emblem-color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.emblem-display-text {
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Dark Mode - Emblems Display */
+.dark-mode .emblem-display-text {
+  color: #ffffff !important;
+}
+
+/* Emblems Grid Names */
+.emblem-name {
+  color: #fff; /* Já está correto */
+}
+
+/* Emblem Description Text */
+.emblem-info-line span {
+  color: #000;
+}
+
+.dark-mode .emblem-info-line span,
+.dark-mode .emblem-info-line span strong {
+  color: #ffffff !important;
+}
+
 /* ===== MAP BUFFS SELECTOR ===== */
 .map-buffs-selector-new {
   background: rgba(255, 255, 255, 0.05);
