@@ -949,6 +949,12 @@ function renderMetaComparison(pokemonName) {
       dates: validDates,
       values: validBanrates
     }, '#dc3545');
+
+      // ✅ ADICIONE AQUI:
+  const metaStatsHTML = createMetaStatsHTML(pokemonName);
+  if (metaStatsHTML) {
+    metaChartsContainer.insertAdjacentHTML('beforeend', metaStatsHTML);
+  }
     
     console.log('✅ Gráficos de meta comparison criados para', pokemonName);
   }, 100);
@@ -1685,14 +1691,6 @@ const createSkillBuildInResult = () => {
     const routesDiv = document.createElement("div");
     routesDiv.innerHTML = routesHTML;
     skillSelector.appendChild(routesDiv.firstElementChild);
-  }
-
-  // Adicionar Meta Stats
-  const metaStatsHTML = createMetaStatsHTML(selectedPokemon);
-  if (metaStatsHTML) {
-    const metaStatsDiv = document.createElement("div");
-    metaStatsDiv.innerHTML = metaStatsHTML;
-    skillSelector.appendChild(metaStatsDiv.firstElementChild);
   }
   
   // Inserir o seletor após a role badge

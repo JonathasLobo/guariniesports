@@ -5435,48 +5435,41 @@ textarea.form-control {
 }
 /* ===== SISTEMA DE BUILDS - BOTÕES E MODAIS ===== */
 
-.build-actions-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
 .btn-build-action {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  min-width: 150px;
   justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ff8c00, #ff6b00);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 15px auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+  min-width: 180px;
 }
 
 .btn-build-action:hover:not(:disabled) {
-  background: linear-gradient(135deg, #5a67d8, #6a3fa0);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #ff7700, #ff5500);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
 }
 
 .btn-build-action:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
 }
 
 .btn-build-action:disabled {
-  background: #666;
+  background: #ccc;
   cursor: not-allowed;
-  opacity: 0.5;
   transform: none;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Modal Overlay */
@@ -5663,13 +5656,10 @@ textarea.form-control {
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .build-actions-container {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
   .btn-build-action {
-    min-width: 180px;
+    min-width: 160px;
+    padding: 14px 20px;
+    font-size: 15px;
   }
   
   .modal-content {
@@ -5691,7 +5681,7 @@ textarea.form-control {
 
 @media (max-width: 576px) {
   .btn-build-action {
-    padding: 10px 16px;
+    padding: 12px 16px;
     font-size: 14px;
     min-width: 140px;
   }
