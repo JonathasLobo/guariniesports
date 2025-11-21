@@ -84,6 +84,7 @@ const pokemonBaseImages = {
     tyranitar: 'tyranitar-left-bg',
     umbreon: 'umbreon-left-bg',
     urshifu: 'urshifu-left-bg',
+    vaporeon: 'vaporeon-left-bg',
     venusaur: 'venusaur-left-bg',
     wigglytuff: 'wigglytuff-left-bg',
     zacian: 'zacian-left-bg',
@@ -169,6 +170,7 @@ const pokemonRoles = {
     tyranitar: 'All Rounder',
     umbreon: 'Defender',
     urshifu: 'All Rounder',
+    vaporeon: 'Defender',
     venusaur: 'Attacker',
     wigglytuff: 'Support',
     zacian: 'All Rounder',
@@ -254,6 +256,7 @@ const pokemonLanes = {
     tyranitar: 'Top',
     umbreon: 'Bot',
     urshifu: 'Jungle',
+    vaporeon: 'Bot',
     venusaur: 'Bot',
     wigglytuff: 'Top',
     zacian: 'Top',
@@ -339,6 +342,7 @@ const pokemonBasedType  = {
     tyranitar: 'ATK',
     umbreon: 'ATK',
     urshifu: 'ATK',
+    vaporeon: 'SpATK',
     venusaur: 'SpATK',
     wigglytuff: 'SpATK',
     zacian: 'ATK',
@@ -819,6 +823,12 @@ const pokemonSkills = {
 		"s21": "Wish",
 		"s22": "Snarl"
     },
+    "vaporeon": {
+		"s11": "Hydro Pump",
+		"s12": "Muddy Water",
+		"s21": "Aqua Ring",
+		"s22": "Flip Turn"
+    },
     "venusaur": {
 		"s11": "Sludge Bomb",
 		"s12": "Giga Drain",
@@ -1051,6 +1061,7 @@ const defaultHeldItems = {
     tyranitar: ['muscleband','weaknesspolice','razorclaw'],
     umbreon: ['focusband','expshare','buddybarrier'],
     urshifu: ['muscleband','attackweight','razorclaw'],
+    vaporeon: ['expshare', 'focusband', 'bigroot'],
     venusaur: ['slickspoon','curseincense','choicespecs'],
     wigglytuff: ['resonantguard','buddybarrier','expshare'],
     zacian: ['rustedsword','razorclaw','muscleband'],
@@ -2154,6 +2165,20 @@ const baseStats = {
 		"Speed": 4300,
 		"CritDmg": 0,
 	},
+  "vaporeon": {
+		"HP": 9900,
+		"ATK": 115,
+		"DEF": 540,
+		"SpATK": 450,
+		"SpDEF": 500,
+		"CritRate": 0,
+		"CDR": 10,
+		"AtkSPD": 30,
+		"HPRegen": 0,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
 	"venusaur": {
 		"HP": 6500,
 		"ATK": 292,
@@ -2333,6 +2358,7 @@ const pokemonKillsRate = {
 	"tyranitar": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"umbreon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"urshifu": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
+  "vaporeon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"venusaur": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"wigglytuff": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
 	"zacian": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
@@ -2417,6 +2443,7 @@ const pokemonAssistRate = {
 	"tyranitar": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"umbreon": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"urshifu": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "vaporeon": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"venusaur": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"wigglytuff": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"zacian": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2501,6 +2528,7 @@ const pokemonDamageDoneRate = {
 	"tyranitar": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"umbreon": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"urshifu": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
+  "vaporeon": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"venusaur": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"wigglytuff": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"zacian": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
@@ -2585,6 +2613,7 @@ const pokemonDamageTakenRate = {
 	"tyranitar": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"umbreon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"urshifu": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
+  "vaporeon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"venusaur": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"wigglytuff": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"zacian": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2669,6 +2698,7 @@ const pokemonDamageHealedRate = {
 	"tyranitar": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"umbreon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"urshifu": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
+  "vaporeon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"venusaur": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"wigglytuff": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"zacian": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
@@ -2753,6 +2783,7 @@ const pokemonTierListUDB = {
     tyranitar: 'C',
     umbreon: 'A+',
     urshifu: 'B+',
+    vaporeon: 'TBD',
     venusaur: 'A',
     wigglytuff: 'C',
     zacian: 'A',
@@ -4140,7 +4171,23 @@ const levelStats = {
     14: { HP: 7257, ATK: 435, DEF: 382, SpATK: 102, SpDEF: 302, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.27 , Speed: 4300 },
     15: { HP: 7900, ATK: 480, DEF: 430, SpATK: 115, SpDEF: 340, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4300 },
   },
-
+  "vaporeon": {
+    1: { HP: 3400, ATK: 20, DEF: 90, SpATK: 90, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3544, ATK: 22, DEF: 100, SpATK: 98, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3700 },
+    3: { HP: 3710, ATK: 24, DEF: 111, SpATK: 107, SpDEF: 81, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3700 },
+    4: { HP: 3901, ATK: 27, DEF: 124, SpATK: 118, SpDEF: 94, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.54 , Speed: 3700 },
+    5: { HP: 4771, ATK: 40, DEF: 184, SpATK: 166, SpDEF: 153, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 14.22 , Speed: 3850 },
+    6: { HP: 5023, ATK: 44, DEF: 201, SpATK: 180, SpDEF: 170, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 15.00 , Speed: 3850 },
+    7: { HP: 5313, ATK: 48, DEF: 221, SpATK: 196, SpDEF: 190, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 15.89 , Speed: 4000 },
+    8: { HP: 5647, ATK: 53, DEF: 244, SpATK: 215, SpDEF: 213, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 16.92 , Speed: 4000 },
+    9: { HP: 6031, ATK: 59, DEF: 271, SpATK: 236, SpDEF: 239, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.1 , Speed: 4150 },
+    10: { HP: 6473, ATK: 65, DEF: 302, SpATK: 261, SpDEF: 269, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 19.46 , Speed: 4150 },
+    11: { HP: 6981, ATK: 72, DEF: 337, SpATK: 289, SpDEF: 303, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 21.02 , Speed: 4300 },
+    12: { HP: 7566, ATK: 81, DEF: 377, SpATK: 321, SpDEF: 343, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 22.82 , Speed: 4300 },
+    13: { HP: 8239, ATK: 91, DEF: 424, SpATK: 358, SpDEF: 388, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 24.89 , Speed: 4300 },
+    14: { HP: 9012, ATK: 102, DEF: 478, SpATK: 401, SpDEF: 440, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 27.27 , Speed: 4300 },
+    15: { HP: 9900, ATK: 115, DEF: 540, SpATK: 450, SpDEF: 500, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4300 }
+  },
     "venusaur": {
     1: { HP: 3300, ATK: 134, DEF: 45, SpATK: 50, SpDEF: 35, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
     2: { HP: 3346, ATK: 136, DEF: 48, SpATK: 63, SpDEF: 37, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.14 , Speed: 3700 },
@@ -5235,6 +5282,19 @@ const pokemonRatings = {
     Smite: 5,
     Sweep: 1
   },
+  vaporeon: {
+    Attack: 2,
+    Endure: 4,
+    Mobility: 3,
+    Score: 2,
+    Support: 4,
+    Invade: 3,
+    Farm: 2.5,
+    Gank: 1.5,
+    CC: 3.5,
+    Smite: 3,
+    Sweep: 2
+  },
   venusaur: {
     Attack: 4.5,
     Endure: 2,
@@ -5381,6 +5441,7 @@ const pokemonRoutesEffectiveness = {
   tyranitar: { top: 40, jungle: 50, bot: 10 },
   umbreon: { top: 50, jungle: 0, bot: 50 },
   urshifu: { top: 10, jungle: 80, bot: 10 },
+  vaporeon: { top: 50, jungle: 0, bot: 50 },
   venusaur: { top: 5, jungle: 30, bot: 65 },
   wigglytuff: { top: 40, jungle: 0, bot: 60 },
   zacian: { top: 80, jungle: 20, bot: 0 },
@@ -18990,6 +19051,156 @@ const skillDamage = {
 	 ]
 	}
   },
+  "vaporeon": {
+    "passive": {
+          name: "Water Absorb",
+          description: "Gains a shield periodically that negates damage and heals when broken. Hitting enemies reduces its cooldown.",
+          buff: {
+            HPRegen: 25
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+    buff: {},
+      formulas: [
+		{
+          label: "Damage - Basic",
+          formula: (SPATK, Level) => 0.3 * SPATK + 8 * (Level - 1) + 120,
+          type: "special"
+		},
+        {
+          label: "Damage - Boosted",
+          formula: (SPATK, Level) => 0.45 * SPATK + 12 * (Level - 1) + 180,
+          type: "special"
+		}
+      ]
+	},
+
+    "s11": {
+      name: "Hydro Pump",
+      cooldown: 6,
+      buff: {
+        Speed: "-30%"
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 10,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (SpATK, Level) => 1.29 * SpATK + 9 * (Level - 1) + 258,
+          type: "special"
+        },
+        {
+          label: "Damage - Stream (per Tick up to 5x)",
+          formula: (SpATK, Level) => 0.43 * SpATK + 3 * (Level - 1) + 86,
+          type: "special"
+        },
+        {
+          label: "Damage - Last Hit",
+          formula: (SpATK, Level) => 1.29 * SpATK + 9 * (Level - 1) + 258,
+          type: "special"
+        },
+      ]
+    },
+    "s12": {
+      name: "Muddy Water",
+      cooldown: 8.5,
+      buff: {
+      },
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      formulas: [
+	    {
+          label: "Damage",
+          formula: (SpATK, Level) => 2.2 * SpATK + 16 * (Level - 1) + 440,
+          type: "special"
+        }
+      ]
+    },
+    "s21": {
+      name: "Aqua Ring",
+      cooldown: 7,
+      buff: {},
+      formulas: [
+		{
+          label: "Heal",
+          formula: (SpATK, Level) => 0.75 * SpATK + 0 * (Level - 1) + 0,
+          type: "special"
+        },
+		{
+          label: "Heal Skill Plus",
+          formula: (SpATK, Level) => 0.90 * SpATK + 0 * (Level - 1) + 0,
+          type: "special"
+        },
+      ]
+    },
+	"s22": {
+      name: "Flip Turn",
+      cooldown: 6,
+      buff: {
+        Speed: "60%",
+        DmgTaken: 25
+      },
+      buffPlus: {
+        levelRequired: 12,
+        buffs: {
+          DmgTaken: 15
+        }
+      },
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (SpATK, Level) => 2.12 * SpATK + 14 * (Level - 1) + 440,
+          type: "special"
+        },
+        {
+          label: "Damage - Second Hit",
+          formula: (SpATK, Level) => 1.06 * SpATK + 7 * (Level - 1) + 220,
+          type: "special"
+        },
+        {
+          label: "Shield",
+          formula: (SpATK, Level) => 4 * SpATK + 0 * (Level - 1) + 800,
+          type: "special"
+        },
+      ]
+    },
+	"ult": {
+		name: "Aquamarine Splash",
+    cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 8,
+      buffs: {
+        Speed: "30%",
+        Shield: 40
+      }
+    },
+		formulas: [
+        {
+          label: "Damage - per Hit",
+          formula: (SpATK, Level) => 2 * SpATK + 14 * (Level - 1) + 400,
+          type: "special"
+        }
+	 ]
+	}
+  },
 
   "venusaur": {
     "passive": {
@@ -20507,6 +20718,10 @@ const skillDamage = {
     skin3: "Ninja Style",
     skin4: "Dark Suit Style",
     skin5: "Guardian Style"
+  },
+  vaporeon: {
+    default: "Default",
+    skin1: "Checkered Style"
   },
   venusaur: {
     default: "Default",
