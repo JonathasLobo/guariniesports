@@ -673,6 +673,7 @@ async function loadAllMetaData() {
       'meta02-11-2025.json',
       'meta10-11-2025.json',
       'meta17-11-2025.json',
+      'meta24-11-2025.json',
       // Adicione mais arquivos conforme criar
       // 'meta17-11-2025.json',
       // 'meta24-11-2025.json',
