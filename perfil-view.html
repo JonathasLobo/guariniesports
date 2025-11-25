@@ -153,89 +153,82 @@
   }
 
   // Função para criar card de build (SEM botões de editar/deletar)
-function createBuildCard(build) {
-  const pokemonImage = build.pokemon ? 
-    `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-    './estatisticas-shad/images/backgrounds/placeholder.png';
-  
-  // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
-  const pokemonName = capitalizeFirst(build.pokemon);
-  const roleInfo = getPokemonRole(build.pokemon);
-  
-  // Battle Item
-  const battleItemHTML = build.battleItem ? `
-    <div class="build-item-circle">
-      <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
-           alt="Battle Item"
-           onerror="this.style.display='none'">
-    </div>
-  ` : '';
-  
-  // Held Items (máximo 3)
-  const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
-    build.heldItems.slice(0, 3).map(item => `
+  function createBuildCard(build) {
+    const pokemonImage = build.pokemon ? 
+      `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+      './estatisticas-shad/images/backgrounds/placeholder.png';
+    
+    // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
+    const pokemonName = capitalizeFirst(build.pokemon);
+    const roleInfo = getPokemonRole(build.pokemon);
+    
+    // Battle Item
+    const battleItemHTML = build.battleItem ? `
       <div class="build-item-circle">
-        <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
-             alt="${item.name}"
-             title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+        <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+             alt="Battle Item"
              onerror="this.style.display='none'">
       </div>
-    `).join('') : 
-    '<span style="color: #888; font-size: 10px;">No items</span>';
-  
-  return `
-    <div class="build-card-perfil">
-      <div class="build-pokemon-image">
-        <img src="${pokemonImage}" 
-             alt="${pokemonName}"
-             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
-      </div>
-      
-      <h3 class="build-pokemon-name">${pokemonName}</h3>
-      
-      ${roleInfo ? `
-        <div class="build-pokemon-role">
-          <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
-               alt="${roleInfo.name}"
+    ` : '';
+    
+    // Held Items (máximo 3)
+    const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+      build.heldItems.slice(0, 3).map(item => `
+        <div class="build-item-circle">
+          <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+               alt="${item.name}"
+               title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
                onerror="this.style.display='none'">
-          <span>${roleInfo.name}</span>
         </div>
-      ` : ''}
-      
-      <div class="build-details">
-        <p class="build-name-header">${build.buildName}</p>
+      `).join('') : 
+      '<span style="color: #888; font-size: 10px;">No items</span>';
+    
+    return `
+      <div class="build-card-perfil">
+        <div class="build-pokemon-image">
+          <img src="${pokemonImage}" 
+               alt="${pokemonName}"
+               onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+        </div>
         
-        <div class="build-items-section">
-          ${battleItemHTML ? `
-            <div class="build-battle-item">
-              ${battleItemHTML}
-            </div>
-          ` : ''}
-          
-          <div class="build-held-items">
-            ${heldItemsHTML}
+        <h3 class="build-pokemon-name">${pokemonName}</h3>
+        
+        ${roleInfo ? `
+          <div class="build-pokemon-role">
+            <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+                 alt="${roleInfo.name}"
+                 onerror="this.style.display='none'">
+            <span>${roleInfo.name}</span>
           </div>
-        </div>
+        ` : ''}
         
-        <div class="build-actions-perfil">
-          <button class="btn-build-action-perfil btn-edit-perfil" data-build-id="${build.id}">
-            ✏️ Edit
-          </button>
-          <button class="btn-build-action-perfil btn-delete-perfil" data-build-id="${build.id}">
-            🗑️ Delete
-          </button>
+        <div class="build-details">
+          <p class="build-name-header">${build.buildName}</p>
+          
+          <div class="build-items-section">
+            ${battleItemHTML ? `
+              <div class="build-battle-item">
+                ${battleItemHTML}
+              </div>
+            ` : ''}
+            
+            <div class="build-held-items">
+              ${heldItemsHTML}
+            </div>
+          </div>
+          
+          <!-- REMOVIDO: Botões de editar e deletar -->
         </div>
       </div>
-    </div>
-  `;
-}
+    `;
+  }
 
-// Função auxiliar para obter role do Pokémon
-function getPokemonRole(pokemonKey) {
-  // Você precisará importar ou replicar a lógica do pokemonRoles aqui
-  // Por enquanto, retorna null - você pode adicionar a lógica depois
-  return null;
-}
+  // Função auxiliar para obter role do Pokémon
+  function getPokemonRole(pokemonKey) {
+    // Você precisará importar ou replicar a lógica do pokemonRoles aqui
+    // Por enquanto, retorna null - você pode adicionar a lógica depois
+    return null;
+  }
 
   // Carregar dados do usuário (SEM EXIBIR EMAIL)
   async function carregarDadosUsuario() {
