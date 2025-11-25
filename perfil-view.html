@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visualizar perfil - Guarini e-sport">
+  <title>Player Profile - Guarini e-sport</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="perfil.css">
+  <meta name="theme-color" content="#ffad00">
+</head>
+
+<body>
+  <a id="topo"></a>
+
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="index.html" aria-label="Início">
+          <img src="./logos/Guarini.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="material.html">Material</a></li>
+        </ul>
+      </nav>
+      
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="loja.html">Loja</a></li>
+          <li><a href="material.html">Material</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="perfil-section">
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <button onclick="history.back()" style="background: #ffad00; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+          ← Back
+        </button>
+        <h2 style="margin: 0;">Player Profile</h2>
+      </div>
+      
+      <!-- Card de Perfil (Modo Visualização - SEM EMAIL) -->
+      <div class="perfil-card">
+        <div class="perfil-avatar-container">
+          <div class="perfil-avatar" id="perfilAvatar">
+            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
+          </div>
+        </div>
+
+        <div class="perfil-info">
+          <div class="perfil-nome-container">
+            <h3 id="perfilNomeDisplay">Loading...</h3>
+          </div>
+          <!-- EMAIL REMOVIDO - não será exibido -->
+          
+          <div class="perfil-player-id-container">
+            <p class="perfil-player-id-label">Player ID:</p>
+            <p class="perfil-player-id-display" id="playerIdDisplay">-</p>
+          </div>
+        </div>
+      </div>  
+
+      <!-- Área de builds (somente visualização) -->
+      <section class="perfil-section">
+        <h2>Saved Builds</h2>
+        
+        <div class="perfil-content">
+          <div id="builds-container-perfil" class="builds-container">
+            <div class="builds-loading">Loading builds...</div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
+  </footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc,
+    collection, 
+    getDocs 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+    authDomain: "site-grn.firebaseapp.com",
+    projectId: "site-grn",
+    storageBucket: "site-grn.firebasestorage.app",
+    messagingSenderId: "27613322806",
+    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+    measurementId: "G-84NHN394WF"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore();
+
+  // Pegar UID da URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('uid');
+
+  if (!userId) {
+    alert('❌ User not found');
+    window.location.href = 'index.html';
+  }
+
+  // Elementos do DOM
+  const perfilNomeDisplay = document.getElementById('perfilNomeDisplay');
+  const avatarImg = document.getElementById('avatarImg');
+  const playerIdDisplay = document.getElementById('playerIdDisplay');
+  const buildsContainer = document.getElementById('builds-container-perfil');
+
+  // Função para capitalizar primeira letra
+  function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // Função para criar card de build (SEM botões de editar/deletar)
+function createBuildCard(build) {
+  const pokemonImage = build.pokemon ? 
+    `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+    './estatisticas-shad/images/backgrounds/placeholder.png';
+  
+  // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
+  const pokemonName = capitalizeFirst(build.pokemon);
+  const roleInfo = getPokemonRole(build.pokemon);
+  
+  // Battle Item
+  const battleItemHTML = build.battleItem ? `
+    <div class="build-item-circle">
+      <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+           alt="Battle Item"
+           onerror="this.style.display='none'">
+    </div>
+  ` : '';
+  
+  // Held Items (máximo 3)
+  const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+    build.heldItems.slice(0, 3).map(item => `
+      <div class="build-item-circle">
+        <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+             alt="${item.name}"
+             title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+             onerror="this.style.display='none'">
+      </div>
+    `).join('') : 
+    '<span style="color: #888; font-size: 10px;">No items</span>';
+  
+  return `
+    <div class="build-card-perfil">
+      <div class="build-pokemon-image">
+        <img src="${pokemonImage}" 
+             alt="${pokemonName}"
+             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+      </div>
+      
+      <h3 class="build-pokemon-name">${pokemonName}</h3>
+      
+      ${roleInfo ? `
+        <div class="build-pokemon-role">
+          <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+               alt="${roleInfo.name}"
+               onerror="this.style.display='none'">
+          <span>${roleInfo.name}</span>
+        </div>
+      ` : ''}
+      
+      <div class="build-details">
+        <p class="build-name-header">${build.buildName}</p>
+        
+        <div class="build-items-section">
+          ${battleItemHTML ? `
+            <div class="build-battle-item">
+              ${battleItemHTML}
+            </div>
+          ` : ''}
+          
+          <div class="build-held-items">
+            ${heldItemsHTML}
+          </div>
+        </div>
+        
+        <div class="build-actions-perfil">
+          <button class="btn-build-action-perfil btn-edit-perfil" data-build-id="${build.id}">
+            ✏️ Edit
+          </button>
+          <button class="btn-build-action-perfil btn-delete-perfil" data-build-id="${build.id}">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Função auxiliar para obter role do Pokémon
+function getPokemonRole(pokemonKey) {
+  // Você precisará importar ou replicar a lógica do pokemonRoles aqui
+  // Por enquanto, retorna null - você pode adicionar a lógica depois
+  return null;
+}
+
+  // Carregar dados do usuário (SEM EXIBIR EMAIL)
+  async function carregarDadosUsuario() {
+    try {
+      const userDocRef = doc(db, "usuarios", userId);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (!userDocSnap.exists()) {
+        alert('❌ User not found');
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      const userData = userDocSnap.data();
+      
+      // Atualizar interface - SEM EMAIL
+      perfilNomeDisplay.textContent = userData.displayName || 'Anonymous Player';
+      
+      if (userData.avatar) {
+        avatarImg.src = userData.avatar;
+      }
+      
+      if (userData.playerId) {
+        playerIdDisplay.textContent = userData.playerId;
+      } else {
+        playerIdDisplay.textContent = 'Not registered';
+        playerIdDisplay.style.color = '#888';
+      }
+      
+      console.log('✅ User data loaded');
+      
+      // Carregar builds
+      await carregarBuildsUsuario(userId);
+      
+    } catch (error) {
+      console.error('❌ Error loading user:', error);
+      alert('❌ Error loading profile');
+      window.location.href = 'index.html';
+    }
+  }
+
+  // Carregar builds do usuário (somente visualização)
+  async function carregarBuildsUsuario(uid) {
+    try {
+      buildsContainer.innerHTML = '<div class="builds-loading">Loading builds...</div>';
+      
+      const buildsRef = collection(db, "usuarios", uid, "builds");
+      const buildsSnap = await getDocs(buildsRef);
+      
+      if (buildsSnap.empty) {
+        buildsContainer.innerHTML = `
+          <div class="no-builds-message">
+            This player has no saved builds yet.
+          </div>
+        `;
+        return;
+      }
+      
+      const builds = [];
+      buildsSnap.forEach(docSnap => {
+        builds.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      
+      // Ordenar por data
+      builds.sort((a, b) => {
+        const dateA = a.updatedAt?.toDate() || new Date(0);
+        const dateB = b.updatedAt?.toDate() || new Date(0);
+        return dateB - dateA;
+      });
+      
+      // Renderizar builds (sem botões de ação)
+      buildsContainer.innerHTML = builds.map(build => createBuildCard(build)).join('');
+      
+      console.log('✅ Builds loaded:', builds.length);
+      
+    } catch (error) {
+      console.error('❌ Error loading builds:', error);
+      buildsContainer.innerHTML = `
+        <div class="no-builds-message" style="color: #ff6b6b;">
+          ❌ Error loading builds
+        </div>
+      `;
+    }
+  }
+
+  // Carregar dados ao iniciar
+  carregarDadosUsuario();
+</script>
+
+<script>
+  // Menu mobile
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+
+  menuToggle.addEventListener('click', function() {
+    this.classList.toggle('ativo');
+    mobileMenu.classList.toggle('ativo');
+  });
+
+  const mobileLinks = document.querySelectorAll('.mobile-menu a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      menuToggle.classList.remove('ativo');
+      mobileMenu.classList.remove('ativo');
+    });
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 900) {
+      menuToggle.classList.remove('ativo');
+      mobileMenu.classList.remove('ativo');
+    }
+  });
+</script>
+
+</body>
+</html>

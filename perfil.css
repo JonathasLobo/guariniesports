@@ -459,22 +459,49 @@
    ============================================ */
 
 .builds-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
   margin-top: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 0;
+}
+
+/* Scrollbar personalizada */
+.builds-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.builds-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.builds-container::-webkit-scrollbar-thumb {
+  background: #ff7500;
+  border-radius: 10px;
+}
+
+.builds-container::-webkit-scrollbar-thumb:hover {
+  background: #ffad00;
 }
 
 .build-card-perfil {
-  background: rgba(0, 0, 0, 0.7);
-  border: 3px solid #ff7500;
-  border-radius: 15px;
-  padding: 20px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ff7500;
+  border-radius: 12px;
+  padding: 15px;
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   position: relative;
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(255, 117, 0, 0.3);
+  min-width: 180px;
+  max-width: 180px;
+  flex-shrink: 0;
 }
 
 .build-card-perfil:hover {
@@ -484,38 +511,71 @@
 
 /* ✅ IMAGEM DO POKÉMON SEM BORDAS */
 .build-pokemon-image {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent; /* Sem fundo */
+  background: transparent;
+  margin-bottom: 5px;
 }
 
 .build-pokemon-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Mantém proporção sem cortar */
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)); /* Sombra suave */
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+/* Nome do Pokémon - estilo Dota 2 */
+.build-pokemon-name {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+/* Role do Pokémon */
+.build-pokemon-role {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.build-pokemon-role img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0.8);
+}
+
+.build-pokemon-role span {
+  color: #aaa;
+  font-size: 0.85rem;
+  text-transform: capitalize;
 }
 
 .build-details {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ✅ NOME DA BUILD CENTRALIZADO */
 .build-name-header {
-  color: #ffad00;
-  font-size: 1.2rem;
-  font-weight: 700;
+  color: #888;
+  font-size: 0.9rem;
+  font-weight: 600;
   margin: 0;
   word-break: break-word;
-  text-align: center; /* Centralizado */
-  padding: 0 10px;
+  text-align: center;
+  padding: 0 5px;
+  width: 100%;
 }
 
 .build-items-section {
@@ -531,11 +591,11 @@
 }
 
 .build-item-circle {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  background: rgba(255, 255, 255, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -559,19 +619,42 @@
   gap: 10px;
 }
 
+/* Layout horizontal para itens */
+.build-items-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.build-battle-item {
+  display: flex;
+  justify-content: center;
+}
+
+.build-held-items {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* ✅ BOTÕES MENORES */
 .build-actions-perfil {
   display: flex;
-  gap: 8px;
-  margin-top: auto;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  width: 100%;
 }
 
 .btn-build-action-perfil {
-  flex: 1;
-  padding: 6px 12px; /* Reduzido de 10px 15px */
+  width: 100%;
+  padding: 6px 10px;
   border: 2px solid;
-  border-radius: 6px; /* Mais compacto */
-  font-size: 12px; /* Reduzido de 14px */
+  border-radius: 5px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -666,5 +749,274 @@
   .build-item-circle {
     width: 40px;
     height: 40px;
+  }
+}
+
+/* ============================================
+   CAMPO DE ID DO JOGADOR
+   ============================================ */
+
+.perfil-player-id-container {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-player-id-label {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin: 0;
+  min-width: 90px;
+}
+
+.perfil-player-id-display {
+  color: #ffad00;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.perfil-player-id-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.perfil-player-id-input {
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #ff7500;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  max-width: 200px;
+}
+
+.perfil-player-id-input:focus {
+  outline: none;
+  border-color: #ffad00;
+  box-shadow: 0 0 10px rgba(255, 173, 0, 0.5);
+}
+
+.perfil-player-id-input::placeholder {
+  color: #888;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.btn-save-player-id {
+  background: rgba(40, 167, 69, 0.2);
+  border: 2px solid #28a745;
+  color: #28a745;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-save-player-id:hover {
+  background: #28a745;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-save-player-id:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-help-player-id {
+  background: rgba(0, 123, 255, 0.2);
+  border: 2px solid #007bff;
+  color: #007bff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-help-player-id:hover {
+  background: #007bff;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Modal de Ajuda do ID */
+.modal-help-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-help-overlay.show {
+  display: flex;
+}
+
+.modal-help-content {
+  background: rgba(26, 26, 26, 0.98);
+  border: 3px solid #007bff;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+.modal-help-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 0, 0, 0.3);
+  border: 2px solid #ff0000;
+  color: #fff;
+  font-size: 24px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.modal-help-close:hover {
+  background: rgba(255, 0, 0, 0.6);
+  transform: rotate(90deg);
+}
+
+.modal-help-content h3 {
+  color: #007bff;
+  font-size: 1.5rem;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.modal-help-content p {
+  color: #ccc;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-help-content strong {
+  color: #ffad00;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .perfil-player-id-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .perfil-player-id-input-group {
+    width: 100%;
+  }
+
+  .perfil-player-id-input {
+    max-width: none;
+    flex: 1;
+  }
+
+  .modal-help-content {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .modal-help-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .modal-help-content p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-player-id-label {
+    font-size: 1rem;
+  }
+
+  .perfil-player-id-display,
+  .perfil-player-id-input {
+    font-size: 0.95rem;
+  }
+
+  .btn-save-player-id {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* Responsividade para builds horizontais */
+@media (max-width: 1200px) {
+  .build-card-perfil {
+    min-width: 160px;
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .builds-container {
+    gap: 10px;
+  }
+  
+  .build-card-perfil {
+    min-width: 140px;
+    max-width: 140px;
+    padding: 12px;
+  }
+  
+  .build-pokemon-image {
+    height: 80px;
+  }
+  
+  .build-pokemon-image img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .build-pokemon-name {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .build-card-perfil {
+    min-width: 120px;
+    max-width: 120px;
+    padding: 10px;
+  }
+  
+  .build-item-circle {
+    width: 35px;
+    height: 35px;
   }
 }

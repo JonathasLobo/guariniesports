@@ -118,11 +118,39 @@ function googleTranslateElementInit() {
     </div>
   </header>
 
-  <div class="user-container">
-    <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
-    <div class="user-info" id="userInfo">
-      Olá, <span id="userName"></span>!
+    <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Olá, visitante!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
     </div>
+  </div>
+
+  <!-- Barra de busca de perfis -->
+  <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
   </div>
 
   <main>
@@ -240,258 +268,405 @@ function googleTranslateElementInit() {
 
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getAuth, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      getDoc, 
-      setDoc 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged, 
+    signOut 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc,
+    setDoc,
+    collection, 
+    query, 
+    where, 
+    getDocs 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
-      authDomain: "site-grn.firebaseapp.com",
-      projectId: "site-grn",
-      storageBucket: "site-grn.firebasestorage.app",
-      messagingSenderId: "27613322806",
-      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
-      measurementId: "G-84NHN394WF"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+    authDomain: "site-grn.firebaseapp.com",
+    projectId: "site-grn",
+    storageBucket: "site-grn.firebasestorage.app",
+    messagingSenderId: "27613322806",
+    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+    measurementId: "G-84NHN394WF"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    const loginLogoutBtn = document.getElementById("loginLogoutBtn");
-    const userInfo = document.getElementById('userInfo');
-    const userName = document.getElementById("userName");
-    const calcBtn = document.getElementById("calcBtn");
-    const statBtn = document.getElementById("statBtn");
-    const winrateBtn = document.getElementById("winrateBtn");
-    const analiseBtn = document.getElementById("analiseBtn");
-    const buildBtn = document.getElementById("buildBtn");
-    const calcAccessMessage = document.getElementById("calcAccessMessage");
-    const statAccessMessage = document.getElementById("statAccessMessage");
-    const calcWinrateMessage = document.getElementById("calcWinrateMessage");
-    const analiseAccessMessage = document.getElementById("analiseAccessMessage");
-    const buildAccessMessage = document.getElementById("buildAccessMessage");
-    const quizAccessMessage = document.getElementById("quizAccessMessage");    
+  // ========================================
+  // ELEMENTOS DO DOM - MENU USUÁRIO
+  // ========================================
+  const userMenuToggle = document.getElementById('userMenuToggle');
+  const userDropdown = document.getElementById('userDropdown');
+  const userDropdownHeader = document.getElementById('userDropdownHeader');
+  const authLink = document.getElementById('authLink');
+  const perfilLink = document.getElementById('perfilLink');
 
-    // Função para lidar com login
-    async function handleLogin() {
-      try {
-        sessionStorage.setItem('redirectAfterLogin', 'material.html');
-        window.location.href = 'login.html';
-      } catch (err) {
-        console.error("Erro ao redirecionar para login:", err);
-        alert('Erro ao tentar fazer login. Por favor, tente novamente.');
-      }
+  // ========================================
+  // ELEMENTOS DO DOM - BUSCA DE PERFIL
+  // ========================================
+  const profileSearchBtn = document.getElementById('profileSearchBtn');
+  const profileSearchInput = document.getElementById('profileSearchInput');
+  const profileSearchResults = document.getElementById('profileSearchResults');
+
+  // ========================================
+  // ELEMENTOS DO DOM - FERRAMENTAS
+  // ========================================
+  const calcBtn = document.getElementById("calcBtn");
+  const statBtn = document.getElementById("statBtn");
+  const winrateBtn = document.getElementById("winrateBtn");
+  const analiseBtn = document.getElementById("analiseBtn");
+  const buildBtn = document.getElementById("buildBtn");
+  const quizBtn = document.getElementById("quizBtn");
+  const calcAccessMessage = document.getElementById("calcAccessMessage");
+  const statAccessMessage = document.getElementById("statAccessMessage");
+  const calcWinrateMessage = document.getElementById("calcWinrateMessage");
+  const analiseAccessMessage = document.getElementById("analiseAccessMessage");
+  const buildAccessMessage = document.getElementById("buildAccessMessage");
+  const quizAccessMessage = document.getElementById("quizAccessMessage");
+
+  // ========================================
+  // MENU DROPDOWN DO USUÁRIO
+  // ========================================
+  
+  // Toggle do menu dropdown
+  userMenuToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    this.classList.toggle('active');
+    userDropdown.classList.toggle('show');
+  });
+
+  // Fechar dropdown ao clicar fora
+  document.addEventListener('click', function(e) {
+    if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+      userMenuToggle.classList.remove('active');
+      userDropdown.classList.remove('show');
     }
+  });
 
-    // Função para lidar com logout
-    async function handleLogout() {
+  // Fechar dropdown ao clicar em um link
+  userDropdown.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function() {
+      userMenuToggle.classList.remove('active');
+      userDropdown.classList.remove('show');
+    });
+  });
+
+  // ========================================
+  // BUSCA DE PERFIL - COM BUSCA AUTOMÁTICA
+  // ========================================
+
+  // Função para buscar perfil
+  async function buscarPerfil() {
+    const playerId = profileSearchInput.value.trim().toUpperCase();
+    
+    if (!playerId) {
+      profileSearchResults.classList.remove('show');
+      return;
+    }
+    
+    if (playerId.length !== 7) {
+      profileSearchResults.classList.remove('show');
+      return;
+    }
+    
+    try {
+      profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+      profileSearchResults.classList.add('show');
+      
+      const usuariosRef = collection(db, "usuarios");
+      const q = query(usuariosRef, where("playerId", "==", playerId));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+        return;
+      }
+      
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      const userId = userDoc.id;
+      
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+          <div style="flex: 1;">
+            <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+              ✅ Player found!
+            </div>
+            <div style="color: #fff; font-size: 13px;">
+              ${userData.displayName || 'Anonymous'}
+            </div>
+            <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+              ID: ${userData.playerId}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; text-align: center;">
+          <button 
+            onclick="window.location.href='perfil-view.html?uid=${userId}'" 
+            style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+          >
+            👤 View Profile
+          </button>
+        </div>
+      `;
+      
+    } catch (error) {
+      console.error('❌ Erro ao buscar perfil:', error);
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-no-results" style="color: #ff6b6b;">
+          ❌ Search error<br>
+          <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
+            ${error.message}
+          </small>
+        </div>
+      `;
+    }
+  }
+
+  // Toggle da barra de busca
+  profileSearchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    profileSearchInput.classList.toggle('active');
+    
+    if (profileSearchInput.classList.contains('active')) {
+      profileSearchInput.focus();
+    } else {
+      profileSearchInput.value = '';
+      profileSearchResults.classList.remove('show');
+    }
+  });
+
+  // Buscar ao pressionar Enter
+  profileSearchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+      await buscarPerfil();
+    }
+  });
+
+  // Validação do input e BUSCA AUTOMÁTICA ao digitar 7 caracteres
+  profileSearchInput.addEventListener('input', async (e) => {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (e.target.value.length > 7) {
+      e.target.value = e.target.value.slice(0, 7);
+    }
+    
+    if (e.target.value.length === 7) {
+      await buscarPerfil();
+    } else {
+      profileSearchResults.classList.remove('show');
+    }
+  });
+
+  // Fechar ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.profile-search-container')) {
+      profileSearchInput.classList.remove('active');
+      profileSearchResults.classList.remove('show');
+    }
+  });
+
+  // ========================================
+  // AUTENTICAÇÃO DO USUÁRIO
+  // ========================================
+  
+  // Função para atualizar a interface com base no estado do usuário
+  async function updateUI(user) {
+    if (user) {
       try {
-        await signOut(auth);
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        let displayName = user.displayName || user.email.split('@')[0];
+        let avatarPath = './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          if (userData.displayName) {
+            displayName = userData.displayName;
+          }
+          if (userData.avatar) {
+            avatarPath = userData.avatar;
+          }
+        }
+        
+        userDropdownHeader.innerHTML = `
+          <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+          <span>Olá, ${displayName}!</span>
+        `;
+        authLink.textContent = 'Logout';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogout();
+        };
+        perfilLink.style.display = 'block';
+        
       } catch (error) {
-        console.error("Erro no logout:", error);
+        console.error('❌ Erro ao carregar dados do usuário:', error);
+        userDropdownHeader.innerHTML = `
+          <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
+          <span>Olá, ${user.email.split('@')[0]}!</span>
+        `;
+        authLink.textContent = 'Logout';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogout();
+        };
+        perfilLink.style.display = 'block';
+      }
+    } else {
+      userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+      authLink.textContent = 'Login';
+      authLink.onclick = function(e) {
+        e.preventDefault();
+        handleLogin();
+      };
+      perfilLink.style.display = 'none';
+    }
+  }
+
+  // Função para fazer login
+  function handleLogin() {
+    sessionStorage.setItem('redirectAfterLogin', 'material.html');
+    window.location.href = 'login.html';
+  }
+
+  // Função para fazer logout
+  async function handleLogout() {
+    const confirmar = confirm('Deseja realmente fazer logout?');
+    if (confirmar) {
+      try {
+        localStorage.removeItem('userDisplayName');
+        localStorage.removeItem('userAvatar');
+        await signOut(auth);
+        alert('Logout realizado com sucesso!');
+      } catch (error) {
+        console.error('Erro no logout:', error);
         alert('Erro ao fazer logout. Tente novamente.');
       }
     }
+  }
 
-    // Atualiza a UI baseada no estado de autenticação
-    function updateUI(user) {
-      if (user) {
-        loginLogoutBtn.textContent = 'Logout';
-        loginLogoutBtn.onclick = handleLogout;
+  // ========================================
+  // FERRAMENTAS - CONFIGURAÇÃO DE ACESSO
+  // ========================================
+
+  function setupCalculatorAccess() {
+    calcBtn.onclick = () => window.location.href = 'desempenho.html';
+    calcAccessMessage.style.display = 'none';
+  }
+
+  function setupWinrateAccess() {
+    winrateBtn.onclick = () => window.location.href = 'ferramenta-cenario.html';
+    calcWinrateMessage.style.display = 'none';
+  }
+
+  function setupAnaliseAccess() {
+    analiseBtn.onclick = () => window.location.href = 'avaliaçaopontos.html';
+    analiseAccessMessage.style.display = 'none';
+  }
+
+  function setupBuildAccess() {
+    buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
+    buildAccessMessage.style.display = 'none';
+  }
+
+  function setupQuizAccess() {
+    quizBtn.onclick = () => window.location.href = 'quiz.html';
+    quizAccessMessage.style.display = 'none';
+  }
+
+  async function checkStatsPermissions(user) {
+    if (!user) {
+      setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
         
-        const displayName = user.displayName || user.email.split('@')[0];
-        userName.textContent = displayName;
-        userInfo.style.display = 'block';
-      } else {
-        loginLogoutBtn.textContent = 'Login';
-        loginLogoutBtn.onclick = handleLogin;
-        userInfo.style.display = 'none';
-      }
-    }
-
-    // Configura acesso à calculadora de performance (sempre liberado)
-    function setupCalculatorAccess() {
-      calcBtn.onclick = () => window.location.href = 'desempenho.html';
-      calcAccessMessage.style.display = 'none';
-    }
-
-    // Configura acesso à calculadora de winrate (sempre liberado)
-    function setupWinrateAccess() {
-      winrateBtn.onclick = () => window.location.href = 'ferramenta-cenario.html';
-      calcWinrateMessage.style.display = 'none';
-    }
-
-    // Configura acesso à análise de equipe (sempre liberado)
-    function setupAnaliseAccess() {
-      analiseBtn.onclick = () => window.location.href = 'avaliaçaopontos.html';
-      analiseAccessMessage.style.display = 'none';
-    }
-
-    // Configura acesso ao Build Maker (sempre liberado)
-    function setupBuildAccess() {
-      buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
-      buildAccessMessage.style.display = 'none';
-    }
-
-    // Configura acesso ao Quiz Unite (sempre liberado)
-    function setupQuizAccess() {
-      quizBtn.onclick = () => window.location.href = 'quiz.html';
-      quizAccessMessage.style.display = 'none';
-    }    
-
-    // Verifica permissões do usuário para estatísticas
-    async function checkStatsPermissions(user) {
-      if (!user) {
-        setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
-        return;
-      }
-
-      try {
-        const docRef = doc(db, "usuarios", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          
-          if (userData.role === 'player' || userData.role === 'admin') {
-            statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
-            statAccessMessage.style.display = 'none';
-          } else {
-            setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
-          }
+        if (userData.role === 'player' || userData.role === 'admin') {
+          statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
+          statAccessMessage.style.display = 'none';
         } else {
-          await setDoc(doc(db, "usuarios", user.uid), {
-            email: user.email,
-            role: 'user',
-            createdAt: new Date()
-          });
           setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
         }
-      } catch (error) {
-        console.error("Erro ao verificar permissões:", error);
-        setupRestrictedStatsAccess("Erro ao verificar permissões. Tente novamente.");
-      }
-    }
-
-    function setupRestrictedStatsAccess(message) {
-      statBtn.onclick = () => {
-        statAccessMessage.textContent = message;
-        statAccessMessage.style.display = 'block';
-        setTimeout(() => {
-          statAccessMessage.style.display = 'none';
-        }, 3000);
-      };
-    }
-
-    // Monitora estado de autenticação
-    onAuthStateChanged(auth, async (user) => {
-      updateUI(user);
-      
-      setupCalculatorAccess();
-      setupWinrateAccess();
-      setupAnaliseAccess();
-      setupBuildAccess();
-      setupQuizAccess();      
-      
-      await checkStatsPermissions(user);
-    });
-
-    // Funcionalidade do menu mobile
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-
-    menuToggle.addEventListener('click', function() {
-      this.classList.toggle('ativo');
-      mobileMenu.classList.toggle('ativo');
-    });
-
-    const mobileLinks = document.querySelectorAll('.mobile-menu a');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        menuToggle.classList.remove('ativo');
-        mobileMenu.classList.remove('ativo');
-      });
-    });
-
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 900) {
-        menuToggle.classList.remove('ativo');
-        mobileMenu.classList.remove('ativo');
-      }
-    });
-  </script>
-  <script>
-  // PWA - Botão de instalação
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('installBtn').style.display = 'block';
-  });
-
-  document.getElementById('installBtn').addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById('installBtn').style.display = 'none';
-    console.log('Usuário respondeu:', outcome);
-  });
-
-  // Seletor de idioma customizado
-  const languageBtn = document.getElementById('languageBtn');
-  const languageDropdown = document.getElementById('languageDropdown');
-  const currentLang = document.getElementById('currentLang');
-  const languageOptions = document.querySelectorAll('.language-option');
-
-  languageBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    languageDropdown.classList.toggle('show');
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!languageBtn.contains(e.target)) {
-      languageDropdown.classList.remove('show');
-    }
-  });
-
-  languageOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const lang = this.dataset.lang;
-      const flag = this.dataset.flag;
-      const name = this.dataset.name;
-      
-      const flagElement = languageBtn.querySelector('.flag');
-      flagElement.className = `flag ${flag}`;
-      currentLang.textContent = name;
-      languageDropdown.classList.remove('show');
-      
-      const translateElement = document.querySelector('.goog-te-combo');
-      if (translateElement) {
-        translateElement.value = lang;
-        translateElement.dispatchEvent(new Event('change'));
       } else {
-        setTimeout(() => {
-          const translateElement = document.querySelector('.goog-te-combo');
-          if (translateElement) {
-            translateElement.value = lang;
-            translateElement.dispatchEvent(new Event('change'));
-          }
-        }, 1000);
+        await setDoc(doc(db, "usuarios", user.uid), {
+          email: user.email,
+          role: 'user',
+          createdAt: new Date()
+        });
+        setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
       }
+    } catch (error) {
+      console.error("Erro ao verificar permissões:", error);
+      setupRestrictedStatsAccess("Erro ao verificar permissões. Tente novamente.");
+    }
+  }
+
+  function setupRestrictedStatsAccess(message) {
+    statBtn.onclick = () => {
+      statAccessMessage.textContent = message;
+      statAccessMessage.style.display = 'block';
+      setTimeout(() => {
+        statAccessMessage.style.display = 'none';
+      }, 3000);
+    };
+  }
+
+  // ========================================
+  // MONITORA AUTENTICAÇÃO
+  // ========================================
+  onAuthStateChanged(auth, async (user) => {
+    await updateUI(user);
+    
+    setupCalculatorAccess();
+    setupWinrateAccess();
+    setupAnaliseAccess();
+    setupBuildAccess();
+    setupQuizAccess();
+    
+    await checkStatsPermissions(user);
+  });
+
+  // ========================================
+  // MENU MOBILE
+  // ========================================
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+
+  menuToggle.addEventListener('click', function() {
+    this.classList.toggle('ativo');
+    mobileMenu.classList.toggle('ativo');
+  });
+
+  const mobileLinks = document.querySelectorAll('.mobile-menu a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      menuToggle.classList.remove('ativo');
+      mobileMenu.classList.remove('ativo');
     });
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 900) {
+      menuToggle.classList.remove('ativo');
+      mobileMenu.classList.remove('ativo');
+    }
   });
 </script>
-
 </body>
 </html>

@@ -88,7 +88,7 @@
         <!-- Foto de Perfil -->
         <div class="perfil-avatar-container">
           <div class="perfil-avatar" id="perfilAvatar">
-            <img src="./estatisticas-shad/images/sprites/pikachu.png" alt="Avatar do usuário" id="avatarImg">
+            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
           </div>
         </div>
 
@@ -102,8 +102,48 @@
           </div>
           <input type="text" id="perfilNomeInput" class="perfil-nome-input" style="display: none;" maxlength="30">
           <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
+          <!-- Player ID Section -->
+          <div class="perfil-player-id-container">
+            <p class="perfil-player-id-label">Player ID:</p>
+            
+            <!-- Exibição do ID (quando já cadastrado) -->
+            <p class="perfil-player-id-display" id="playerIdDisplay" style="display: none;">-</p>
+            
+            <!-- Input para cadastrar ID (quando não tem ID) -->
+            <div class="perfil-player-id-input-group" id="playerIdInputGroup" style="display: none;">
+              <input 
+                type="text" 
+                id="playerIdInput" 
+                class="perfil-player-id-input" 
+                placeholder="Ex: A1B2C3D"
+                maxlength="7"
+                pattern="[A-Za-z0-9]{7}"
+              >
+              <button class="btn-save-player-id" id="btnSavePlayerId">
+                💾 Save
+              </button>
+              <button class="btn-help-player-id" id="btnHelpPlayerId" title="Help">
+                ?
+              </button>
+            </div>
+          </div>
+
+          <!-- Modal de Ajuda -->
+          <div class="modal-help-overlay" id="modalHelpPlayerId">
+            <div class="modal-help-content">
+              <button class="modal-help-close" id="btnCloseHelpModal">✕</button>
+              <h3>📋 How to find your Player ID</h3>
+              <p>
+                <strong>Step 1:</strong> Open Pokémon UNITE on your device<br><br>
+                <strong>Step 2:</strong> Go to your profile (tap your trainer card)<br><br>
+                <strong>Step 3:</strong> Look for your <strong>Player ID</strong> (it's a 7-character code with letters and numbers)<br><br>
+                <strong>Step 4:</strong> Copy this ID and paste it here<br><br>
+                ⚠️ <strong>Important:</strong> This ID can only be set once and cannot be changed later. Make sure you enter the correct ID!
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </div>  
 
       <!-- Área para builds salvas -->
       <section class="perfil-section">
@@ -183,67 +223,87 @@
   }
 
   // Função para criar o HTML de um card de build
-  function createBuildCard(build) {
-    const pokemonImage = build.pokemon ? 
-      `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-      './estatisticas-shad/images/backgrounds/placeholder.png';
-    
-    // Battle Item
-    const battleItemHTML = build.battleItem ? `
+function createBuildCard(build) {
+  const pokemonImage = build.pokemon ? 
+    `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+    './estatisticas-shad/images/backgrounds/placeholder.png';
+  
+  // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
+  const pokemonName = capitalizeFirst(build.pokemon);
+  const roleInfo = getPokemonRole(build.pokemon);
+  
+  // Battle Item
+  const battleItemHTML = build.battleItem ? `
+    <div class="build-item-circle">
+      <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+           alt="Battle Item"
+           onerror="this.style.display='none'">
+    </div>
+  ` : '';
+  
+  // Held Items (máximo 3)
+  const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+    build.heldItems.slice(0, 3).map(item => `
       <div class="build-item-circle">
-        <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
-             alt="Battle Item"
+        <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+             alt="${item.name}"
+             title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
              onerror="this.style.display='none'">
       </div>
-    ` : '';
-    
-    // Held Items (máximo 3)
-    const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
-      build.heldItems.slice(0, 3).map(item => `
-        <div class="build-item-circle">
-          <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
-               alt="${item.name}"
-               title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+    `).join('') : 
+    '<span style="color: #888; font-size: 10px;">No items</span>';
+  
+  return `
+    <div class="build-card-perfil">
+      <div class="build-pokemon-image">
+        <img src="${pokemonImage}" 
+             alt="${pokemonName}"
+             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+      </div>
+      
+      <h3 class="build-pokemon-name">${pokemonName}</h3>
+      
+      ${roleInfo ? `
+        <div class="build-pokemon-role">
+          <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+               alt="${roleInfo.name}"
                onerror="this.style.display='none'">
+          <span>${roleInfo.name}</span>
         </div>
-      `).join('') : 
-      '<span style="color: #888; font-size: 12px;">Sem itens</span>';
-    
-    return `
-      <div class="build-card-perfil">
-        <div class="build-pokemon-image">
-          <img src="${pokemonImage}" 
-               alt="${capitalizeFirst(build.pokemon)}"
-               onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+      ` : ''}
+      
+      <div class="build-details">
+        <p class="build-name-header">${build.buildName}</p>
+        
+        <div class="build-items-section">
+          ${battleItemHTML ? `
+            <div class="build-battle-item">
+              ${battleItemHTML}
+            </div>
+          ` : ''}
+          
+          <div class="build-held-items">
+            ${heldItemsHTML}
+          </div>
         </div>
         
-        <div class="build-details">
-          <h4 class="build-name-header">${build.buildName}</h4>
-          
-          <div class="build-items-section">
-            ${battleItemHTML ? `
-              <div class="build-battle-item">
-                ${battleItemHTML}
-              </div>
-            ` : ''}
-            
-            <div class="build-held-items">
-              ${heldItemsHTML}
-            </div>
-          </div>
-          
-          <div class="build-actions-perfil">
-            <button class="btn-build-action-perfil btn-edit-perfil" data-build-id="${build.id}">
-              ✏️ Edit
-            </button>
-            <button class="btn-build-action-perfil btn-delete-perfil" data-build-id="${build.id}">
-              🗑️ Delete
-            </button>
-          </div>
+        <div class="build-actions-perfil">
+          <button class="btn-build-action-perfil btn-edit-perfil" data-build-id="${build.id}">
+            ✏️ Edit
+          </button>
+          <button class="btn-build-action-perfil btn-delete-perfil" data-build-id="${build.id}">
+            🗑️ Delete
+          </button>
         </div>
       </div>
-    `;
-  }
+    </div>
+  `;
+}
+
+// Função auxiliar para obter role do Pokémon
+function getPokemonRole(pokemonKey) {
+  return null;
+}
 
   // Função para editar build (redireciona para calculadora)
   function editarBuild(buildId) {
@@ -349,7 +409,167 @@
     }
   }
 
-  // ===== RESTO DO CÓDIGO ORIGINAL (NÃO MODIFICAR) =====
+  import { 
+    doc as firestoreDoc, 
+    getDoc, 
+    setDoc, 
+    updateDoc 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  // Elementos do DOM para Player ID
+  const playerIdDisplay = document.getElementById('playerIdDisplay');
+  const playerIdInputGroup = document.getElementById('playerIdInputGroup');
+  const playerIdInput = document.getElementById('playerIdInput');
+  const btnSavePlayerId = document.getElementById('btnSavePlayerId');
+  const btnHelpPlayerId = document.getElementById('btnHelpPlayerId');
+  const modalHelpPlayerId = document.getElementById('modalHelpPlayerId');
+  const btnCloseHelpModal = document.getElementById('btnCloseHelpModal');
+
+  // Função para validar Player ID (7 caracteres alfanuméricos)
+  function validarPlayerId(id) {
+    const regex = /^[A-Za-z0-9]{7}$/;
+    return regex.test(id);
+  }
+
+  // Função para carregar Player ID do Firestore
+  async function carregarPlayerId(userId) {
+    try {
+      const userDocRef = firestoreDoc(db, "usuarios", userId);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        
+        if (userData.playerId) {
+          // Já tem ID cadastrado - exibir
+          playerIdDisplay.textContent = userData.playerId;
+          playerIdDisplay.style.display = 'block';
+          playerIdInputGroup.style.display = 'none';
+          console.log('✅ Player ID carregado:', userData.playerId);
+        } else {
+          // Não tem ID - mostrar input
+          playerIdDisplay.style.display = 'none';
+          playerIdInputGroup.style.display = 'flex';
+          console.log('ℹ️ Player ID não cadastrado ainda');
+        }
+      } else {
+        // Documento não existe - mostrar input
+        playerIdDisplay.style.display = 'none';
+        playerIdInputGroup.style.display = 'flex';
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar Player ID:', error);
+      playerIdDisplay.style.display = 'none';
+      playerIdInputGroup.style.display = 'flex';
+    }
+  }
+
+  // Função para salvar Player ID no Firestore
+  async function salvarPlayerId(userId, playerId) {
+    try {
+      btnSavePlayerId.disabled = true;
+      btnSavePlayerId.textContent = '💾 Saving...';
+      
+      const userDocRef = firestoreDoc(db, "usuarios", userId);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (userDocSnap.exists()) {
+        // Atualizar documento existente
+        await updateDoc(userDocRef, {
+          playerId: playerId.toUpperCase()
+        });
+      } else {
+        // Criar novo documento
+        await setDoc(userDocRef, {
+          email: currentUser.email,
+          role: "user",
+          playerId: playerId.toUpperCase(),
+          createdAt: new Date()
+        });
+      }
+      
+      console.log('✅ Player ID salvo com sucesso:', playerId);
+      alert('✅ Player ID saved successfully!\n\nYour ID: ' + playerId.toUpperCase());
+      
+      // Atualizar interface
+      playerIdDisplay.textContent = playerId.toUpperCase();
+      playerIdDisplay.style.display = 'block';
+      playerIdInputGroup.style.display = 'none';
+      playerIdInput.value = '';
+      
+    } catch (error) {
+      console.error('❌ Erro ao salvar Player ID:', error);
+      alert('❌ Error saving Player ID: ' + error.message);
+    } finally {
+      btnSavePlayerId.disabled = false;
+      btnSavePlayerId.textContent = '💾 Save';
+    }
+  }
+
+  // Event listener para botão de salvar Player ID
+  btnSavePlayerId.addEventListener('click', async () => {
+    const playerId = playerIdInput.value.trim().toUpperCase();
+    
+    if (!playerId) {
+      alert('⚠️ Please enter your Player ID');
+      return;
+    }
+    
+    if (!validarPlayerId(playerId)) {
+      alert('⚠️ Invalid Player ID!\n\nThe ID must be exactly 7 characters (letters and numbers only).\n\nExample: A1B2C3D');
+      return;
+    }
+    
+    const confirmacao = confirm(
+      '⚠️ IMPORTANT: You can only set your Player ID ONCE!\n\n' +
+      'Player ID: ' + playerId + '\n\n' +
+      'Are you sure this is correct?\n\n' +
+      'This cannot be changed later!'
+    );
+    
+    if (!confirmacao) {
+      return;
+    }
+    
+    if (currentUser) {
+      await salvarPlayerId(currentUser.uid, playerId);
+    } else {
+      alert('❌ You must be logged in to save your Player ID');
+    }
+  });
+
+  // Validação em tempo real do input
+  playerIdInput.addEventListener('input', (e) => {
+    // Converter para maiúsculas e remover caracteres inválidos
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    // Limitar a 7 caracteres
+    if (e.target.value.length > 7) {
+      e.target.value = e.target.value.slice(0, 7);
+    }
+  });
+
+  // Salvar ao pressionar Enter
+  playerIdInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      btnSavePlayerId.click();
+    }
+  });
+
+  // Event listeners para modal de ajuda
+  btnHelpPlayerId.addEventListener('click', () => {
+    modalHelpPlayerId.classList.add('show');
+  });
+
+  btnCloseHelpModal.addEventListener('click', () => {
+    modalHelpPlayerId.classList.remove('show');
+  });
+
+  modalHelpPlayerId.addEventListener('click', (e) => {
+    if (e.target === modalHelpPlayerId) {
+      modalHelpPlayerId.classList.remove('show');
+    }
+  });
   
   // Função para carregar todas as imagens da pasta sprites
   async function carregarImagensSprites() {
@@ -464,13 +684,45 @@
   }
 
   // Selecionar avatar
-  function selectAvatar(pokemon) {
-    const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
-    avatarImg.src = avatarPath;
-    localStorage.setItem('userAvatar', avatarPath);
-    modalAvatar.classList.remove('show');
-    console.log('Avatar selecionado:', pokemon);
+  // Selecionar avatar
+async function selectAvatar(pokemon) {
+  if (!currentUser) {
+    alert('❌ Você precisa estar logado para alterar o avatar');
+    return;
   }
+  
+  try {
+    const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
+    
+    // Salvar no Firestore
+    const userDocRef = firestoreDoc(db, "usuarios", currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (userDocSnap.exists()) {
+      await updateDoc(userDocRef, {
+        avatar: avatarPath,
+        updatedAt: new Date()
+      });
+    } else {
+      await setDoc(userDocRef, {
+        email: currentUser.email,
+        role: "user",
+        avatar: avatarPath,
+        createdAt: new Date()
+      });
+    }
+    
+    // Atualizar interface
+    avatarImg.src = avatarPath;
+    modalAvatar.classList.remove('show');
+    
+    console.log('✅ Avatar atualizado:', pokemon);
+    
+  } catch (error) {
+    console.error('❌ Erro ao salvar avatar:', error);
+    alert('❌ Erro ao salvar avatar: ' + error.message);
+  }
+}
 
   // Abrir modal ao clicar no avatar
   const perfilAvatar = document.getElementById('perfilAvatar');
@@ -501,27 +753,64 @@
   });
 
   // Salvar nome ao pressionar Enter ou perder foco
-  function salvarNome() {
+  async function salvarNome() {
     const novoNome = perfilNomeInput.value.trim();
-    if (novoNome && novoNome !== perfilNomeDisplay.textContent) {
-      perfilNomeDisplay.textContent = novoNome;
-      localStorage.setItem('userDisplayName', novoNome);
-      
-      if (currentUser) {
-        updateProfile(currentUser, {
-          displayName: novoNome
-        }).then(() => {
-          console.log('Nome atualizado no Firebase');
-          updateUI(currentUser);
-        }).catch(error => {
-          console.error('Erro ao atualizar nome:', error);
-        });
-      }
+    
+    if (!novoNome || novoNome === perfilNomeDisplay.textContent) {
+      perfilNomeInput.style.display = 'none';
+      perfilNomeDisplay.style.display = 'block';
+      btnEditNome.style.display = 'inline-block';
+      return;
     }
     
-    perfilNomeInput.style.display = 'none';
-    perfilNomeDisplay.style.display = 'block';
-    btnEditNome.style.display = 'inline-block';
+    if (!currentUser) {
+      alert('❌ Você precisa estar logado para alterar o nome');
+      return;
+    }
+    
+    try {
+      btnEditNome.disabled = true;
+      perfilNomeInput.disabled = true;
+      
+      // Atualizar no Firestore
+      const userDocRef = firestoreDoc(db, "usuarios", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (userDocSnap.exists()) {
+        await updateDoc(userDocRef, {
+          displayName: novoNome,
+          updatedAt: new Date()
+        });
+      } else {
+        await setDoc(userDocRef, {
+          email: currentUser.email,
+          role: "user",
+          displayName: novoNome,
+          createdAt: new Date()
+        });
+      }
+      
+      // Atualizar no Firebase Auth
+      await updateProfile(currentUser, {
+        displayName: novoNome
+      });
+      
+      perfilNomeDisplay.textContent = novoNome;
+      userDropdownHeader.innerHTML = `<span>Olá, ${novoNome}!</span>`;
+      
+      console.log('✅ Nome atualizado com sucesso:', novoNome);
+      alert('✅ Nome atualizado com sucesso!');
+      
+    } catch (error) {
+      console.error('❌ Erro ao atualizar nome:', error);
+      alert('❌ Erro ao atualizar nome: ' + error.message);
+    } finally {
+      btnEditNome.disabled = false;
+      perfilNomeInput.disabled = false;
+      perfilNomeInput.style.display = 'none';
+      perfilNomeDisplay.style.display = 'block';
+      btnEditNome.style.display = 'inline-block';
+    }
   }
 
   perfilNomeInput.addEventListener('keypress', (e) => {
@@ -533,20 +822,34 @@
   perfilNomeInput.addEventListener('blur', salvarNome);
 
   // Função para atualizar a interface
-  function updateUI(user) {
-    currentUser = user;
-    
-    if (user) {
-      const savedName = localStorage.getItem('userDisplayName');
-      const displayName = savedName || user.displayName || user.email.split('@')[0];
-      const savedAvatar = localStorage.getItem('userAvatar');
+// Função para atualizar a interface
+async function updateUI(user) {
+  currentUser = user;
+  
+  if (user) {
+    try {
+      // 🔥 BUSCAR DADOS DO FIRESTORE
+      const userDocRef = firestoreDoc(db, "usuarios", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
       
+      let displayName = user.displayName || user.email.split('@')[0];
+      let avatarPath = './estatisticas-shad/images/sprites/pikachu.png';
+      
+      // Se existe documento no Firestore, usar os dados de lá
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        if (userData.displayName) {
+          displayName = userData.displayName;
+        }
+        if (userData.avatar) {
+          avatarPath = userData.avatar;
+        }
+      }
+      
+      // Atualizar interface
       perfilNomeDisplay.textContent = displayName;
       perfilEmail.textContent = user.email;
-      
-      if (savedAvatar) {
-        avatarImg.src = savedAvatar;
-      }
+      avatarImg.src = avatarPath;
       
       userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
       authLink.textContent = 'Logout';
@@ -559,30 +862,42 @@
       if (btnChangeAvatar) btnChangeAvatar.disabled = false;
       btnEditNome.disabled = false;
       
-      console.log('Usuário logado:', user.email);
+      console.log('✅ Usuário logado:', user.email);
       
-      // ✅ CARREGAR BUILDS AQUI
-      carregarBuildsUsuario(user.uid);
+      // Carregar dados do usuário
+      await carregarBuildsUsuario(user.uid);
+      await carregarPlayerId(user.uid);
       
-    } else {
-      window.location.href = 'login.html';
+    } catch (error) {
+      console.error('❌ Erro ao carregar dados do usuário:', error);
+      // Fallback para dados básicos
+      perfilNomeDisplay.textContent = user.displayName || user.email.split('@')[0];
+      perfilEmail.textContent = user.email;
     }
+    
+  } else {
+    window.location.href = 'login.html';
   }
+}
 
   // Função para fazer logout
   async function handleLogout() {
-    const confirmar = confirm('Deseja realmente fazer logout?');
-    if (confirmar) {
-      try {
-        await signOut(auth);
-        alert('Logout realizado com sucesso!');
-        window.location.href = 'index.html';
-      } catch (error) {
-        console.error('Erro no logout:', error);
-        alert('Erro ao fazer logout. Tente novamente.');
-      }
+  const confirmar = confirm('Deseja realmente fazer logout?');
+  if (confirmar) {
+    try {
+      // 🔥 LIMPAR DADOS DO LOCALSTORAGE
+      localStorage.removeItem('userDisplayName');
+      localStorage.removeItem('userAvatar');
+      
+      await signOut(auth);
+      alert('Logout realizado com sucesso!');
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error('Erro no logout:', error);
+      alert('Erro ao fazer logout. Tente novamente.');
     }
   }
+}
 
   onAuthStateChanged(auth, (user) => {
     updateUI(user);

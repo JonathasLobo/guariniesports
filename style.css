@@ -991,3 +991,237 @@ html {
   align-items: center;
   gap: 10px;
 }
+
+/* ============================================
+   BARRA DE PESQUISA DE PERFIS - CORRIGIDA
+   ============================================ */
+
+.profile-search-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1004; /* Maior que o header (1000) e menu (1003) */
+}
+
+.profile-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.profile-search-btn {
+  background: rgba(255, 117, 0, 0.9);
+  border: 2px solid #ffad00;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45px;
+  height: 45px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  order: 2; /* Botão sempre à direita */
+}
+
+.profile-search-btn:hover {
+  background: rgba(255, 173, 0, 0.95);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 173, 0, 0.4);
+}
+
+.profile-search-input {
+  width: 0;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ffad00;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  order: 1; /* Input sempre à esquerda */
+  text-transform: uppercase;
+}
+
+.profile-search-input.active {
+  width: 200px;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.profile-search-input::placeholder {
+  color: #aaa;
+  text-transform: none;
+}
+
+.profile-search-input:focus {
+  outline: none;
+  border-color: #ffc000;
+  box-shadow: 0 0 15px rgba(255, 173, 0, 0.4);
+  background: rgba(0, 0, 0, 0.95);
+}
+
+/* Resultados da pesquisa */
+.profile-search-results {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.98);
+  border: 2px solid #ffad00;
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 280px;
+  max-width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+  z-index: 1005;
+}
+
+.profile-search-results.show {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-search-result-item {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 117, 0, 0.2);
+  transition: all 0.2s ease;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-search-result-item:last-child {
+  border-bottom: none;
+}
+
+.profile-search-result-item:hover {
+  background: rgba(255, 173, 0, 0.15);
+  padding-left: 15px;
+}
+
+.profile-search-no-results {
+  color: #ffad00;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Scrollbar customizada */
+.profile-search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.profile-search-results::-webkit-scrollbar-track {
+  background: rgba(255, 117, 0, 0.1);
+  border-radius: 10px;
+}
+
+.profile-search-results::-webkit-scrollbar-thumb {
+  background: #ffad00;
+  border-radius: 10px;
+}
+
+.profile-search-results::-webkit-scrollbar-thumb:hover {
+  background: #ffc000;
+}
+
+/* ============================================
+   RESPONSIVO - TABLET
+   ============================================ */
+@media (max-width: 900px) {
+  .profile-search-container {
+    right: 15px;
+    top: 15px;
+  }
+  
+  .profile-search-input.active {
+    width: 180px;
+  }
+  
+  .profile-search-btn {
+    min-width: 42px;
+    height: 42px;
+    padding: 8px 12px;
+  }
+}
+
+/* ============================================
+   RESPONSIVO - MOBILE
+   ============================================ */
+@media (max-width: 768px) {
+  .profile-search-container {
+    right: 15px;
+    top: 85px; /* Abaixo do header e menu */
+  }
+  
+  .profile-search-input.active {
+    width: 160px;
+    font-size: 13px;
+  }
+  
+  .profile-search-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+  
+  .profile-search-results {
+    min-width: 250px;
+    right: 0;
+    left: auto;
+  }
+}
+
+/* ============================================
+   RESPONSIVO - MOBILE PEQUENO
+   ============================================ */
+@media (max-width: 480px) {
+  .profile-search-container {
+    right: 10px;
+    top: 80px;
+  }
+  
+  .profile-search-input.active {
+    width: 140px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  
+  .profile-search-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 7px 9px;
+    font-size: 15px;
+  }
+  
+  .profile-search-results {
+    min-width: 220px;
+    max-width: calc(100vw - 30px);
+    font-size: 13px;
+  }
+}
