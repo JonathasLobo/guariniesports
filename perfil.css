@@ -1410,3 +1410,45 @@
     height: 60px;
   }
 }
+
+/* ============================================
+   RIBBONS - MODO VISUALIZAÇÃO (perfil-view.html)
+   ============================================ */
+
+.ribbon-pokemon-list-view {
+  /* Remove padding extra do topo */
+  padding: 10px 5px;
+}
+
+/* Pokémons no modo visualização - SEM hover de edição */
+.ribbon-pokemon-list-view .ribbon-pokemon-item {
+  cursor: default; /* Remove cursor pointer */
+}
+
+.ribbon-pokemon-list-view .ribbon-pokemon-item:hover {
+  transform: scale(1.05); /* Hover sutil apenas */
+  border-color: #ff7500; /* Mantém cor */
+}
+
+/* ESCONDER completamente a lixeirinha no modo visualização */
+.ribbon-pokemon-list-view .ribbon-pokemon-item .delete-btn {
+  display: none !important;
+}
+
+.ribbon-pokemon-list-view .ribbon-pokemon-item.show-delete .delete-btn {
+  display: none !important;
+}
+
+/* Botão + não deve aparecer no modo visualização */
+.ribbon-pokemon-list-view .btn-add-pokemon {
+  display: none !important;
+}
+
+/* Mensagem quando lista está vazia */
+.ribbon-tier-empty {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  font-size: 0.95rem;
+}

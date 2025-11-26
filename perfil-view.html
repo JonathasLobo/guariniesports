@@ -130,6 +130,53 @@
           </div>
         </div>
       </section>
+
+      <!-- Área para Battle Ribbons List (Visualização) -->
+      <section class="perfil-section">
+        <h2>Battle Ribbons List</h2>
+        
+        <div class="perfil-content">
+          <div id="ribbons-loading" class="builds-loading" style="display: none;">
+            Loading ribbons...
+          </div>
+          
+          <div id="ribbons-empty" class="no-builds-message" style="display: none;">
+            This player hasn't created a ribbons list yet.
+          </div>
+          
+          <div id="ribbons-container" style="display: none;">
+            <!-- Gold Ribbon -->
+            <div class="ribbon-tier">
+              <div class="ribbon-icon-container">
+                <img src="./estatisticas-shad/images/icons/dourado.png" alt="Gold Ribbon" class="ribbon-icon">
+              </div>
+              <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="goldRibbonListView">
+                <!-- Pokémons serão carregados aqui -->
+              </div>
+            </div>
+
+            <!-- Blue Ribbon -->
+            <div class="ribbon-tier">
+              <div class="ribbon-icon-container">
+                <img src="./estatisticas-shad/images/icons/azul.png" alt="Blue Ribbon" class="ribbon-icon">
+              </div>
+              <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="blueRibbonListView">
+                <!-- Pokémons serão carregados aqui -->
+              </div>
+            </div>
+
+            <!-- Green Ribbon -->
+            <div class="ribbon-tier">
+              <div class="ribbon-icon-container">
+                <img src="./estatisticas-shad/images/icons/verde.png" alt="Green Ribbon" class="ribbon-icon">
+              </div>
+              <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="greenRibbonListView">
+                <!-- Pokémons serão carregados aqui -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -537,6 +584,107 @@ async function atualizarMenuUsuario(user) {
     return null;
   }
 
+  // ========================================
+  // CARREGAR RIBBONS DO USUÁRIO (VISUALIZAÇÃO)
+  // ========================================
+  async function carregarRibbonsUsuario(uid) {
+    try {
+      const ribbonsLoading = document.getElementById('ribbons-loading');
+      const ribbonsEmpty = document.getElementById('ribbons-empty');
+      const ribbonsContainer = document.getElementById('ribbons-container');
+      
+      // Mostrar loading
+      ribbonsLoading.style.display = 'block';
+      ribbonsEmpty.style.display = 'none';
+      ribbonsContainer.style.display = 'none';
+      
+      console.log('🎀 Carregando ribbons do usuário:', uid);
+      
+      const userDocRef = doc(db, "usuarios", uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (!userDocSnap.exists() || !userDocSnap.data().battleRibbons) {
+        console.log('ℹ️ Usuário não possui ribbons cadastradas');
+        ribbonsLoading.style.display = 'none';
+        ribbonsEmpty.style.display = 'block';
+        return;
+      }
+      
+      const ribbonState = userDocSnap.data().battleRibbons;
+      console.log('✅ Ribbons carregadas:', ribbonState);
+      
+      // Verificar se há algum pokémon em qualquer tier
+      const totalPokemons = (ribbonState.gold?.length || 0) + 
+                           (ribbonState.blue?.length || 0) + 
+                           (ribbonState.green?.length || 0);
+      
+      if (totalPokemons === 0) {
+        console.log('ℹ️ Lista de ribbons está vazia');
+        ribbonsLoading.style.display = 'none';
+        ribbonsEmpty.style.display = 'block';
+        return;
+      }
+      
+      // Renderizar ribbons
+      renderizarTierView('gold', ribbonState.gold || []);
+      renderizarTierView('blue', ribbonState.blue || []);
+      renderizarTierView('green', ribbonState.green || []);
+      
+      // Mostrar container
+      ribbonsLoading.style.display = 'none';
+      ribbonsContainer.style.display = 'block';
+      
+      console.log('✅ Ribbons renderizadas com sucesso');
+      
+    } catch (error) {
+      console.error('❌ Erro ao carregar ribbons:', error);
+      const ribbonsLoading = document.getElementById('ribbons-loading');
+      const ribbonsEmpty = document.getElementById('ribbons-empty');
+      
+      ribbonsLoading.style.display = 'none';
+      ribbonsEmpty.style.display = 'block';
+      ribbonsEmpty.innerHTML = `
+        <div style="color: #ff6b6b;">
+          ❌ Error loading ribbons
+        </div>
+      `;
+    }
+  }
+
+  // Função para renderizar tier no modo visualização
+  function renderizarTierView(tier, pokemons) {
+    const listElement = document.getElementById(`${tier}RibbonListView`);
+    
+    if (!listElement) {
+      console.error(`❌ Elemento da tier ${tier} não encontrado`);
+      return;
+    }
+    
+    // Limpar conteúdo
+    listElement.innerHTML = '';
+    
+    if (pokemons.length === 0) {
+      listElement.innerHTML = '<div class="ribbon-tier-empty">No Pokémon selected</div>';
+      return;
+    }
+    
+    // Adicionar pokémons (sem interatividade)
+    pokemons.forEach(pokemon => {
+      const pokemonItem = document.createElement('div');
+      pokemonItem.className = 'ribbon-pokemon-item';
+      pokemonItem.setAttribute('data-pokemon', pokemon);
+      pokemonItem.innerHTML = `
+        <img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
+             alt="${pokemon}"
+             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+      `;
+      
+      listElement.appendChild(pokemonItem);
+    });
+    
+    console.log(`✅ Tier ${tier} renderizada com ${pokemons.length} pokémons (modo visualização)`);
+  }
+
   // Carregar dados do usuário (SEM EXIBIR EMAIL)
   async function carregarDadosUsuario() {
     try {
@@ -569,6 +717,7 @@ async function atualizarMenuUsuario(user) {
       
       // Carregar builds
       await carregarBuildsUsuario(userId);
+      await carregarRibbonsUsuario(userId);
       
     } catch (error) {
       console.error('❌ Error loading user:', error);
