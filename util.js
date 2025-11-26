@@ -9337,8 +9337,8 @@ const skillDamage = {
       ]
     },
 	"ult": {
-		name: "Fanciful Fireworks",
-    cooldown: 84,
+		name: "Seaweed Snare",
+    cooldown: 112,
     buff:{},
       buffPlus: {
         levelRequired: 9,
@@ -9359,7 +9359,18 @@ const skillDamage = {
 		      label: "Damage - Second Hit",
           formula: (ATK, Level) => 1.3 * ATK + 7 * (Level - 1) + 195,
           type: "physical"
-		}
+		},
+    {
+		      label: "Damage - DoT (9 Ticks)",
+          formula: (ATK, Level) => 0.25 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+		},
+    {
+		      label: "Healing",
+          formula: (firstHitDamage, Level) => 2.5 * firstHitDamage,
+          type: "dependent",
+          dependsOn: 2
+		},
 	]
 	}
   },
@@ -19056,9 +19067,13 @@ const skillDamage = {
           name: "Water Absorb",
           description: "Gains a shield periodically that negates damage and heals when broken. Hitting enemies reduces its cooldown.",
           buff: {
-            HPRegen: 25
           },
           formulas: [
+          {
+          label: "Healing",
+          formula: (SPATK, Level) => 3 * SPATK + 0 * (Level - 1) + 225,
+          type: "special"
+		      },
           ]
         },
 	"atkboosted": {
@@ -19080,7 +19095,7 @@ const skillDamage = {
 
     "s11": {
       name: "Hydro Pump",
-      cooldown: 6,
+      cooldown: 7,
       buff: {
         Speed: "-30%"
       },
@@ -19099,17 +19114,17 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - First Hit",
-          formula: (SpATK, Level) => 1.29 * SpATK + 9 * (Level - 1) + 258,
+          formula: (SpATK, Level) => 0.9 * SpATK + 6 * (Level - 1) + 180,
           type: "special"
         },
         {
           label: "Damage - Stream (per Tick up to 5x)",
-          formula: (SpATK, Level) => 0.43 * SpATK + 3 * (Level - 1) + 86,
+          formula: (SpATK, Level) => 0.3 * SpATK + 2 * (Level - 1) + 60,
           type: "special"
         },
         {
           label: "Damage - Last Hit",
-          formula: (SpATK, Level) => 1.29 * SpATK + 9 * (Level - 1) + 258,
+          formula: (SpATK, Level) => 0.9 * SpATK + 6 * (Level - 1) + 180,
           type: "special"
         },
       ]
@@ -19120,7 +19135,7 @@ const skillDamage = {
       buff: {
       },
       debuffs: {
-        Speed: 50
+        Speed: 40
       },
       debuffLabels: {
         Speed: "(DEBUFF) MoveSpeed Reduction"
@@ -19135,24 +19150,24 @@ const skillDamage = {
     },
     "s21": {
       name: "Aqua Ring",
-      cooldown: 7,
+      cooldown: 8,
       buff: {},
       formulas: [
 		{
           label: "Heal",
-          formula: (SpATK, Level) => 0.75 * SpATK + 0 * (Level - 1) + 0,
+          formula: (SpATK, Level) => 0.6 * SpATK + 0 * (Level - 1) + 0,
           type: "special"
         },
 		{
           label: "Heal Skill Plus",
-          formula: (SpATK, Level) => 0.90 * SpATK + 0 * (Level - 1) + 0,
+          formula: (SpATK, Level) => 0.72 * SpATK + 0 * (Level - 1) + 0,
           type: "special"
         },
       ]
     },
 	"s22": {
       name: "Flip Turn",
-      cooldown: 6,
+      cooldown: 6.5,
       buff: {
         Speed: "60%",
         DmgTaken: 25
@@ -19166,17 +19181,17 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - First Hit",
-          formula: (SpATK, Level) => 2.12 * SpATK + 14 * (Level - 1) + 440,
+          formula: (SpATK, Level) => 1.68 * SpATK + 12 * (Level - 1) + 350,
           type: "special"
         },
         {
           label: "Damage - Second Hit",
-          formula: (SpATK, Level) => 1.06 * SpATK + 7 * (Level - 1) + 220,
+          formula: (SpATK, Level) => 0.84 * SpATK + 6 * (Level - 1) + 175,
           type: "special"
         },
         {
           label: "Shield",
-          formula: (SpATK, Level) => 4 * SpATK + 0 * (Level - 1) + 800,
+          formula: (SpATK, Level) => 3.2 * SpATK + 0 * (Level - 1) + 640,
           type: "special"
         },
       ]
@@ -19195,7 +19210,7 @@ const skillDamage = {
 		formulas: [
         {
           label: "Damage - per Hit",
-          formula: (SpATK, Level) => 2 * SpATK + 14 * (Level - 1) + 400,
+          formula: (SpATK, Level) => 1.6 * SpATK + 11 * (Level - 1) + 320,
           type: "special"
         }
 	 ]
