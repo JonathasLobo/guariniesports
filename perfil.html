@@ -79,6 +79,22 @@
     </div>
   </div>
 
+   <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
+  </div>
+
   <main>
     <section class="perfil-section">
       <h2>Perfil</h2>
@@ -193,13 +209,17 @@
     updateProfile
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
   import { 
-    getFirestore, 
-    collection, 
-    getDocs, 
-    deleteDoc, 
-    doc 
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
+  getFirestore, 
+  doc, 
+  getDoc,
+  collection, 
+  query, 
+  where, 
+  getDocs,
+  setDoc,      // ← Adicione estas 3
+  updateDoc,   // ← Adicione estas 3
+  deleteDoc    // ← Adicione estas 3 (você usa no excluirBuild)
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
     authDomain: "site-grn.firebaseapp.com",
@@ -214,6 +234,157 @@
   const auth = getAuth(app);
   const db = getFirestore();
 
+  // ========================================
+  // ELEMENTOS DO DOM - BUSCA DE PERFIL
+  // ========================================
+  const profileSearchBtn = document.getElementById('profileSearchBtn');
+  const profileSearchInput = document.getElementById('profileSearchInput');
+  const profileSearchResults = document.getElementById('profileSearchResults');
+
+  // ========================================
+  // BUSCA DE PERFIL - COM BUSCA AUTOMÁTICA
+  // ========================================
+
+  // Função para buscar perfil
+  async function buscarPerfil() {
+    const playerId = profileSearchInput.value.trim().toUpperCase();
+    
+    if (!playerId) {
+      profileSearchResults.classList.remove('show');
+      return;
+    }
+    
+    if (playerId.length !== 7) {
+      profileSearchResults.classList.remove('show');
+      return;
+    }
+    
+    try {
+      profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+      profileSearchResults.classList.add('show');
+      
+      console.log('🔍 Buscando Player ID:', playerId);
+      
+      const usuariosRef = collection(db, "usuarios");
+      const q = query(usuariosRef, where("playerId", "==", playerId));
+      
+      console.log('📡 Query criada, executando busca...');
+      
+      const querySnapshot = await getDocs(q);
+      
+      console.log('📦 Resultado da busca:', {
+        empty: querySnapshot.empty,
+        size: querySnapshot.size
+      });
+      
+      if (querySnapshot.empty) {
+        console.log('❌ Nenhum usuário encontrado com Player ID:', playerId);
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+        return;
+      }
+      
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      const userId = userDoc.id;
+      
+      console.log('✅ Usuário encontrado:', {
+        userId: userId,
+        playerId: userData.playerId,
+        displayName: userData.displayName,
+        email: userData.email
+      });
+      
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+          <div style="flex: 1;">
+            <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+              ✅ Player found!
+            </div>
+            <div style="color: #fff; font-size: 13px;">
+              ${userData.displayName || 'Anonymous'}
+            </div>
+            <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+              ID: ${userData.playerId}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; text-align: center;">
+          <button 
+            onclick="window.location.href='perfil-view.html?uid=${userId}'" 
+            style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+          >
+            👤 View Profile
+          </button>
+        </div>
+      `;
+      
+    } catch (error) {
+      console.error('❌ Erro ao buscar perfil:', error);
+      console.error('Detalhes do erro:', {
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      });
+      
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-no-results" style="color: #ff6b6b;">
+          ❌ Search error<br>
+          <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
+            ${error.message}
+          </small>
+        </div>
+      `;
+    }
+  }
+
+  // Toggle da barra de busca
+  profileSearchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    console.log('🖱️ Botão de busca clicado');
+    profileSearchInput.classList.toggle('active');
+    
+    if (profileSearchInput.classList.contains('active')) {
+      console.log('✅ Input ativado');
+      profileSearchInput.focus();
+    } else {
+      console.log('❌ Input desativado');
+      profileSearchInput.value = '';
+      profileSearchResults.classList.remove('show');
+    }
+  });
+
+  // Buscar ao pressionar Enter
+  profileSearchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+      console.log('⌨️ Enter pressionado');
+      await buscarPerfil();
+    }
+  });
+
+  // Validação e busca automática ao digitar 7 caracteres
+  profileSearchInput.addEventListener('input', async (e) => {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (e.target.value.length > 7) {
+      e.target.value = e.target.value.slice(0, 7);
+    }
+    
+    if (e.target.value.length === 7) {
+      console.log('🎯 7 caracteres digitados - buscando automaticamente...');
+      await buscarPerfil();
+    } else {
+      profileSearchResults.classList.remove('show');
+    }
+  });
+
+  // Fechar ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.profile-search-container')) {
+      profileSearchInput.classList.remove('active');
+      profileSearchResults.classList.remove('show');
+    }
+  });
   // ===== FUNÇÕES DE BUILDS =====
   
   // Função auxiliar para capitalizar primeira letra
@@ -409,13 +580,6 @@ function getPokemonRole(pokemonKey) {
     }
   }
 
-  import { 
-    doc as firestoreDoc, 
-    getDoc, 
-    setDoc, 
-    updateDoc 
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
   // Elementos do DOM para Player ID
   const playerIdDisplay = document.getElementById('playerIdDisplay');
   const playerIdInputGroup = document.getElementById('playerIdInputGroup');
@@ -434,7 +598,7 @@ function getPokemonRole(pokemonKey) {
   // Função para carregar Player ID do Firestore
   async function carregarPlayerId(userId) {
     try {
-      const userDocRef = firestoreDoc(db, "usuarios", userId);
+      const userDocRef = doc(db, "usuarios", userId);
       const userDocSnap = await getDoc(userDocRef);
       
       if (userDocSnap.exists()) {
@@ -470,7 +634,7 @@ function getPokemonRole(pokemonKey) {
       btnSavePlayerId.disabled = true;
       btnSavePlayerId.textContent = '💾 Saving...';
       
-      const userDocRef = firestoreDoc(db, "usuarios", userId);
+      const userDocRef = doc(db, "usuarios", userId);
       const userDocSnap = await getDoc(userDocRef);
       
       if (userDocSnap.exists()) {
@@ -695,7 +859,7 @@ async function selectAvatar(pokemon) {
     const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
     
     // Salvar no Firestore
-    const userDocRef = firestoreDoc(db, "usuarios", currentUser.uid);
+    const userDocRef = doc(db, "usuarios", currentUser.uid);
     const userDocSnap = await getDoc(userDocRef);
     
     if (userDocSnap.exists()) {
@@ -773,7 +937,7 @@ async function selectAvatar(pokemon) {
       perfilNomeInput.disabled = true;
       
       // Atualizar no Firestore
-      const userDocRef = firestoreDoc(db, "usuarios", currentUser.uid);
+      const userDocRef = doc(db, "usuarios", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
       
       if (userDocSnap.exists()) {
@@ -796,7 +960,11 @@ async function selectAvatar(pokemon) {
       });
       
       perfilNomeDisplay.textContent = novoNome;
-      userDropdownHeader.innerHTML = `<span>Olá, ${novoNome}!</span>`;
+      // Atualizar interface
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${novoNome}!</span>
+          `;
       
       console.log('✅ Nome atualizado com sucesso:', novoNome);
       alert('✅ Nome atualizado com sucesso!');
@@ -829,7 +997,7 @@ async function updateUI(user) {
   if (user) {
     try {
       // 🔥 BUSCAR DADOS DO FIRESTORE
-      const userDocRef = firestoreDoc(db, "usuarios", user.uid);
+      const userDocRef = doc(db, "usuarios", user.uid);
       const userDocSnap = await getDoc(userDocRef);
       
       let displayName = user.displayName || user.email.split('@')[0];
@@ -851,7 +1019,11 @@ async function updateUI(user) {
       perfilEmail.textContent = user.email;
       avatarImg.src = avatarPath;
       
-      userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+      // Atualizar interface
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${displayName}!</span>
+          `;
       authLink.textContent = 'Logout';
       authLink.onclick = function(e) {
         e.preventDefault();
