@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Conheça as equipes da Guariní e-sport: Staff, Pokemon Unite e YugiOh." />
-  <title>Equipes - Guariní e-sport</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="equipes.css" />
+  <meta name="description" content="Conheça a história, missão e valores da equipe Guariní e-sport, referência nos jogos Pokémon e apaixonada por e-sports." />
+  <title>Sobre a Guariní e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
   <div id="google_translate_element"></div>
 
 <script type="text/javascript">
@@ -35,45 +34,41 @@ function googleTranslateElementInit() {
 </script>
 <body>
   <a id="topo"></a>
-  
+
+  <!-- Cabeçalho Mantido -->
   <header>
     <div class="header-wrapper">
-      <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
-          <li><a href="loja.html">Loja</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="../loja/loja.html">Loja</a></li>
+          <li><a href="sobre.html" class="ativo">Sobre</a></li>
         </ul>
       </nav>
       
-      <!-- Logo Central -->
       <div class="logo-center">
-        <a href="index.html" aria-label="Início">
-          <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
-
-      <!-- Navegação Desktop - Direita -->
+      
       <nav class="nav-group right-nav">
         <ul>
-          <li><a href="times.html" class="ativo">Times</a></li>
+          <li><a href="equipes.html">Times</a></li>
           <li><a href="material.html">Material</a></li>
         </ul>
       </nav>
       
-      <!-- Botão Menu Mobile -->
       <button class="menu-toggle" aria-label="Menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
       
-      <!-- Menu Mobile -->
       <nav class="mobile-menu">
         <ul>
           <li><a href="index.html">Início</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
-          <li><a href="equipes.html" class="ativo">Times</a></li>
+          <li><a href="sobre.html" class="ativo">Sobre</a></li>
+          <li><a href="equipes.html">Times</a></li>
           <li><a href="loja.html">Loja</a></li>
           <li><a href="material.html">Material</a></li>
           <li><a href="contato.html">Contato</a></li>
@@ -82,6 +77,7 @@ function googleTranslateElementInit() {
     </div>
   </header>
 
+  <!-- Botão Login/Logout -->
   <div class="user-container">
     <button class="btn-login-topo" id="loginLogoutBtn">Login</button>
     <div class="user-info" id="userInfo">
@@ -89,62 +85,29 @@ function googleTranslateElementInit() {
     </div>
   </div>
 
+  <!-- Conteúdo Principal -->
   <main>
-    <h2>Conheça nossas equipes</h2>
-    <section class="equipes" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; max-width: 900px; margin: auto;">
-      
-      <!-- Staff/Corpo Técnico -->
-      <article class="equipe">
-        <img src="./img-site/staff.png" alt="Corpo Administrativo">
-        <h3>Corpo Administrativo</h3>
-        <p class="descricao">Conheça nossa equipe de gestão e coordenação</p>
-        <button type="button" class="btn-comprar" id="staffBtn">Ver Detalhes</button>
-      </article>
-
-      <!-- Streamers -->
-      <article class="equipe">
-        <img src="./img-site/staff.png" alt="Streamers" />
-        <h3>Streamers</h3>
-        <p class="descricao">Nossos streamers</p>
-        <button type="button" class="btn-comprar" id="streamerBtn">Ver Detalhes</button>
-      </article>      
-
-      <!-- Pokemon Unite -->
-      <article class="equipe">
-        <img src="./img-site/pokemonunite.png" alt="Pokémon Unite" />
-        <h3>Pokémon Unite</h3>
-        <p class="descricao">Nossa equipe competitiva de Pokemon Unite</p>
-        <button type="button" class="btn-comprar" id="uniteBtn">Ver Detalhes</button>
-      </article>
-
-      <!-- Pokemon VGC -->
-      <article class="equipe">
-        <img src="./img-site/pkmvgc.png" alt="Pokémon VGC" />
-        <h3>Pokémon VGC</h3>
-        <p class="descricao">Nossos treinadores profissionais de Pokémon VGC</p>
-        <button type="button" class="btn-comprar" id="vgcBtn">Ver Detalhes</button>
-      </article>
-
-      <!-- YugiOh -->
-      <article class="equipe">
-        <img src="./img-site/yugiohtcg.png" alt="Yu-Gi-Oh!" />
-        <h3>Yu-Gi-Oh!</h3>
-        <p class="descricao">Nossos duelistas profissionais de Yu-Gi-Oh TCG</p>
-        <button type="button" class="btn-comprar" id="yugiohBtn">Ver Detalhes</button>
-      </article>
-
+    <section class="sobre-container">
+      <div class="sobre-texto">
+        <h2>Sobre a Guariní e-sport</h2>
+        <p>
+          Fundada em <strong>11 de Maio de 2019</strong>, a Guariní e-sport nasceu para impulsionar a paixão pelos jogos eletrônicos e levar os jogadores à excelência. Nosso nome, inspirado no Tupi-Guarani, significa "<em>o que dá força</em>", refletindo nossa determinação e espírito competitivo.
+        </p>
+        <p>
+          Competimos em títulos como <strong>Pokémon Unite</strong>, <strong>VGC</strong>, <strong>TCG</strong> e <strong>Pokémon GO</strong>, sempre buscando evolução, estratégia e inovação.
+        </p>
+        <p>
+          Mais do que competir, queremos <strong>construir comunidade</strong>, compartilhar conhecimento e inspirar novos talentos. Se você ama e-sports, junte-se a nós e faça parte dessa jornada!
+        </p>
+        <a href="index.html" class="btn-comprar">Voltar para Início</a>
+      </div>
+      <div class="sobre-imagem">
+        <img src="./img-site/Guarini.png" alt="Imagem representativa da Guariní e-sport" />
+      </div>
     </section>
   </main>
 
-  <!-- Modal para exibir detalhes das equipes -->
-  <div id="equipeModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="modalTitle"></h2>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
+  <!-- Rodapé -->
   <footer>
   <div class="footer-content">
     <!-- Botões de ação no footer -->
@@ -186,13 +149,14 @@ function googleTranslateElementInit() {
 </footer>
 
 
+  <!-- Firebase e Autenticação -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { 
       getAuth, 
       onAuthStateChanged, 
       signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
@@ -207,37 +171,15 @@ function googleTranslateElementInit() {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const loginLogoutBtn = document.getElementById("loginLogoutBtn");
+    // Elementos do DOM
+    const loginLogoutBtn = document.getElementById('loginLogoutBtn');
     const userInfo = document.getElementById('userInfo');
-    const userName = document.getElementById("userName");
+    const userName = document.getElementById('userName');
 
-    // Função para lidar com login
-    async function handleLogin() {
-      try {
-        sessionStorage.setItem('redirectAfterLogin', 'times.html');
-        window.location.href = 'login.html';
-      } catch (err) {
-        console.error("Erro ao redirecionar para login:", err);
-        alert('Erro ao tentar fazer login. Por favor, tente novamente.');
-      }
-    }
-
-    // Função para lidar com logout
-    async function handleLogout() {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error("Erro no logout:", error);
-        alert('Erro ao fazer logout. Tente novamente.');
-      }
-    }
-
-    // Atualiza a UI baseada no estado de autenticação
     function updateUI(user) {
       if (user) {
         loginLogoutBtn.textContent = 'Logout';
         loginLogoutBtn.onclick = handleLogout;
-        
         const displayName = user.displayName || user.email.split('@')[0];
         userName.textContent = displayName;
         userInfo.style.display = 'block';
@@ -248,12 +190,27 @@ function googleTranslateElementInit() {
       }
     }
 
-    // Monitora estado de autenticação
+    function handleLogin() {
+      window.location.href = 'login.html';
+    }
+
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        alert('Logout realizado com sucesso!');
+      } catch (error) {
+        console.error('Erro no logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
+      }
+    }
+
     onAuthStateChanged(auth, (user) => {
       updateUI(user);
     });
+  </script>
 
-    // Funcionalidade do menu mobile
+  <!-- Script para menu mobile -->
+  <script>
     const menuToggle = document.querySelector('.menu-toggle');
     const mobileMenu = document.querySelector('.mobile-menu');
 
@@ -277,7 +234,7 @@ function googleTranslateElementInit() {
       }
     });
   </script>
-  <script>
+<script>
   // PWA - Botão de instalação
   let deferredPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -340,7 +297,5 @@ function googleTranslateElementInit() {
   });
 </script>
 
-  
-  <script src="equipes.js"></script>
 </body>
 </html>
