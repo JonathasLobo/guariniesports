@@ -159,6 +159,13 @@
             </div>
           </div>
         </div>
+          <!-- Últimas Visualizações -->
+          <div class="perfil-recent-views" id="recentViewsSection">
+            <h4>Last Views</h4>
+            <div class="recent-views-list" id="recentViewsList">
+              <div class="no-recent-views">No recent views yet</div>
+            </div>
+          </div>
       </div>  
 
       <!-- Área para builds salvas -->
@@ -642,6 +649,124 @@ function getPokemonRole(pokemonKey) {
       `;
     }
   }
+  // ========================================
+  // SISTEMA DE ÚLTIMAS VISUALIZAÇÕES
+  // ========================================
+
+  // Função para carregar últimas visualizações
+  async function carregarUltimasVisualizacoes(userId) {
+    try {
+      console.log('👁️ Carregando últimas visualizações...');
+      
+      const userDocRef = doc(db, "usuarios", userId);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      const recentViewsSection = document.getElementById('recentViewsSection');
+      const recentViewsList = document.getElementById('recentViewsList');
+      
+      if (!userDocSnap.exists() || !userDocSnap.data().profileViews) {
+        console.log('ℹ️ Nenhuma visualização ainda');
+        recentViewsList.innerHTML = '<div class="no-recent-views">No views yet</div>';
+        recentViewsSection.style.display = 'block'; // ← MUDANÇA AQUI
+        return;
+      }
+      
+      const profileViews = userDocSnap.data().profileViews;
+      
+      // Ordenar por timestamp (mais recente primeiro)
+      const sortedViews = profileViews
+        .sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis())
+        .slice(0, 2); // Pegar apenas as 2 mais recentes
+      
+      if (sortedViews.length === 0) {
+        console.log('ℹ️ Lista de visualizações vazia');
+        recentViewsList.innerHTML = '<div class="no-recent-views">No views yet</div>';
+        recentViewsSection.style.display = 'block'; // ← MUDANÇA AQUI
+        return;
+      }
+      
+      console.log('✅ Visualizações encontradas:', sortedViews.length);
+      
+      // Buscar dados dos usuários que visualizaram
+      const viewsWithData = await Promise.all(
+        sortedViews.map(async (view) => {
+          try {
+            const viewerDocRef = doc(db, "usuarios", view.viewerId);
+            const viewerDocSnap = await getDoc(viewerDocRef);
+            
+            if (viewerDocSnap.exists()) {
+              const viewerData = viewerDocSnap.data();
+              return {
+                ...view,
+                displayName: viewerData.displayName || 'Anonymous',
+                playerId: viewerData.playerId || 'N/A',
+                avatar: viewerData.avatar || './estatisticas-shad/images/backgrounds/pikachu-left-bg.png'
+              };
+            }
+            return null;
+          } catch (error) {
+            console.error('Erro ao buscar dados do viewer:', error);
+            return null;
+          }
+        })
+      );
+      
+      // Filtrar views com dados válidos
+      const validViews = viewsWithData.filter(v => v !== null);
+      
+      if (validViews.length === 0) {
+        recentViewsList.innerHTML = '<div class="no-recent-views">No views yet</div>';
+        recentViewsSection.style.display = 'block'; // ← MUDANÇA AQUI
+        return;
+      }
+      
+      // Renderizar lista
+      recentViewsList.innerHTML = validViews.map(view => {
+        const timeAgo = formatarTempoAtras(view.timestamp?.toDate());
+        
+        return `
+          <div class="recent-view-item" onclick="window.location.href='perfil-view.html?uid=${view.viewerId}'">
+            <div class="recent-view-avatar">
+              <img src="${view.avatar}" alt="${view.displayName}" onerror="this.src='./estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+            </div>
+            <div class="recent-view-info">
+              <p class="recent-view-name">${view.displayName}</p>
+              <p class="recent-view-id">ID: ${view.playerId}</p>
+            </div>
+            <div class="recent-view-time">${timeAgo}</div>
+          </div>
+        `;
+      }).join('');
+      
+      // Mostrar seção
+      recentViewsSection.style.display = 'block';
+      
+      console.log('✅ Últimas visualizações renderizadas');
+      
+    } catch (error) {
+      console.error('❌ Erro ao carregar visualizações:', error);
+      const recentViewsSection = document.getElementById('recentViewsSection');
+      recentViewsSection.style.display = 'none';
+    }
+  }
+
+  // Função auxiliar para formatar tempo atrás
+  function formatarTempoAtras(date) {
+    if (!date) return 'Recently';
+    
+    const agora = new Date();
+    const diff = agora - date;
+    
+    const minutos = Math.floor(diff / 60000);
+    const horas = Math.floor(diff / 3600000);
+    const dias = Math.floor(diff / 86400000);
+    
+    if (minutos < 1) return 'Just now';
+    if (minutos < 60) return `${minutos}m ago`;
+    if (horas < 24) return `${horas}h ago`;
+    if (dias < 7) return `${dias}d ago`;
+    return date.toLocaleDateString();
+  }
 
   // Elementos do DOM para Player ID
   const playerIdDisplay = document.getElementById('playerIdDisplay');
@@ -1102,6 +1227,7 @@ async function updateUI(user) {
       // Carregar dados do usuário
       await carregarBuildsUsuario(user.uid);
       await carregarPlayerId(user.uid);
+      await carregarUltimasVisualizacoes(user.uid);
       
     } catch (error) {
       console.error('❌ Erro ao carregar dados do usuário:', error);

@@ -201,6 +201,7 @@
     getFirestore, 
     doc, 
     getDoc,
+    updateDoc,
     collection, 
     query,
     where,
@@ -685,6 +686,65 @@ async function atualizarMenuUsuario(user) {
     console.log(`✅ Tier ${tier} renderizada com ${pokemons.length} pokémons (modo visualização)`);
   }
 
+  // ========================================
+  // REGISTRAR VISUALIZAÇÃO DO PERFIL
+  // ========================================
+  async function registrarVisualizacao(profileUserId, viewerUserId) {
+    try {
+      console.log('👁️ Iniciando registro de visualização...');
+      console.log('   - Perfil visitado:', profileUserId);
+      console.log('   - Visitante:', viewerUserId);
+      
+      const profileDocRef = doc(db, "usuarios", profileUserId);
+      const profileDocSnap = await getDoc(profileDocRef);
+      
+      if (!profileDocSnap.exists()) {
+        console.log('❌ Perfil não encontrado');
+        return;
+      }
+      
+      console.log('✅ Perfil encontrado, preparando para registrar...');
+      
+      const profileData = profileDocSnap.data();
+      let existingViews = profileData.profileViews || [];
+      
+      console.log('📋 Visualizações existentes:', existingViews.length);
+      
+      // Remover visualização anterior deste usuário (se existir)
+      existingViews = existingViews.filter(v => v.viewerId !== viewerUserId);
+      
+      // Adicionar nova visualização no início
+      const newView = {
+        viewerId: viewerUserId,
+        timestamp: new Date()
+      };
+      
+      existingViews.unshift(newView); // Adiciona no início
+      
+      // Limitar a 20 visualizações mais recentes
+      if (existingViews.length > 20) {
+        existingViews = existingViews.slice(0, 20);
+      }
+      
+      console.log('💾 Salvando visualização...');
+      
+      // Atualizar documento
+      await updateDoc(profileDocRef, {
+        profileViews: existingViews
+      });
+      
+      console.log('✅ Visualização registrada com sucesso!');
+      console.log('📊 Total de visualizações agora:', existingViews.length);
+      
+    } catch (error) {
+      console.error('❌ Erro ao registrar visualização:', error);
+      console.error('   Detalhes:', {
+        code: error.code,
+        message: error.message
+      });
+    }
+  }
+
   // Carregar dados do usuário (SEM EXIBIR EMAIL)
   async function carregarDadosUsuario() {
     try {
@@ -714,6 +774,20 @@ async function atualizarMenuUsuario(user) {
       }
       
       console.log('✅ User data loaded');
+
+      if (currentUser && currentUser.uid !== userId) {
+        console.log('👁️ Registrando visualização de:', currentUser.uid, 'no perfil:', userId);
+        await registrarVisualizacao(userId, currentUser.uid);
+      } else if (currentUser && currentUser.uid === userId) {
+        console.log('ℹ️ É o próprio perfil, não registrar visualização');
+      } else {
+        console.log('⚠️ Usuário não está logado, não pode registrar visualização');
+      }
+
+      // Registrar visualização (se não for o próprio perfil)
+      if (currentUser && currentUser.uid !== userId) {
+        await registrarVisualizacao(userId, currentUser.uid);
+      }
       
       // Carregar builds
       await carregarBuildsUsuario(userId);
