@@ -18,7 +18,7 @@
   html,body{height:100%;}
   body {
     font-family: Arial, sans-serif;
-    background: url('background.jpg') no-repeat center center fixed;
+    background: url('/img-site/background.jpg') no-repeat center center fixed;
     background-size: cover;
     margin: 0;
     min-height: 100vh;
@@ -327,7 +327,7 @@ function googleTranslateElementInit() {
   }
 
   onAuthStateChanged(auth, (user) => {
-    if (user) window.location.href = "index.html";
+    if (user) window.location.href = "../index.html";
   });
 
   btnLogin.addEventListener("click", async () => {
@@ -337,19 +337,19 @@ function googleTranslateElementInit() {
     if (!emailValue || !senhaValue) { showMessage(errorMessage, "Por favor, preencha todos os campos."); return; }
     if (!emailValue.includes("@")) { showMessage(errorMessage, "Por favor, digite um email válido."); return; }
     setLoading(true);
-    try { await signInWithEmailAndPassword(auth, emailValue, senhaValue); showMessage(successMessage, "Login realizado com sucesso!"); setTimeout(()=> window.location.href = "index.html", 800); }
+    try { await signInWithEmailAndPassword(auth, emailValue, senhaValue); showMessage(successMessage, "Login realizado com sucesso!"); setTimeout(()=> window.location.href = "../index.html", 800); }
     catch (error) { console.error(error); showMessage(errorMessage, getErrorMessage(error.code)); }
     finally { setLoading(false); }
   });
 
   btnGoogle.addEventListener("click", async () => {
     hideAllMessages(); setLoading(true);
-    try { await signInWithGoogle(); showMessage(successMessage, "Login com Google realizado com sucesso!"); setTimeout(()=> window.location.href = "index.html", 800); }
+    try { await signInWithGoogle(); showMessage(successMessage, "Login com Google realizado com sucesso!"); setTimeout(()=> window.location.href = "../index.html", 800); }
     catch (error) { console.error(error); if (error.code === 'auth/popup-closed-by-user') showMessage(errorMessage, "Login cancelado. Tente novamente."); else if (error.code === 'auth/popup-blocked') showMessage(errorMessage, "Popup bloqueado. Permita popups neste site."); else showMessage(errorMessage, getErrorMessage(error.code)); }
     finally { setLoading(false); }
   });
 
-  btnRegistrar.addEventListener("click", () => window.location.href = "registro.html");
+  btnRegistrar.addEventListener("click", () => window.location.href = "./registro.html");
 
   document.addEventListener("keypress", (e) => { if (e.key === "Enter" && !btnLogin.disabled) btnLogin.click(); });
 

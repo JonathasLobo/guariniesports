@@ -6,7 +6,7 @@
   <meta name="description" content="Perfil do usuário - Guarini e-sport">
   <title>Meu Perfil - Guarini e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
   <meta name="theme-color" content="#ffad00">
 </head>
@@ -27,7 +27,7 @@
       <!-- Logo Central -->
       <div class="logo-center">
         <a href="index.html" aria-label="Início">
-          <img src="./logos/Guarini.png" alt="Guarini e-sport" class="header-logo">
+          <img src="../img-site/Guarini.png" alt="Guarini e-sport" class="header-logo">
         </a>
       </div>
 
@@ -73,7 +73,7 @@
         <span>Olá, visitante!</span>
       </div>
       <ul class="user-dropdown-list">
-        <li><a href="perfil.html" id="perfilLink" class="ativo">Perfil</a></li>
+        <li><a href="./perfil.html" id="perfilLink" class="ativo">Perfil</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -104,7 +104,7 @@
         <!-- Foto de Perfil -->
         <div class="perfil-avatar-container">
           <div class="perfil-avatar" id="perfilAvatar">
-            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
+            <img src="../estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
           </div>
         </div>
 
@@ -189,7 +189,7 @@
           <!-- Gold Ribbon -->
           <div class="ribbon-tier">
             <div class="ribbon-icon-container">
-              <img src="./estatisticas-shad/images/icons/dourado.png" alt="Gold Ribbon" class="ribbon-icon">
+              <img src="../estatisticas-shad/images/icons/dourado.png" alt="Gold Ribbon" class="ribbon-icon">
             </div>
             <div class="ribbon-pokemon-list" id="goldRibbonList" data-tier="gold">
               <button class="btn-add-pokemon" data-tier="gold">+</button>
@@ -199,7 +199,7 @@
           <!-- Blue Ribbon -->
           <div class="ribbon-tier">
             <div class="ribbon-icon-container">
-              <img src="./estatisticas-shad/images/icons/azul.png" alt="Blue Ribbon" class="ribbon-icon">
+              <img src="../estatisticas-shad/images/icons/azul.png" alt="Blue Ribbon" class="ribbon-icon">
             </div>
             <div class="ribbon-pokemon-list" id="blueRibbonList" data-tier="blue">
               <button class="btn-add-pokemon" data-tier="blue">+</button>
@@ -209,7 +209,7 @@
           <!-- Green Ribbon -->
           <div class="ribbon-tier">
             <div class="ribbon-icon-container">
-              <img src="./estatisticas-shad/images/icons/verde.png" alt="Green Ribbon" class="ribbon-icon">
+              <img src="../estatisticas-shad/images/icons/verde.png" alt="Green Ribbon" class="ribbon-icon">
             </div>
             <div class="ribbon-pokemon-list" id="greenRibbonList" data-tier="green">
               <button class="btn-add-pokemon" data-tier="green">+</button>
@@ -466,8 +466,8 @@
   // Função para criar o HTML de um card de build
 function createBuildCard(build) {
   const pokemonImage = build.pokemon ? 
-    `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-    './estatisticas-shad/images/backgrounds/placeholder.png';
+    `../estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+    '../estatisticas-shad/images/backgrounds/placeholder.png';
   
   // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
   const pokemonName = capitalizeFirst(build.pokemon);
@@ -476,7 +476,7 @@ function createBuildCard(build) {
   // Battle Item
   const battleItemHTML = build.battleItem ? `
     <div class="build-item-circle">
-      <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+      <img src="../estatisticas-shad/images/battle-items/${build.battleItem}.png" 
            alt="Battle Item"
            onerror="this.style.display='none'">
     </div>
@@ -486,7 +486,7 @@ function createBuildCard(build) {
   const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
     build.heldItems.slice(0, 3).map(item => `
       <div class="build-item-circle">
-        <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+        <img src="../estatisticas-shad/images/held-itens/${item.key}.png" 
              alt="${item.name}"
              title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
              onerror="this.style.display='none'">
@@ -499,14 +499,14 @@ function createBuildCard(build) {
       <div class="build-pokemon-image">
         <img src="${pokemonImage}" 
              alt="${pokemonName}"
-             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+             onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
       </div>
       
       <h3 class="build-pokemon-name">${pokemonName}</h3>
       
       ${roleInfo ? `
         <div class="build-pokemon-role">
-          <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+          <img src="../estatisticas-shad/images/roles/${roleInfo.icon}.png" 
                alt="${roleInfo.name}"
                onerror="this.style.display='none'">
           <span>${roleInfo.name}</span>
@@ -700,7 +700,7 @@ function getPokemonRole(pokemonKey) {
                 ...view,
                 displayName: viewerData.displayName || 'Anonymous',
                 playerId: viewerData.playerId || 'N/A',
-                avatar: viewerData.avatar || './estatisticas-shad/images/backgrounds/pikachu-left-bg.png'
+                avatar: viewerData.avatar || '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'
               };
             }
             return null;
@@ -727,7 +727,7 @@ function getPokemonRole(pokemonKey) {
         return `
           <div class="recent-view-item" onclick="window.location.href='perfil-view.html?uid=${view.viewerId}'">
             <div class="recent-view-avatar">
-              <img src="${view.avatar}" alt="${view.displayName}" onerror="this.src='./estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+              <img src="${view.avatar}" alt="${view.displayName}" onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
             </div>
             <div class="recent-view-info">
               <p class="recent-view-name">${view.displayName}</p>
@@ -926,7 +926,7 @@ function getPokemonRole(pokemonKey) {
   // Função para carregar todas as imagens da pasta sprites
   async function carregarImagensSprites() {
     const avatares = [];
-    const pastaPrincial = './estatisticas-shad/images/backgrounds/';
+    const pastaPrincial = '../estatisticas-shad/images/backgrounds/';
     
     const nomesBase = [
         'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill',
@@ -1029,7 +1029,7 @@ function getPokemonRole(pokemonKey) {
     pokemonList.forEach(pokemon => {
       const avatarOption = document.createElement('div');
       avatarOption.className = 'avatar-option';
-      avatarOption.innerHTML = `<img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" alt="${pokemon}" onerror="this.parentElement.style.display='none'">`;
+      avatarOption.innerHTML = `<img src="../estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" alt="${pokemon}" onerror="this.parentElement.style.display='none'">`;
       avatarOption.addEventListener('click', () => selectAvatar(pokemon));
       avatarGrid.appendChild(avatarOption);
     });
@@ -1044,7 +1044,7 @@ async function selectAvatar(pokemon) {
   }
   
   try {
-    const avatarPath = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
+    const avatarPath = `../estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
     
     // Salvar no Firestore
     const userDocRef = doc(db, "usuarios", currentUser.uid);
@@ -1189,7 +1189,7 @@ async function updateUI(user) {
       const userDocSnap = await getDoc(userDocRef);
       
       let displayName = user.displayName || user.email.split('@')[0];
-      let avatarPath = './estatisticas-shad/images/sprites/pikachu.png';
+      let avatarPath = '../estatisticas-shad/images/sprites/pikachu.png';
       
       // Se existe documento no Firestore, usar os dados de lá
       if (userDocSnap.exists()) {
@@ -1237,7 +1237,7 @@ async function updateUI(user) {
     }
     
   } else {
-    window.location.href = 'login.html';
+    window.location.href = '../login/login.html';
   }
 }
 
@@ -1252,7 +1252,7 @@ async function updateUI(user) {
       
       await signOut(auth);
       alert('Logout realizado com sucesso!');
-      window.location.href = 'index.html';
+      window.location.href = '/index.html';
     } catch (error) {
       console.error('Erro no logout:', error);
       alert('Erro ao fazer logout. Tente novamente.');

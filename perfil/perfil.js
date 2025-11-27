@@ -144,7 +144,7 @@ function abrirModalPokemon(tier) {
     const pokemonOption = document.createElement('div');
     pokemonOption.className = `ribbon-pokemon-option ${isDisabled ? 'disabled' : ''}`;
     pokemonOption.innerHTML = `
-      <img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
+      <img src="../estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
            alt="${pokemon}"
            onerror="this.parentElement.style.display='none'">
     `;
@@ -229,9 +229,9 @@ function renderizarTier(tier) {
     pokemonItem.className = 'ribbon-pokemon-item';
     pokemonItem.setAttribute('data-pokemon', pokemon);
     pokemonItem.innerHTML = `
-      <img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
+      <img src="../estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
            alt="${pokemon}"
-           onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+           onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
       <div class="delete-btn">🗑️</div>
     `;
     

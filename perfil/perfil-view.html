@@ -6,7 +6,7 @@
   <meta name="description" content="Visualizar perfil - Guarini e-sport">
   <title>Player Profile - Guarini e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
   <meta name="theme-color" content="#ffad00">
 </head>
@@ -25,7 +25,7 @@
       
       <div class="logo-center">
         <a href="index.html" aria-label="Início">
-          <img src="./logos/Guarini.png" alt="Guarini e-sport" class="header-logo">
+          <img src="../img-site/Guarini.png" alt="Guarini e-sport" class="header-logo">
         </a>
       </div>
 
@@ -68,7 +68,7 @@
         <span>Olá, visitante!</span>
       </div>
       <ul class="user-dropdown-list">
-        <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="./perfil/perfil.html" id="perfilLink">Perfil</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -103,7 +103,7 @@
       <div class="perfil-card">
         <div class="perfil-avatar-container">
           <div class="perfil-avatar" id="perfilAvatar">
-            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
+            <img src="../estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar do usuário" id="avatarImg">
           </div>
         </div>
 
@@ -148,7 +148,7 @@
             <!-- Gold Ribbon -->
             <div class="ribbon-tier">
               <div class="ribbon-icon-container">
-                <img src="./estatisticas-shad/images/icons/dourado.png" alt="Gold Ribbon" class="ribbon-icon">
+                <img src="../estatisticas-shad/images/icons/dourado.png" alt="Gold Ribbon" class="ribbon-icon">
               </div>
               <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="goldRibbonListView">
                 <!-- Pokémons serão carregados aqui -->
@@ -158,7 +158,7 @@
             <!-- Blue Ribbon -->
             <div class="ribbon-tier">
               <div class="ribbon-icon-container">
-                <img src="./estatisticas-shad/images/icons/azul.png" alt="Blue Ribbon" class="ribbon-icon">
+                <img src="../estatisticas-shad/images/icons/azul.png" alt="Blue Ribbon" class="ribbon-icon">
               </div>
               <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="blueRibbonListView">
                 <!-- Pokémons serão carregados aqui -->
@@ -168,7 +168,7 @@
             <!-- Green Ribbon -->
             <div class="ribbon-tier">
               <div class="ribbon-icon-container">
-                <img src="./estatisticas-shad/images/icons/verde.png" alt="Green Ribbon" class="ribbon-icon">
+                <img src="../estatisticas-shad/images/icons/verde.png" alt="Green Ribbon" class="ribbon-icon">
               </div>
               <div class="ribbon-pokemon-list ribbon-pokemon-list-view" id="greenRibbonListView">
                 <!-- Pokémons serão carregados aqui -->
@@ -417,7 +417,7 @@
         
         await signOut(auth);
         alert('Logout realizado com sucesso!');
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
       } catch (error) {
         console.error('Erro no logout:', error);
         alert('Erro ao fazer logout. Tente novamente.');
@@ -434,7 +434,7 @@ async function atualizarMenuUsuario(user) {
       const userDocSnap = await getDoc(userDocRef);
       
       let displayName = user.displayName || user.email.split('@')[0];
-      let avatarPath = './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+      let avatarPath = '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
       
       // Se existe documento no Firestore, usar os dados de lá
       if (userDocSnap.exists()) {
@@ -458,7 +458,7 @@ async function atualizarMenuUsuario(user) {
       // Fallback
       const displayName = user.displayName || user.email.split('@')[0];
       userDropdownHeader.innerHTML = `
-        <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
+        <img src="../estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
         <span>Olá, ${displayName}!</span>
       `;
     }
@@ -474,7 +474,7 @@ async function atualizarMenuUsuario(user) {
       authLink.textContent = 'Login';
       authLink.onclick = function(e) {
         e.preventDefault();
-        window.location.href = 'login.html';
+        window.location.href = '../login/login.html';
       };
       perfilLink.style.display = 'none';
     }
@@ -492,7 +492,7 @@ async function atualizarMenuUsuario(user) {
 
   if (!userId) {
     alert('❌ User not found');
-    window.location.href = 'index.html';
+    window.location.href = '../index.html';
   }
 
   // Elementos do DOM
@@ -510,8 +510,8 @@ async function atualizarMenuUsuario(user) {
   // Função para criar card de build (SEM botões de editar/deletar)
   function createBuildCard(build) {
     const pokemonImage = build.pokemon ? 
-      `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-      './estatisticas-shad/images/backgrounds/placeholder.png';
+      `../estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+      '../estatisticas-shad/images/backgrounds/placeholder.png';
     
     // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
     const pokemonName = capitalizeFirst(build.pokemon);
@@ -520,7 +520,7 @@ async function atualizarMenuUsuario(user) {
     // Battle Item
     const battleItemHTML = build.battleItem ? `
       <div class="build-item-circle">
-        <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+        <img src="../estatisticas-shad/images/battle-items/${build.battleItem}.png" 
              alt="Battle Item"
              onerror="this.style.display='none'">
       </div>
@@ -530,7 +530,7 @@ async function atualizarMenuUsuario(user) {
     const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
       build.heldItems.slice(0, 3).map(item => `
         <div class="build-item-circle">
-          <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+          <img src="../estatisticas-shad/images/held-itens/${item.key}.png" 
                alt="${item.name}"
                title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
                onerror="this.style.display='none'">
@@ -543,14 +543,14 @@ async function atualizarMenuUsuario(user) {
         <div class="build-pokemon-image">
           <img src="${pokemonImage}" 
                alt="${pokemonName}"
-               onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+               onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
         </div>
         
         <h3 class="build-pokemon-name">${pokemonName}</h3>
         
         ${roleInfo ? `
           <div class="build-pokemon-role">
-            <img src="./estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+            <img src="../estatisticas-shad/images/roles/${roleInfo.icon}.png" 
                  alt="${roleInfo.name}"
                  onerror="this.style.display='none'">
             <span>${roleInfo.name}</span>
@@ -675,9 +675,9 @@ async function atualizarMenuUsuario(user) {
       pokemonItem.className = 'ribbon-pokemon-item';
       pokemonItem.setAttribute('data-pokemon', pokemon);
       pokemonItem.innerHTML = `
-        <img src="./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
+        <img src="../estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png" 
              alt="${pokemon}"
-             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+             onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
       `;
       
       listElement.appendChild(pokemonItem);
@@ -753,7 +753,7 @@ async function atualizarMenuUsuario(user) {
       
       if (!userDocSnap.exists()) {
         alert('❌ User not found');
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
         return;
       }
       
@@ -796,7 +796,7 @@ async function atualizarMenuUsuario(user) {
     } catch (error) {
       console.error('❌ Error loading user:', error);
       alert('❌ Error loading profile');
-      window.location.href = 'index.html';
+      window.location.href = '../index.html';
     }
   }
 
