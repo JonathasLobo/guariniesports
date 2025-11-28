@@ -1104,70 +1104,81 @@ async function selectAvatar(pokemon) {
     perfilNomeInput.focus();
   });
 
-  // Salvar nome ao pressionar Enter ou perder foco
-  async function salvarNome() {
-    const novoNome = perfilNomeInput.value.trim();
+// Salvar nome ao pressionar Enter ou perder foco
+async function salvarNome() {
+  const novoNome = perfilNomeInput.value.trim();
+  
+  if (!novoNome || novoNome === perfilNomeDisplay.textContent) {
+    perfilNomeInput.style.display = 'none';
+    perfilNomeDisplay.style.display = 'block';
+    btnEditNome.style.display = 'inline-block';
+    return;
+  }
+  
+  if (!currentUser) {
+    alert('❌ Você precisa estar logado para alterar o nome');
+    return;
+  }
+  
+  try {
+    btnEditNome.disabled = true;
+    perfilNomeInput.disabled = true;
     
-    if (!novoNome || novoNome === perfilNomeDisplay.textContent) {
-      perfilNomeInput.style.display = 'none';
-      perfilNomeDisplay.style.display = 'block';
-      btnEditNome.style.display = 'inline-block';
-      return;
-    }
+    // ✅ BUSCAR AVATAR ATUAL DO FIRESTORE
+    const userDocRef = doc(db, "usuarios", currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
     
-    if (!currentUser) {
-      alert('❌ Você precisa estar logado para alterar o nome');
-      return;
-    }
+    let avatarPath = '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'; // Default
     
-    try {
-      btnEditNome.disabled = true;
-      perfilNomeInput.disabled = true;
-      
-      // Atualizar no Firestore
-      const userDocRef = doc(db, "usuarios", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      
-      if (userDocSnap.exists()) {
-        await updateDoc(userDocRef, {
-          displayName: novoNome,
-          updatedAt: new Date()
-        });
-      } else {
-        await setDoc(userDocRef, {
-          email: currentUser.email,
-          role: "user",
-          displayName: novoNome,
-          createdAt: new Date()
-        });
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      if (userData.avatar) {
+        avatarPath = userData.avatar;
       }
       
-      // Atualizar no Firebase Auth
-      await updateProfile(currentUser, {
-        displayName: novoNome
+      // Atualizar no Firestore
+      await updateDoc(userDocRef, {
+        displayName: novoNome,
+        updatedAt: new Date()
       });
-      
-      perfilNomeDisplay.textContent = novoNome;
-      // Atualizar interface
-          userDropdownHeader.innerHTML = `
-            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
-            <span>Olá, ${novoNome}!</span>
-          `;
-      
-      console.log('✅ Nome atualizado com sucesso:', novoNome);
-      alert('✅ Nome atualizado com sucesso!');
-      
-    } catch (error) {
-      console.error('❌ Erro ao atualizar nome:', error);
-      alert('❌ Erro ao atualizar nome: ' + error.message);
-    } finally {
-      btnEditNome.disabled = false;
-      perfilNomeInput.disabled = false;
-      perfilNomeInput.style.display = 'none';
-      perfilNomeDisplay.style.display = 'block';
-      btnEditNome.style.display = 'inline-block';
+    } else {
+      // Criar novo documento se não existir
+      await setDoc(userDocRef, {
+        email: currentUser.email,
+        role: "user",
+        displayName: novoNome,
+        avatar: avatarPath,
+        createdAt: new Date()
+      });
     }
+    
+    // Atualizar no Firebase Auth
+    await updateProfile(currentUser, {
+      displayName: novoNome
+    });
+    
+    perfilNomeDisplay.textContent = novoNome;
+    
+    // ✅ ATUALIZAR INTERFACE COM AVATAR CORRETO
+    userDropdownHeader.innerHTML = `
+      <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+      <span>Olá, ${novoNome}!</span>
+    `;
+    
+    console.log('✅ Nome atualizado com sucesso:', novoNome);
+    alert('✅ Nome atualizado com sucesso!');
+    
+  } catch (error) {
+    console.error('❌ Erro ao atualizar nome:', error);
+    alert('❌ Erro ao atualizar nome: ' + error.message);
+  } finally {
+    btnEditNome.disabled = false;
+    perfilNomeInput.disabled = false;
+    perfilNomeInput.style.display = 'none';
+    perfilNomeDisplay.style.display = 'block';
+    btnEditNome.style.display = 'inline-block';
   }
+}
 
   perfilNomeInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {

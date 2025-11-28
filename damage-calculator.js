@@ -47,6 +47,206 @@ async function initializeFirebase() {
 let currentUserAuth = null;
 let currentBuildId = null;
 
+// ===== FUNÇÃO PARA RESTAURAR ESTADO DA BUILD =====
+function restaurarEstadoBuild(buildState) {
+  console.log("🔄 Restaurando build:", buildState);
+  
+  try {
+    // 1. Selecionar Pokémon
+    if (buildState.pokemon) {
+      selectPokemon(buildState.pokemon);
+    }
+    
+    // 2. Definir nível
+    if (buildState.level) {
+      currentLevel = buildState.level;
+      updateLevelDisplay();
+    }
+    
+    // 3. Definir skin
+    if (buildState.skin && buildState.skin !== "default") {
+      selectedSkins[buildState.pokemon] = buildState.skin;
+      updatePokemonImage();
+    }
+    
+    // 4. Restaurar Held Items (incluindo stacks)
+    if (buildState.heldItems && Array.isArray(buildState.heldItems)) {
+      selectedHeldItems = buildState.heldItems.map(item => ({
+        key: item.key,
+        name: item.name,
+        stacks: item.stacks || 0
+      }));
+      updateGridDisplay();
+      updateSelectedItemsDisplay();
+    }
+    
+    // 5. Restaurar Battle Item
+    if (buildState.battleItem) {
+      activeBattleItem = buildState.battleItem;
+      isBattleItemActive = buildState.battleItemActive || false;
+      
+      const battleRadio = document.querySelector(`input[name="battle"][value="${buildState.battleItem}"]`);
+      if (battleRadio) {
+        battleRadio.checked = true;
+        lastSelectedBattleItem = buildState.battleItem;
+      }
+    }
+    
+    // 6. Restaurar Emblems
+    if (buildState.includeEmblems) {
+      const emblemRadio = document.querySelector('input[name="emblemas"][value="sim"]');
+      if (emblemRadio) {
+        emblemRadio.checked = true;
+        emblemasContainer.style.display = "block";
+        selectedEmblems = { ...buildState.selectedEmblems };
+        createEmblemsGrid();
+        updateEmblemDescription();
+      }
+    }
+    
+    // 7. Restaurar Map Buffs
+    if (buildState.includeMapBuffs) {
+      const mapBuffRadio = document.querySelector('input[name="mapbuffs"][value="sim"]');
+      if (mapBuffRadio) {
+        mapBuffRadio.checked = true;
+        const mapBuffsContainer = document.getElementById("map-buffs-selector");
+        if (mapBuffsContainer) {
+          mapBuffsContainer.style.display = "block";
+          selectedMapBuffs = { ...buildState.selectedMapBuffs };
+          createMapBuffsGrid();
+          updateMapBuffDescription();
+        }
+      }
+    }
+    
+    // 8. Restaurar Skills Selecionadas
+    if (buildState.selectedSkills) {
+      if (!selectedSkills[buildState.pokemon]) {
+        selectedSkills[buildState.pokemon] = {};
+      }
+      selectedSkills[buildState.pokemon] = { ...buildState.selectedSkills };
+    }
+    
+    // 9. Restaurar estados de passivas
+    if (buildState.activePassives) {
+      if (!activePassives[buildState.pokemon]) {
+        activePassives[buildState.pokemon] = {};
+      }
+      activePassives[buildState.pokemon] = { ...buildState.activePassives };
+    }
+    
+    // 10. Restaurar estados de skills ativas
+    if (buildState.activeSkills) {
+      if (!activeSkills[buildState.pokemon]) {
+        activeSkills[buildState.pokemon] = {};
+      }
+      activeSkills[buildState.pokemon] = { ...buildState.activeSkills };
+    }
+    
+    // 11. Restaurar passivas de itens
+    if (buildState.activeItemPassives) {
+      activeItemPassives = { ...buildState.activeItemPassives };
+    }
+    
+    // 12. Restaurar efeitos condicionais
+    if (buildState.selectedConditionalEffects) {
+      if (!selectedConditionalEffects[buildState.pokemon]) {
+        selectedConditionalEffects[buildState.pokemon] = {};
+      }
+      selectedConditionalEffects[buildState.pokemon] = { ...buildState.selectedConditionalEffects };
+    }
+    
+    // 13. Restaurar gauges especiais
+    muscleGauge = buildState.muscleGauge || 0;
+    sweetGauge = buildState.sweetGauge || false;
+    chlorophyllGauge = buildState.chlorophyllGauge || false;
+    pawmotMode = buildState.pawmotMode || false;
+    eonPower = buildState.eonPower || 0;
+    eonPower2 = buildState.eonPower2 || 0;
+    eonPowerlatios = buildState.eonPowerlatios || 0;
+    
+    // 14. Restaurar configuração de crit
+    showCritDamage = buildState.showCritDamage || false;
+    
+    // 15. Recalcular tudo
+    calcular();
+    
+    console.log("✅ Build restaurada com sucesso!");
+    
+  } catch (error) {
+    console.error("❌ Erro ao restaurar build:", error);
+    throw error;
+  }
+}
+
+
+// ===== FUNÇÃO PARA CARREGAR BUILD EM MODO VISUALIZAÇÃO (GLOBAL) =====
+async function carregarBuildModoVisualizacao(userId, buildId, firebase) {
+  try {
+    console.log('🔥 Carregando build do usuário:', userId);
+    
+    const { doc, getDoc } = firebase;
+    
+    // Buscar dados do usuário (dono da build)
+    const userDocRef = doc(db, "usuarios", userId);
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (!userDocSnap.exists()) {
+      throw new Error('User not found');
+    }
+    
+    const userData = userDocSnap.data();
+    console.log('✅ Usuário encontrado:', userData.displayName);
+    
+    // Buscar dados da build
+    const buildDocRef = doc(db, "usuarios", userId, "builds", buildId);
+    const buildDocSnap = await getDoc(buildDocRef);
+    
+    if (!buildDocSnap.exists()) {
+      throw new Error('Build not found');
+    }
+    
+    const buildData = buildDocSnap.data();
+    console.log('✅ Build carregada:', buildData.buildName);
+    
+    // Criar header com informações do dono e botão voltar
+    const viewModeHeader = document.getElementById('view-mode-header');
+    if (viewModeHeader) {
+      viewModeHeader.style.display = 'block';
+      viewModeHeader.innerHTML = `
+        <div class="view-only-banner">
+          👁️ VIEW ONLY MODE - You cannot modify or save this build
+        </div>
+        
+        <button class="back-to-profile-btn" onclick="window.location.href='perfil/perfil-view.html?uid=${userId}'">
+          ← Back to Profile
+        </button>
+        
+        <div class="build-owner-info">
+          <img src="${userData.avatar || './estatisticas-shad/images/backgrounds/pikachu-left-bg.png'}" 
+               alt="Owner Avatar" 
+               class="build-owner-avatar">
+          <div class="build-owner-details">
+            <h3>${userData.displayName || 'Anonymous'}</h3>
+            <p>${buildData.buildName || 'Unnamed Build'}</p>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Aplicar o estado da build usando a função existente
+    restaurarEstadoBuild(buildData);
+    
+    console.log('🎉 Build carregada em modo visualização com sucesso!');
+    
+  } catch (error) {
+    console.error('❌ Erro ao carregar build em modo visualização:', error);
+    throw error;
+  }
+}
+window.carregarBuildModoVisualizacao = carregarBuildModoVisualizacao;
+
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   // ===== INICIALIZAR FIREBASE PRIMEIRO =====
@@ -72,6 +272,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 1500);
   }
   
+  // ===== MODO VIEW ONLY - CARREGAR BUILD DE OUTRO USUÁRIO =====
+  const urlParams = new URLSearchParams(window.location.search);
+  const isViewMode = urlParams.get('view') === 'true';
+  const viewBuildId = urlParams.get('buildId');
+  const viewUserId = urlParams.get('uid');
+  
+  if (isViewMode && viewBuildId && viewUserId) {
+    console.log('👁️ Modo VIEW ONLY detectado');
+    console.log('   - Carregando build:', viewBuildId);
+    console.log('   - Do usuário:', viewUserId);
+    
+    // Aguardar Firebase estar pronto
+    setTimeout(async () => {
+      try {
+        await carregarBuildModoVisualizacao(viewUserId, viewBuildId, firebase);
+      } catch (error) {
+        console.error('❌ Erro ao carregar build em modo visualização:', error);
+        alert('❌ Error loading build: ' + error.message);
+      }
+    }, 2000);
+  }
+  // ✅ FIM DO BLOCO
+
   if (!firebase) {
     console.warn("⚠️ Firebase não disponível - sistema de builds desabilitado");
     habilitarBotoesBuild(false);
@@ -7893,4 +8116,43 @@ buildNameInput?.addEventListener("keypress", (e) => {
     btnConfirmSave.click();
   }
 });
-});
+// ===== EXPOR FUNÇÕES GLOBALMENTE PARA BUILD-VIEW =====
+  window.selectPokemon = selectPokemon;
+  window.calcular = calcular;
+  window.updateLevelDisplay = updateLevelDisplay;
+  window.updateGridDisplay = updateGridDisplay;
+  window.updateSelectedItemsDisplay = updateSelectedItemsDisplay;
+  window.createEmblemsGrid = createEmblemsGrid;
+  window.updateEmblemDescription = updateEmblemDescription;
+  window.createMapBuffsGrid = createMapBuffsGrid;
+  window.updateMapBuffDescription = updateMapBuffDescription;
+  window.updatePokemonImage = updatePokemonImage;
+
+  // ✅ Expor variáveis globais necessárias
+  window.currentLevel = currentLevel;
+  window.selectedHeldItems = selectedHeldItems;
+  window.selectedEmblems = selectedEmblems;
+  window.selectedMapBuffs = selectedMapBuffs;
+  window.selectedSkills = selectedSkills;
+  window.activePassives = activePassives;
+  window.activeSkills = activeSkills;
+  window.activeItemPassives = activeItemPassives;
+  window.selectedConditionalEffects = selectedConditionalEffects;
+  window.muscleGauge = muscleGauge;
+  window.sweetGauge = sweetGauge;
+  window.chlorophyllGauge = chlorophyllGauge;
+  window.pawmotMode = pawmotMode;
+  window.eonPower = eonPower;
+  window.eonPower2 = eonPower2;
+  window.eonPowerlatios = eonPowerlatios;
+  window.selectedSkins = selectedSkins;
+  window.showCritDamage = showCritDamage;
+  window.activeBattleItem = activeBattleItem;
+  window.isBattleItemActive = isBattleItemActive;
+  window.selectedPokemon = selectedPokemon;
+  window.lastSelectedBattleItem = lastSelectedBattleItem;
+  window.emblemasContainer = emblemasContainer;
+
+  console.log('✅ Funções e variáveis exportadas globalmente para build-view.html');
+  
+}); // ← Este é o fechamento do DOMContentLoaded (NÃO MEXER)

@@ -36,6 +36,25 @@ function googleTranslateElementInit() {
   gtag('config', 'G-84NHN394WF');
 </script>
 <body>
+  <script>
+    // Detectar se está em modo visualização
+    const urlParams = new URLSearchParams(window.location.search);
+    const isViewMode = urlParams.has('view') && urlParams.get('view') === 'true';
+    const viewBuildId = urlParams.get('buildId');
+    const viewUserId = urlParams.get('uid');
+    
+    if (isViewMode) {
+      console.log('👁️ Modo VIEW ONLY ativado');
+      console.log('   - Build ID:', viewBuildId);
+      console.log('   - User ID:', viewUserId);
+      
+      // Adicionar classe ao body para aplicar estilos
+      document.body.classList.add('view-only-mode');
+    }
+  </script>
+
+  <!-- Container para banner e botão voltar (só aparece em view mode) -->
+  <div id="view-mode-header" style="display: none;"></div>
 
 <!-- Menu dropdown do usuário -->
 <div class="user-menu-container">
@@ -50,7 +69,7 @@ function googleTranslateElementInit() {
       <span>Olá, visitante!</span>
     </div>
     <ul class="user-dropdown-list">
-      <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+      <li><a href="../perfil/perfil.html" id="perfilLink">Perfil</a></li>
       <li><a href="#" id="authLink">Login</a></li>
     </ul>
   </div>
