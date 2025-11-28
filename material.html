@@ -77,15 +77,15 @@ function googleTranslateElementInit() {
       <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
-          <li><a href="loja.html">Loja</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="./loja/loja.html">Loja</a></li>
+          <li><a href="./sobre/sobre.html">Sobre</a></li>
         </ul>
       </nav>
       
       <!-- Logo Central -->
       <div class="logo-center">
         <a href="index.html" aria-label="Início">
-          <img src="./logos/Guarini.png" alt="Guariní e-sport" class="header-logo">
+          <img src="./img-site/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
 
@@ -130,7 +130,7 @@ function googleTranslateElementInit() {
         <span>Olá, visitante!</span>
       </div>
       <ul class="user-dropdown-list">
-        <li><a href="perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="./perfil/perfil.html" id="perfilLink">Perfil</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -156,16 +156,6 @@ function googleTranslateElementInit() {
   <main>
     <h2>Ferramentas</h2>
     <section class="ferramentas">
-      
-      <!-- Calculadora de Performance -->
-      <article class="ferramenta">
-        <img src="./img-site/calculadora.png" alt="Calculadora de Performance">
-        <h3>Calculadora de Performance</h3>
-        <p class="descricao">Calcule suas estatísticas de jogo e compare com outros jogadores</p>
-        <button type="button" class="btn-comprar" id="calcBtn">Acessar</button>
-        <div id="calcAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
-      </article>
-
       <!-- Estatísticas do Time -->
       <article class="ferramenta">
         <img src="./img-site/grafico.png" alt="Estatísticas" />
@@ -173,24 +163,6 @@ function googleTranslateElementInit() {
         <p class="descricao">Veja seu perfil com seus e os números da sua equipe</p>
         <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
         <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
-      </article>
-
-      <!-- Calculadora de Winrate Ranqueado -->
-      <article class="ferramenta">
-        <img src="./img-site/winrate.png" alt="Calculadora de Winrate Ranqueado" />
-        <h3>Calculadora de Winrate Ranqueado</h3>
-        <p class="descricao">Calcule seu winrate específico de Rankeds ou qualquer outro tipo de partida</p>
-        <button type="button" class="btn-comprar" id="winrateBtn">Acessar</button>
-        <div id="calcWinrateMessage" style="color: red; margin-top: 10px; display: none;"></div>
-      </article>
-
-      <!-- Análise de Equipe -->
-      <article class="ferramenta">
-        <img src="./img-site/avaliaçao.png" alt="Análise de Equipe" />
-        <h3>Análise de Equipe</h3>
-        <p class="descricao">Organize e analise os pontos fortes e fracos da sua equipe</p>
-        <button type="button" class="btn-comprar" id="analiseBtn">Acessar</button>
-        <div id="analiseAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
       <!-- Build Maker -->
@@ -409,7 +381,7 @@ function googleTranslateElementInit() {
         </div>
         <div style="margin-top: 10px; text-align: center;">
           <button 
-            onclick="window.location.href='perfil-view.html?uid=${userId}'" 
+            onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
             style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
             onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
@@ -536,7 +508,7 @@ function googleTranslateElementInit() {
   // Função para fazer login
   function handleLogin() {
     sessionStorage.setItem('redirectAfterLogin', 'material.html');
-    window.location.href = 'login.html';
+    window.location.href = './login/login.html';
   }
 
   // Função para fazer logout
@@ -558,26 +530,6 @@ function googleTranslateElementInit() {
   // ========================================
   // FERRAMENTAS - CONFIGURAÇÃO DE ACESSO
   // ========================================
-
-  function setupCalculatorAccess() {
-    calcBtn.onclick = () => window.location.href = 'desempenho.html';
-    calcAccessMessage.style.display = 'none';
-  }
-
-  function setupWinrateAccess() {
-    winrateBtn.onclick = () => window.location.href = 'ferramenta-cenario.html';
-    calcWinrateMessage.style.display = 'none';
-  }
-
-  function setupAnaliseAccess() {
-    analiseBtn.onclick = () => window.location.href = 'avaliaçaopontos.html';
-    analiseAccessMessage.style.display = 'none';
-  }
-
-  function setupBuildAccess() {
-    buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
-    buildAccessMessage.style.display = 'none';
-  }
 
   function setupQuizAccess() {
     quizBtn.onclick = () => window.location.href = 'quiz.html';
@@ -633,10 +585,6 @@ function googleTranslateElementInit() {
   onAuthStateChanged(auth, async (user) => {
     await updateUI(user);
     
-    setupCalculatorAccess();
-    setupWinrateAccess();
-    setupAnaliseAccess();
-    setupBuildAccess();
     setupQuizAccess();
     
     await checkStatsPermissions(user);

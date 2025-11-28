@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="./noticias/noticias.css">
-  <link rel="stylesheet" href="videos.css">
+  <link rel="stylesheet" href="./videos/videos.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffad00">
   <!-- iOS meta tags -->
@@ -132,7 +132,7 @@
         <div class="noticias-coluna">
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia5.jpg" alt="Notícia 5">
+              <img src="./noticias/img-noticias/noticia5.jpg" alt="Notícia 5">
             </div>
             <div class="noticia-conteudo-horizontal">
               <h3>Guarini vence Fire Wall</h3>
@@ -143,7 +143,7 @@
 
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia4.jpg" alt="Notícia 4">
+              <img src="./noticias/img-noticias/noticia4.jpg" alt="Notícia 4">
             </div>
             <div class="noticia-conteudo-horizontal">
               <h3>Guarini segue firme no topo</h3>
@@ -154,7 +154,7 @@
 
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia3.jpg" alt="Notícia 3">
+              <img src="./noticias/img-noticias/noticia3.jpg" alt="Notícia 3">
             </div>
             <div class="noticia-conteudo-horizontal">
               <h3>Mais uma vitória da Guarini!</h3>
@@ -168,7 +168,7 @@
         <div class="noticias-coluna">
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia2.jpg" alt="Notícia 2">
+              <img src="./noticias/img-noticias/noticia2.jpg" alt="Notícia 2">
             </div>
             <div class="noticia-conteudo-horizontal">
               <h3>Guarini vence mais uma!</h3>
@@ -179,7 +179,7 @@
 
           <div class="noticia-card-horizontal">
             <div class="noticia-imagem-horizontal">
-              <img src="./img-site/noticia1.jpg" alt="Notícia 1">
+              <img src="./noticias/img-noticias/noticia1.jpg" alt="Notícia 1">
             </div>
             <div class="noticia-conteudo-horizontal">
               <h3>Guarini vence Kingdravôs</h3>
@@ -260,19 +260,19 @@
       <h2>Loja Oficial</h2>
       <section class="produtos">
         <article class="produto">
-          <img src="./shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guarini" />
+          <img src="./loja/img-shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guarini" />
           <h3>Adesivos holográficos Kiss-Cut</h3>
           <p class="preco">$ 11,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5571571">Comprar</button>
         </article>
         <article class="produto">
-          <img src="./shop/garrafinha.jpg" alt="Garrafa de água Guarini" />
+          <img src="./loja/img-shop/garrafinha.jpg" alt="Garrafa de água Guarini" />
           <h3>Garrafa de água de aço inoxidável</h3>
           <p class="preco">$ 30,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023084">Comprar</button>
         </article>
         <article class="produto">
-          <img src="./shop/caneca.jpg" alt="Caneca Guarini" />
+          <img src="./loja/img-shop/caneca.jpg" alt="Caneca Guarini" />
           <h3>Caneca de viagem com alça</h3>
           <p class="preco">$ 29,00</p>
           <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023087">Comprar</button>
@@ -286,7 +286,7 @@
       <!-- Botões de ação no footer -->
       <div class="footer-actions">
         <!-- Botão de instalar app -->
-        <button id="installBtn" class="btn-install">📱 Instalar Guarini</button>
+        <button id="installBtn" class="btn-install">📱 Instalar App</button>
         
         <!-- Seletor de idioma customizado -->
         <div class="language-selector">
@@ -483,7 +483,7 @@
           </div>
           <div style="margin-top: 10px; text-align: center;">
             <button 
-              onclick="window.location.href='perfil-view.html?uid=${userId}'" 
+              onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
               style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
               onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
@@ -661,7 +661,7 @@
   </script>
 
   <!-- Scripts principais -->
-  <script src="videos.js"></script>
+  <script src="./videos/videos.js"></script>
 
   <script>
     // Funcionalidade do menu mobile

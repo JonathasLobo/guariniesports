@@ -1634,3 +1634,23 @@
   font-style: italic;
   font-size: 0.95rem;
 }
+
+/* Estilos para o botão Details */
+.btn-view-build-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-view-build-details:active {
+  transform: scale(0.95) !important;
+}
+
+/* Responsividade para o botão */
+@media (max-width: 768px) {
+  .btn-view-build-details {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+}

@@ -19,14 +19,14 @@
       <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
-          <li><a href="loja.html">Loja</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="../loja/loja.html">Loja</a></li>
+          <li><a href="../sobre/sobre.html">Sobre</a></li>
         </ul>
       </nav>
       
       <!-- Logo Central -->
       <div class="logo-center">
-        <a href="index.html" aria-label="Início">
+        <a href="../index.html" aria-label="Início">
           <img src="../img-site/Guarini.png" alt="Guarini e-sport" class="header-logo">
         </a>
       </div>
@@ -35,7 +35,7 @@
       <nav class="nav-group right-nav">
         <ul>
           <li><a href="equipes.html">Times</a></li>
-          <li><a href="material.html">Material</a></li>
+          <li><a href="../material.html">Material</a></li>
         </ul>
       </nav>
       
@@ -1252,7 +1252,7 @@ async function updateUI(user) {
       
       await signOut(auth);
       alert('Logout realizado com sucesso!');
-      window.location.href = '/index.html';
+      window.location.href = '../index.html';
     } catch (error) {
       console.error('Erro no logout:', error);
       alert('Erro ao fazer logout. Tente novamente.');
