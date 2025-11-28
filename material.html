@@ -531,6 +531,11 @@ function googleTranslateElementInit() {
   // FERRAMENTAS - CONFIGURAÇÃO DE ACESSO
   // ========================================
 
+  function setupBuildAccess() {
+    buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
+    buildAccessMessage.style.display = 'none';
+  }
+
   function setupQuizAccess() {
     quizBtn.onclick = () => window.location.href = 'quiz.html';
     quizAccessMessage.style.display = 'none';
@@ -584,7 +589,7 @@ function googleTranslateElementInit() {
   // ========================================
   onAuthStateChanged(auth, async (user) => {
     await updateUI(user);
-    
+    setupBuildAccess();
     setupQuizAccess();
     
     await checkStatsPermissions(user);
