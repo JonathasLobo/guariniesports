@@ -1793,3 +1793,198 @@
   }
 }
 
+/* ============================================
+   SISTEMA DE AVALIAÇÃO DE BUILDS - ESTRELAS
+   ============================================ */
+
+/* Wrapper que contém avaliação + card */
+.build-with-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 180px;
+  max-width: 180px;
+  flex-shrink: 0;
+}
+
+/* Container da avaliação (acima da build) */
+.build-rating-container {
+  width: 100%;
+  padding: 12px 10px;
+  background: linear-gradient(135deg, rgba(255, 117, 0, 0.15), rgba(0, 0, 0, 0.4));
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid rgba(255, 117, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.2);
+}
+
+/* Média da build */
+.build-average-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #ffad00;
+  font-weight: 700;
+}
+
+.build-average-number {
+  font-size: 18px;
+  color: #fff;
+}
+
+.build-total-votes {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Container das estrelas */
+.build-stars-container {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* Estrela individual */
+.build-star {
+  font-size: 24px;
+  color: #444;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Estrela preenchida */
+.build-star.filled {
+  color: #ffad00;
+  text-shadow: 0 2px 8px rgba(255, 173, 0, 0.6);
+}
+
+/* Hover effect */
+.build-star:hover {
+  transform: scale(1.15);
+}
+
+/* Quando usuário passa o mouse sobre as estrelas */
+.build-stars-container:hover .build-star {
+  color: #666;
+}
+
+.build-stars-container:hover .build-star.hover-active {
+  color: #ffad00;
+}
+
+/* Mensagem de "você precisa estar logado" */
+.rating-login-message {
+  font-size: 11px;
+  color: #ff6b6b;
+  font-style: italic;
+  margin-top: 5px;
+  text-align: center;
+}
+
+/* Estado desabilitado (quando é seu próprio perfil) */
+.build-rating-container.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.build-rating-disabled-message {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Feedback visual ao votar */
+.build-stars-container.voting {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@keyframes pulseVote {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.build-star.just-voted {
+  animation: pulseVote 0.4s ease;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .build-rating-container {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .build-star {
+    font-size: 20px;
+  }
+  
+  .build-average-number {
+    font-size: 16px;
+  }
+  
+  .build-average-rating {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .build-star {
+    font-size: 18px;
+  }
+  
+  .build-stars-container {
+    gap: 3px;
+  }
+  
+  .build-average-number {
+    font-size: 14px;
+  }
+}
+
+/* Responsividade para wrapper */
+@media (max-width: 1200px) {
+  .build-with-rating {
+    min-width: 160px;
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .build-with-rating {
+    min-width: 140px;
+    max-width: 140px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .build-with-rating {
+    min-width: 120px;
+    max-width: 120px;
+    gap: 8px;
+  }
+}
+/* Ajuste do container de builds para acomodar wrappers */
+.builds-container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 0;
+  align-items: flex-start; /* ← IMPORTANTE: alinha pelo topo */
+}
+
