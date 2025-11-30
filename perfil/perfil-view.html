@@ -506,54 +506,88 @@ async function atualizarMenuUsuario(user) {
     if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  // ===== FUNÇÕES AUXILIARES PARA SKILLS E EMBLEMS =====
+ // ===== ADICIONE ESTAS FUNÇÕES AUXILIARES ANTES DA FUNÇÃO createBuildCard =====
 
 /**
- * Busca dados de uma skill no pokemonData
- * @param {string} pokemon - Nome do Pokémon (ex: "darkrai")
- * @param {string} skillKey - Chave da skill (ex: "s11")
- * @returns {Object|null} - { name, key } ou null
+ * Converte selectedSkills do Firebase para formato do card
+ * @param {Object} selectedSkills - { s1: "s11", s2: "s12" }
+ * @returns {Object} - { skill1: { name, key }, skill2: { name, key } }
  */
-function getSkillData(pokemon, skillKey) {
-  if (!pokemon || !skillKey || !pokemonData[pokemon]) {
-    return null;
+function processSkillsFromFirebase(selectedSkills) {
+  if (!selectedSkills) return { skill1: null, skill2: null };
+  
+  const result = {};
+  
+  // Processar skill 1
+  if (selectedSkills.s1 && selectedSkills.s1 !== 'none') {
+    const skillKey = selectedSkills.s1; // ex: "s11"
+    result.skill1 = {
+      key: skillKey,
+      name: formatSkillName(skillKey)
+    };
+  } else {
+    result.skill1 = null;
   }
   
-  const pokemonSkills = pokemonData[pokemon];
-  const skill = pokemonSkills[skillKey];
-  
-  if (!skill || !skill.name) {
-    return null;
+  // Processar skill 2
+  if (selectedSkills.s2 && selectedSkills.s2 !== 'none') {
+    const skillKey = selectedSkills.s2; // ex: "s12"
+    result.skill2 = {
+      key: skillKey,
+      name: formatSkillName(skillKey)
+    };
+  } else {
+    result.skill2 = null;
   }
   
-  // Converter nome para key (ex: "Dark Void" -> "dark-void")
-  const key = skill.name.toLowerCase().replace(/\s+/g, '-');
-  
-  return {
-    name: skill.name,
-    key: key
-  };
+  return result;
 }
 
 /**
- * Formata nome de cor do emblema
+ * Formata nome da skill baseado na key
  */
-function formatEmblemColor(color) {
-  const colorMap = {
-    'black': 'Black',
-    'white': 'White',
-    'red': 'Red',
-    'blue': 'Blue',
-    'yellow': 'Yellow',
-    'green': 'Green',
-    'purple': 'Purple',
-    'brown': 'Brown'
-  };
-  return colorMap[color] || color;
+function formatSkillName(skillKey) {
+  if (!skillKey) return 'Unknown';
+  const num = skillKey.replace('s', '');
+  return `Skill ${num}`;
 }
 
-  // Função para criar card de build (SEM botões de editar/deletar)
-  function createBuildCard(build) {
+/**
+ * Converte selectedEmblems do Firebase para formato do card
+ * @param {Object} selectedEmblems - { brown: "6", red: "7", white: "6" }
+ * @returns {Object} - { emblem1: { color, level }, emblem2: {...}, emblem3: {...}, emblem4: {...} }
+ */
+function processEmblemsFromFirebase(selectedEmblems) {
+  if (!selectedEmblems) return { emblem1: null, emblem2: null, emblem3: null, emblem4: null };
+  
+  const result = {};
+  const colors = ['brown', 'red', 'white', 'black', 'blue', 'yellow', 'green', 'purple', 'pink', 'gray', 'navy'];
+  
+  // Converter objeto em array de emblems válidos
+  const emblems = [];
+  colors.forEach(color => {
+    if (selectedEmblems[color] && selectedEmblems[color] !== 'none' && selectedEmblems[color] !== '0') {
+      emblems.push({
+        color: color,
+        level: parseInt(selectedEmblems[color]) || 0
+      });
+    }
+  });
+  
+  // Atribuir aos slots (máximo 4)
+  result.emblem1 = emblems[0] || null;
+  result.emblem2 = emblems[1] || null;
+  result.emblem3 = emblems[2] || null;
+  result.emblem4 = emblems[3] || null;
+  
+  return result;
+}
+
+// ===== SUBSTITUA A FUNÇÃO createBuildCard COMPLETA POR ESTA =====
+
+function createBuildCard(build) {
+  console.log('🎨 Criando card para build:', build);
+  
   const pokemonImage = build.pokemon ? 
     `../estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
     '../estatisticas-shad/images/backgrounds/placeholder.png';
@@ -582,16 +616,25 @@ function formatEmblemColor(color) {
     `).join('') : 
     '<span style="color: #888; font-size: 10px;">No items</span>';
   
-  // ✅ NOVO: Skills (2 slots)
+  // ✅ PROCESSAR SKILLS DO FIREBASE
+  const processedSkills = processSkillsFromFirebase(build.selectedSkills);
+  console.log('⚡ Skills processadas:', processedSkills);
+  
   const skillsHTML = [];
   for (let i = 1; i <= 2; i++) {
-    const skill = build[`skill${i}`];
-    if (skill && skill.name && skill.name !== 'None') {
+    const skill = processedSkills[`skill${i}`];
+    
+    if (skill && skill.key) {
+      // ✅ CORRIGIDO: Caminho com nome do pokémon
+      const skillImagePath = `../estatisticas-shad/images/skills/${build.pokemon}_${skill.key}.png`;
+      
+      console.log(`🎯 Skill ${i} path:`, skillImagePath);
+      
       skillsHTML.push(`
         <div class="build-skill-circle" title="${skill.name}">
-          <img src="../estatisticas-shad/images/moves/${skill.key}.png" 
+          <img src="${skillImagePath}" 
                alt="${skill.name}"
-               onerror="this.parentElement.classList.add('empty'); this.style.display='none'">
+               onerror="console.warn('❌ Skill image not found:', '${skillImagePath}'); this.parentElement.classList.add('empty'); this.style.display='none'">
         </div>
       `);
     } else {
@@ -601,20 +644,26 @@ function formatEmblemColor(color) {
     }
   }
   
-  // ✅ NOVO: Emblems (até 3)
+  // ✅ PROCESSAR EMBLEMS DO FIREBASE
+  const processedEmblems = processEmblemsFromFirebase(build.selectedEmblems);
+  console.log('🎖️ Emblems processados:', processedEmblems);
+
   const emblemsHTML = [];
-  const emblemColors = ['black', 'white', 'red', 'blue', 'yellow', 'green', 'purple', 'brown'];
-  
-  for (let i = 1; i <= 3; i++) {
-    const emblem = build[`emblem${i}`];
-    if (emblem && emblem.color && emblem.color !== 'none') {
-      const colorClass = emblemColors.includes(emblem.color) ? `emblem-${emblem.color}` : '';
+  for (let i = 1; i <= 4; i++) {
+    const emblem = processedEmblems[`emblem${i}`];
+    
+    if (emblem && emblem.color) {
       const level = emblem.level || 0;
+      const colorName = capitalizeFirst(emblem.color);
       
       emblemsHTML.push(`
         <div class="build-emblem-item">
-          <div class="build-emblem-color ${colorClass}" 
-               title="${capitalizeFirst(emblem.color)} Emblem - Level ${level}">
+          <div class="build-emblem-color" 
+               title="${colorName} Emblem - Level ${level}">
+            <img src="../estatisticas-shad/images/icons/${emblem.color}.png" 
+                 alt="${colorName}"
+                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                 onerror="this.style.display='none'; this.parentElement.classList.add('emblem-${emblem.color}')">
           </div>
           <div class="build-emblem-level">Lv.${level}</div>
         </div>
@@ -628,7 +677,7 @@ function formatEmblemColor(color) {
       `);
     }
   }
-  
+
   return `
     <div class="build-card-perfil">
       <div class="build-pokemon-image">
@@ -663,12 +712,12 @@ function formatEmblemColor(color) {
           </div>
         </div>
         
-        <!-- ✅ NOVO: Skills Section -->
+        <!-- ✅ Skills Section -->
         <div class="build-skills-section">
           ${skillsHTML.join('')}
         </div>
         
-        <!-- ✅ NOVO: Emblems Section -->
+        <!-- ✅ Emblems Section -->
         <div class="build-emblems-section">
           ${emblemsHTML.join('')}
         </div>
