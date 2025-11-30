@@ -801,6 +801,107 @@
   gap: 10px;
 }
 
+/* Skills Section */
+.build-skills-section {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 117, 0, 0.2);
+}
+
+.build-skill-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.build-skill-circle:hover {
+  transform: scale(1.1);
+  border-color: #ffad00;
+}
+
+.build-skill-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.build-skill-circle.empty {
+  background: rgba(0, 0, 0, 0.3);
+  border-style: dashed;
+  border-color: rgba(255, 117, 0, 0.2);
+}
+
+/* Emblems Section */
+.build-emblems-section {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 117, 0, 0.2);
+}
+
+.build-emblem-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.build-emblem-color {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.build-emblem-color:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.build-emblem-color.empty {
+  background: rgba(0, 0, 0, 0.3);
+  border-style: dashed;
+  border-color: rgba(255, 117, 0, 0.2);
+}
+
+/* Cores dos emblemas */
+.emblem-black { background: linear-gradient(135deg, #2c2c2c, #1a1a1a); }
+.emblem-white { background: linear-gradient(135deg, #ffffff, #e0e0e0); }
+.emblem-red { background: linear-gradient(135deg, #ff4444, #cc0000); }
+.emblem-blue { background: linear-gradient(135deg, #4444ff, #0000cc); }
+.emblem-yellow { background: linear-gradient(135deg, #ffff44, #cccc00); }
+.emblem-green { background: linear-gradient(135deg, #44ff44, #00cc00); }
+.emblem-purple { background: linear-gradient(135deg, #aa44ff, #7700cc); }
+.emblem-brown { background: linear-gradient(135deg, #8b4513, #654321); }
+
+.build-emblem-level {
+  color: #ffad00;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 35px;
+}
+
+.build-emblem-level.empty {
+  color: #666;
+  font-style: italic;
+}
+
 /* Layout horizontal para itens */
 .build-items-section {
   display: flex;
@@ -916,6 +1017,19 @@
     font-size: 11px;
     padding: 5px 10px;
   }
+  .build-skill-circle {
+  width: 35px;
+  height: 35px;
+}
+
+.build-emblem-color {
+  width: 30px;
+  height: 30px;
+}
+
+.build-emblem-level {
+  font-size: 9px;
+}
 }
 
 @media (max-width: 480px) {
@@ -932,6 +1046,30 @@
     width: 40px;
     height: 40px;
   }
+  .build-skills-section {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.build-emblems-section {
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.build-skill-circle {
+  width: 32px;
+  height: 32px;
+}
+
+.build-emblem-color {
+  width: 28px;
+  height: 28px;
+  border-width: 2px;
+}
+
+.build-emblem-level {
+  font-size: 8px;
+}
 }
 
 /* ============================================

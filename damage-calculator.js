@@ -3190,67 +3190,78 @@ const formatValue = (key, val, extraFixed = null) => {
     navy: { stat: "EnergyRate", values: { 3: 1, 5: 2, 7: 4 } },
   };
 
-  // Funções para o novo sistema de emblemas
-  const createEmblemsGrid = () => {
-    const grid = document.getElementById("emblems-grid");
-    if (!grid) return;
-    
-    grid.innerHTML = "";
+const createEmblemsGrid = () => {
+  const grid = document.getElementById("emblems-grid");
+  if (!grid) return;
+  
+  grid.innerHTML = "";
 
-    Object.keys(EMBLEM_DATA).forEach(emblemKey => {
-      const emblem = EMBLEM_DATA[emblemKey];
+  Object.keys(EMBLEM_DATA).forEach(emblemKey => {
+    const emblem = EMBLEM_DATA[emblemKey];
+    
+    const emblemDiv = document.createElement("div");
+    emblemDiv.className = "emblem-item-new";
+    
+    const circle = document.createElement("div");
+    circle.className = `emblem-color-circle emblem-${emblemKey}`;
+    circle.dataset.emblem = emblemKey;
+    
+    // Adicionar imagem do emblema
+    const emblemImg = document.createElement("img");
+    emblemImg.src = `./estatisticas-shad/images/icons/${emblemKey}.png`;
+    emblemImg.alt = emblem.name;
+    emblemImg.style.cssText = "width: 100%; height: 100%; object-fit: cover; border-radius: 50%;";
+    emblemImg.onerror = function() {
+      // Fallback para cor sólida se a imagem não carregar
+      this.style.display = 'none';
+      circle.style.backgroundColor = emblem.color;
+    };
+    circle.appendChild(emblemImg);
+    
+    if (selectedEmblems[emblemKey]) {
+      circle.classList.add("selected-level");
+      circle.dataset.level = selectedEmblems[emblemKey];
+    }
+    
+    const name = document.createElement("div");
+    name.className = "emblem-name";
+    name.textContent = emblem.name;
+    
+    const levelsContainer = document.createElement("div");
+    levelsContainer.className = "emblem-levels";
+    
+    Object.keys(emblem.levels).forEach(level => {
+      const levelBtn = document.createElement("div");
+      levelBtn.className = "emblem-level-btn";
+      levelBtn.textContent = level;
+      levelBtn.dataset.emblem = emblemKey;
+      levelBtn.dataset.level = level;
       
-      const emblemDiv = document.createElement("div");
-      emblemDiv.className = "emblem-item-new";
-      
-      const circle = document.createElement("div");
-      circle.className = `emblem-color-circle emblem-${emblemKey}`;
-      circle.dataset.emblem = emblemKey;
-      
-      if (selectedEmblems[emblemKey]) {
-        circle.classList.add("selected-level");
-        circle.dataset.level = selectedEmblems[emblemKey];
+      if (selectedEmblems[emblemKey] == level) {
+        levelBtn.classList.add("active");
+        circle.classList.add("active");
       }
       
-      const name = document.createElement("div");
-      name.className = "emblem-name";
-      name.textContent = emblem.name;
-      
-      const levelsContainer = document.createElement("div");
-      levelsContainer.className = "emblem-levels";
-      
-      Object.keys(emblem.levels).forEach(level => {
-        const levelBtn = document.createElement("div");
-        levelBtn.className = "emblem-level-btn";
-        levelBtn.textContent = level;
-        levelBtn.dataset.emblem = emblemKey;
-        levelBtn.dataset.level = level;
-        
-        if (selectedEmblems[emblemKey] == level) {
-          levelBtn.classList.add("active");
-          circle.classList.add("active");
-        }
-        
-        levelBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          selectEmblemLevel(emblemKey, level);
-        });
-        
-        levelsContainer.appendChild(levelBtn);
+      levelBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectEmblemLevel(emblemKey, level);
       });
       
-      circle.addEventListener("click", () => {
-        if (selectedEmblems[emblemKey]) {
-          deselectEmblem(emblemKey);
-        }
-      });
-      
-      emblemDiv.appendChild(circle);
-      emblemDiv.appendChild(name);
-      emblemDiv.appendChild(levelsContainer);
-      grid.appendChild(emblemDiv);
+      levelsContainer.appendChild(levelBtn);
     });
-  };
+    
+    circle.addEventListener("click", () => {
+      if (selectedEmblems[emblemKey]) {
+        deselectEmblem(emblemKey);
+      }
+    });
+    
+    emblemDiv.appendChild(circle);
+    emblemDiv.appendChild(name);
+    emblemDiv.appendChild(levelsContainer);
+    grid.appendChild(emblemDiv);
+  });
+};
 
   const createMapBuffsGrid = () => {
   const grid = document.getElementById("map-buffs-grid");
@@ -3419,7 +3430,10 @@ const updateMapBuffDescription = () => {
     const level = selectedEmblems[emblemKey];
     const bonus = emblem.levels[level];
     
-    const indicator = `<span class="emblem-color-indicator" style="background-color: ${emblem.color}; ${emblem.color === '#ffffff' ? 'border: 1px solid #ccc;' : ''}"></span>`;
+    const indicator = `<img src="./estatisticas-shad/images/icons/${emblemKey}.png" 
+                        class="emblem-color-indicator" 
+                        style="width: 18px; height: 18px; border-radius: 50%;" 
+                        onerror="this.style.backgroundColor='${emblem.color}'">`;
     
     // ✅ REMOVER A COR FIXA PRETA - deixar o CSS controlar
     if (emblemKey === "gray") {
@@ -6807,8 +6821,6 @@ if (skillDamage[selectedPokemon]) {
         </div>
       `);
     }
-
-    // Mostrar emblemas ativos
 // Mostrar emblemas ativos
 if (incluirEmblemas === "sim") {
   const selectedEmblemKeys = Object.keys(selectedEmblems);
@@ -6818,16 +6830,14 @@ if (incluirEmblemas === "sim") {
       const level = selectedEmblems[emblemKey];
       const bonus = emblem.levels[level];
       
-      const borderStyle = emblem.color === "#ffffff" ? "border: 1px solid #333;" : "";
-      
       if (emblemKey === "gray") {
         return `<div class="emblem-display-line">
-          <span class="emblem-color-dot" style="background-color: ${emblem.color}; ${borderStyle}"></span>
+          <img src="./estatisticas-shad/images/icons/${emblemKey}.png" class="emblem-color-dot" alt="${emblem.name}" onerror="this.style.backgroundColor='${emblem.color}'">
           <span class="emblem-display-text">${emblem.name} Lv.${level} (-${bonus})</span>
         </div>`;
       } else {
         return `<div class="emblem-display-line">
-          <span class="emblem-color-dot" style="background-color: ${emblem.color}; ${borderStyle}"></span>
+          <img src="./estatisticas-shad/images/icons/${emblemKey}.png" class="emblem-color-dot" alt="${emblem.name}" onerror="this.style.backgroundColor='${emblem.color}'">
           <span class="emblem-display-text">${emblem.name} Lv.${level} (+${bonus}%)</span>
         </div>`;
       }

@@ -506,77 +506,176 @@ async function atualizarMenuUsuario(user) {
     if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  // ===== FUNÇÕES AUXILIARES PARA SKILLS E EMBLEMS =====
+
+/**
+ * Busca dados de uma skill no pokemonData
+ * @param {string} pokemon - Nome do Pokémon (ex: "darkrai")
+ * @param {string} skillKey - Chave da skill (ex: "s11")
+ * @returns {Object|null} - { name, key } ou null
+ */
+function getSkillData(pokemon, skillKey) {
+  if (!pokemon || !skillKey || !pokemonData[pokemon]) {
+    return null;
+  }
+  
+  const pokemonSkills = pokemonData[pokemon];
+  const skill = pokemonSkills[skillKey];
+  
+  if (!skill || !skill.name) {
+    return null;
+  }
+  
+  // Converter nome para key (ex: "Dark Void" -> "dark-void")
+  const key = skill.name.toLowerCase().replace(/\s+/g, '-');
+  
+  return {
+    name: skill.name,
+    key: key
+  };
+}
+
+/**
+ * Formata nome de cor do emblema
+ */
+function formatEmblemColor(color) {
+  const colorMap = {
+    'black': 'Black',
+    'white': 'White',
+    'red': 'Red',
+    'blue': 'Blue',
+    'yellow': 'Yellow',
+    'green': 'Green',
+    'purple': 'Purple',
+    'brown': 'Brown'
+  };
+  return colorMap[color] || color;
+}
 
   // Função para criar card de build (SEM botões de editar/deletar)
   function createBuildCard(build) {
-    const pokemonImage = build.pokemon ? 
-      `../estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
-      '../estatisticas-shad/images/backgrounds/placeholder.png';
-    
-    // Obter role do Pokémon (você precisará importar pokemonRoles do util.js)
-    const pokemonName = capitalizeFirst(build.pokemon);
-    const roleInfo = getPokemonRole(build.pokemon);
-    
-    // Battle Item
-    const battleItemHTML = build.battleItem ? `
+  const pokemonImage = build.pokemon ? 
+    `../estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+    '../estatisticas-shad/images/backgrounds/placeholder.png';
+  
+  const pokemonName = capitalizeFirst(build.pokemon);
+  const roleInfo = getPokemonRole(build.pokemon);
+  
+  // Battle Item
+  const battleItemHTML = build.battleItem ? `
+    <div class="build-item-circle">
+      <img src="../estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+           alt="Battle Item"
+           onerror="this.style.display='none'">
+    </div>
+  ` : '';
+  
+  // Held Items (máximo 3)
+  const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+    build.heldItems.slice(0, 3).map(item => `
       <div class="build-item-circle">
-        <img src="../estatisticas-shad/images/battle-items/${build.battleItem}.png" 
-             alt="Battle Item"
+        <img src="../estatisticas-shad/images/held-itens/${item.key}.png" 
+             alt="${item.name}"
+             title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
              onerror="this.style.display='none'">
       </div>
-    ` : '';
-    
-    // Held Items (máximo 3)
-    const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
-      build.heldItems.slice(0, 3).map(item => `
-        <div class="build-item-circle">
-          <img src="../estatisticas-shad/images/held-itens/${item.key}.png" 
-               alt="${item.name}"
-               title="${item.name}${item.stacks > 0 ? ` (${item.stacks} stacks)` : ''}"
+    `).join('') : 
+    '<span style="color: #888; font-size: 10px;">No items</span>';
+  
+  // ✅ NOVO: Skills (2 slots)
+  const skillsHTML = [];
+  for (let i = 1; i <= 2; i++) {
+    const skill = build[`skill${i}`];
+    if (skill && skill.name && skill.name !== 'None') {
+      skillsHTML.push(`
+        <div class="build-skill-circle" title="${skill.name}">
+          <img src="../estatisticas-shad/images/moves/${skill.key}.png" 
+               alt="${skill.name}"
+               onerror="this.parentElement.classList.add('empty'); this.style.display='none'">
+        </div>
+      `);
+    } else {
+      skillsHTML.push(`
+        <div class="build-skill-circle empty" title="No skill selected"></div>
+      `);
+    }
+  }
+  
+  // ✅ NOVO: Emblems (até 3)
+  const emblemsHTML = [];
+  const emblemColors = ['black', 'white', 'red', 'blue', 'yellow', 'green', 'purple', 'brown'];
+  
+  for (let i = 1; i <= 3; i++) {
+    const emblem = build[`emblem${i}`];
+    if (emblem && emblem.color && emblem.color !== 'none') {
+      const colorClass = emblemColors.includes(emblem.color) ? `emblem-${emblem.color}` : '';
+      const level = emblem.level || 0;
+      
+      emblemsHTML.push(`
+        <div class="build-emblem-item">
+          <div class="build-emblem-color ${colorClass}" 
+               title="${capitalizeFirst(emblem.color)} Emblem - Level ${level}">
+          </div>
+          <div class="build-emblem-level">Lv.${level}</div>
+        </div>
+      `);
+    } else {
+      emblemsHTML.push(`
+        <div class="build-emblem-item">
+          <div class="build-emblem-color empty" title="No emblem"></div>
+          <div class="build-emblem-level empty">-</div>
+        </div>
+      `);
+    }
+  }
+  
+  return `
+    <div class="build-card-perfil">
+      <div class="build-pokemon-image">
+        <img src="${pokemonImage}" 
+             alt="${pokemonName}"
+             onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
+      </div>
+      
+      <h3 class="build-pokemon-name">${pokemonName}</h3>
+      
+      ${roleInfo ? `
+        <div class="build-pokemon-role">
+          <img src="../estatisticas-shad/images/roles/${roleInfo.icon}.png" 
+               alt="${roleInfo.name}"
                onerror="this.style.display='none'">
+          <span>${roleInfo.name}</span>
         </div>
-      `).join('') : 
-      '<span style="color: #888; font-size: 10px;">No items</span>';
-    
-    return `
-      <div class="build-card-perfil">
-        <div class="build-pokemon-image">
-          <img src="${pokemonImage}" 
-               alt="${pokemonName}"
-               onerror="this.src='../estatisticas-shad/images/backgrounds/placeholder.png'">
-        </div>
+      ` : ''}
+      
+      <div class="build-details">
+        <p class="build-name-header">${build.buildName}</p>
         
-        <h3 class="build-pokemon-name">${pokemonName}</h3>
-        
-        ${roleInfo ? `
-          <div class="build-pokemon-role">
-            <img src="../estatisticas-shad/images/roles/${roleInfo.icon}.png" 
-                 alt="${roleInfo.name}"
-                 onerror="this.style.display='none'">
-            <span>${roleInfo.name}</span>
-          </div>
-        ` : ''}
-        
-        <div class="build-details">
-          <p class="build-name-header">${build.buildName}</p>
-          
-          <div class="build-items-section">
-            ${battleItemHTML ? `
-              <div class="build-battle-item">
-                ${battleItemHTML}
-              </div>
-            ` : ''}
-            
-            <div class="build-held-items">
-              ${heldItemsHTML}
+        <div class="build-items-section">
+          ${battleItemHTML ? `
+            <div class="build-battle-item">
+              ${battleItemHTML}
             </div>
-          </div>
+          ` : ''}
           
-          <!-- REMOVIDO: Botões de editar e deletar -->
+          <div class="build-held-items">
+            ${heldItemsHTML}
+          </div>
+        </div>
+        
+        <!-- ✅ NOVO: Skills Section -->
+        <div class="build-skills-section">
+          ${skillsHTML.join('')}
+        </div>
+        
+        <!-- ✅ NOVO: Emblems Section -->
+        <div class="build-emblems-section">
+          ${emblemsHTML.join('')}
         </div>
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
   // Função auxiliar para obter role do Pokémon
   function getPokemonRole(pokemonKey) {
