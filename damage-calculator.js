@@ -6821,6 +6821,7 @@ if (skillDamage[selectedPokemon]) {
         </div>
       `);
     }
+
 // Mostrar emblemas ativos
 if (incluirEmblemas === "sim") {
   const selectedEmblemKeys = Object.keys(selectedEmblems);

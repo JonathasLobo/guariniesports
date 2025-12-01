@@ -1343,6 +1343,117 @@
 }
 
 /* ============================================
+   SHARE PROFILE SECTION
+   ============================================ */
+
+.perfil-share-container {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-share-label {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin: 0;
+  min-width: 110px;
+}
+
+.btn-share-profile {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  border: 2px solid #ff7500;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.3);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-share-profile:hover {
+  background: linear-gradient(135deg, #ffad00, #ffc107);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+  border-color: #ffad00;
+}
+
+.btn-share-profile:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(255, 117, 0, 0.3);
+}
+
+.btn-share-profile:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.share-feedback {
+  color: #28a745;
+  font-size: 14px;
+  font-weight: 600;
+  animation: fadeInOut 2s ease;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .perfil-share-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .btn-share-profile {
+    width: 100%;
+    justify-content: center;
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-share-label {
+    font-size: 1rem;
+  }
+
+  .btn-share-profile {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .share-feedback {
+    font-size: 12px;
+  }
+}
+
+/* ============================================
    BATTLE RIBBONS LIST
    ============================================ */
 

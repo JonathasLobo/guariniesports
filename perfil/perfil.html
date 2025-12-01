@@ -144,6 +144,15 @@
             </div>
           </div>
 
+          <!-- Share Profile Section -->
+          <div class="perfil-share-container">
+            <p class="perfil-share-label">Share Profile:</p>
+            <button class="btn-share-profile" id="btnShareProfile" title="Copy profile link">
+              🔗 Copy Link
+            </button>
+            <span class="share-feedback" id="shareFeedback" style="display: none;">✅ Copied!</span>
+          </div>
+
           <!-- Modal de Ajuda -->
           <div class="modal-help-overlay" id="modalHelpPlayerId">
             <div class="modal-help-content">
@@ -1084,6 +1093,79 @@ function getPokemonRole(pokemonKey) {
       modalHelpPlayerId.classList.remove('show');
     }
   });
+
+  // ========================================
+// SISTEMA DE COMPARTILHAMENTO DE PERFIL
+// ========================================
+
+const btnShareProfile = document.getElementById('btnShareProfile');
+const shareFeedback = document.getElementById('shareFeedback');
+
+async function copiarLinkPerfil(userId) {
+  try {
+    // Construir URL do perfil no modo visualização
+    const baseUrl = window.location.origin;
+    const profileUrl = `${baseUrl}/perfil/perfil-view.html?uid=${userId}`;
+    
+    console.log('🔗 Link gerado:', profileUrl);
+    
+    // Copiar para área de transferência
+    await navigator.clipboard.writeText(profileUrl);
+    
+    // Mostrar feedback visual
+    btnShareProfile.textContent = '✅ Copied!';
+    btnShareProfile.style.background = 'linear-gradient(135deg, #28a745, #1e7e34)'; // Verde quando copiado
+    shareFeedback.style.display = 'inline';
+    
+    console.log('✅ Link copiado com sucesso!');
+    
+    // Resetar botão após 2 segundos
+    setTimeout(() => {
+      btnShareProfile.textContent = '🔗 Copy Link';
+      btnShareProfile.style.background = 'linear-gradient(135deg, #ff7500, #ffad00)'; // ✅ LARANJA DO SITE
+      shareFeedback.style.display = 'none';
+    }, 2000);
+    
+  } catch (error) {
+    console.error('❌ Erro ao copiar link:', error);
+    
+    // Fallback: criar input temporário para copiar
+    const tempInput = document.createElement('input');
+    const baseUrl = window.location.origin;
+    const profileUrl = `${baseUrl}/perfil/perfil-view.html?uid=${userId}`;
+    
+    tempInput.value = profileUrl;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    
+    try {
+      document.execCommand('copy');
+      btnShareProfile.textContent = '✅ Copied!';
+      btnShareProfile.style.background = 'linear-gradient(135deg, #28a745, #1e7e34)';
+      shareFeedback.style.display = 'inline';
+      
+      setTimeout(() => {
+        btnShareProfile.textContent = '🔗 Copy Link';
+        btnShareProfile.style.background = 'linear-gradient(135deg, #ff7500, #ffad00)'; // ✅ LARANJA DO SITE
+        shareFeedback.style.display = 'none';
+      }, 2000);
+    } catch (err) {
+      alert('❌ Could not copy link. Please try again.');
+    }
+    
+    document.body.removeChild(tempInput);
+  }
+}
+
+// Event listener do botão
+btnShareProfile.addEventListener('click', () => {
+  if (!currentUser) {
+    alert('⚠️ You need to be logged in to share your profile');
+    return;
+  }
+  
+  copiarLinkPerfil(currentUser.uid);
+});
   
   // Função para carregar todas as imagens da pasta sprites
   async function carregarImagensSprites() {
@@ -1350,7 +1432,6 @@ async function salvarNome() {
 
   perfilNomeInput.addEventListener('blur', salvarNome);
 
-  // Função para atualizar a interface
 // Função para atualizar a interface
 async function updateUI(user) {
   currentUser = user;
@@ -1394,6 +1475,7 @@ async function updateUI(user) {
       
       if (btnChangeAvatar) btnChangeAvatar.disabled = false;
       btnEditNome.disabled = false;
+      btnShareProfile.disabled = false;
       
       console.log('✅ Usuário logado:', user.email);
       
