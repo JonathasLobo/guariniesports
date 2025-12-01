@@ -327,3 +327,24 @@ export async function loadBuildRating(profileUserId, buildId, db) {
     return null;
   }
 }
+
+// ============================================
+// VERSÃO SIMPLIFICADA - APENAS VISUALIZAÇÃO (SEM ESTRELAS)
+// ============================================
+
+export function createRatingViewOnly(buildId, ratings) {
+  console.log('📊 Criando visualização de rating (sem estrelas):', { buildId, ratings });
+  
+  const totalVotes = ratings?.totalVotes || 0;
+  const average = ratings?.average || 0;
+  
+  return `
+    <div class="build-rating-container build-rating-view-only">
+      <div class="build-average-rating">
+        <span class="build-average-number">${average.toFixed(1)}</span>
+        <span>⭐</span>
+        <span class="build-total-votes">(${totalVotes} ${totalVotes === 1 ? 'vote' : 'votes'})</span>
+      </div>
+    </div>
+  `;
+}
