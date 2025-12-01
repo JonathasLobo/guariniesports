@@ -125,6 +125,14 @@
       </div>
     </section>
 
+    <!-- Seção de Top Builds -->
+    <section id="top-builds">
+      <h2>🏆 Top Rated Builds</h2>
+      <div class="top-builds-container" id="topBuildsContainer">
+        <div class="builds-loading">Loading top builds...</div>
+      </div>
+    </section>
+
     <section id="noticias">
       <h2>Últimas Notícias</h2>
       <div class="noticias-colunas">
@@ -366,6 +374,313 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore();
+
+    // ========================================
+    // TOP BUILDS SYSTEM
+    // ========================================
+
+    // Função para capitalizar primeira letra
+    function capitalizeFirst(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Processar skills do Firebase
+    function processSkillsFromFirebase(selectedSkills) {
+      if (!selectedSkills) return { skill1: null, skill2: null };
+      
+      const result = {};
+      
+      if (selectedSkills.s1 && selectedSkills.s1 !== 'none') {
+        result.skill1 = {
+          key: selectedSkills.s1,
+          name: `Skill ${selectedSkills.s1.replace('s', '')}`
+        };
+      } else {
+        result.skill1 = null;
+      }
+      
+      if (selectedSkills.s2 && selectedSkills.s2 !== 'none') {
+        result.skill2 = {
+          key: selectedSkills.s2,
+          name: `Skill ${selectedSkills.s2.replace('s', '')}`
+        };
+      } else {
+        result.skill2 = null;
+      }
+      
+      return result;
+    }
+
+    // Processar emblems do Firebase
+    function processEmblemsFromFirebase(selectedEmblems) {
+      if (!selectedEmblems) return { emblem1: null, emblem2: null, emblem3: null, emblem4: null };
+      
+      const result = {};
+      const colors = ['brown', 'red', 'white', 'black', 'blue', 'yellow', 'green', 'purple', 'pink', 'gray', 'navy'];
+      
+      const emblems = [];
+      colors.forEach(color => {
+        if (selectedEmblems[color] && selectedEmblems[color] !== 'none' && selectedEmblems[color] !== '0') {
+          emblems.push({
+            color: color,
+            level: parseInt(selectedEmblems[color]) || 0
+          });
+        }
+      });
+      
+      result.emblem1 = emblems[0] || null;
+      result.emblem2 = emblems[1] || null;
+      result.emblem3 = emblems[2] || null;
+      result.emblem4 = emblems[3] || null;
+      
+      return result;
+    }
+
+// Criar card de top build
+function createTopBuildCard(build, rank, creatorData) {
+  const pokemonImage = build.pokemon ? 
+    `./estatisticas-shad/images/backgrounds/${build.pokemon}-left-bg.png` : 
+    './estatisticas-shad/images/backgrounds/placeholder.png';
+  
+  const pokemonName = capitalizeFirst(build.pokemon);
+  
+  // Rating
+  const totalVotes = build.ratings?.totalVotes || 0;
+  const average = build.ratings?.average || 0;
+  
+  // Avatar do criador
+  const creatorAvatar = creatorData.avatar || './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+  
+  // Battle Item
+  const battleItemHTML = build.battleItem ? `
+    <div class="top-build-item-circle">
+      <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+           alt="Battle Item"
+           onerror="this.style.display='none'">
+    </div>
+  ` : '';
+  
+  // Held Items
+  const heldItemsHTML = build.heldItems && build.heldItems.length > 0 ? 
+    build.heldItems.slice(0, 3).map(item => `
+      <div class="top-build-item-circle">
+        <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+             alt="${item.name}"
+             title="${item.name}"
+             onerror="this.style.display='none'">
+      </div>
+    `).join('') : '';
+  
+  // Skills
+  const processedSkills = processSkillsFromFirebase(build.selectedSkills);
+  const skillsHTML = [];
+  
+  for (let i = 1; i <= 2; i++) {
+    const skill = processedSkills[`skill${i}`];
+    
+    if (skill && skill.key) {
+      const skillImagePath = `./estatisticas-shad/images/skills/${build.pokemon}_${skill.key}.png`;
+      skillsHTML.push(`
+        <div class="top-build-skill-circle" title="${skill.name}">
+          <img src="${skillImagePath}" 
+               alt="${skill.name}"
+               onerror="this.parentElement.classList.add('empty'); this.style.display='none'">
+        </div>
+      `);
+    } else {
+      skillsHTML.push(`
+        <div class="top-build-skill-circle empty"></div>
+      `);
+    }
+  }
+  
+  // Emblems
+  const processedEmblems = processEmblemsFromFirebase(build.selectedEmblems);
+  const emblemsHTML = [];
+  
+  for (let i = 1; i <= 4; i++) {
+    const emblem = processedEmblems[`emblem${i}`];
+    
+    if (emblem && emblem.color) {
+      const level = emblem.level || 0;
+      emblemsHTML.push(`
+        <div class="top-build-emblem-item">
+          <div class="top-build-emblem-color">
+            <img src="./estatisticas-shad/images/icons/${emblem.color}.png" 
+                 alt="${emblem.color}"
+                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                 onerror="this.style.display='none'">
+          </div>
+          <div class="top-build-emblem-level">Lv.${level}</div>
+        </div>
+      `);
+    } else {
+      emblemsHTML.push(`
+        <div class="top-build-emblem-item">
+          <div class="top-build-emblem-color empty"></div>
+          <div class="top-build-emblem-level empty">-</div>
+        </div>
+      `);
+    }
+  }
+  
+  // Rank badge
+  const rankClass = `rank-${rank}`;
+  const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+  
+  return `
+    <div class="top-build-card">
+      <div class="build-rank-badge ${rankClass}">
+        ${rankEmoji}
+      </div>
+      
+      <div class="top-build-pokemon-image">
+        <img src="${pokemonImage}" 
+             alt="${pokemonName}"
+             onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+        <div class="top-build-rating">
+          <span class="top-build-rating-number">${average.toFixed(1)}</span>
+          <span class="top-build-rating-stars">⭐</span>
+          <span class="top-build-rating-votes">(${totalVotes})</span>
+        </div>
+      </div>
+      
+      <div class="top-build-content">
+        <h3 class="top-build-pokemon-name">${pokemonName}</h3>
+        <p class="top-build-name">${build.buildName || 'Unnamed Build'}</p>
+        
+        <div class="top-build-items-section">
+          ${battleItemHTML}
+          <div class="top-build-held-items">
+            ${heldItemsHTML}
+          </div>
+        </div>
+        
+        <div class="top-build-skills-section">
+          ${skillsHTML.join('')}
+        </div>
+        
+        <div class="top-build-emblems-section">
+          ${emblemsHTML.join('')}
+        </div>
+        
+        <div class="top-build-creator">
+          <p class="top-build-creator-label">Created by:</p>
+          <a href="./perfil/perfil-view.html?uid=${build.userId}" class="top-build-creator-info">
+            <img src="${creatorAvatar}" 
+                 alt="${creatorData.displayName}" 
+                 class="top-build-creator-avatar"
+                 onerror="this.src='./estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+            <div class="top-build-creator-details">
+              <span class="top-build-creator-name">${creatorData.displayName || 'Anonymous'}</span>
+              <span class="top-build-creator-id">ID: ${creatorData.playerId || 'N/A'}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+    // Carregar top builds
+    async function loadTopBuilds() {
+      try {
+        console.log('🏆 Carregando top builds...');
+        
+        const topBuildsContainer = document.getElementById('topBuildsContainer');
+        
+        if (!topBuildsContainer) {
+          console.error('❌ Container não encontrado');
+          return;
+        }
+        
+        topBuildsContainer.innerHTML = '<div class="builds-loading">Loading top builds...</div>';
+        
+        // Buscar todos os usuários
+        const usuariosRef = collection(db, "usuarios");
+        const usuariosSnap = await getDocs(usuariosRef);
+        
+        console.log('📦 Usuários encontrados:', usuariosSnap.size);
+        
+        const allBuilds = [];
+        
+        // Para cada usuário, buscar suas builds
+        for (const userDoc of usuariosSnap.docs) {
+          const userId = userDoc.id;
+          const userData = userDoc.data();
+          
+          const buildsRef = collection(db, "usuarios", userId, "builds");
+          const buildsSnap = await getDocs(buildsRef);
+          
+          buildsSnap.forEach(buildDoc => {
+            const buildData = buildDoc.data();
+            
+            // Só incluir builds com avaliações
+            if (buildData.ratings && buildData.ratings.totalVotes > 0) {
+              allBuilds.push({
+                id: buildDoc.id,
+                userId: userId,
+                ...buildData,
+                creatorData: {
+                  displayName: userData.displayName,
+                  playerId: userData.playerId,
+                  avatar: userData.avatar  // ← ADICIONAR ESTA LINHA
+                }
+              });
+            }
+          });
+        }
+        
+        console.log('📊 Total de builds com votos:', allBuilds.length);
+        
+        if (allBuilds.length === 0) {
+          topBuildsContainer.innerHTML = `
+            <div class="builds-loading" style="color: #aaa;">
+              No rated builds yet. Be the first to create and rate builds!
+            </div>
+          `;
+          return;
+        }
+        
+        // Ordenar por: 1º média, 2º total de votos
+        allBuilds.sort((a, b) => {
+          const avgDiff = (b.ratings?.average || 0) - (a.ratings?.average || 0);
+          if (Math.abs(avgDiff) > 0.01) return avgDiff;
+          return (b.ratings?.totalVotes || 0) - (a.ratings?.totalVotes || 0);
+        });
+        
+        // Pegar top 5
+        const topBuilds = allBuilds.slice(0, 5);
+        
+        console.log('🏆 Top 5 builds:', topBuilds.map(b => ({
+          pokemon: b.pokemon,
+          avg: b.ratings.average,
+          votes: b.ratings.totalVotes
+        })));
+        
+        // Renderizar
+        topBuildsContainer.innerHTML = topBuilds.map((build, index) => 
+          createTopBuildCard(build, index + 1, build.creatorData)
+        ).join('');
+        
+        console.log('✅ Top builds carregadas com sucesso!');
+        
+      } catch (error) {
+        console.error('❌ Erro ao carregar top builds:', error);
+        const topBuildsContainer = document.getElementById('topBuildsContainer');
+        if (topBuildsContainer) {
+          topBuildsContainer.innerHTML = `
+            <div class="builds-loading" style="color: #ff6b6b;">
+              ❌ Error loading builds
+            </div>
+          `;
+        }
+      }
+    }
+
+    // Carregar top builds ao iniciar
+    loadTopBuilds();
 
     // ========================================
     // ELEMENTOS DO DOM - MENU USUÁRIO
