@@ -7,7 +7,7 @@
   <title>Materiais Guariní e-sport</title>
   <link rel="icon" href="../img-site/favicon.png" type="image/png" />
   <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="../materiais.css" />
+  <link rel="stylesheet" href="groups.css" />
   <style>
     .ferramentas {
       display: grid;
@@ -93,7 +93,7 @@ function googleTranslateElementInit() {
       <nav class="nav-group right-nav">
         <ul>
           <li><a href="groups.html" class="ativo">Jogos</a></li>
-          <li><a href="../material.html">Material</a></li>
+          <li><a href="../contato/contato.html">Contato</a></li>
         </ul>
       </nav>
       
@@ -155,26 +155,27 @@ function googleTranslateElementInit() {
 
   <main>
     <h2>Comunidades</h2>
-    <section class="comunidades">
-      <!-- Pokémon Unite -->
-      <article class="comunidade">
+    <section class="ferramentas">
+      <!-- Pokémon Unite
+      <article class="ferramenta">
         <img src="../img-site/pokemonunite.png" alt="Pokémon Unite" />
         <h3>Pokémon Unite</h3>
         <p class="descricao">Veja as ferramentas para Pokémon Unite</p>
         <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
         <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>-->
+
+      <!-- Slot vazio para futura Comunidade -->
+      <article class="ferramenta">
+        <img src="../img-site/pokemonunite.png" alt="Build Maker" />
+        <h3>Pokémon Unite</h3>
+        <p class="descricao">Veja as ferramentas para Pokémon Unite</p>
+        <button type="button" class="btn-comprar" id="buildBtn">Acessar</button>
+        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
       <!-- Slot vazio para futura Comunidade -->
-      <article class="comunidade" style="opacity: 0.3;">
-        <img src="../img-site/embreve.png" alt="Em Breve" />
-        <h3>Em Breve</h3>
-        <p class="descricao">Nova Comunidade será adicionada aqui</p>
-        <button type="button" class="btn-comprar" disabled>Em Breve</button>
-      </article>
-
-      <!-- Slot vazio para futura Comunidade -->
-      <article class="comunidade" style="opacity: 0.3;">
+      <article class="ferramenta" style="opacity: 0.3;">
         <img src="../img-site/embreve.png" alt="Em Breve" />
         <h3>Em Breve</h3>
         <p class="descricao">Nova Comunidade será adicionada aqui</p>
@@ -182,7 +183,7 @@ function googleTranslateElementInit() {
       </article>      
 
       <!-- Slot vazio para futura Comunidade -->
-      <article class="comunidade" style="opacity: 0.3;">
+      <article class="ferramenta" style="opacity: 0.3;">
         <img src="../img-site/embreve.png" alt="Em Breve" />
         <h3>Em Breve</h3>
         <p class="descricao">Nova Comunidade será adicionada aqui</p>
@@ -530,7 +531,7 @@ function googleTranslateElementInit() {
   // ========================================
 
   function setupBuildAccess() {
-    buildBtn.onclick = () => window.location.href = 'damage-calculator.html';
+    buildBtn.onclick = () => window.location.href = '../material.html';
     buildAccessMessage.style.display = 'none';
   }
 

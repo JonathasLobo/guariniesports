@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contato | Guariní e-sport</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <div id="google_translate_element"></div>
 
@@ -17,7 +17,6 @@ function googleTranslateElementInit() {
 }
 </script>
 
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Adsense tag -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
      crossorigin="anonymous"></script>
@@ -32,18 +31,52 @@ function googleTranslateElementInit() {
   gtag('config', 'G-84NHN394WF');
 </script>
 <body>
+  <a id="topo"></a>
+
   <header>
-    <h1>Guariní e-sport</h1>
-    <nav aria-label="Menu principal">
-      <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="sobre.html">Sobre</a></li>
-        <li><a href="equipes.html">Times</a></li>
-        <li><a href="loja.html">Loja</a></li>
-        <li><a href="desempenho.html">Calculadora</a></li>
-        <li><a href="contato.html" class="ativo">Contato</a></li>
-      </ul>
-    </nav>
+    <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Loja</a></li>
+          <li><a href="../sobre/sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Logo Central -->
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início" class="ativo">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <!-- Navegação Desktop - Direita -->
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Jogos</a></li>
+          <li><a href="../contato/contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Botão Menu Mobile -->
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Menu Mobile -->
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html" class="ativo">Início</a></li>
+          <li><a href="./sobre/sobre.html">Sobre</a></li>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="./loja/loja.html">Loja</a></li>
+          <li><a href="material.html">Material</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main>
