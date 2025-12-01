@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Ferramentas e materiais da Guariní e-sport: calculadoras e utilitários para jogadores." />
   <title>Materiais Guariní e-sport</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="materiais.css" />
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../materiais.css" />
   <style>
     .ferramentas {
       display: grid;
@@ -77,23 +77,23 @@ function googleTranslateElementInit() {
       <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
-          <li><a href="./loja/loja.html">Loja</a></li>
-          <li><a href="./sobre/sobre.html">Sobre</a></li>
+          <li><a href="../loja/loja.html">Loja</a></li>
+          <li><a href="../sobre/sobre.html">Sobre</a></li>
         </ul>
       </nav>
       
       <!-- Logo Central -->
       <div class="logo-center">
-        <a href="index.html" aria-label="Início">
-          <img src="./img-site/Guarini.png" alt="Guariní e-sport" class="header-logo">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/Guarini.png" alt="Guariní e-sport" class="header-logo">
         </a>
       </div>
 
       <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
-          <li><a href="../groups/groups.html">Jogo</a></li>
-          <li><a href="material.html" class="ativo">Material</a></li>
+          <li><a href="groups.html" class="ativo">Jogos</a></li>
+          <li><a href="../material.html">Material</a></li>
         </ul>
       </nav>
       
@@ -130,7 +130,7 @@ function googleTranslateElementInit() {
         <span>Olá, visitante!</span>
       </div>
       <ul class="user-dropdown-list">
-        <li><a href="./perfil/perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="../perfil/perfil.html" id="perfilLink">Perfil</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -154,47 +154,45 @@ function googleTranslateElementInit() {
   </div>
 
   <main>
-    <h2>Ferramentas</h2>
-    <section class="ferramentas">
-      <!-- Estatísticas do Time -->
-      <article class="ferramenta">
-        <img src="./img-site/grafico.png" alt="Estatísticas" />
-        <h3>Estatísticas do time</h3>
-        <p class="descricao">Veja seu perfil com seus e os números da sua equipe</p>
+    <h2>Comunidades</h2>
+    <section class="comunidades">
+      <!-- Pokémon Unite -->
+      <article class="comunidade">
+        <img src="../img-site/pokemonunite.png" alt="Pokémon Unite" />
+        <h3>Pokémon Unite</h3>
+        <p class="descricao">Veja as ferramentas para Pokémon Unite</p>
         <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
         <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
-      <!-- Build Maker -->
-      <article class="ferramenta">
-        <img src="./img-site/buildmaker.png" alt="Build Maker" />
-        <h3>Build Maker</h3>
-        <p class="descricao">Crie e otimize suas builds com calculadora de dano integrada</p>
-        <button type="button" class="btn-comprar" id="buildBtn">Acessar</button>
-        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      <!-- Slot vazio para futura Comunidade -->
+      <article class="comunidade" style="opacity: 0.3;">
+        <img src="../img-site/embreve.png" alt="Em Breve" />
+        <h3>Em Breve</h3>
+        <p class="descricao">Nova Comunidade será adicionada aqui</p>
+        <button type="button" class="btn-comprar" disabled>Em Breve</button>
       </article>
 
-      <!-- Quizsouls -->
-      <article class="ferramenta">
-        <img src="./img-site/quizsouls.png" alt="Build Maker" />
-        <h3>Quiz Unite</h3>
-        <p class="descricao">Teste seus conhecimentos no Quiz do Pokémon Unite</p>
-        <button type="button" class="btn-comprar" id="quizBtn">Acessar</button>
-        <div id="quizAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      <!-- Slot vazio para futura Comunidade -->
+      <article class="comunidade" style="opacity: 0.3;">
+        <img src="../img-site/embreve.png" alt="Em Breve" />
+        <h3>Em Breve</h3>
+        <p class="descricao">Nova Comunidade será adicionada aqui</p>
+        <button type="button" class="btn-comprar" disabled>Em Breve</button>
       </article>      
 
-      <!-- Slot vazio para futura ferramenta -->
-      <article class="ferramenta" style="opacity: 0.3;">
-        <img src="./img-site/embreve.png" alt="Em Breve" />
+      <!-- Slot vazio para futura Comunidade -->
+      <article class="comunidade" style="opacity: 0.3;">
+        <img src="../img-site/embreve.png" alt="Em Breve" />
         <h3>Em Breve</h3>
-        <p class="descricao">Nova ferramenta será adicionada aqui</p>
+        <p class="descricao">Nova Comunidade será adicionada aqui</p>
         <button type="button" class="btn-comprar" disabled>Em Breve</button>
       </article>
 
     </section>
 
     <p style="text-align:center; margin-top: 2rem;">
-      <a href="index.html" class="btn-comprar">Voltar para Início</a>
+      <a href="../index.html" class="btn-comprar">Voltar para Início</a>
     </p>
   </main>
 
