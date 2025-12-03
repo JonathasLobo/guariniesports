@@ -15,7 +15,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+  min-height: 100vh;           /* Altura mínima = tela completa */
+  display: flex;               /* Ativa flexbox */
+  flex-direction: column;      /* Empilha elementos verticalmente */
   overflow-x: hidden;
 }
 
@@ -71,115 +73,6 @@ a.ativo .header-logo {
 
 .right-nav {
   margin-left: auto;
-}
-
-/* Menu hamburger - escondido no desktop */
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1003;
-}
-
-.menu-toggle span {
-  display: block;
-  width: 25px;
-  height: 3px;
-  background: #fff;
-  margin: 4px 0;
-  transition: 0.3s;
-  border-radius: 2px;
-}
-
-.menu-toggle.ativo span:nth-child(1) {
-  transform: rotate(-45deg) translate(-5px, 6px);
-}
-
-.menu-toggle.ativo span:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-toggle.ativo span:nth-child(3) {
-  transform: rotate(45deg) translate(-5px, -6px);
-}
-
-/* Menu mobile */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  right: 0;            /* <-- Corrigir aqui */
-  width: 100vw;        /* Usa largura total da viewport */
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.98);
-  transform: translateX(100%);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1001;
-  padding-top: 100px;
-  overflow-x: hidden;   /* Evita barra horizontal */
-}
-
-
-.mobile-menu.ativo {
-  transform: translateX(0);
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  width: 100%;
-}
-
-.mobile-menu li {
-  border-bottom: 1px solid rgba(255, 117, 0, 0.2);
-  width: 100%;
-}
-
-.mobile-menu li:last-child {
-  border-bottom: none;
-}
-
-.mobile-menu a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
-  padding: 20px 30px;
-  transition: 
-    color 0.3s ease,
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-  user-select: none;
-  display: block;
-  width: 100%;
-  font-size: 1.2rem;
-  text-align: center;
-}
-
-.mobile-menu a:hover,
-.mobile-menu a:focus {
-  color: #fbb258;
-  background-color: rgba(255, 173, 0, 0.15);
-  outline: none;
-}
-
-.mobile-menu a.ativo {
-  color: #ffad00;
-  background-color: rgba(255, 173, 0, 0.3);
-  box-shadow: inset 0 0 8px #ffad00;
 }
 
 /* Cabeçalho */
@@ -287,6 +180,10 @@ main {
   color: #fff;
   width: 100%;
   box-sizing: border-box;
+  flex: 1;                     /* Ocupa todo espaço restante */
+  display: flex;               /* Permite controlar conteúdo interno */
+  flex-direction: column;      /* Empilha conteúdo verticalmente */
+  min-height: calc(100vh - 200px); /* Altura mínima ajustável */
 }
 
 /* Seções gerais */
@@ -411,12 +308,13 @@ footer {
   text-align: center;
   padding: 30px 20px;
   border-top: 3px solid #ff7500;
-  margin-top: 50px;
   color: #fff;
   font-size: 0.9rem;
   user-select: none;
   width: 100%;
   box-sizing: border-box;
+  margin-top: auto;            /* Empurra para o final */
+  flex-shrink: 0;              /* Não permite que seja comprimido */
 }
 
 footer p {
@@ -671,6 +569,7 @@ footer a:focus {
   
   main {
     padding: 15px 10px;
+    min-height: calc(100vh - 250px); /* Ajuste para mobile */
   }
 
   .hero {
@@ -751,7 +650,7 @@ footer a:focus {
   }
   
   main {
-    padding: 10px 8px;
+    min-height: calc(100vh - 280px);
   }
   
   .hero {
@@ -782,6 +681,9 @@ footer a:focus {
   .mobile-menu a {
     padding: 18px 25px;
     font-size: 1.1rem;
+  }
+  footer {
+    padding: 20px 10px;
   }
 }
 
@@ -993,14 +895,14 @@ html {
 }
 
 /* ============================================
-   BARRA DE PESQUISA DE PERFIS - CORRIGIDA
+   BARRA DE PESQUISA DE PERFIS - INTEGRADA AO HEADER
    ============================================ */
 
 .profile-search-container {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1004; /* Maior que o header (1000) e menu (1003) */
+  z-index: 1004;
 }
 
 .profile-search-wrapper {
@@ -1025,7 +927,7 @@ html {
   min-width: 45px;
   height: 45px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  order: 2; /* Botão sempre à direita */
+  order: 2;
 }
 
 .profile-search-btn:hover {
@@ -1046,7 +948,7 @@ html {
   transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
   opacity: 0;
   pointer-events: none;
-  order: 1; /* Input sempre à esquerda */
+  order: 1;
   text-transform: uppercase;
 }
 
@@ -1150,79 +1052,107 @@ html {
 }
 
 /* ============================================
-   RESPONSIVO - TABLET
+   RESPONSIVO - INTEGRAÇÃO COM HEADER
    ============================================ */
-@media (max-width: 900px) {
+
+/* Desktop e Tablet - mantém fora do header */
+@media (min-width: 769px) {
   .profile-search-container {
-    right: 15px;
-    top: 15px;
-  }
-  
-  .profile-search-input.active {
-    width: 180px;
-  }
-  
-  .profile-search-btn {
-    min-width: 42px;
-    height: 42px;
-    padding: 8px 12px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1004;
   }
 }
 
-/* ============================================
-   RESPONSIVO - MOBILE
-   ============================================ */
+/* Mobile - ENTRA NO HEADER */
 @media (max-width: 768px) {
-  .profile-search-container {
-    right: 15px;
-    top: 85px; /* Abaixo do header e menu */
+  /* Ajustar header para acomodar o botão */
+  header {
+    position: relative;
   }
   
-  .profile-search-input.active {
-    width: 160px;
-    font-size: 13px;
+  .profile-search-container {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    z-index: 1004;
   }
   
   .profile-search-btn {
     min-width: 40px;
     height: 40px;
-    padding: 8px 10px;
+    padding: 10px;
     font-size: 16px;
-  }
-  
-  .profile-search-results {
-    min-width: 250px;
-    right: 0;
-    left: auto;
-  }
-}
-
-/* ============================================
-   RESPONSIVO - MOBILE PEQUENO
-   ============================================ */
-@media (max-width: 480px) {
-  .profile-search-container {
-    right: 10px;
-    top: 80px;
+    border-radius: 6px;
+    background: rgba(255, 117, 0, 0.9);
   }
   
   .profile-search-input.active {
     width: 140px;
-    font-size: 12px;
+    font-size: 13px;
     padding: 8px 12px;
+  }
+  
+  .profile-search-results {
+    position: fixed;
+    top: 85px; /* Logo abaixo do header */
+    right: 15px;
+    min-width: 250px;
+    max-width: calc(100vw - 40px);
+  }
+}
+
+/* Mobile Pequeno - 480px */
+@media (max-width: 480px) {
+  .profile-search-container {
+    right: 10px;
   }
   
   .profile-search-btn {
     min-width: 38px;
     height: 38px;
-    padding: 7px 9px;
+    padding: 8px;
     font-size: 15px;
   }
   
+  .profile-search-input.active {
+    width: 120px;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  
   .profile-search-results {
+    top: 80px;
+    right: 10px;
     min-width: 220px;
     max-width: calc(100vw - 30px);
     font-size: 13px;
+  }
+}
+
+/* Mobile Muito Pequeno - 375px */
+@media (max-width: 375px) {
+  .profile-search-container {
+    right: 8px;
+  }
+  
+  .profile-search-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 7px;
+    font-size: 14px;
+  }
+  
+  .profile-search-input.active {
+    width: 110px;
+    font-size: 11px;
+  }
+  
+  .profile-search-results {
+    top: 75px;
+    right: 8px;
   }
 }
 

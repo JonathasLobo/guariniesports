@@ -57,25 +57,7 @@
           <li><a href="./contato/contato.html">Contact</a></li>
         </ul>
       </nav>
-      
-      <!-- Botão Menu Mobile -->
-      <button class="menu-toggle" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <!-- Menu Mobile -->
-      <nav class="mobile-menu">
-        <ul>
-          <li><a href="index.html" class="ativo">Início</a></li>
-          <li><a href="./sobre/sobre.html">Sobre</a></li>
-          <li><a href="equipes.html">Times</a></li>
-          <li><a href="./loja/loja.html">Loja</a></li>
-          <li><a href="material.html">Material</a></li>
-          <li><a href="contato.html">Contato</a></li>
-        </ul>
-      </nav>
+    
     </div>
   </header>
 
@@ -93,6 +75,10 @@
       </div>
       <ul class="user-dropdown-list">
         <li><a href="./perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="./loja/loja.html">Shop</a></li>
+        <li><a href="./sobre/sobre.html">About</a></li>
+        <li><a href="./groups/groups.html">Games</a></li>
+        <li><a href="./contato/contato.html">Contact</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -1156,32 +1142,6 @@ function createTopBuildCard(build, rank, creatorData) {
   </script>
 
   <script>
-    // Funcionalidade do menu mobile
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-
-    menuToggle.addEventListener('click', function() {
-      this.classList.toggle('ativo');
-      mobileMenu.classList.toggle('ativo');
-    });
-
-    // Fechar menu ao clicar em um link
-    const mobileLinks = document.querySelectorAll('.mobile-menu a');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        menuToggle.classList.remove('ativo');
-        mobileMenu.classList.remove('ativo');
-      });
-    });
-
-    // Fechar menu ao redimensionar para desktop
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 900) {
-        menuToggle.classList.remove('ativo');
-        mobileMenu.classList.remove('ativo');
-      }
-    });
-
     // Funcionalidade dos botões de compra
     const botoes = document.querySelectorAll(".btn-comprar");
     botoes.forEach((botao) => {
@@ -1271,6 +1231,30 @@ function createTopBuildCard(build, rank, creatorData) {
       });
     });
   </script>
+  <script>
+  // Mover botão de busca para dentro do header no mobile
+  function adjustSearchButtonPosition() {
+    const searchContainer = document.querySelector('.profile-search-container');
+    const header = document.querySelector('header');
+    const body = document.body;
+    
+    if (window.innerWidth <= 768) {
+      // Mobile: mover para dentro do header
+      if (searchContainer && header && searchContainer.parentElement !== header) {
+        header.appendChild(searchContainer);
+      }
+    } else {
+      // Desktop: manter no body
+      if (searchContainer && body && searchContainer.parentElement !== body) {
+        body.appendChild(searchContainer);
+      }
+    }
+  }
+  
+  // Executar ao carregar e ao redimensionar
+  adjustSearchButtonPosition();
+  window.addEventListener('resize', adjustSearchButtonPosition);
+</script>
 
 </body>
 </html>

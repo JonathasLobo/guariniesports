@@ -57,27 +57,48 @@ function googleTranslateElementInit() {
           <li><a href="../contato/contato.html">Contact</a></li>
         </ul>
       </nav>
-      
-      <!-- Botão Menu Mobile -->
-      <button class="menu-toggle" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <!-- Menu Mobile -->
-      <nav class="mobile-menu">
-        <ul>
-          <li><a href="index.html" class="ativo">Início</a></li>
-          <li><a href="./sobre/sobre.html">Sobre</a></li>
-          <li><a href="equipes.html">Times</a></li>
-          <li><a href="./loja/loja.html">Loja</a></li>
-          <li><a href="material.html">Material</a></li>
-          <li><a href="contato.html">Contato</a></li>
-        </ul>
-      </nav>
+
     </div>
   </header>
+   <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="./contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra de busca de perfis -->
+  <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
+  </div>
 
   <main>
     <h2>Contact Us</h2>
@@ -95,5 +116,402 @@ function googleTranslateElementInit() {
     <p><a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">Follow our social media</a></p>
     <p>Created by: Shad & Lobo</p>
   </footer>
+
+  <!-- Firebase e Autenticação -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc,
+      collection, 
+      query, 
+      where, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore();
+
+    // ========================================
+    // ELEMENTOS DO DOM - MENU USUÁRIO
+    // ========================================
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+
+    // ========================================
+    // ELEMENTOS DO DOM - BUSCA DE PERFIL
+    // ========================================
+    const profileSearchBtn = document.getElementById('profileSearchBtn');
+    const profileSearchInput = document.getElementById('profileSearchInput');
+    const profileSearchResults = document.getElementById('profileSearchResults');
+
+    // ========================================
+    // MENU DROPDOWN DO USUÁRIO
+    // ========================================
+    
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Fechar dropdown ao clicar em um link
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+    // ========================================
+    // BUSCA DE PERFIL - COM BUSCA AUTOMÁTICA
+    // ========================================
+
+    // Função para buscar perfil
+    async function buscarPerfil() {
+      const playerId = profileSearchInput.value.trim().toUpperCase();
+      
+      if (!playerId) {
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      if (playerId.length !== 7) {
+        // Não mostrar nada se não tiver 7 caracteres
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      try {
+        // Mostrar loading
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+        profileSearchResults.classList.add('show');
+        
+        console.log('🔍 Buscando Player ID:', playerId);
+        
+        // Buscar usuário com esse Player ID
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("playerId", "==", playerId));
+        
+        console.log('📡 Query criada, executando busca...');
+        
+        const querySnapshot = await getDocs(q);
+        
+        console.log('📦 Resultado da busca:', {
+          empty: querySnapshot.empty,
+          size: querySnapshot.size
+        });
+        
+        if (querySnapshot.empty) {
+          console.log('❌ Nenhum usuário encontrado com Player ID:', playerId);
+          profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+          return;
+        }
+        
+        // Pegar o primeiro resultado (Player ID é único)
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userId = userDoc.id;
+        
+        console.log('✅ Usuário encontrado:', {
+          userId: userId,
+          playerId: userData.playerId,
+          displayName: userData.displayName,
+          email: userData.email
+        });
+        
+        // Mostrar resultado encontrado
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+            <div style="flex: 1;">
+              <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+                ✅ Player found!
+              </div>
+              <div style="color: #fff; font-size: 13px;">
+                ${userData.displayName || 'Anonymous'}
+              </div>
+              <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+                ID: ${userData.playerId}
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; text-align: center;">
+            <button 
+              onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
+              style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+            >
+              👤 View Profile
+            </button>
+          </div>
+        `;
+        
+      } catch (error) {
+        console.error('❌ Erro ao buscar perfil:', error);
+        console.error('Detalhes do erro:', {
+          message: error.message,
+          code: error.code,
+          stack: error.stack
+        });
+        
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-no-results" style="color: #ff6b6b;">
+            ❌ Search error<br>
+            <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
+              ${error.message}
+            </small>
+          </div>
+        `;
+      }
+    }
+
+    // Toggle da barra de busca
+    profileSearchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('🖱️ Botão de busca clicado');
+      profileSearchInput.classList.toggle('active');
+      
+      if (profileSearchInput.classList.contains('active')) {
+        console.log('✅ Input ativado');
+        profileSearchInput.focus();
+      } else {
+        console.log('❌ Input desativado');
+        profileSearchInput.value = '';
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // Buscar ao pressionar Enter (mantido para compatibilidade)
+    profileSearchInput.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        console.log('⌨️ Enter pressionado');
+        await buscarPerfil();
+      }
+    });
+
+    // Validação do input e BUSCA AUTOMÁTICA ao digitar 7 caracteres
+    profileSearchInput.addEventListener('input', async (e) => {
+      // Validação: apenas alfanumérico, máximo 7 caracteres
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (e.target.value.length > 7) {
+        e.target.value = e.target.value.slice(0, 7);
+      }
+      
+      // 🔥 BUSCA AUTOMÁTICA quando atingir 7 caracteres
+      if (e.target.value.length === 7) {
+        console.log('🎯 7 caracteres digitados - buscando automaticamente...');
+        await buscarPerfil();
+      } else {
+        // Se tiver menos de 7 caracteres, esconder resultados
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // Fechar ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.profile-search-container')) {
+        profileSearchInput.classList.remove('active');
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // ========================================
+    // AUTENTICAÇÃO DO USUÁRIO
+    // ========================================
+    
+    // Função para atualizar a interface com base no estado do usuário
+    async function updateUI(user) {
+      if (user) {
+        try {
+          // Buscar dados do Firestore
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let displayName = user.displayName || user.email.split('@')[0];
+          let avatarPath = './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+          
+          // Se existe documento no Firestore, usar os dados de lá
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.displayName) {
+              displayName = userData.displayName;
+            }
+            if (userData.avatar) {
+              avatarPath = userData.avatar;
+            }
+          }
+          
+          // Atualizar interface
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${displayName}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+          
+          console.log('✅ Usuário logado:', user.email);
+          
+        } catch (error) {
+          console.error('❌ Erro ao carregar dados do usuário:', error);
+          // Fallback em caso de erro
+          userDropdownHeader.innerHTML = `
+            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${user.email.split('@')[0]}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+        }
+      } else {
+        // Usuário não está logado
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogin();
+        };
+        perfilLink.style.display = 'none';
+        
+        console.log('Usuário não logado');
+      }
+    }
+
+    // Função para fazer login
+    function handleLogin() {
+      window.location.href = '/login/login.html';
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          // 🔥 LIMPAR DADOS DO LOCALSTORAGE
+          localStorage.removeItem('userDisplayName');
+          localStorage.removeItem('userAvatar');
+          
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+          // A interface será atualizada automaticamente pelo onAuthStateChanged
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
+      }
+    }
+
+    // Monitorar mudanças no estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+  </script>
+
+  <script>
+    // Redirecionar ao clicar nos botões de compra
+    const botoesComprar = document.querySelectorAll('.btn-comprar[data-link]');
+    botoesComprar.forEach(botao => {
+      botao.addEventListener('click', () => {
+        window.open(botao.getAttribute('data-link'), '_blank');
+      });
+    });
+  </script>
+  <script>
+  // PWA - Botão de instalação
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBtn').style.display = 'block';
+  });
+
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+    console.log('Usuário respondeu:', outcome);
+  });
+
+  // Seletor de idioma customizado
+  const languageBtn = document.getElementById('languageBtn');
+  const languageDropdown = document.getElementById('languageDropdown');
+  const currentLang = document.getElementById('currentLang');
+  const languageOptions = document.querySelectorAll('.language-option');
+
+  languageBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    languageDropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!languageBtn.contains(e.target)) {
+      languageDropdown.classList.remove('show');
+    }
+  });
+
+  languageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      const flag = this.dataset.flag;
+      const name = this.dataset.name;
+      
+      const flagElement = languageBtn.querySelector('.flag');
+      flagElement.className = `flag ${flag}`;
+      currentLang.textContent = name;
+      languageDropdown.classList.remove('show');
+      
+      const translateElement = document.querySelector('.goog-te-combo');
+      if (translateElement) {
+        translateElement.value = lang;
+        translateElement.dispatchEvent(new Event('change'));
+      } else {
+        setTimeout(() => {
+          const translateElement = document.querySelector('.goog-te-combo');
+          if (translateElement) {
+            translateElement.value = lang;
+            translateElement.dispatchEvent(new Event('change'));
+          }
+        }, 1000);
+      }
+    });
+  });
+</script>
 </body>
 </html>
