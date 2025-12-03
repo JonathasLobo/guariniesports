@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Melhores builds para Pokémon - Guarini e-sport">
+  <title>Pokémon Builds - Guarini e-sport</title>
+  <link rel="icon" href="./img-site/favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'pt', includedLanguages: 'pt,en,ja'},
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
+  <!-- Adsense tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
+       crossorigin="anonymous"></script>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-84NHN394WF');
+  </script>
+
+  <style>
+/* ========================================
+   LAYOUT PRINCIPAL DOS BUILDS
+   ======================================== */
+
+.pokemon-builds-container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* ========================================
+   HEADER DO POKÉMON
+   ======================================== */
+
+.pokemon-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 50px;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(40, 40, 40, 0.95));
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(255, 173, 0, 0.3);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.pokemon-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 173, 0, 0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.pokemon-header-image {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  z-index: 1;
+}
+
+.pokemon-header-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(255, 173, 0, 0.6));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.pokemon-header-info {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.pokemon-header-info h1 {
+  font-size: 3rem;
+  color: #ffad00;
+  margin: 0 0 10px 0;
+  text-transform: capitalize;
+  text-shadow: 0 0 20px rgba(255, 173, 0, 0.5);
+  font-weight: 800;
+}
+
+.pokemon-header-info p {
+  font-size: 1.2rem;
+  color: #ddd;
+  margin: 0;
+}
+
+/* ========================================
+   GRID DE BUILDS - ESTILO COMPACTO
+   ======================================== */
+
+.builds-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 10px;
+}
+
+/* ========================================
+   BUILD CARD - NOVO DESIGN COMPACTO
+   ======================================== */
+
+.build-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(45, 45, 45, 0.95));
+  border-radius: 15px;
+  padding: 20px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.build-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 173, 0, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.build-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 173, 0, 0.8);
+  box-shadow: 0 15px 40px rgba(255, 173, 0, 0.4);
+}
+
+.build-card:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   HEADER DO CARD - RANK E RATING
+   ======================================== */
+
+.build-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.build-rank {
+  background: linear-gradient(135deg, #ffd700, #ffad00);
+  color: #000;
+  font-weight: 800;
+  font-size: 1.3rem;
+  padding: 8px 18px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+  min-width: 50px;
+  text-align: center;
+}
+
+.build-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.build-rating-number {
+  color: #ffad00;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.build-rating-stars {
+  color: #ffad00;
+  font-size: 1.1rem;
+}
+
+.build-rating-votes {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   NOME DA BUILD
+   ======================================== */
+
+.build-name {
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+   CONTEÚDO DA BUILD - LAYOUT VERTICAL
+   ======================================== */
+
+.build-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.build-section {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 173, 0, 0.2);
+}
+
+.build-section-title {
+  color: #ffad00;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* ========================================
+   ITEMS - BATTLE ITEM E HELD ITEMS
+   ======================================== */
+
+.build-items-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.build-item-circle {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: rgba(255, 173, 0, 0.1);
+  border: 2px solid rgba(255, 173, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.build-item-circle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 173, 0, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.build-item-circle:hover {
+  transform: scale(1.15);
+  border-color: #ffad00;
+  box-shadow: 0 0 20px rgba(255, 173, 0, 0.6);
+}
+
+.build-item-circle:hover::before {
+  opacity: 1;
+}
+
+.build-item-circle img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+.build-item-circle.empty {
+  opacity: 0.3;
+  background: rgba(100, 100, 100, 0.1);
+  border-color: rgba(100, 100, 100, 0.3);
+}
+
+/* ========================================
+   SKILLS
+   ======================================== */
+
+.build-skills-grid {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.build-skill-circle {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: rgba(255, 173, 0, 0.1);
+  border: 3px solid rgba(255, 173, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.build-skill-circle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 173, 0, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.build-skill-circle:hover {
+  transform: scale(1.15) rotate(5deg);
+  border-color: #ffad00;
+  box-shadow: 0 0 25px rgba(255, 173, 0, 0.7);
+}
+
+.build-skill-circle:hover::before {
+  opacity: 1;
+}
+
+.build-skill-circle img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+.build-skill-circle.empty {
+  opacity: 0.3;
+  background: rgba(100, 100, 100, 0.1);
+  border-color: rgba(100, 100, 100, 0.3);
+}
+
+/* ========================================
+   EMBLEMS - GRID 2x2
+   ======================================== */
+
+.build-emblems-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.build-emblem-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.build-emblem-item:hover {
+  background: rgba(255, 173, 0, 0.1);
+  transform: translateX(3px);
+}
+
+.build-emblem-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 173, 0, 0.1);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.build-emblem-color img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.build-emblem-color.empty {
+  opacity: 0.3;
+  background: rgba(100, 100, 100, 0.1);
+  border-color: rgba(100, 100, 100, 0.3);
+}
+
+.build-emblem-level {
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.build-emblem-level.empty {
+  color: #666;
+}
+
+/* ========================================
+   CREATOR INFO
+   ======================================== */
+
+.build-creator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 173, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  margin-top: 5px;
+}
+
+.build-creator-label {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+.build-creator-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.build-creator-info:hover {
+  transform: translateX(5px);
+}
+
+.build-creator-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.build-creator-info:hover .build-creator-avatar {
+  box-shadow: 0 0 15px rgba(255, 173, 0, 0.6);
+  transform: scale(1.1);
+}
+
+.build-creator-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.build-creator-name {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.build-creator-id {
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
+/* ========================================
+   MENSAGENS E LOADING
+   ======================================== */
+
+.no-builds-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+  font-size: 1.2rem;
+  grid-column: 1 / -1;
+}
+
+.no-builds-message p {
+  margin: 20px 0;
+}
+
+/* ========================================
+   BACK BUTTON - CENTRALIZADO NO FINAL
+   ======================================== */
+
+.back-button-container {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 14px 40px;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  color: #000;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.3);
+}
+
+.back-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.5);
+}
+
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+  color: #ffad00;
+  font-size: 1.2rem;
+  grid-column: 1 / -1;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 173, 0, 0.3);
+  border-top-color: #ffad00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .builds-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pokemon-header {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .pokemon-header-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pokemon-header-info h1 {
+    font-size: 2rem;
+  }
+
+  .pokemon-header-info p {
+    font-size: 1rem;
+  }
+
+  .builds-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .build-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .build-rank {
+    font-size: 1.2rem;
+    padding: 6px 16px;
+  }
+
+  .build-rating {
+    font-size: 1rem;
+  }
+
+  .build-name {
+    font-size: 1.1rem;
+  }
+
+  .build-item-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .build-skill-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .build-emblems-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemon-builds-container {
+    padding: 0 10px;
+  }
+
+  .pokemon-header {
+    padding: 15px;
+  }
+
+  .pokemon-header-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .pokemon-header-info h1 {
+    font-size: 1.6rem;
+  }
+
+  .build-card {
+    padding: 15px;
+  }
+
+  .build-item-circle {
+    width: 45px;
+    height: 45px;
+  }
+
+  .build-skill-circle {
+    width: 55px;
+    height: 55px;
+  }
+
+  .build-emblem-color {
+    width: 35px;
+    height: 35px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <a id="topo"></a>
+
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="./loja/loja.html">Loja</a></li>
+          <li><a href="./sobre/sobre.html">Sobre</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="index.html" aria-label="Início">
+          <img src="./img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="./groups/groups.html">Jogos</a></li>
+          <li><a href="./contato/contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <nav class="mobile-menu">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="./sobre/sobre.html">Sobre</a></li>
+          <li><a href="equipes.html">Times</a></li>
+          <li><a href="./loja/loja.html">Loja</a></li>
+          <li><a href="material.html">Material</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Olá, visitante!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="./perfil/perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
+  </div>
+
+  <main>
+    <div class="pokemon-builds-container">
+      <div class="pokemon-header" id="pokemonHeader">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading Pokémon data...</p>
+        </div>
+      </div>
+
+      <div class="builds-list" id="buildsList">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading builds...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-actions">
+        <button id="installBtn" class="btn-install">📱 Instalar App</button>
+        
+        <div class="language-selector">
+          <button class="language-btn" id="languageBtn">
+            <span class="flag flag-br"></span>
+            <span id="currentLang">Português</span>
+            <span>▼</span>
+          </button>
+          <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option" data-lang="pt" data-flag="flag-br" data-name="Português">
+              <span class="flag flag-br"></span>
+              <span>Português</span>
+            </div>
+            <div class="language-option" data-lang="en" data-flag="flag-us" data-name="English">
+              <span class="flag flag-us"></span>
+              <span>English</span>
+            </div>
+            <div class="language-option" data-lang="ja" data-flag="flag-jp" data-name="日本語">
+              <span class="flag flag-jp"></span>
+              <span>日本語</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="google_translate_element" style="display: none;"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc,
+      collection, 
+      query, 
+      where, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore();
+
+    const pokemonList = [
+      'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill', 'blastoise', 'blaziken', 'blissey', 
+      'buzzwole', 'ceruledge', 'chandelure', 'charizard', 'megacharizardx', 'cinderace', 'clefable',
+      'comfey', 'cramorant', 'crustle', 'decidueye', 'delphox', 'dhelmise',
+      'dodrio', 'dragapult', 'dragonite', 'duraludon', 'eldegoss', 'empoleon', 'espeon',
+      'falinks', 'garchomp', 'gardevoir', 'gengar', 'glaceon', 'goodra', 'greedent',
+      'greninja', 'gyarados', 'hooh', 'hoopa', 'inteleon', 'lapras', 'latias', 'latios', 'leafeon',
+      'lucario', 'megalucario', 'machamp', 'mamoswine', 'meowscara', 'metagross', 'mew', 'mewtwox', 'mewtwoy',
+      'mimikyu', 'miraidon', 'mrmime', 'ninetales', 'pawmot', 'pikachu', 'psyduck', 'raichu', 'rapidash',
+      'sableye', 'scizor', 'slowbro', 'snorlax', 'suicune', 'sylveon', 'talonflame',
+      'tinkaton', 'trevenant', 'tsareena', 'tyranitar', 'umbreon', 'urshifu', 'vaporeon',
+      'venusaur', 'wigglytuff', 'zacian', 'zeraora', 'zoroark'
+    ];
+
+    // Criar objeto de imagens base dos pokémons
+    const pokemonBaseImages = {};
+    pokemonList.forEach(pokemon => {
+      pokemonBaseImages[pokemon] = `./estatisticas-shad/images/backgrounds/${pokemon}-left-bg.png`;
+    });
+
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+    const profileSearchBtn = document.getElementById('profileSearchBtn');
+    const profileSearchInput = document.getElementById('profileSearchInput');
+    const profileSearchResults = document.getElementById('profileSearchResults');
+    const pokemonHeader = document.getElementById('pokemonHeader');
+    const buildsList = document.getElementById('buildsList');
+
+    function getPokemonFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('pokemon');
+    }
+
+    function capitalizeFirst(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function processSkillsFromFirebase(selectedSkills) {
+      if (!selectedSkills) return { skill1: null, skill2: null };
+      
+      const result = {};
+      
+      if (selectedSkills.s1 && selectedSkills.s1 !== 'none') {
+        result.skill1 = {
+          key: selectedSkills.s1,
+          name: `Skill ${selectedSkills.s1.replace('s', '')}`
+        };
+      } else {
+        result.skill1 = null;
+      }
+      
+      if (selectedSkills.s2 && selectedSkills.s2 !== 'none') {
+        result.skill2 = {
+          key: selectedSkills.s2,
+          name: `Skill ${selectedSkills.s2.replace('s', '')}`
+        };
+      } else {
+        result.skill2 = null;
+      }
+      
+      return result;
+    }
+
+    function processEmblemsFromFirebase(selectedEmblems) {
+      if (!selectedEmblems) return { emblem1: null, emblem2: null, emblem3: null, emblem4: null };
+      
+      const result = {};
+      const colors = ['brown', 'red', 'white', 'black', 'blue', 'yellow', 'green', 'purple', 'pink', 'gray', 'navy'];
+      
+      const emblems = [];
+      colors.forEach(color => {
+        if (selectedEmblems[color] && selectedEmblems[color] !== 'none' && selectedEmblems[color] !== '0') {
+          emblems.push({
+            color: color,
+            level: parseInt(selectedEmblems[color]) || 0
+          });
+        }
+      });
+      
+      result.emblem1 = emblems[0] || null;
+      result.emblem2 = emblems[1] || null;
+      result.emblem3 = emblems[2] || null;
+      result.emblem4 = emblems[3] || null;
+      
+      return result;
+    }
+
+    function renderPokemonHeader(pokemonName) {
+  // Verificar se o pokémon existe na lista
+  if (!pokemonList.includes(pokemonName)) {
+    pokemonHeader.innerHTML = `
+      <div class="no-builds-message">
+        <p>❌ Pokémon "${capitalizeFirst(pokemonName)}" not found</p>
+        <a href="material.html" class="back-button">← Select another Pokemon</a>
+      </div>
+    `;
+    buildsList.innerHTML = '';
+    return;
+  }
+  
+  const pokemonImage = pokemonBaseImages[pokemonName] || './estatisticas-shad/images/backgrounds/placeholder.png';
+  
+  pokemonHeader.innerHTML = `
+    <div class="pokemon-header-image">
+      <img src="${pokemonImage}" alt="${capitalizeFirst(pokemonName)}" onerror="this.src='./estatisticas-shad/images/backgrounds/placeholder.png'">
+    </div>
+    <div class="pokemon-header-info">
+      <h1>${capitalizeFirst(pokemonName)}</h1>
+      <p>Top 5 Rated Builds</p>
+    </div>
+  `;
+  }
+
+    function createBuildCard(build, rank, creatorData) {
+      const totalVotes = build.ratings?.totalVotes || 0;
+      const average = build.ratings?.average || 0;
+      const creatorAvatar = creatorData.avatar || './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+      
+      const battleItemHTML = build.battleItem ? `
+        <div class="build-item-circle">
+          <img src="./estatisticas-shad/images/battle-items/${build.battleItem}.png" 
+               alt="Battle Item"
+               onerror="this.style.display='none'">
+        </div>
+      ` : '<div class="build-item-circle empty"></div>';
+      
+      const heldItemsHTML = [];
+      if (build.heldItems && build.heldItems.length > 0) {
+        build.heldItems.slice(0, 3).forEach(item => {
+          heldItemsHTML.push(`
+            <div class="build-item-circle">
+              <img src="./estatisticas-shad/images/held-itens/${item.key}.png" 
+                   alt="${item.name}"
+                   title="${item.name}"
+                   onerror="this.style.display='none'">
+            </div>
+          `);
+        });
+      }
+      
+      while (heldItemsHTML.length < 3) {
+        heldItemsHTML.push('<div class="build-item-circle empty"></div>');
+      }
+      
+      const processedSkills = processSkillsFromFirebase(build.selectedSkills);
+      const skillsHTML = [];
+      
+      for (let i = 1; i <= 2; i++) {
+        const skill = processedSkills[`skill${i}`];
+        
+        if (skill && skill.key) {
+          const skillImagePath = `./estatisticas-shad/images/skills/${build.pokemon}_${skill.key}.png`;
+          skillsHTML.push(`
+            <div class="build-skill-circle" title="${skill.name}">
+              <img src="${skillImagePath}" 
+                   alt="${skill.name}"
+                   onerror="this.parentElement.classList.add('empty'); this.style.display='none'">
+            </div>
+          `);
+        } else {
+          skillsHTML.push('<div class="build-skill-circle empty"></div>');
+        }
+      }
+      
+      const processedEmblems = processEmblemsFromFirebase(build.selectedEmblems);
+      const emblemsHTML = [];
+      
+      for (let i = 1; i <= 4; i++) {
+        const emblem = processedEmblems[`emblem${i}`];
+        
+        if (emblem && emblem.color) {
+          const level = emblem.level || 0;
+          emblemsHTML.push(`
+            <div class="build-emblem-item">
+              <div class="build-emblem-color">
+                <img src="./estatisticas-shad/images/icons/${emblem.color}.png" 
+                     alt="${emblem.color}"
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                     onerror="this.style.display='none'">
+              </div>
+              <div class="build-emblem-level">Lv.${level}</div>
+            </div>
+          `);
+        } else {
+          emblemsHTML.push(`
+            <div class="build-emblem-item">
+              <div class="build-emblem-color empty"></div>
+              <div class="build-emblem-level empty">-</div>
+            </div>
+          `);
+        }
+      }
+      
+      return `
+        <div class="build-card">
+          <div class="build-header">
+            <div class="build-rank">#${rank}</div>
+            <div class="build-rating">
+              <span class="build-rating-number">${average.toFixed(1)}</span>
+              <span class="build-rating-stars">⭐</span>
+              <span class="build-rating-votes">(${totalVotes})</span>
+            </div>
+          </div>
+          
+          <h3 class="build-name">${build.buildName || 'Unnamed Build'}</h3>
+          
+          <div class="build-content">
+            <div class="build-section">
+              <div class="build-section-title">Battle Item</div>
+              <div class="build-items-grid">
+                ${battleItemHTML}
+              </div>
+            </div>
+            
+            <div class="build-section">
+              <div class="build-section-title">Held Items</div>
+              <div class="build-items-grid">
+                ${heldItemsHTML.join('')}
+              </div>
+            </div>
+            
+            <div class="build-section">
+              <div class="build-section-title">Skills</div>
+              <div class="build-skills-grid">
+                ${skillsHTML.join('')}
+              </div>
+            </div>
+            
+            <div class="build-section">
+              <div class="build-section-title">Emblems</div>
+              <div class="build-emblems-grid">
+                ${emblemsHTML.join('')}
+              </div>
+            </div>
+          </div>
+          
+          <div class="build-creator">
+            <div style="flex: 1;">
+              <p class="build-creator-label">Created by:</p>
+              <a href="./perfil/perfil-view.html?uid=${build.userId}" class="build-creator-info">
+                <img src="${creatorAvatar}" 
+                     alt="${creatorData.displayName}" 
+                     class="build-creator-avatar"
+                     onerror="this.src='./estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+                <div class="build-creator-details">
+                  <span class="build-creator-name">${creatorData.displayName || 'Anonymous'}</span>
+                  <span class="build-creator-id">ID: ${creatorData.playerId || 'N/A'}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+async function loadPokemonBuilds(pokemonName) {
+  try {
+    console.log('🔍 Carregando builds para:', pokemonName);
+    
+    // Verificar se o pokémon existe na lista
+    if (!pokemonList.includes(pokemonName)) {
+      console.log('❌ Pokémon não encontrado na lista:', pokemonName);
+      buildsList.innerHTML = `
+        <div class="no-builds-message">
+          <p>😕 Pokémon "${capitalizeFirst(pokemonName)}" not found in our database.</p>
+          <p>Please check the spelling or try another Pokémon.</p>
+        </div>
+        <div class="back-button-container">
+          <a href="material.html" class="back-button">← Select another Pokemon</a>
+        </div>
+      `;
+      return;
+    }
+    
+    buildsList.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading builds...</p></div>';
+    
+    const usuariosRef = collection(db, "usuarios");
+    const usuariosSnap = await getDocs(usuariosRef);
+    
+    const allBuilds = [];
+    
+    for (const userDoc of usuariosSnap.docs) {
+      const userId = userDoc.id;
+      const userData = userDoc.data();
+      
+      const buildsRef = collection(db, "usuarios", userId, "builds");
+      const q = query(buildsRef, where("pokemon", "==", pokemonName));
+      const buildsSnap = await getDocs(q);
+      
+      buildsSnap.forEach(buildDoc => {
+        const buildData = buildDoc.data();
+        
+        // Só incluir builds com avaliações
+        if (buildData.ratings && buildData.ratings.totalVotes > 0) {
+          allBuilds.push({
+            id: buildDoc.id,
+            userId: userId,
+            ...buildData,
+            creatorData: {
+              displayName: userData.displayName,
+              playerId: userData.playerId,
+              avatar: userData.avatar
+            }
+          });
+        }
+      });
+    }
+    
+    console.log(`📊 Total de builds encontradas com votos: ${allBuilds.length}`);
+    
+    // Se não houver builds com avaliações
+    if (allBuilds.length === 0) {
+      buildsList.innerHTML = `
+        <div class="no-builds-message">
+          <p>😕 No rated builds found for ${capitalizeFirst(pokemonName)} yet.</p>
+          <p>Be the first to create and rate a build for this Pokémon!</p>
+        </div>
+        <div class="back-button-container">
+          <a href="material.html" class="back-button">← Select another Pokemon</a>
+        </div>
+      `;
+      return;
+    }
+    
+    // Ordenar por: 1º média, 2º total de votos
+    allBuilds.sort((a, b) => {
+      const avgDiff = (b.ratings?.average || 0) - (a.ratings?.average || 0);
+      if (Math.abs(avgDiff) > 0.01) return avgDiff;
+      return (b.ratings?.totalVotes || 0) - (a.ratings?.totalVotes || 0);
+    });
+    
+    // Pegar top 5
+    const topBuilds = allBuilds.slice(0, 5);
+    
+    console.log('🏆 Top builds:', topBuilds.map(b => ({
+      buildName: b.buildName,
+      avg: b.ratings.average,
+      votes: b.ratings.totalVotes
+    })));
+    
+    // Renderizar builds
+    buildsList.innerHTML = topBuilds.map((build, index) => 
+      createBuildCard(build, index + 1, build.creatorData)
+    ).join('');
+    
+    // ⬇️ MUDANÇA AQUI - Adicionar botão de voltar DENTRO DO GRID com a nova classe
+    buildsList.innerHTML += `
+      <div class="back-button-container">
+        <a href="material.html" class="back-button">← Select another Pokemon</a>
+      </div>
+    `;
+    
+    console.log('✅ Builds carregadas com sucesso!');
+    
+  } catch (error) {
+    console.error('❌ Erro ao carregar builds:', error);
+    buildsList.innerHTML = `
+      <div class="no-builds-message">
+        <p style="color: #ff6b6b;">❌ Error loading builds</p>
+        <p style="color: #aaa; font-size: 0.9rem;">${error.message}</p>
+      </div>
+      <div class="back-button-container">
+        <a href="material.html" class="back-button">← Select another Pokemon</a>
+      </div>
+    `;
+  }
+}
+
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+
+    async function buscarPerfil() {
+      const playerId = profileSearchInput.value.trim().toUpperCase();
+      
+      if (!playerId || playerId.length !== 7) {
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      try {
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+        profileSearchResults.classList.add('show');
+        
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("playerId", "==", playerId));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+          return;
+        }
+        
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userId = userDoc.id;
+        
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+            <div style="flex: 1;">
+              <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+                ✅ Player found!
+              </div>
+              <div style="color: #fff; font-size: 13px;">
+                ${userData.displayName || 'Anonymous'}
+              </div>
+              <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+                ID: ${userData.playerId}
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; text-align: center;">
+            <button 
+              onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
+              style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+            >
+              👤 View Profile
+            </button>
+          </div>
+        `;
+        
+      } catch (error) {
+        console.error('❌ Erro ao buscar perfil:', error);
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-no-results" style="color: #ff6b6b;">
+            ❌ Search error
+          </div>
+        `;
+      }
+    }
+
+    profileSearchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileSearchInput.classList.toggle('active');
+      
+      if (profileSearchInput.classList.contains('active')) {
+        profileSearchInput.focus();
+      } else {
+        profileSearchInput.value = '';
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    profileSearchInput.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        await buscarPerfil();
+      }
+    });
+
+    profileSearchInput.addEventListener('input', async (e) => {
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (e.target.value.length > 7) {
+        e.target.value = e.target.value.slice(0, 7);
+      }
+      
+      if (e.target.value.length === 7) {
+        await buscarPerfil();
+      } else {
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.profile-search-container')) {
+        profileSearchInput.classList.remove('active');
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    async function updateUI(user) {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let displayName = user.displayName || user.email.split('@')[0];
+          let avatarPath = './estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.displayName) {
+              displayName = userData.displayName;
+            }
+            if (userData.avatar) {
+              avatarPath = userData.avatar;
+            }
+          }
+          
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${displayName}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+          
+        } catch (error) {
+          console.error('❌ Erro ao carregar dados do usuário:', error);
+          userDropdownHeader.innerHTML = `
+            <img src="./estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${user.email.split('@')[0]}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+        }
+      } else {
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogin();
+        };
+        perfilLink.style.display = 'none';
+      }
+    }
+
+    function handleLogin() {
+      window.location.href = './login/login.html';
+    }
+
+    async function handleLogout() {
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          localStorage.removeItem('userDisplayName');
+          localStorage.removeItem('userAvatar');
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+
+const pokemonName = getPokemonFromURL();
+
+if (!pokemonName) {
+  pokemonHeader.innerHTML = `
+    <div class="no-builds-message">
+      <p>❌ No Pokémon specified</p>
+      <p style="color: #aaa; font-size: 0.9rem;">Please select a Pokémon from the materials page.</p>
+    </div>
+  `;
+  buildsList.innerHTML = `
+    <div class="back-button-container">
+      <a href="material.html" class="back-button">← Select another Pokemon</a>
+    </div>
+  `;
+} else {
+  // Verificar se o pokémon existe antes de renderizar
+  if (pokemonList.includes(pokemonName)) {
+    renderPokemonHeader(pokemonName);
+    loadPokemonBuilds(pokemonName);
+  } else {
+    pokemonHeader.innerHTML = `
+      <div class="no-builds-message">
+        <p>❌ Pokémon "${capitalizeFirst(pokemonName)}" not found</p>
+        <p style="color: #aaa; font-size: 0.9rem;">Please check the spelling or select from the materials page.</p>
+      </div>
+    `;
+    buildsList.innerHTML = `
+      <div class="back-button-container">
+        <a href="material.html" class="back-button">← Select another Pokemon</a>
+      </div>
+    `;
+  }
+}
+  </script>
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('ativo');
+      mobileMenu.classList.toggle('ativo');
+    });
+
+    const mobileLinks = document.querySelectorAll('.mobile-menu a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      });
+    });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        menuToggle.classList.remove('ativo');
+        mobileMenu.classList.remove('ativo');
+      }
+    });
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then(() => console.log("Service Worker registrado!"))
+        .catch((err) => console.error("Erro no Service Worker:", err));
+    }
+
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+    });
+
+    const languageBtn = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const currentLang = document.getElementById('currentLang');
+    const languageOptions = document.querySelectorAll('.language-option');
+
+    languageBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      languageDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!languageBtn.contains(e.target)) {
+        languageDropdown.classList.remove('show');
+      }
+    });
+
+    languageOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const lang = this.dataset.lang;
+        const flag = this.dataset.flag;
+        const name = this.dataset.name;
+        
+        const flagElement = languageBtn.querySelector('.flag');
+        flagElement.className = `flag ${flag}`;
+        currentLang.textContent = name;
+        
+        languageDropdown.classList.remove('show');
+        
+        const translateElement = document.querySelector('.goog-te-combo');
+        if (translateElement) {
+          translateElement.value = lang;
+          translateElement.dispatchEvent(new Event('change'));
+        } else {
+          setTimeout(() => {
+            const translateElement = document.querySelector('.goog-te-combo');
+            if (translateElement) {
+              translateElement.value = lang;
+              translateElement.dispatchEvent(new Event('change'));
+            }
+          }, 1000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

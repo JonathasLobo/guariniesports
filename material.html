@@ -3,48 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Ferramentas e materiais da Guariní e-sport: calculadoras e utilitários para jogadores." />
-  <title>Materiais Guariní e-sport</title>
+  <meta name="description" content="Ferramentas e materiais da Guarini e-sport: calculadoras e utilitários para jogadores." />
+  <title>Materiais Guarini e-sport</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="materiais.css" />
-  <style>
-    .ferramentas {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .ferramenta {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-    }
-
-    .ferramenta .descricao {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-    }
-
-    @media (max-width: 768px) {
-      .ferramentas {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .ferramentas {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
 
 <script type="text/javascript">
 function googleTranslateElementInit() {
@@ -70,55 +33,7 @@ function googleTranslateElementInit() {
   gtag('config', 'G-84NHN394WF');
 </script>
 <body>
-  <a id="topo"></a>
-  
-  <header>
-    <div class="header-wrapper">
-      <!-- Navegação Desktop - Esquerda -->
-      <nav class="nav-group left-nav">
-        <ul>
-          <li><a href="./loja/loja.html">Loja</a></li>
-          <li><a href="./sobre/sobre.html">Sobre</a></li>
-        </ul>
-      </nav>
-      
-      <!-- Logo Central -->
-      <div class="logo-center">
-        <a href="index.html" aria-label="Início">
-          <img src="./img-site/Guarini.png" alt="Guariní e-sport" class="header-logo">
-        </a>
-      </div>
-
-      <!-- Navegação Desktop - Direita -->
-      <nav class="nav-group right-nav">
-        <ul>
-          <li><a href="../groups/groups.html">Jogos</a></li>
-          <li><a href="material.html" class="ativo">Material</a></li>
-        </ul>
-      </nav>
-      
-      <!-- Botão Menu Mobile -->
-      <button class="menu-toggle" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <!-- Menu Mobile -->
-      <nav class="mobile-menu">
-        <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
-          <li><a href="equipes.html">Times</a></li>
-          <li><a href="loja.html">Loja</a></li>
-          <li><a href="material.html" class="ativo">Material</a></li>
-          <li><a href="contato.html">Contato</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-    <div class="user-menu-container">
+  <div class="user-menu-container">
     <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
       <span></span>
       <span></span>
@@ -153,44 +68,26 @@ function googleTranslateElementInit() {
     <div class="profile-search-results" id="profileSearchResults"></div>
   </div>
 
-  <main>
-    <h2>Ferramentas</h2>
-    <section class="ferramentas">
-      <!-- Estatísticas do Time -->
-      <article class="ferramenta">
-        <img src="./img-site/grafico.png" alt="Estatísticas" />
-        <h3>Estatísticas do time</h3>
-        <p class="descricao">Veja seu perfil com seus e os números da sua equipe</p>
-        <button type="button" class="btn-comprar" id="statBtn">Acessar</button>
-        <div id="statAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
-      </article>
-
-      <!-- Build Maker -->
-      <article class="ferramenta">
+  <main>    
+    <!-- Build Maker em Destaque -->
+    <section class="build-maker-destaque">
+      <article class="ferramenta-destaque">
         <img src="./img-site/buildmaker.png" alt="Build Maker" />
-        <h3>Build Maker</h3>
-        <p class="descricao">Crie e otimize suas builds com calculadora de dano integrada</p>
-        <button type="button" class="btn-comprar" id="buildBtn">Acessar</button>
-        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+        <div class="ferramenta-destaque-content">
+          <h3>Build Maker</h3>
+          <p class="descricao">Create and optimize your build using this calculator for all Pokemons</p>
+          <button type="button" class="btn-comprar" id="buildBtn">Open Build Maker</button>
+          <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+        </div>
       </article>
+    </section>
 
-      <!-- Quizsouls -->
-      <article class="ferramenta">
-        <img src="./img-site/quizsouls.png" alt="Build Maker" />
-        <h3>Quiz Unite</h3>
-        <p class="descricao">Teste seus conhecimentos no Quiz do Pokémon Unite</p>
-        <button type="button" class="btn-comprar" id="quizBtn">Acessar</button>
-        <div id="quizAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
-      </article>      
+    <!-- Título da Galeria de Pokémons -->
+    <h2>Select Pokémon</h2>
 
-      <!-- Slot vazio para futura ferramenta -->
-      <article class="ferramenta" style="opacity: 0.3;">
-        <img src="./img-site/embreve.png" alt="Em Breve" />
-        <h3>Em Breve</h3>
-        <p class="descricao">Nova ferramenta será adicionada aqui</p>
-        <button type="button" class="btn-comprar" disabled>Em Breve</button>
-      </article>
-
+    <!-- Galeria de Pokémons -->
+    <section class="pokemon-gallery" id="pokemonGallery">
+      <!-- Os pokémons serão inseridos aqui via JavaScript -->
     </section>
 
     <p style="text-align:center; margin-top: 2rem;">
@@ -238,7 +135,6 @@ function googleTranslateElementInit() {
   </div>
 </footer>
 
-
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { 
@@ -272,6 +168,23 @@ function googleTranslateElementInit() {
   const db = getFirestore(app);
 
   // ========================================
+  // LISTA DE POKÉMONS
+  // ========================================
+  const pokemonList = [
+    'absol', 'aegislash', 'alcremie', 'armarouge', 'azumarill', 'blastoise', 'blaziken', 'blissey', 
+    'buzzwole', 'ceruledge', 'chandelure', 'charizard', 'megacharizardx', 'cinderace', 'clefable',
+    'comfey', 'cramorant', 'crustle', 'decidueye', 'delphox', 'dhelmise',
+    'dodrio', 'dragapult', 'dragonite', 'duraludon', 'eldegoss', 'empoleon', 'espeon',
+    'falinks', 'garchomp', 'gardevoir', 'gengar', 'glaceon', 'goodra', 'greedent',
+    'greninja', 'gyarados', 'hooh', 'hoopa', 'inteleon', 'lapras', 'latias', 'latios', 'leafeon',
+    'lucario', 'megalucario', 'machamp', 'mamoswine', 'meowscara', 'metagross', 'mew', 'mewtwox', 'mewtwoy',
+    'mimikyu', 'miraidon', 'mrmime', 'ninetales', 'pawmot', 'pikachu', 'psyduck', 'raichu', 'rapidash',
+    'sableye', 'scizor', 'slowbro', 'snorlax', 'suicune', 'sylveon', 'talonflame',
+    'tinkaton', 'trevenant', 'tsareena', 'tyranitar', 'umbreon', 'urshifu', 'vaporeon',
+    'venusaur', 'wigglytuff', 'zacian', 'zeraora', 'zoroark'
+  ];
+
+  // ========================================
   // ELEMENTOS DO DOM - MENU USUÁRIO
   // ========================================
   const userMenuToggle = document.getElementById('userMenuToggle');
@@ -290,18 +203,43 @@ function googleTranslateElementInit() {
   // ========================================
   // ELEMENTOS DO DOM - FERRAMENTAS
   // ========================================
-  const calcBtn = document.getElementById("calcBtn");
-  const statBtn = document.getElementById("statBtn");
-  const winrateBtn = document.getElementById("winrateBtn");
-  const analiseBtn = document.getElementById("analiseBtn");
   const buildBtn = document.getElementById("buildBtn");
-  const quizBtn = document.getElementById("quizBtn");
-  const calcAccessMessage = document.getElementById("calcAccessMessage");
-  const statAccessMessage = document.getElementById("statAccessMessage");
-  const calcWinrateMessage = document.getElementById("calcWinrateMessage");
-  const analiseAccessMessage = document.getElementById("analiseAccessMessage");
   const buildAccessMessage = document.getElementById("buildAccessMessage");
-  const quizAccessMessage = document.getElementById("quizAccessMessage");
+  const pokemonGallery = document.getElementById("pokemonGallery");
+
+// ========================================
+// GERAR GALERIA DE POKÉMONS
+// ========================================
+function generatePokemonGallery() {
+  pokemonGallery.innerHTML = '';
+  
+  pokemonList.forEach(pokemon => {
+    const pokemonCard = document.createElement('div');
+    pokemonCard.className = 'pokemon-card';
+    
+    const img = document.createElement('img');
+    img.src = `./estatisticas-shad/images/sprites/${pokemon}.png`;
+    img.alt = pokemon;
+    img.loading = 'lazy';
+    
+    // Tratamento de erro de imagem
+    img.onerror = function() {
+      this.style.opacity = '0.3';
+      this.src = './img-site/embreve.png';
+    };
+    
+    // ⭐ ADICIONAR EVENTO DE CLIQUE PARA REDIRECIONAR
+    pokemonCard.addEventListener('click', function() {
+      window.location.href = `createdbuilds.html?pokemon=${pokemon}`;
+    });
+    
+    // ⭐ ADICIONAR CURSOR POINTER VISUAL
+    pokemonCard.style.cursor = 'pointer';
+    
+    pokemonCard.appendChild(img);
+    pokemonGallery.appendChild(pokemonCard);
+  });
+}
 
   // ========================================
   // MENU DROPDOWN DO USUÁRIO
@@ -536,63 +474,13 @@ function googleTranslateElementInit() {
     buildAccessMessage.style.display = 'none';
   }
 
-  function setupQuizAccess() {
-    quizBtn.onclick = () => window.location.href = 'quiz.html';
-    quizAccessMessage.style.display = 'none';
-  }
-
-  async function checkStatsPermissions(user) {
-    if (!user) {
-      setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
-      return;
-    }
-
-    try {
-      const docRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        
-        if (userData.role === 'player' || userData.role === 'admin') {
-          statBtn.onclick = () => window.location.href = './estatisticas-shad/indexStat.html';
-          statAccessMessage.style.display = 'none';
-        } else {
-          setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
-        }
-      } else {
-        await setDoc(doc(db, "usuarios", user.uid), {
-          email: user.email,
-          role: 'user',
-          createdAt: new Date()
-        });
-        setupRestrictedStatsAccess("Você não tem permissão para usar essa ferramenta");
-      }
-    } catch (error) {
-      console.error("Erro ao verificar permissões:", error);
-      setupRestrictedStatsAccess("Erro ao verificar permissões. Tente novamente.");
-    }
-  }
-
-  function setupRestrictedStatsAccess(message) {
-    statBtn.onclick = () => {
-      statAccessMessage.textContent = message;
-      statAccessMessage.style.display = 'block';
-      setTimeout(() => {
-        statAccessMessage.style.display = 'none';
-      }, 3000);
-    };
-  }
-
   // ========================================
   // MONITORA AUTENTICAÇÃO
   // ========================================
   onAuthStateChanged(auth, async (user) => {
     await updateUI(user);
     setupBuildAccess();
-    setupQuizAccess();
-    
-    await checkStatsPermissions(user);
+    generatePokemonGallery();
   });
 
   // ========================================

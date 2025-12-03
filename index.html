@@ -38,8 +38,8 @@
       <!-- Navegação Desktop - Esquerda -->
       <nav class="nav-group left-nav">
         <ul>
-          <li><a href="./loja/loja.html">Loja</a></li>
-          <li><a href="./sobre/sobre.html">Sobre</a></li>
+          <li><a href="./loja/loja.html">Shop</a></li>
+          <li><a href="./sobre/sobre.html">About</a></li>
         </ul>
       </nav>
       
@@ -53,8 +53,8 @@
       <!-- Navegação Desktop - Direita -->
       <nav class="nav-group right-nav">
         <ul>
-          <li><a href="./groups/groups.html">Jogos</a></li>
-          <li><a href="./contato/contato.html">Contato</a></li>
+          <li><a href="./groups/groups.html">Games</a></li>
+          <li><a href="./contato/contato.html">Contact</a></li>
         </ul>
       </nav>
       
@@ -89,10 +89,10 @@
     
     <div class="user-dropdown" id="userDropdown">
       <div class="user-dropdown-header" id="userDropdownHeader">
-        <span>Olá, visitante!</span>
+        <span>Hello, visitor!</span>
       </div>
       <ul class="user-dropdown-list">
-        <li><a href="./perfil/perfil.html" id="perfilLink">Perfil</a></li>
+        <li><a href="./perfil/perfil.html" id="perfilLink">Profile</a></li>
         <li><a href="#" id="authLink">Login</a></li>
       </ul>
     </div>
@@ -118,10 +118,10 @@
   <main>
     <section id="home" class="hero">
       <div class="hero-image">
-        <img src="./img-site/o que te dá forças.png" alt="O que te dá forças - Guarini e-sport">
+        <img src="./img-site/what makes you strenght.png" alt="What makes you strenght - Guarini e-sport">
       </div>
       <div class="hero-content">
-        <p>Unindo <span class="destaque">FORÇA</span>, <span class="destaque">ESTRATÉGIA</span> e <span class="destaque">PAIXÃO</span> pelos games desde 2019</p>
+        <p>Combining <span class="destaque">STRENGTH</span>, <span class="destaque">STRATEGY</span> and <span class="destaque">PASSION </span> for gaming since 2019</p>
       </div>
     </section>
 
@@ -134,7 +134,7 @@
     </section>
 
     <section id="noticias">
-      <h2>Últimas Notícias</h2>
+      <h2>News</h2>
       <div class="noticias-colunas">
         <!-- Coluna Esquerda -->
         <div class="noticias-coluna">
@@ -201,7 +201,7 @@
 
     <!-- NOVA SEÇÃO DE VÍDEOS -->
     <section id="videos">
-      <h2>Melhores Jogadas da Semana</h2>
+      <h2>Best weekly plays</h2>
       <div class="video-container">
         <div class="video-wrapper">
           <!-- Vídeo 1 -->
@@ -264,26 +264,33 @@
       </div>
     </section>
 
+    <!-- SEÇÃO DE APOIADORES -->
+    <section id="apoiadores">
+      <h2>Partners</h2>
+      <div class="apoiadores-carousel" id="apoiadoresCarousel"></div>
+      <div class="carousel-indicators" id="carouselIndicators"></div>
+    </section>
+
     <section id="loja">
-      <h2>Loja Oficial</h2>
+      <h2>Shop</h2>
       <section class="produtos">
         <article class="produto">
           <img src="./loja/img-shop/stick.jpg" alt="Adesivos holográficos Kiss-Cut Guarini" />
-          <h3>Adesivos holográficos Kiss-Cut</h3>
+          <h3>Holographic Kiss-Cut Stickers</h3>
           <p class="preco">$ 11,00</p>
-          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5571571">Comprar</button>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5571571">Buy</button>
         </article>
         <article class="produto">
           <img src="./loja/img-shop/garrafinha.jpg" alt="Garrafa de água Guarini" />
-          <h3>Garrafa de água de aço inoxidável</h3>
+          <h3>Stainless Steel Water Bottle</h3>
           <p class="preco">$ 30,00</p>
-          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023084">Comprar</button>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023084">Buy</button>
         </article>
         <article class="produto">
           <img src="./loja/img-shop/caneca.jpg" alt="Caneca Guarini" />
-          <h3>Caneca de viagem com alça</h3>
+          <h3>Travel Mug with Handle</h3>
           <p class="preco">$ 29,00</p>
-          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023087">Comprar</button>
+          <button type="button" class="btn-comprar" data-link="https://streamlabs.com/guarini_esports/merch/5023087">Buy</button>
         </article>
       </section>
     </section>
@@ -294,13 +301,13 @@
       <!-- Botões de ação no footer -->
       <div class="footer-actions">
         <!-- Botão de instalar app -->
-        <button id="installBtn" class="btn-install">📱 Instalar App</button>
+        <button id="installBtn" class="btn-install">📱 Install App</button>
         
         <!-- Seletor de idioma customizado -->
         <div class="language-selector">
           <button class="language-btn" id="languageBtn">
-            <span class="flag flag-br"></span>
-            <span id="currentLang">Português</span>
+            <span class="flag flag-us"></span>
+            <span id="currentLang">English</span>
             <span>▼</span>
           </button>
           <div class="language-dropdown" id="languageDropdown">
@@ -322,8 +329,8 @@
 
       <!-- Informações do footer -->
       <div class="footer-info">
-        <p>&copy; 2019 Guarini e-sport. Todos os direitos reservados.</p>
-        <p><a href="https://linktr.ee/guariniesports" target="_blank">Conheça nossas redes sociais</a></p>
+        <p>&copy; © 2019 Guariní E-sport. All rights reserved.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
         <p>Created by: Lobo & Shad</p>
       </div>
     </div>
@@ -977,6 +984,176 @@ function createTopBuildCard(build, rank, creatorData) {
 
   <!-- Scripts principais -->
   <script src="./videos/videos.js"></script>
+
+   <script>
+    // ====================================
+    // SISTEMA DE APOIADORES - CONFIGURAÇÃO
+    // ====================================
+
+    // Array com os dados dos apoiadores
+    const apoiadores = [
+      {
+        nome: "Mineira sem Freio",
+        descricao: "Canal com novidades sobre Pokemon Unite",
+        logo: "./img-site/apoiadores/jessiemineira.jpg",
+        link: "https://www.youtube.com/@jessiemineira"
+      },
+      {
+        nome: "Leandro Decidueye",
+        descricao: "Canal no Youtube com gameplays e novidades",
+        logo: "./img-site/apoiadores/leandrodecidueye.jpg",
+        link: "https://www.youtube.com/@leandrodecidueye5045"
+      },
+      {
+        nome: "Doixka",
+        descricao: "Stream com gameplay de vários jogos",
+        logo: "./img-site/apoiadores/doixka.jpg",
+        link: "https://www.twitch.tv/doixka"
+      },
+      {
+        nome: "QBPudds",
+        descricao: "Narrador e criador de conteúdo para Pokemon Unite",
+        logo: "./img-site/apoiadores/qbpudds.png",
+        link: "https://www.twitch.tv/qbpudds"
+      },
+      {
+        nome: "Headset Pro",
+        descricao: "Áudio imersivo para gamers",
+        logo: "https://via.placeholder.com/100/ff7500/ffffff?text=HP",
+        link: "https://exemplo.com"
+      },
+      {
+        nome: "RGB Lighting",
+        descricao: "Iluminação profissional para setup",
+        logo: "https://via.placeholder.com/100/ffad00/000000?text=RGB",
+        link: "https://exemplo.com"
+      }
+    ];
+
+    // ====================================
+    // LÓGICA DO CARROSSEL
+    // ====================================
+
+    let currentIndex = 0;
+    const cardsVisible = 3; // Quantidade de cards visíveis
+    const rotationInterval = 5000; // Tempo em ms (5 segundos)
+    let autoRotate;
+
+    const carouselContainer = document.getElementById('apoiadoresCarousel');
+    const indicatorsContainer = document.getElementById('carouselIndicators');
+
+    // Função para criar um card de apoiador
+    function createApoiadorCard(apoiador) {
+      const card = document.createElement('div');
+      card.className = 'apoiador-card';
+      card.innerHTML = `
+        <img src="${apoiador.logo}" alt="${apoiador.nome}" class="apoiador-logo">
+        <h3 class="apoiador-nome">${apoiador.nome}</h3>
+        <p class="apoiador-descricao">${apoiador.descricao}</p>
+        <a href="${apoiador.link}" target="_blank" class="apoiador-link">Visitar Site</a>
+      `;
+      return card;
+    }
+
+    // Função para renderizar os cards visíveis
+    function renderCards(addSlideAnimation = false) {
+      carouselContainer.innerHTML = '';
+      
+      for (let i = 0; i < cardsVisible; i++) {
+        const index = (currentIndex + i) % apoiadores.length;
+        const card = createApoiadorCard(apoiadores[index]);
+        
+        // Adicionar animação de deslizar para os cards que já estavam visíveis
+        if (addSlideAnimation && i < cardsVisible - 1) {
+          card.classList.add('deslizando');
+        }
+        
+        // Adicionar animação de entrada para o novo card
+        if (i === cardsVisible - 1) {
+          card.classList.add('entrando');
+        }
+        
+        carouselContainer.appendChild(card);
+      }
+      
+      updateIndicators();
+    }
+
+    // Função para criar indicadores
+    function createIndicators() {
+      indicatorsContainer.innerHTML = '';
+      
+      apoiadores.forEach((_, index) => {
+        const indicator = document.createElement('div');
+        indicator.className = 'indicator';
+        if (index === currentIndex) {
+          indicator.classList.add('active');
+        }
+        
+        indicator.addEventListener('click', () => {
+          currentIndex = index;
+          renderCards();
+          resetAutoRotate();
+        });
+        
+        indicatorsContainer.appendChild(indicator);
+      });
+    }
+
+    // Função para atualizar indicadores
+    function updateIndicators() {
+      const indicators = indicatorsContainer.querySelectorAll('.indicator');
+      indicators.forEach((indicator, index) => {
+        if (index === currentIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
+    }
+
+    // Função para rotacionar os cards
+    function rotateCards() {
+      const cards = carouselContainer.querySelectorAll('.apoiador-card');
+      
+      // Adicionar animação de saída ao primeiro card
+      if (cards[0]) {
+        cards[0].classList.add('saindo');
+      }
+      
+      // Aguardar a animação e então atualizar
+      setTimeout(() => {
+        currentIndex = (currentIndex + 1) % apoiadores.length;
+        renderCards();
+      }, 400);
+    }
+
+    // Função para resetar o auto-rotate
+    function resetAutoRotate() {
+      clearInterval(autoRotate);
+      autoRotate = setInterval(rotateCards, rotationInterval);
+    }
+
+    // Inicializar o carrossel
+    function initCarousel() {
+      createIndicators();
+      renderCards();
+      autoRotate = setInterval(rotateCards, rotationInterval);
+    }
+
+    // Pausar rotação ao passar o mouse
+    carouselContainer.addEventListener('mouseenter', () => {
+      clearInterval(autoRotate);
+    });
+
+    // Retomar rotação ao sair com o mouse
+    carouselContainer.addEventListener('mouseleave', () => {
+      resetAutoRotate();
+    });
+
+    // Iniciar o carrossel quando a página carregar
+    window.addEventListener('DOMContentLoaded', initCarousel);
+  </script>
 
   <script>
     // Funcionalidade do menu mobile
