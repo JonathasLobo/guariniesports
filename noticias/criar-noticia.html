@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create/Edit News - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="criar-noticia.css">
+  <meta name="theme-color" content="#ffad00">
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="editor-main">
+    <div class="editor-container">
+      <!-- Cabeçalho do Editor -->
+      <div class="editor-header">
+        <button onclick="history.back()" class="btn-voltar">
+          ← Back
+        </button>
+        <h1 id="pageTitle">Create New Article</h1>
+      </div>
+
+      <!-- Mensagem de carregamento -->
+      <div id="loadingMessage" class="loading-message" style="display: none;">
+        🔄 Loading article...
+      </div>
+
+      <!-- Formulário de Edição -->
+      <form id="noticiaForm" class="noticia-form">
+        
+        <!-- Título -->
+        <div class="form-group">
+          <label for="tituloInput">Title *</label>
+          <input 
+            type="text" 
+            id="tituloInput" 
+            class="form-input" 
+            placeholder="Digite o título..."
+            maxlength="150"
+            required
+          >
+          <span class="char-counter" id="tituloCounter">0/150</span>
+        </div>
+
+        <!-- Seletor de Idioma -->
+        <div class="form-group">
+          <label for="idiomaSelect">Language *</label>
+          <p class="help-text">Select the primary language of the content</p>
+          <select id="idiomaSelect" class="form-input" required>
+            <option value="pt-BR">🇧🇷 Portuguese</option>
+            <option value="en">🇺🇸 English</option>
+            <option value="ja">🇯🇵 日本語 (Japanese)</option>
+          </select>
+        </div>
+
+        <!-- Metadados (data e autor) -->
+        <div class="noticia-metadata" id="noticiaMetadata" style="display: none;">
+          <div class="metadata-item">
+            <span class="metadata-label">📅 Date:</span>
+            <span id="dataPublicacao">-</span>
+          </div>
+          <div class="metadata-item">
+            <span class="metadata-label">👤 Writer:</span>
+            <a href="#" id="autorLink" class="autor-link" target="_blank">
+              <img src="" alt="Avatar" id="autorAvatar" class="autor-avatar">
+              <span id="autorNome">-</span>
+            </a>
+          </div>
+          <div class="metadata-item" id="ultimaAtualizacao" style="display: none;">
+            <span class="metadata-label">🔄 Last updated on:</span>
+            <span id="dataAtualizacao">-</span>
+          </div>
+        </div>
+
+        <!-- Imagem Principal -->
+        <div class="form-group">
+          <label>Featured Image *</label>
+          <p class="help-text">This image will appear on the article card on the homepage</p>
+          
+          <div class="imagem-principal-preview" id="imagemPrincipalPreview">
+            <div class="preview-placeholder">
+              <span>📷</span>
+              <p>No image selected</p>
+              <small>Recommended size: 1200x630px (16:9 ratio)</small>
+              <small>Accepted formats: JPG, PNG, WebP</small>
+              <small>Maximum size: 5MB</small>
+            </div>
+          </div>
+
+          <div class="upload-buttons">
+            <input 
+              type="file" 
+              id="imagemPrincipalInput" 
+              accept="image/*" 
+              style="display: none;"
+            >
+            <button 
+              type="button" 
+              class="btn-upload" 
+              onclick="document.getElementById('imagemPrincipalInput').click()"
+            >
+              📁 Choose Featured Image
+            </button>
+            <button 
+              type="button" 
+              class="btn-remove-img" 
+              id="btnRemoverImagemPrincipal"
+              style="display: none;"
+            >
+              🗑️ Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- Editor de Conteúdo -->
+        <div class="form-group">
+          <label for="conteudoEditor">Article Content *</label>
+          <p class="help-text">Write the full article content. Use the formatting tools below.</p>
+          
+          <!-- Barra de Ferramentas -->
+          <div class="editor-toolbar">
+            <button type="button" class="toolbar-btn" data-comando="bold" title="Negrito">
+              <strong>B</strong>
+            </button>
+            <button type="button" class="toolbar-btn" data-comando="italic" title="Itálico">
+              <em>I</em>
+            </button>
+            <button type="button" class="toolbar-btn" data-comando="underline" title="Sublinhado">
+              <u>U</u>
+            </button>
+            <div class="toolbar-separator"></div>
+            <button type="button" class="toolbar-btn" data-comando="insertUnorderedList" title="Lista">
+              • List
+            </button>
+            <button type="button" class="toolbar-btn" data-comando="insertOrderedList" title="Lista Numerada">
+              1. List
+            </button>
+            <div class="toolbar-separator"></div>
+            <button type="button" class="toolbar-btn" data-comando="justifyLeft" title="Alinhar à Esquerda">
+              ⬅️
+            </button>
+            <button type="button" class="toolbar-btn" data-comando="justifyCenter" title="Centralizar">
+              ↔️
+            </button>
+            <button type="button" class="toolbar-btn" data-comando="justifyRight" title="Alinhar à Direita">
+              ➡️
+            </button>
+          </div>
+
+          <!-- Área de Edição -->
+          <div 
+            id="conteudoEditor" 
+            class="conteudo-editor" 
+            contenteditable="true"
+            data-placeholder="Digite o conteúdo da notícia aqui..."
+          ></div>
+
+          <div class="editor-word-count">
+            <span id="wordCount">0 words</span>
+          </div>
+        </div>
+
+        <!-- Upload de Imagens para o Conteúdo -->
+        <div class="form-group">
+          <label>Content Images</label>
+           <p class="help-text">
+              Add images that will be inserted into the article content<br>
+              <strong>📌 Tip:</strong> You can add captions to the images after inserting them.
+            </p>
+          
+          <div class="imagens-conteudo-grid" id="imagensConteudoGrid">
+            <!-- Imagens serão adicionadas aqui dinamicamente -->
+          </div>
+
+          <input 
+            type="file" 
+            id="imagensConteudoInput" 
+            accept="image/*" 
+            multiple 
+            style="display: none;"
+          >
+          <button 
+            type="button" 
+            class="btn-upload" 
+            onclick="document.getElementById('imagensConteudoInput').click()"
+          >
+            📁 Add Images to Content
+          </button>
+        </div>
+
+        <div class="imagens-info-box">
+          <p>ℹ️ <strong>How to use images in the content:</strong></p>
+          <ul>
+            <li>1️⃣ Upload the images above</li>
+            <li>2️⃣ Click "Insert with Caption" to add them to the text</li>
+            <li>3️⃣ Enter the image caption when prompted</li>
+            <li>4️⃣ The image will be inserted at the cursor location with a formatted caption</li>
+          </ul>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="form-actions">
+          <button type="button" class="btn-salvar-rascunho" id="btnSalvarRascunho">
+            💾 Save as Draft
+          </button>
+          <button type="submit" class="btn-publicar" id="btnPublicar">
+            ✅ Publish Article
+          </button>
+          <button type="button" class="btn-cancelar" onclick="confirmarSaida()">
+            ❌ Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-info">
+      <p>&copy; © 2019 Guarini E-sport. All rights reserved.</p>
+      <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
+      <p>Created by: Lobo & Shad</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="criar-noticia.js"></script>
+</body>
+</html>

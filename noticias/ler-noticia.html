@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Notícia - Guarini e-sport">
+  <title>Article - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="ler-noticia.css">
+  <meta name="theme-color" content="#ffad00">
+  
+  <!-- Meta tags para compartilhamento (serão preenchidas dinamicamente) -->
+  <meta property="og:title" content="" id="ogTitle">
+  <meta property="og:description" content="" id="ogDescription">
+  <meta property="og:image" content="" id="ogImage">
+  <meta property="og:url" content="" id="ogUrl">
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="noticia-main">
+    <!-- Loading -->
+    <div id="loadingNoticia" class="loading-noticia">
+      <div class="loading-spinner"></div>
+      <p>Loading recent news...</p>
+    </div>
+
+    <!-- Erro -->
+    <div id="erroNoticia" class="erro-noticia" style="display: none;">
+      <div class="erro-icon">❌</div>
+      <h2>Article Not Found</h2>
+      <p>The article you are looking for does not exist or has been removed.</p>
+      <button onclick="window.location.href='../index.html'" class="btn-voltar-home">
+        ← Back to Home
+      </button>
+    </div>
+
+    <!-- Conteúdo da Notícia -->
+    <article id="noticiaArticle" class="noticia-article" style="display: none;">
+      
+      <!-- Cabeçalho da Notícia -->
+      <div class="noticia-header">
+        <button onclick="history.back()" class="btn-voltar-noticia">
+          ← Back
+        </button>
+        
+        <!-- Botão de Edição (apenas para admin/editor) -->
+        <button id="btnEditarNoticia" class="btn-editar-noticia" style="display: none;">
+          ✏️ Edit
+        </button>
+      </div>
+
+      <!-- Imagem Principal -->
+      <div class="noticia-imagem-principal">
+        <img id="noticiaImagemPrincipal" src="" alt="Imagem da notícia">
+      </div>
+
+      <!-- Título -->
+      <h1 id="noticiaTitulo" class="noticia-titulo"></h1>
+
+      <!-- Metadados -->
+      <div class="noticia-meta">
+        <div class="noticia-autor">
+          <a href="#" id="noticiaAutorLink" class="autor-link" target="_blank">
+            <img id="noticiaAutorAvatar" src="" alt="Avatar" class="autor-avatar">
+            <div class="autor-info">
+              <span class="autor-label">By:</span>
+              <span id="noticiaAutorNome" class="autor-nome"></span>
+            </div>
+          </a>
+        </div>
+        
+        <div class="noticia-datas">
+          <div class="noticia-data-item">
+            <span class="data-icon">📅</span>
+            <div class="data-info">
+              <span class="data-label">Date:</span>
+              <span id="noticiaDataPublicacao" class="data-valor"></span>
+            </div>
+          </div>
+          
+          <div class="noticia-data-item" id="noticiaDataAtualizacaoContainer" style="display: none;">
+            <span class="data-icon">🔄</span>
+            <div class="data-info">
+              <span class="data-label">Last updated on:</span>
+              <span id="noticiaDataAtualizacao" class="data-valor"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="noticia-stats">
+          <div class="stat-item">
+            <span class="stat-icon">👁️</span>
+            <span id="noticiaVisualizacoes" class="stat-valor">0</span>
+            <span class="stat-label">views</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo -->
+      <div id="noticiaConteudo" class="noticia-conteudo">
+        <!-- Conteúdo será inserido aqui -->
+      </div>
+
+      <!-- Compartilhamento -->
+      <div class="noticia-compartilhar">
+        <h3>Share</h3>
+        <div class="compartilhar-buttons">
+          <button class="btn-compartilhar" id="btnCompartilharFacebook" title="Compartilhar no Facebook">
+            📘 Facebook
+          </button>
+          <button class="btn-compartilhar" id="btnCompartilharTwitter" title="Compartilhar no Twitter">
+            🐦 Twitter
+          </button>
+          <button class="btn-compartilhar" id="btnCompartilharWhatsApp" title="Compartilhar no WhatsApp">
+            💬 WhatsApp
+          </button>
+          <button class="btn-compartilhar" id="btnCopiarLink" title="Copiar link">
+            🔗 Copy Link
+          </button>
+        </div>
+        <span class="compartilhar-feedback" id="compartilharFeedback" style="display: none;">
+          ✅ Link Copied!
+        </span>
+      </div>
+
+      <!-- Notícias Relacionadas -->
+      <div class="noticias-relacionadas">
+        <h3>Other News</h3>
+        <div class="noticias-relacionadas-grid" id="noticiasRelacionadasGrid">
+          <!-- Notícias serão carregadas aqui -->
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="footer-info">
+      <p>&copy; © 2019 Guarini E-sport. All rights reserved.</p>
+      <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
+      <p>Created by: Lobo & Shad</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="ler-noticia.js"></script>
+</body>
+</html>

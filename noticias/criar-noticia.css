@@ -1,0 +1,871 @@
+/* ================================================
+   CRIAR/EDITAR NOTÍCIA - GUARINI E-SPORT
+   ================================================ */
+
+/* ===== Container Principal ===== */
+.editor-main {
+  min-height: 80vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+.editor-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: rgba(20, 20, 20, 0.9);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(255, 173, 0, 0.1);
+}
+
+/* ===== Cabeçalho do Editor ===== */
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.editor-header h1 {
+  color: #ffad00;
+  font-size: 28px;
+  margin: 0;
+}
+
+.btn-voltar {
+  background: rgba(255, 173, 0, 0.1);
+  border: 2px solid #ffad00;
+  color: #ffad00;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-voltar:hover {
+  background: #ffad00;
+  color: #000;
+  transform: translateX(-5px);
+}
+
+/* ===== Loading Message ===== */
+.loading-message {
+  text-align: center;
+  padding: 40px;
+  color: #ffad00;
+  font-size: 18px;
+}
+
+/* ===== Formulário ===== */
+.noticia-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label {
+  color: #ffad00;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.help-text {
+  color: #aaa;
+  font-size: 13px;
+  margin: 0;
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  border-radius: 8px;
+  padding: 12px 15px;
+  color: #ffad00;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ffad00;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.char-counter {
+  color: #aaa;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* ===== Metadados da Notícia ===== */
+.noticia-metadata {
+  background: rgba(255, 173, 0, 0.05);
+  border: 1px solid rgba(255, 173, 0, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metadata-label {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.metadata-item span:not(.metadata-label) {
+  color: #fff;
+  font-weight: 500;
+}
+
+.autor-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffad00;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.autor-link:hover {
+  color: #ff7500;
+  transform: translateX(5px);
+}
+
+.autor-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffad00;
+}
+
+/* ===== Imagem Principal ===== */
+.imagem-principal-preview {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 173, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagem-principal-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-placeholder {
+  text-align: center;
+  color: #aaa;
+}
+
+.preview-placeholder span {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.upload-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-upload,
+.btn-remove-img {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-upload {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  color: #000;
+}
+
+.btn-upload:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+.btn-remove-img {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  border: 1px solid #ff3b30;
+}
+
+.btn-remove-img:hover {
+  background: #ff3b30;
+  color: #fff;
+}
+
+/* ===== Editor de Conteúdo ===== */
+.editor-toolbar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px 8px 0 0;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 173, 0, 0.2);
+}
+
+.toolbar-btn {
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 173, 0, 0.3);
+  border-radius: 5px;
+  color: #ffad00;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.toolbar-btn:hover {
+  background: rgba(255, 173, 0, 0.2);
+  border-color: #ffad00;
+}
+
+.toolbar-btn:active,
+.toolbar-btn.active {
+  background: rgba(255, 173, 0, 0.3);
+}
+
+.toolbar-separator {
+  width: 1px;
+  background: rgba(255, 173, 0, 0.3);
+  margin: 0 5px;
+}
+
+.conteudo-editor {
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.6;
+  outline: none;
+}
+
+.conteudo-editor:empty:before {
+  content: attr(data-placeholder);
+  color: #666;
+}
+
+.conteudo-editor:focus {
+  border-color: #ffad00;
+}
+
+/* Estilos do conteúdo dentro do editor */
+.conteudo-editor p {
+  margin-bottom: 15px;
+}
+
+.conteudo-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.conteudo-editor ul,
+.conteudo-editor ol {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.conteudo-editor strong {
+  color: #ffad00;
+}
+
+.conteudo-editor em {
+  color: #ff7500;
+}
+
+.editor-word-count {
+  text-align: right;
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* ===== Imagens do Conteúdo ===== */
+.imagens-conteudo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.imagem-conteudo-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.imagem-conteudo-item:hover {
+  border-color: #ffad00;
+  transform: scale(1.05);
+}
+
+.imagem-conteudo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remover-imagem-conteudo {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 59, 48, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-remover-imagem-conteudo:hover {
+  background: #ff3b30;
+  transform: scale(1.1);
+}
+
+.btn-inserir-no-editor {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  background: rgba(255, 173, 0, 0.9);
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-inserir-no-editor:hover {
+  background: #ffad00;
+}
+
+/* ===== Botões de Ação ===== */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.btn-salvar-rascunho,
+.btn-publicar,
+.btn-cancelar {
+  padding: 15px 30px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.btn-publicar {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #fff;
+  flex: 1;
+  min-width: 200px;
+}
+
+.btn-publicar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-salvar-rascunho {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  color: #000;
+  flex: 1;
+  min-width: 200px;
+}
+
+.btn-salvar-rascunho:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+.btn-cancelar {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  border: 2px solid #ff3b30;
+}
+
+.btn-cancelar:hover {
+  background: #ff3b30;
+  color: #fff;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 768px) {
+  .editor-container {
+    padding: 20px;
+  }
+
+  .editor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .editor-header h1 {
+    font-size: 22px;
+  }
+
+  .noticia-metadata {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-publicar,
+  .btn-salvar-rascunho {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .imagens-conteudo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+/* ===== Scrollbar Customizada ===== */
+.conteudo-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.conteudo-editor::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.conteudo-editor::-webkit-scrollbar-thumb {
+  background: rgba(255, 173, 0, 0.5);
+  border-radius: 4px;
+}
+
+.conteudo-editor::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 173, 0, 0.7);
+}
+
+/* ============================================
+   BOTÃO EXCLUIR NOTÍCIA
+   Adicione no arquivo criar-noticia.css
+   ============================================ */
+
+.btn-excluir {
+  background: linear-gradient(135deg, #ff3b30, #ff6259);
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+}
+
+.btn-excluir:hover {
+  background: linear-gradient(135deg, #ff6259, #ff8a80);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+}
+
+.btn-excluir:active {
+  transform: translateY(0);
+}
+
+.btn-excluir:disabled {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Ajustar espaçamento dos botões */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+  .btn-excluir {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ================================================
+   ADICIONE/ATUALIZE NO criar-noticia.css
+   ================================================ */
+
+/* Placeholder da imagem principal - COM INFORMAÇÕES */
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+}
+
+.preview-placeholder span {
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+.preview-placeholder p {
+  font-size: 1.1rem;
+  color: #aaa;
+  margin: 0;
+  font-weight: 600;
+}
+
+.preview-placeholder small {
+  font-size: 0.85rem;
+  color: #777;
+  display: block;
+  margin-top: 4px;
+}
+
+/* 🔥 GRID DE IMAGENS DO CONTEÚDO - CORRIGIDO */
+.imagens-conteudo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+/* 🔥 ITEM DE IMAGEM - ALTURA AUTOMÁTICA */
+.imagem-conteudo-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+  height: auto; /* 🔥 IMPORTANTE: altura automática */
+  min-height: 320px; /* Altura mínima para garantir espaço */
+}
+
+.imagem-conteudo-item:hover {
+  border-color: #ffad00;
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* 🔥 PREVIEW DA IMAGEM - ALTURA FIXA */
+.imagem-conteudo-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0; /* Não permite que a imagem seja comprimida */
+}
+
+/* 🔥 AÇÕES DAS IMAGENS - SEMPRE VISÍVEL */
+.imagem-conteudo-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto; /* Empurra para o final do card */
+}
+
+.btn-remover-imagem-conteudo,
+.btn-inserir-no-editor,
+.btn-inserir-simples {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0; /* Não permite que os botões sejam comprimidos */
+}
+
+.btn-remover-imagem-conteudo {
+  background: linear-gradient(135deg, #ff3b30, #ff6259);
+  color: #fff;
+}
+
+.btn-remover-imagem-conteudo:hover {
+  background: linear-gradient(135deg, #ff6259, #ff8a80);
+  transform: translateY(-1px);
+}
+
+.btn-inserir-no-editor {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: #fff;
+}
+
+.btn-inserir-no-editor:hover {
+  background: linear-gradient(135deg, #66BB6A, #81C784);
+  transform: translateY(-1px);
+}
+
+.btn-inserir-simples {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  color: #000;
+}
+
+.btn-inserir-simples:hover {
+  background: linear-gradient(135deg, #ffad00, #ffc107);
+  transform: translateY(-1px);
+}
+
+/* 🔥 BOX DE INFORMAÇÕES */
+.imagens-info-box {
+  background: rgba(255, 173, 0, 0.1);
+  border-left: 4px solid #ffad00;
+  padding: 15px 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.imagens-info-box p {
+  margin: 0 0 10px 0;
+  color: #ffad00;
+  font-size: 14px;
+}
+
+.imagens-info-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #ddd;
+}
+
+.imagens-info-box li {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 🔥 ESTILO DAS IMAGENS INSERIDAS NO EDITOR */
+.noticia-imagem-container {
+  margin: 20px 0 !important;
+  padding: 0 !important;
+  text-align: center;
+}
+
+.noticia-imagem-container img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.noticia-imagem-container figcaption {
+  font-size: 14px !important;
+  color: #999 !important;
+  font-style: italic !important;
+  margin-top: 10px !important;
+  padding: 0 15px !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+}
+
+/* 🔥 RESPONSIVO - TABLET */
+@media (max-width: 900px) {
+  .imagens-conteudo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .imagem-conteudo-item {
+    min-height: 300px;
+  }
+}
+
+/* 🔥 RESPONSIVO - MOBILE */
+@media (max-width: 768px) {
+  .imagens-conteudo-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .imagem-conteudo-item {
+    min-height: auto; /* No mobile, deixa altura automática */
+  }
+  
+  .preview-placeholder {
+    padding: 30px 15px;
+  }
+  
+  .preview-placeholder span {
+    font-size: 3rem;
+  }
+}
+
+/* 🔥 RESPONSIVO - MOBILE PEQUENO */
+@media (max-width: 480px) {
+  .btn-remover-imagem-conteudo,
+  .btn-inserir-no-editor,
+  .btn-inserir-simples {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+.btn-remover-imagem-conteudo {
+  background: linear-gradient(135deg, #ff3b30, #ff6259);
+  color: #fff;
+}
+
+.btn-remover-imagem-conteudo:hover {
+  background: linear-gradient(135deg, #ff6259, #ff8a80);
+  transform: translateY(-1px);
+}
+
+.btn-inserir-no-editor {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: #fff;
+}
+
+.btn-inserir-no-editor:hover {
+  background: linear-gradient(135deg, #66BB6A, #81C784);
+  transform: translateY(-1px);
+}
+
+.btn-inserir-simples {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  color: #000;
+}
+
+.btn-inserir-simples:hover {
+  background: linear-gradient(135deg, #ffad00, #ffc107);
+  transform: translateY(-1px);
+}
+
+/* 🔥 NOVO: Box de informações */
+.imagens-info-box {
+  background: rgba(255, 173, 0, 0.1);
+  border-left: 4px solid #ffad00;
+  padding: 15px 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.imagens-info-box p {
+  margin: 0 0 10px 0;
+  color: #ffad00;
+  font-size: 14px;
+}
+
+.imagens-info-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #ddd;
+}
+
+.imagens-info-box li {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 🔥 NOVO: Estilo das imagens inseridas no editor */
+.noticia-imagem-container {
+  margin: 20px 0 !important;
+  padding: 0 !important;
+  text-align: center;
+}
+
+.noticia-imagem-container img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.noticia-imagem-container figcaption {
+  font-size: 14px !important;
+  color: #999 !important;
+  font-style: italic !important;
+  margin-top: 10px !important;
+  padding: 0 15px !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .imagens-conteudo-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .preview-placeholder {
+    padding: 30px 15px;
+  }
+  
+  .preview-placeholder span {
+    font-size: 3rem;
+  }
+}

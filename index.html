@@ -7,7 +7,6 @@
   <title>Guarini e-sport</title>
   <link rel="icon" href="./img-site/favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="./noticias/noticias.css">
   <link rel="stylesheet" href="./videos/videos.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffad00">
@@ -122,65 +121,11 @@
     <section id="noticias">
       <h2>News</h2>
       <div class="noticias-colunas">
-        <!-- Coluna Esquerda -->
-        <div class="noticias-coluna">
-          <div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./noticias/img-noticias/noticia5.jpg" alt="Notícia 5">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Guarini vence Fire Wall</h3>
-              <p>Vitória importante da Guarini</p>
-              <a href="./noticias/noticia5.html#noticia5" class="noticia-link">Leia mais</a>
-            </div>
-          </div>
-
-          <div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./noticias/img-noticias/noticia4.jpg" alt="Notícia 4">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Guarini segue firme no topo</h3>
-              <p>Guarini vence a Cálice Real e entra no G4.</p>
-              <a href="./noticias/noticia4.html#noticia4" class="noticia-link">Leia mais</a>
-            </div>
-          </div>
-
-          <div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./noticias/img-noticias/noticia3.jpg" alt="Notícia 3">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Mais uma vitória da Guarini!</h3>
-              <p>Guarini vence a Amazon e garante a terceira vitória seguida no Brasileirão Unite!</p>
-              <a href="./noticias/noticia3.html#noticia3" class="noticia-link">Leia mais</a>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Coluna Direita -->
-        <div class="noticias-coluna">
-          <div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./noticias/img-noticias/noticia2.jpg" alt="Notícia 2">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Guarini vence mais uma!</h3>
-              <p>Segunda vitória seguida no Brasileirão assumindo o 3º lugar na tabela.</p>
-              <a href="./noticias/noticia2.html#noticia2" class="noticia-link">Leia mais</a>
-            </div>
-          </div>
-
-          <div class="noticia-card-horizontal">
-            <div class="noticia-imagem-horizontal">
-              <img src="./noticias/img-noticias/noticia1.jpg" alt="Notícia 1">
-            </div>
-            <div class="noticia-conteudo-horizontal">
-              <h3>Guarini vence Kingdravôs</h3>
-              <p>Nossa equipe conquistou a primeira vitória pelo brasileirão série C.</p>
-              <a href="./noticias/noticia1.html#noticia1" class="noticia-link">Leia mais</a>
-            </div>
-          </div>
+        <!-- As notícias serão carregadas automaticamente aqui pelo JavaScript -->
+        <div class="loading-noticias">
+          <p style="text-align: center; color: #ffad00; padding: 40px;">
+            📰 Carregando notícias...
+          </p>
         </div>
       </div>
     </section>
@@ -969,7 +914,9 @@ function createTopBuildCard(build, rank, creatorData) {
   </script>
 
   <!-- Scripts principais -->
-  <script src="./videos/videos.js"></script>
+<script src="./videos/videos.js"></script>
+<script type="module" src="./noticias/noticias-index.js"></script>
+<script type="module" src="./noticias/botao-editor.js"></script>
 
    <script>
     // ====================================
@@ -977,44 +924,140 @@ function createTopBuildCard(build, rank, creatorData) {
     // ====================================
 
     // Array com os dados dos apoiadores
-    const apoiadores = [
-      {
-        nome: "Mineira sem Freio",
-        descricao: "Canal com novidades sobre Pokemon Unite",
-        logo: "./img-site/apoiadores/jessiemineira.jpg",
-        link: "https://www.youtube.com/@jessiemineira"
-      },
-      {
-        nome: "Leandro Decidueye",
-        descricao: "Canal no Youtube com gameplays e novidades",
-        logo: "./img-site/apoiadores/leandrodecidueye.jpg",
-        link: "https://www.youtube.com/@leandrodecidueye5045"
-      },
-      {
-        nome: "Doixka",
-        descricao: "Stream com gameplay de vários jogos",
-        logo: "./img-site/apoiadores/doixka.jpg",
-        link: "https://www.twitch.tv/doixka"
-      },
-      {
-        nome: "QBPudds",
-        descricao: "Narrador e criador de conteúdo para Pokemon Unite",
-        logo: "./img-site/apoiadores/qbpudds.png",
-        link: "https://www.twitch.tv/qbpudds"
-      },
-      {
-        nome: "Headset Pro",
-        descricao: "Áudio imersivo para gamers",
-        logo: "https://via.placeholder.com/100/ff7500/ffffff?text=HP",
-        link: "https://exemplo.com"
-      },
-      {
-        nome: "RGB Lighting",
-        descricao: "Iluminação profissional para setup",
-        logo: "https://via.placeholder.com/100/ffad00/000000?text=RGB",
-        link: "https://exemplo.com"
-      }
-    ];
+      const apoiadores = [
+    {
+      nome: "Mineira sem Freio",
+      descricao: "Canal com novidades sobre Pokemon Unite",
+      logo: "./img-site/apoiadores/jessiemineira.jpg",
+      redes: [
+        {
+          tipo: "youtube",
+          url: "https://www.youtube.com/@jessiemineira",
+          icone: "./img-site/youtube-icon.png"
+        },
+        {
+          tipo: "twitch",
+          url: "https://www.twitch.tv/jessiemineira",
+          icone: "./img-site/twitch-icon.png"
+        },
+        {
+          tipo: "twitter",
+          url: "https://twitter.com/jessiemineira",
+          icone: "./img-site/x-icon.png"
+        }
+      ]
+    },
+    {
+      nome: "Leandro Decidueye",
+      descricao: "Canal no Youtube com gameplays e novidades",
+      logo: "./img-site/apoiadores/leandrodecidueye.jpg",
+      redes: [
+        {
+          tipo: "youtube",
+          url: "https://www.youtube.com/@leandrodecidueye5045",
+          icone: "./img-site/youtube-icon.png"
+        },
+        {
+          tipo: "instagram",
+          url: "https://www.instagram.com/leandrodecidueye",
+          icone: "./img-site/instagram-icon.png"
+        },
+        {
+          tipo: "discord",
+          url: "https://discord.gg/leandrodecidueye",
+          icone: "./img-site/discord-icon.png"
+        }
+      ]
+    },
+    {
+      nome: "Doixka",
+      descricao: "Stream com gameplay de vários jogos",
+      logo: "./img-site/apoiadores/doixka.jpg",
+      redes: [
+        {
+          tipo: "twitch",
+          url: "https://www.twitch.tv/doixka",
+          icone: "./img-site/twitch-icon.png"
+        },
+        {
+          tipo: "twitter",
+          url: "https://twitter.com/doixka",
+          icone: "./img-site/tiktok-icon.png"
+        },
+        {
+          tipo: "youtube",
+          url: "https://www.youtube.com/@doixka",
+          icone: "./img-site/youtube-icon.png"
+        }
+      ]
+    },
+    {
+      nome: "QBPudds",
+      descricao: "Narrador e criador de conteúdo para Pokemon Unite",
+      logo: "./img-site/apoiadores/qbpudds.png",
+      redes: [
+        {
+          tipo: "twitch",
+          url: "https://www.twitch.tv/qbpudds",
+          icone: "./img-site/twitch-icon.png"
+        },
+        {
+          tipo: "youtube",
+          url: "https://www.youtube.com/@qbpudds",
+          icone: "./img-site/youtube-icon.png"
+        },
+        {
+          tipo: "twitter",
+          url: "https://twitter.com/qbpudds",
+          icone: "./img-site/x-icon.png"
+        }
+      ]
+    },
+    {
+      nome: "Headset Pro",
+      descricao: "Áudio imersivo para gamers",
+      logo: "https://via.placeholder.com/100/ff7500/ffffff?text=HP",
+      redes: [
+        {
+          tipo: "youtube",
+          url: "https://exemplo.com",
+          icone: "./img-site/youtube-icon.png"
+        },
+        {
+          tipo: "instagram",
+          url: "https://exemplo.com",
+          icone: "./img-site/instagram-icon.png"
+        },
+        {
+          tipo: "tiktok",
+          url: "https://exemplo.com",
+          icone: "./img-site/tiktok-icon.png"
+        }
+      ]
+    },
+    {
+      nome: "RGB Lighting",
+      descricao: "Iluminação profissional para setup",
+      logo: "https://via.placeholder.com/100/ffad00/000000?text=RGB",
+      redes: [
+        {
+          tipo: "instagram",
+          url: "https://exemplo.com",
+          icone: "./img-site/instagram-icon.png"
+        },
+        {
+          tipo: "youtube",
+          url: "https://exemplo.com",
+          icone: "./img-site/youtube-icon.png"
+        },
+        {
+          tipo: "tiktok",
+          url: "https://exemplo.com",
+          icone: "./img-site/tiktok-icon.png"
+        }
+      ]
+    }
+  ];
 
     // ====================================
     // LÓGICA DO CARROSSEL
@@ -1028,15 +1071,31 @@ function createTopBuildCard(build, rank, creatorData) {
     const carouselContainer = document.getElementById('apoiadoresCarousel');
     const indicatorsContainer = document.getElementById('carouselIndicators');
 
-    // Função para criar um card de apoiador
+    // Função para criar um card de apoiador com múltiplas redes sociais
     function createApoiadorCard(apoiador) {
       const card = document.createElement('div');
       card.className = 'apoiador-card';
+      
+      // Criar HTML dos botões de redes sociais
+      const redesHTML = apoiador.redes.map(rede => `
+        <a href="${rede.url}" 
+          target="_blank" 
+          class="apoiador-social-btn ${rede.tipo}"
+          title="${rede.tipo.charAt(0).toUpperCase() + rede.tipo.slice(1)}"
+          aria-label="${rede.tipo}">
+          <img src="${rede.icone}" 
+              alt="${rede.tipo}" 
+              onerror="this.src='https://via.placeholder.com/28/ffad00/000000?text=${rede.tipo.charAt(0).toUpperCase()}'">
+        </a>
+      `).join('');
+      
       card.innerHTML = `
         <img src="${apoiador.logo}" alt="${apoiador.nome}" class="apoiador-logo">
         <h3 class="apoiador-nome">${apoiador.nome}</h3>
         <p class="apoiador-descricao">${apoiador.descricao}</p>
-        <a href="${apoiador.link}" target="_blank" class="apoiador-link">Visitar Site</a>
+        <div class="apoiador-social-links">
+          ${redesHTML}
+        </div>
       `;
       return card;
     }
