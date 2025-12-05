@@ -251,10 +251,10 @@ function renderizarNoticia(noticia) {
   document.title = `${noticia.titulo} - Guarini e-sport`;
   
   // Meta tags para compartilhamento
-  document.getElementById('ogTitle').content = noticia.titulo;
-  document.getElementById('ogDescription').content = extrairTextoConteudo(noticia.conteudo);
-  document.getElementById('ogImage').content = noticia.imagemPrincipal;
-  document.getElementById('ogUrl').content = window.location.href;
+  document.getElementById('ogTitle').setAttribute('content', noticia.titulo);
+  document.getElementById('ogDescription').setAttribute('content', extrairTextoConteudo(noticia.conteudo));
+  document.getElementById('ogImage').setAttribute('content', noticia.imagemPrincipal);
+  document.getElementById('ogUrl').setAttribute('content', window.location.href);
   
   // Imagem principal
   noticiaImagemPrincipal.src = noticia.imagemPrincipal;
