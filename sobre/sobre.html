@@ -252,7 +252,7 @@ function googleTranslateElementInit() {
         return;
       }
       
-      if (playerId.length !== 7) {
+      if (playerId.length < 5 || playerId.length > 7) {
         // Não mostrar nada se não tiver 7 caracteres
         profileSearchResults.classList.remove('show');
         return;
@@ -375,7 +375,7 @@ function googleTranslateElementInit() {
       }
       
       // 🔥 BUSCA AUTOMÁTICA quando atingir 7 caracteres
-      if (e.target.value.length === 7) {
+      if (e.target.value.length >= 5 && e.target.value.length <= 7) {
         console.log('🎯 7 caracteres digitados - buscando automaticamente...');
         await buscarPerfil();
       } else {

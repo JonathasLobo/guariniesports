@@ -324,7 +324,7 @@
       return;
     }
     
-    if (playerId.length !== 7) {
+    if (playerId.length < 5 || playerId.length > 7) {
       profileSearchResults.classList.remove('show');
       return;
     }
@@ -440,7 +440,7 @@
       e.target.value = e.target.value.slice(0, 7);
     }
     
-    if (e.target.value.length === 7) {
+    if (e.target.value.length >= 5 && e.target.value.length <= 7) {
       console.log('🎯 7 caracteres digitados - buscando automaticamente...');
       await buscarPerfil();
     } else {

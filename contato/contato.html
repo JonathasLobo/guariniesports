@@ -204,7 +204,7 @@ function googleTranslateElementInit() {
         return;
       }
       
-      if (playerId.length !== 7) {
+      if (playerId.length < 5 || playerId.length > 7) {
         // Não mostrar nada se não tiver 7 caracteres
         profileSearchResults.classList.remove('show');
         return;
@@ -322,7 +322,7 @@ function googleTranslateElementInit() {
     profileSearchInput.addEventListener('input', async (e) => {
       // Validação: apenas alfanumérico, máximo 7 caracteres
       e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (e.target.value.length > 7) {
+      if (e.target.value.length >= 5 && e.target.value.length <= 7) {
         e.target.value = e.target.value.slice(0, 7);
       }
       
