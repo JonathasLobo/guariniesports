@@ -117,9 +117,9 @@
                 type="text" 
                 id="playerIdInput" 
                 class="perfil-player-id-input" 
-                placeholder="Ex: A1B2C3D"
+                placeholder="Ex: A1B2C or A1B2C3D"
                 maxlength="7"
-                pattern="[A-Za-z0-9]{7}"
+                pattern="[A-Za-z0-9]{5,7}"
               >
               <button class="btn-save-player-id" id="btnSavePlayerId">
                 💾 Save
@@ -935,10 +935,9 @@ function getPokemonRole(pokemonKey) {
 
   // Função para validar Player ID (7 caracteres alfanuméricos)
   function validarPlayerId(id) {
-    const regex = /^[A-Za-z0-9]{7}$/;
+    const regex = /^[A-Za-z0-9]{5,7}$/;
     return regex.test(id);
   }
-
   // Função para carregar Player ID do Firestore
   async function carregarPlayerId(userId) {
     try {
@@ -1047,13 +1046,18 @@ function getPokemonRole(pokemonKey) {
   });
 
   // Validação em tempo real do input
-  playerIdInput.addEventListener('input', (e) => {
-    // Converter para maiúsculas e remover caracteres inválidos
+  playerIdInput.addEventListener('input', async (e) => {
     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    
-    // Limitar a 7 caracteres
     if (e.target.value.length > 7) {
       e.target.value = e.target.value.slice(0, 7);
+    }
+    
+    // Buscar automaticamente quando atingir 5, 6 ou 7 caracteres
+    if (e.target.value.length >= 5 && e.target.value.length <= 7) {
+      console.log(`🎯 ${e.target.value.length} caracteres digitados - buscando automaticamente...`);
+      await buscarPerfil();
+    } else {
+      profileSearchResults.classList.remove('show');
     }
   });
 
