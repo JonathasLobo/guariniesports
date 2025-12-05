@@ -74,7 +74,7 @@ function criarCardNoticia(noticia) {
             <span class="flag ${classeBandeira}"></span>
           </span>
         </div>
-        <a href="${link}" class="noticia-link">Leia mais →</a>
+        <a href="${link}" class="noticia-link">Read →</a>
       </div>
     </div>
   `;
