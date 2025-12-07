@@ -113,7 +113,7 @@
 
 .pokemon-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 20px;
   width: 100%;
   max-width: 1400px;

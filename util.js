@@ -46,6 +46,7 @@ const pokemonBaseImages = {
     goodra: 'goodra-left-bg',
     greninja: 'greninja-left-bg',
 	gyarados: 'gyarados-left-bg',
+  megagyarados: 'megagyarados-left-bg',
 	hooh: 'hooh-left-bg',
     hoopa: 'hoopa-left-bg',
     inteleon: 'inteleon-left-bg',
@@ -131,6 +132,7 @@ const pokemonRoles = {
     greedent: 'Defender',
     greninja: 'Attacker',
 	gyarados: 'All Rounder',
+  megagyarados: 'All Rounder',
 	hooh: 'Defender',
     hoopa: 'Support',
     inteleon: 'Attacker',
@@ -218,6 +220,7 @@ const pokemonLanes = {
     greedent: 'Top',
     greninja: 'Jungle',
 	gyarados: 'Top',
+  megagyarados: 'Top',
 	hooh: 'Top',
     hoopa: 'Top',
     inteleon: 'Bot',
@@ -304,6 +307,7 @@ const pokemonBasedType  = {
     greedent: 'ATK',
     greninja: 'ATK',
 	gyarados: 'ATK',
+  megagyarados: 'ATK',
 	hooh: 'ATK',
     hoopa: 'SpATK',
     inteleon: 'SpATK',
@@ -603,6 +607,10 @@ const pokemonSkills = {
 		"s21": "Waterfall",
 		"s22": "Bounce"
     },
+  "megagyarados": {
+		"s11": "Dragon Breath",
+		"s21": "Waterfall"
+    },
 	"hooh": {
 		"s11": "Fly",
 		"s12": "Fire Spin",
@@ -896,6 +904,7 @@ const gameHeldItens = {
 	"expshare": 'Exp. Share',
 	"floatstone": 'Float Stone',
 	"focusband": 'Focus Band',
+  "gyaradosite": 'Gyaradosite',
 	"leftovers": 'Leftovers',
   "lucarionite": 'Lucarionite',
   "mewtwonitex": 'Mewtwonite X',
@@ -937,6 +946,7 @@ const gameHeldItensStatus = {
 	"expshare": ['HP +240','Speed +150'],
 	"floatstone": ['ATK +24','Speed +150'],
 	"focusband": ['DEF +30','SpDEF +30'],
+  "gyaradosite": [],
 	"leftovers": ['HP +360','HPRegen +9'],
   "lucarionite": [],
   "mewtwonitex": [],
@@ -1023,6 +1033,7 @@ const defaultHeldItems = {
     greedent: ['floatstone','attackweight','assaultvest'],
     greninja: ['muscleband','rapidscarf','razorclaw'],
 	gyarados: ['muscleband','attackweight','razorclaw'],
+  megagyarados: ['gyaradosite','attackweight','razorclaw'],
 	hooh: ['cursebangle','expshare','focusband'],
     hoopa: ['muscleband','expshare','buddybarrier'],
     inteleon: ['wiseglasses','choicespecs','slickspoon'],
@@ -1616,15 +1627,15 @@ const baseStats = {
 		"Speed": 4300,
 		"CritDmg": 0,
 	},
-	"gyarados": {
+	"megagyarados": {
 		"HP": 7000,
 		"ATK": 400,
-		"DEF": 400,
+		"DEF": 450,
 		"SpATK": 115,
-		"SpDEF": 300,
+		"SpDEF": 345,
 		"CritRate": 20,
 		"CDR": 0,
-		"AtkSPD": 0,
+		"AtkSPD": 10,
 		"HPRegen": 15,
 		"EnergyRate": 0,
 		"Speed": 4300,
@@ -2321,6 +2332,7 @@ const pokemonKillsRate = {
 	"greedent": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"greninja": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"gyarados": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
+  "megagyarados": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"hooh": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"hoopa": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
 	"inteleon": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2406,6 +2418,7 @@ const pokemonAssistRate = {
 	"greedent": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"greninja": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"gyarados": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "megagyarados": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"hooh": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"hoopa": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"inteleon": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2427,7 +2440,7 @@ const pokemonAssistRate = {
 	"mrmime": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"pawmot": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
-    "pikachu": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "pikachu": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
@@ -2491,6 +2504,7 @@ const pokemonDamageDoneRate = {
 	"greedent": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"greninja": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"gyarados": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
+  "megagyarados": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"hooh": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"hoopa": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"inteleon": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
@@ -2576,6 +2590,7 @@ const pokemonDamageTakenRate = {
 	"greedent": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"greninja": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"gyarados": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
+  "megagyarados": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"hooh": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"hoopa": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"inteleon": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
@@ -2597,7 +2612,7 @@ const pokemonDamageTakenRate = {
 	"mrmime": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"ninetales": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"pawmot": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
-    "pikachu": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
+  "pikachu": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"psyduck": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"rapidash": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"sableye": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
@@ -2661,6 +2676,7 @@ const pokemonDamageHealedRate = {
 	"greedent": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"greninja": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"gyarados": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
+  "megagyarados": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"hooh": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"hoopa": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"inteleon": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
@@ -2682,7 +2698,7 @@ const pokemonDamageHealedRate = {
 	"mrmime": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"ninetales": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"pawmot": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
-    "pikachu": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
+  "pikachu": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"psyduck": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"rapidash": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
@@ -2746,6 +2762,7 @@ const pokemonTierListUDB = {
     greedent: 'C',
     greninja: 'B+',
 	gyarados: 'D',
+  megagyarados: 'TBD',
 	hooh: 'A',
     hoopa: 'A+',
     inteleon: 'A',
@@ -3381,21 +3398,21 @@ const levelStats = {
   },
 
     "glaceon": {
-    1: { HP: 3200, ATK: 20, DEF: 35, SpATK: 100, SpDEF: 25, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    2: { HP: 3270, ATK: 22, DEF: 39, SpATK: 117, SpDEF: 28, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.00 , Speed: 3700 },
-    3: { HP: 3350, ATK: 24, DEF: 44, SpATK: 137, SpDEF: 32, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 14.29 , Speed: 3700 },
-    4: { HP: 3758, ATK: 36, DEF: 69, SpATK: 238, SpDEF: 52, CritRate: 0 , CDR: 0 , Lifesteal: 12.5 , AtkSPD: 25.93 , Speed: 3700 },
-    5: { HP: 3864, ATK: 39, DEF: 75, SpATK: 264, SpDEF: 57, CritRate: 10 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 28.97 , Speed: 3850 },
-    6: { HP: 3986, ATK: 43, DEF: 82, SpATK: 294, SpDEF: 63, CritRate: 10 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 32.46 , Speed: 3850 },
-    7: { HP: 4127, ATK: 47, DEF: 90, SpATK: 329, SpDEF: 70, CritRate: 10 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 36.47 , Speed: 4000 },
-    8: { HP: 4289, ATK: 52, DEF: 100, SpATK: 369, SpDEF: 78, CritRate: 10 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 41.09 , Speed: 4000 },
-    9: { HP: 4475, ATK: 58, DEF: 111, SpATK: 415, SpDEF: 87, CritRate: 20 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 46.41 , Speed: 4150 },
-    10: { HP: 4689, ATK: 65, DEF: 124, SpATK: 468, SpDEF: 98, CritRate: 20 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 52.53 , Speed: 4150 },
-    11: { HP: 4935, ATK: 73, DEF: 139, SpATK: 529, SpDEF: 110, CritRate: 20 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 59.57 , Speed: 4300 },
-    12: { HP: 5218, ATK: 82, DEF: 156, SpATK: 599, SpDEF: 124, CritRate: 20 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 67.67 , Speed: 4300 },
-    13: { HP: 5544, ATK: 92, DEF: 176, SpATK: 680, SpDEF: 140, CritRate: 20 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 76.99 , Speed: 4300 },
-    14: { HP: 5919, ATK: 103, DEF: 199, SpATK: 773, SpDEF: 158, CritRate: 20 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 87.7 , Speed: 4300 },
-    15: { HP: 6350, ATK: 116, DEF: 225, SpATK: 880, SpDEF: 180, CritRate: 20 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 100.00 , Speed: 4300 }
+    1: { HP: 3200, ATK: 20, DEF: 70, SpATK: 100, SpDEF: 64, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3278, ATK: 22, DEF: 78, SpATK: 117, SpDEF: 68, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.00 , Speed: 3700 },
+    3: { HP: 3367, ATK: 24, DEF: 80, SpATK: 137, SpDEF: 72, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 14.29 , Speed: 3700 },
+    4: { HP: 3820, ATK: 36, DEF: 106, SpATK: 238, SpDEF: 93, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 25.93 , Speed: 3700 },
+    5: { HP: 3938, ATK: 39, DEF: 113, SpATK: 264, SpDEF: 99, CritRate: 10 , CDR: 5 , Lifesteal: 0 , AtkSPD: 28.97 , Speed: 3850 },
+    6: { HP: 4074, ATK: 43, DEF: 121, SpATK: 294, SpDEF: 105, CritRate: 10 , CDR: 5 , Lifesteal: 0 , AtkSPD: 32.46 , Speed: 3850 },
+    7: { HP: 4230, ATK: 47, DEF: 130, SpATK: 329, SpDEF: 113, CritRate: 10 , CDR: 5 , Lifesteal: 0 , AtkSPD: 36.47 , Speed: 4000 },
+    8: { HP: 4410, ATK: 52, DEF: 141, SpATK: 369, SpDEF: 121, CritRate: 10 , CDR: 5 , Lifesteal: 0 , AtkSPD: 41.09 , Speed: 4000 },
+    9: { HP: 4617, ATK: 58, DEF: 153, SpATK: 415, SpDEF: 131, CritRate: 20 , CDR: 5 , Lifesteal: 0 , AtkSPD: 46.41 , Speed: 4150 },
+    10: { HP: 4855, ATK: 65, DEF: 167, SpATK: 468, SpDEF: 143, CritRate: 20 , CDR: 5 , Lifesteal: 0 , AtkSPD: 52.53 , Speed: 4150 },
+    11: { HP: 5129, ATK: 73, DEF: 183, SpATK: 529, SpDEF: 155, CritRate: 20 , CDR: 10 , Lifesteal: 0 , AtkSPD: 59.57 , Speed: 4300 },
+    12: { HP: 5444, ATK: 82, DEF: 201, SpATK: 599, SpDEF: 170, CritRate: 20 , CDR: 10 , Lifesteal: 0 , AtkSPD: 67.67 , Speed: 4300 },
+    13: { HP: 5805, ATK: 92, DEF: 223, SpATK: 680, SpDEF: 188, CritRate: 20 , CDR: 10 , Lifesteal: 0 , AtkSPD: 76.99 , Speed: 4300 },
+    14: { HP: 6221, ATK: 103, DEF: 247, SpATK: 773, SpDEF: 207, CritRate: 20 , CDR: 10 , Lifesteal: 0 , AtkSPD: 87.7 , Speed: 4300 },
+    15: { HP: 6700, ATK: 116, DEF: 275, SpATK: 880, SpDEF: 230, CritRate: 20 , CDR: 10 , Lifesteal: 0 , AtkSPD: 100.00 , Speed: 4300 }
   },
 
 	"goodra": {
@@ -3468,6 +3485,24 @@ const levelStats = {
     13: { HP: 6227, ATK: 339, DEF: 362, SpATK: 92, SpDEF: 278, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 },
     14: { HP: 6666, ATK: 368, DEF: 404, SpATK: 103, SpDEF: 310, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 },
     15: { HP: 7150, ATK: 400, DEF: 450, SpATK: 115, SpDEF: 345, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 },
+  },
+
+  "megagyarados": {
+    1: { HP: 3100, ATK: 140, DEF: 80, SpATK: 20, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3239, ATK: 149, DEF: 93, SpATK: 23, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    3: { HP: 3392, ATK: 159, DEF: 108, SpATK: 27, SpDEF: 81, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    4: { HP: 3560, ATK: 170, DEF: 124, SpATK: 31, SpDEF: 93, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    5: { HP: 3744, ATK: 182, DEF: 142, SpATK: 35, SpDEF: 107, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 3850 },
+    6: { HP: 3947, ATK: 196, DEF: 161, SpATK: 40, SpDEF: 122, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 3850 },
+    7: { HP: 4170, ATK: 211, DEF: 182, SpATK: 45, SpDEF: 138, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 4000 },
+    8: { HP: 4416, ATK: 228, DEF: 205, SpATK: 51, SpDEF: 156, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 4000 },
+    9: { HP: 4687, ATK: 246, DEF: 231, SpATK: 58, SpDEF: 176, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 10.00 , Speed: 4150 },
+    10: { HP: 4986, ATK: 266, DEF: 259, SpATK: 65, SpDEF: 198, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 10.00 , Speed: 4150 },
+    11: { HP: 5316, ATK: 288, DEF: 290, SpATK: 73, SpDEF: 222, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 10.00 , Speed: 4300 },
+    12: { HP: 5678, ATK: 312, DEF: 324, SpATK: 82, SpDEF: 249, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 10.00 , Speed: 4300 },
+    13: { HP: 6077, ATK: 339, DEF: 362, SpATK: 92, SpDEF: 278, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 },
+    14: { HP: 6516, ATK: 368, DEF: 404, SpATK: 103, SpDEF: 310, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 },
+    15: { HP: 7000, ATK: 400, DEF: 450, SpATK: 115, SpDEF: 345, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 10.00 , Speed: 4300 }
   },
 
   "hooh": {
@@ -3633,21 +3668,21 @@ const levelStats = {
   },
 
   "mamoswine": {
-    1: { HP: 3280, ATK: 170, DEF: 85, SpATK: 20, SpDEF: 65, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
-    2: { HP: 3371, ATK: 172, DEF: 91, SpATK: 21, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.29 , Speed: 3600 },
-    3: { HP: 3480, ATK: 175, DEF: 98, SpATK: 23, SpDEF: 75, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.63 , Speed: 3600 },
-    4: { HP: 3611, ATK: 178, DEF: 107, SpATK: 25, SpDEF: 81, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.04 , Speed: 3600 },
-    5: { HP: 4087, ATK: 190, DEF: 139, SpATK: 32, SpDEF: 105, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 12.54 , Speed: 3750 },
-    6: { HP: 4277, ATK: 195, DEF: 152, SpATK: 35, SpDEF: 114, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.14 , Speed: 3750 },
-    7: { HP: 4505, ATK: 201, DEF: 167, SpATK: 38, SpDEF: 125, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.86 , Speed: 3900 },
-    8: { HP: 4778, ATK: 208, DEF: 185, SpATK: 42, SpDEF: 139, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 14.72 , Speed: 3900 },
-    9: { HP: 5743, ATK: 231, DEF: 249, SpATK: 57, SpDEF: 187, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 17.75 , Speed: 4050 },
-    10: { HP: 6136, ATK: 240, DEF: 275, SpATK: 63, SpDEF: 206, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.98 , Speed: 4050 },
-    11: { HP: 6608, ATK: 251, DEF: 307, SpATK: 70, SpDEF: 229, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 20.46 , Speed: 4200 },
-    12: { HP: 7174, ATK: 265, DEF: 345, SpATK: 79, SpDEF: 257, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 22.24 , Speed: 4200 },
-    13: { HP: 7854, ATK: 281, DEF: 390, SpATK: 89, SpDEF: 291, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 24.37 , Speed: 4200 },
-    14: { HP: 8669, ATK: 301, DEF: 445, SpATK: 101, SpDEF: 331, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 26.93 , Speed: 4200 },
-    15: { HP: 9648, ATK: 325, DEF: 510, SpATK: 116, SpDEF: 379, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4200 }
+    1: { HP: 3450, ATK: 170, DEF: 108, SpATK: 20, SpDEF: 96, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
+    2: { HP: 3543, ATK: 172, DEF: 114, SpATK: 21, SpDEF: 101, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.29 , Speed: 3600 },
+    3: { HP: 3654, ATK: 175, DEF: 122, SpATK: 23, SpDEF: 106, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.63 , Speed: 3600 },
+    4: { HP: 3787, ATK: 178, DEF: 131, SpATK: 25, SpDEF: 112, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.04 , Speed: 3600 },
+    5: { HP: 4270, ATK: 190, DEF: 163, SpATK: 32, SpDEF: 136, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 12.54 , Speed: 3750 },
+    6: { HP: 4462, ATK: 194, DEF: 176, SpATK: 35, SpDEF: 145, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.14 , Speed: 3750 },
+    7: { HP: 4692, ATK: 200, DEF: 191, SpATK: 38, SpDEF: 156, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.86 , Speed: 3900 },
+    8: { HP: 4969, ATK: 206, DEF: 210, SpATK: 42, SpDEF: 170, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 14.72 , Speed: 3900 },
+    9: { HP: 5946, ATK: 230, DEF: 275, SpATK: 57, SpDEF: 217, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 17.75 , Speed: 4050 },
+    10: { HP: 6344, ATK: 240, DEF: 302, SpATK: 63, SpDEF: 237, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.98 , Speed: 4050 },
+    11: { HP: 6821, ATK: 251, DEF: 334, SpATK: 70, SpDEF: 260, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 20.46 , Speed: 4200 },
+    12: { HP: 7395, ATK: 265, DEF: 372, SpATK: 79, SpDEF: 288, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 22.24 , Speed: 4200 },
+    13: { HP: 8083, ATK: 281, DEF: 418, SpATK: 89, SpDEF: 322, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 24.37 , Speed: 4200 },
+    14: { HP: 8909, ATK: 301, DEF: 474, SpATK: 101, SpDEF: 362, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 26.93 , Speed: 4200 },
+    15: { HP: 9900, ATK: 325, DEF: 540, SpATK: 116, SpDEF: 410, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4200 },
   },
 
   "megalucario": {
@@ -3723,39 +3758,39 @@ const levelStats = {
   },
 
   "mewtwox": {
-    1: { HP: 3500, ATK: 170, DEF: 90, SpATK: 20, SpDEF: 90, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 3700 },
-    2: { HP: 3653, ATK: 182, DEF: 102, SpATK: 23, SpDEF: 99, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 11.07 , Speed: 3700 },
-    3: { HP: 3821, ATK: 195, DEF: 115, SpATK: 27, SpDEF: 109, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 12.24 , Speed: 3700 },
-    4: { HP: 4006, ATK: 209, DEF: 130, SpATK: 31, SpDEF: 120, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 13.53 , Speed: 3700 },
-    5: { HP: 4209, ATK: 225, DEF: 146, SpATK: 35, SpDEF: 132, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.95 , Speed: 3850 },
-    6: { HP: 4433, ATK: 242, DEF: 164, SpATK: 40, SpDEF: 145, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.51 , Speed: 3850 },
-    7: { HP: 4679, ATK: 261, DEF: 183, SpATK: 45, SpDEF: 159, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 18.23 , Speed: 4000 },
-    8: { HP: 4950, ATK: 282, DEF: 204, SpATK: 51, SpDEF: 175, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 20.12 , Speed: 4000 },
-    9: { HP: 5249, ATK: 305, DEF: 228, SpATK: 58, SpDEF: 192, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 22.21 , Speed: 4150 },
-    10: { HP: 5579, ATK: 330, DEF: 254, SpATK: 65, SpDEF: 211, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 24.51 , Speed: 4150 },
-    11: { HP: 5942, ATK: 358, DEF: 283, SpATK: 73, SpDEF: 232, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 27.04 , Speed: 4300 },
-    12: { HP: 6342, ATK: 388, DEF: 315, SpATK: 82, SpDEF: 255, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 29.83 , Speed: 4300 },
-    13: { HP: 6782, ATK: 422, DEF: 350, SpATK: 92, SpDEF: 281, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 32.9 , Speed: 4300 },
-    14: { HP: 7267, ATK: 459, DEF: 388, SpATK: 103, SpDEF: 309, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 36.28 , Speed: 4300 },
-    15: { HP: 7800, ATK: 500, DEF: 430, SpATK: 115, SpDEF: 340, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 40.00 , Speed: 4300 }
+    1: { HP: 3600, ATK: 210, DEF: 110, SpATK: 20, SpDEF: 110, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3764, ATK: 222, DEF: 123, SpATK: 23, SpDEF: 120, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 11.07 , Speed: 3700 },
+    3: { HP: 3945, ATK: 235, DEF: 138, SpATK: 27, SpDEF: 131, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 12.24 , Speed: 3700 },
+    4: { HP: 4144, ATK: 249, DEF: 154, SpATK: 31, SpDEF: 143, CritRate: 0 , CDR: 0 , Lifesteal: 5 , AtkSPD: 13.53 , Speed: 3700 },
+    5: { HP: 4363, ATK: 265, DEF: 171, SpATK: 35, SpDEF: 156, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.95 , Speed: 3850 },
+    6: { HP: 4603, ATK: 282, DEF: 191, SpATK: 40, SpDEF: 171, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.51 , Speed: 3850 },
+    7: { HP: 4868, ATK: 301, DEF: 212, SpATK: 45, SpDEF: 187, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 18.23 , Speed: 4000 },
+    8: { HP: 5160, ATK: 322, DEF: 235, SpATK: 51, SpDEF: 205, CritRate: 5 , CDR: 0 , Lifesteal: 5 , AtkSPD: 20.12 , Speed: 4000 },
+    9: { HP: 5480, ATK: 345, DEF: 261, SpATK: 58, SpDEF: 224, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 22.21 , Speed: 4150 },
+    10: { HP: 5833, ATK: 370, DEF: 290, SpATK: 65, SpDEF: 246, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 24.51 , Speed: 4150 },
+    11: { HP: 6220, ATK: 398, DEF: 321, SpATK: 73, SpDEF: 269, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 27.04 , Speed: 4300 },
+    12: { HP: 6646, ATK: 429, DEF: 355, SpATK: 82, SpDEF: 295, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 29.83 , Speed: 4300 },
+    13: { HP: 7116, ATK: 462, DEF: 393, SpATK: 92, SpDEF: 324, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 32.9 , Speed: 4300 },
+    14: { HP: 7632, ATK: 499, DEF: 434, SpATK: 103, SpDEF: 355, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 36.28 , Speed: 4300 },
+    15: { HP: 8200, ATK: 540, DEF: 480, SpATK: 115, SpDEF: 390, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 40.00 , Speed: 4300 },
   },
 
     "mewtwoy": {
-    1: { HP: 3400, ATK: 20, DEF: 50, SpATK: 150, SpDEF: 50, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
-    2: { HP: 3510, ATK: 23, DEF: 55, SpATK: 172, SpDEF: 55, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.42 , Speed: 3650 },
-    3: { HP: 3631, ATK: 27, DEF: 61, SpATK: 197, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.99 , Speed: 3650 },
-    4: { HP: 3764, ATK: 31, DEF: 67, SpATK: 224, SpDEF: 66, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 14.71 , Speed: 3650 },
-    5: { HP: 3910, ATK: 36, DEF: 74, SpATK: 254, SpDEF: 72, CritRate: 0 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 16.6 , Speed: 3800 },
-    6: { HP: 4072, ATK: 41, DEF: 82, SpATK: 287, SpDEF: 79, CritRate: 0 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 18.68 , Speed: 3800 },
-    7: { HP: 4250, ATK: 46, DEF: 91, SpATK: 323, SpDEF: 86, CritRate: 0 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 20.97 , Speed: 3950 },
-    8: { HP: 4446, ATK: 52, DEF: 100, SpATK: 363, SpDEF: 94, CritRate: 0 , CDR: 5 , Lifesteal: 12.5 , AtkSPD: 23.49 , Speed: 3950 },
-    9: { HP: 4662, ATK: 59, DEF: 110, SpATK: 407, SpDEF: 103, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 26.27 , Speed: 4100 },
-    10: { HP: 4900, ATK: 66, DEF: 122, SpATK: 455, SpDEF: 113, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 29.34 , Speed: 4100 },
-    11: { HP: 5162, ATK: 74, DEF: 135, SpATK: 508, SpDEF: 124, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 32.72 , Speed: 4250 },
-    12: { HP: 5450, ATK: 83, DEF: 149, SpATK: 567, SpDEF: 136, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 36.44 , Speed: 4250 },
-    13: { HP: 5767, ATK: 93, DEF: 164, SpATK: 631, SpDEF: 149, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 40.53 , Speed: 4250 },
-    14: { HP: 6116, ATK: 104, DEF: 181, SpATK: 702, SpDEF: 164, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 45.03 , Speed: 4250 },
-    15: { HP: 6500, ATK: 116, DEF: 200, SpATK: 780, SpDEF: 180, CritRate: 0 , CDR: 10 , Lifesteal: 12.5 , AtkSPD: 49.99 , Speed: 4250 },
+    1: { HP: 3400, ATK: 20, DEF: 84, SpATK: 200, SpDEF: 82, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
+    2: { HP: 3522, ATK: 23, DEF: 90, SpATK: 223, SpDEF: 87, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.42 , Speed: 3650 },
+    3: { HP: 3655, ATK: 27, DEF: 96, SpATK: 247, SpDEF: 93, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.99 , Speed: 3650 },
+    4: { HP: 3802, ATK: 31, DEF: 104, SpATK: 275, SpDEF: 100, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 14.71 , Speed: 3650 },
+    5: { HP: 3964, ATK: 36, DEF: 112, SpATK: 304, SpDEF: 107, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 16.6 , Speed: 3800 },
+    6: { HP: 4142, ATK: 41, DEF: 120, SpATK: 337, SpDEF: 114, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 18.68 , Speed: 3800 },
+    7: { HP: 4337, ATK: 46, DEF: 130, SpATK: 374, SpDEF: 123, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 20.97 , Speed: 3950 },
+    8: { HP: 4553, ATK: 52, DEF: 140, SpATK: 414, SpDEF: 132, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 23.49 , Speed: 3950 },
+    9: { HP: 4789, ATK: 59, DEF: 152, SpATK: 457, SpDEF: 142, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 26.27 , Speed: 4100 },
+    10: { HP: 5050, ATK: 66, DEF: 165, SpATK: 506, SpDEF: 154, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 29.34 , Speed: 4100 },
+    11: { HP: 5337, ATK: 74, DEF: 179, SpATK: 559, SpDEF: 166, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 32.72 , Speed: 4250 },
+    12: { HP: 5652, ATK: 83, DEF: 194, SpATK: 617, SpDEF: 180, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 36.44 , Speed: 4250 },
+    13: { HP: 5999, ATK: 93, DEF: 211, SpATK: 682, SpDEF: 195, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 40.53 , Speed: 4250 },
+    14: { HP: 6380, ATK: 104, DEF: 229, SpATK: 752, SpDEF: 212, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 45.03 , Speed: 4250 },
+    15: { HP: 6800, ATK: 116, DEF: 250, SpATK: 830, SpDEF: 230, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 49.99 , Speed: 4250 },
   },
 
     "mimikyu": {
@@ -3939,39 +3974,39 @@ const levelStats = {
   },
 
     "scizor": {
-    1: { HP: 3100, ATK: 160, DEF: 45, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
-    2: { HP: 3174, ATK: 170, DEF: 51, SpATK: 22, SpDEF: 44, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3650 },
-    3: { HP: 3259, ATK: 182, DEF: 58, SpATK: 24, SpDEF: 48, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3650 },
-    4: { HP: 3357, ATK: 196, DEF: 66, SpATK: 27, SpDEF: 53, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.54 , Speed: 3650 },
-    5: { HP: 4154, ATK: 224, DEF: 143, SpATK: 40, SpDEF: 118, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.22 , Speed: 3800 },
-    6: { HP: 4348, ATK: 236, DEF: 161, SpATK: 44, SpDEF: 132, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.00 , Speed: 3800 },
-    7: { HP: 4571, ATK: 249, DEF: 182, SpATK: 48, SpDEF: 149, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.89 , Speed: 3950 },
-    8: { HP: 4828, ATK: 264, DEF: 206, SpATK: 53, SpDEF: 168, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.92 , Speed: 3950 },
-    9: { HP: 5123, ATK: 282, DEF: 233, SpATK: 59, SpDEF: 190, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.1 , Speed: 4100 },
-    10: { HP: 5463, ATK: 302, DEF: 265, SpATK: 65, SpDEF: 215, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 19.46 , Speed: 4100 },
-    11: { HP: 5854, ATK: 325, DEF: 301, SpATK: 72, SpDEF: 244, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 21.02 , Speed: 4250 },
-    12: { HP: 6304, ATK: 352, DEF: 343, SpATK: 81, SpDEF: 277, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 22.82 , Speed: 4250 },
-    13: { HP: 6821, ATK: 383, DEF: 391, SpATK: 91, SpDEF: 315, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 24.89 , Speed: 4250 },
-    14: { HP: 7416, ATK: 419, DEF: 446, SpATK: 102, SpDEF: 359, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.27 , Speed: 4250 },
-    15: { HP: 8100, ATK: 460, DEF: 510, SpATK: 115, SpDEF: 410, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4250 },
+    1: { HP: 3200, ATK: 160, DEF: 92, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
+    2: { HP: 3280, ATK: 170, DEF: 98, SpATK: 22, SpDEF: 44, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3650 },
+    3: { HP: 3372, ATK: 182, DEF: 105, SpATK: 24, SpDEF: 48, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3650 },
+    4: { HP: 3478, ATK: 196, DEF: 113, SpATK: 27, SpDEF: 53, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.54 , Speed: 3650 },
+    5: { HP: 4339, ATK: 224, DEF: 203, SpATK: 40, SpDEF: 118, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.22 , Speed: 3800 },
+    6: { HP: 4549, ATK: 236, DEF: 224, SpATK: 44, SpDEF: 132, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.00 , Speed: 3800 },
+    7: { HP: 4790, ATK: 249, DEF: 247, SpATK: 48, SpDEF: 149, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 15.89 , Speed: 3950 },
+    8: { HP: 5067, ATK: 264, DEF: 275, SpATK: 53, SpDEF: 168, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.92 , Speed: 3950 },
+    9: { HP: 5386, ATK: 282, DEF: 306, SpATK: 59, SpDEF: 190, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.1 , Speed: 4100 },
+    10: { HP: 5754, ATK: 302, DEF: 342, SpATK: 65, SpDEF: 215, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 19.46 , Speed: 4100 },
+    11: { HP: 6176, ATK: 325, DEF: 383, SpATK: 72, SpDEF: 244, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 21.02 , Speed: 4250 },
+    12: { HP: 6661, ATK: 352, DEF: 430, SpATK: 81, SpDEF: 277, CritRate: 20 , CDR: 0 , Lifesteal: 10 , AtkSPD: 22.82 , Speed: 4250 },
+    13: { HP: 7220, ATK: 383, DEF: 485, SpATK: 91, SpDEF: 315, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 24.89 , Speed: 4250 },
+    14: { HP: 7861, ATK: 419, DEF: 548, SpATK: 102, SpDEF: 359, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.27 , Speed: 4250 },
+    15: { HP: 8600, ATK: 460, DEF: 620, SpATK: 115, SpDEF: 410, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 30.00 , Speed: 4250 }
   },
 
   	"scyther": {
-    1: { HP: 3100, ATK: 160, DEF: 45, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
-    2: { HP: 3174, ATK: 170, DEF: 51, SpATK: 22, SpDEF: 44, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3650 },
-    3: { HP: 3259, ATK: 182, DEF: 58, SpATK: 24, SpDEF: 48, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3650 },
-    4: { HP: 3357, ATK: 196, DEF: 66, SpATK: 27, SpDEF: 53, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.54 , Speed: 3650 },
-    5: { HP: 3805, ATK: 259, DEF: 100, SpATK: 40, SpDEF: 74, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 14.22 , Speed: 3800 },
-    6: { HP: 3935, ATK: 277, DEF: 110, SpATK: 44, SpDEF: 80, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 15.00 , Speed: 3800 },
-    7: { HP: 4084, ATK: 298, DEF: 121, SpATK: 48, SpDEF: 87, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 15.89 , Speed: 3950 },
-    8: { HP: 4256, ATK: 322, DEF: 134, SpATK: 53, SpDEF: 95, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 16.92 , Speed: 3950 },
-    9: { HP: 4454, ATK: 350, DEF: 149, SpATK: 59, SpDEF: 104, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 18.1 , Speed: 4100 },
-    10: { HP: 4682, ATK: 382, DEF: 166, SpATK: 65, SpDEF: 115, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 19.46 , Speed: 4100 },
-    11: { HP: 4944, ATK: 419, DEF: 186, SpATK: 72, SpDEF: 128, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 21.02 , Speed: 4250 },
-    12: { HP: 5246, ATK: 461, DEF: 209, SpATK: 81, SpDEF: 142, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 22.82 , Speed: 4250 },
-    13: { HP: 5593, ATK: 510, DEF: 235, SpATK: 91, SpDEF: 159, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 24.89 , Speed: 4250 },
-    14: { HP: 5992, ATK: 566, DEF: 265, SpATK: 102, SpDEF: 178, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 27.27 , Speed: 4250 },
-    15: { HP: 6450, ATK: 630, DEF: 300, SpATK: 115, SpDEF: 200, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4250 }
+    1: { HP: 3200, ATK: 160, DEF: 92, SpATK: 20, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3650 },
+    2: { HP: 3280, ATK: 170, DEF: 98, SpATK: 22, SpDEF: 44, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3650 },
+    3: { HP: 3372, ATK: 182, DEF: 105, SpATK: 24, SpDEF: 48, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.95 , Speed: 3650 },
+    4: { HP: 3478, ATK: 196, DEF: 113, SpATK: 27, SpDEF: 53, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.54 , Speed: 3650 },
+    5: { HP: 3959, ATK: 259, DEF: 149, SpATK: 40, SpDEF: 74, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 14.22 , Speed: 3800 },
+    6: { HP: 4099, ATK: 277, DEF: 159, SpATK: 44, SpDEF: 80, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 15.00 , Speed: 3800 },
+    7: { HP: 4260, ATK: 298, DEF: 171, SpATK: 48, SpDEF: 87, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 15.89 , Speed: 3950 },
+    8: { HP: 4445, ATK: 322, DEF: 185, SpATK: 53, SpDEF: 95, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 16.92 , Speed: 3950 },
+    9: { HP: 4658, ATK: 350, DEF: 201, SpATK: 59, SpDEF: 104, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 18.1 , Speed: 4100 },
+    10: { HP: 4902, ATK: 382, DEF: 219, SpATK: 65, SpDEF: 115, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 19.46 , Speed: 4100 },
+    11: { HP: 5184, ATK: 419, DEF: 240, SpATK: 72, SpDEF: 128, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 21.02 , Speed: 4250 },
+    12: { HP: 5508, ATK: 461, DEF: 264, SpATK: 81, SpDEF: 142, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 22.82 , Speed: 4250 },
+    13: { HP: 5880, ATK: 510, DEF: 291, SpATK: 91, SpDEF: 159, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 24.89 , Speed: 4250 },
+    14: { HP: 6308, ATK: 566, DEF: 323, SpATK: 102, SpDEF: 178, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 27.27 , Speed: 4250 },
+    15: { HP: 6800, ATK: 630, DEF: 360, SpATK: 115, SpDEF: 200, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4250 },
   },
 
     "slowbro": {
@@ -4012,20 +4047,20 @@ const levelStats = {
 
     "suicune": {
     1: { HP: 3250, ATK: 134, DEF: 70, SpATK: 80, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
-    2: { HP: 3398, ATK: 140, DEF: 80, SpATK: 105, SpDEF: 68, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.71 , Speed: 3700 },
-    3: { HP: 3561, ATK: 146, DEF: 91, SpATK: 132, SpDEF: 76, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.49 , Speed: 3700 },
-    4: { HP: 3740, ATK: 153, DEF: 103, SpATK: 162, SpDEF: 85, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.35 , Speed: 3700 },
-    5: { HP: 3936, ATK: 160, DEF: 116, SpATK: 195, SpDEF: 95, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.3 , Speed: 3850 },
-    6: { HP: 4152, ATK: 168, DEF: 130, SpATK: 231, SpDEF: 106, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 14.34 , Speed: 3850 },
-    7: { HP: 4390, ATK: 177, DEF: 145, SpATK: 271, SpDEF: 118, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 15.49 , Speed: 4000 },
-    8: { HP: 4652, ATK: 187, DEF: 162, SpATK: 315, SpDEF: 132, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 16.75 , Speed: 4000 },
-    9: { HP: 4941, ATK: 198, DEF: 181, SpATK: 364, SpDEF: 147, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.14 , Speed: 4150 },
-    10: { HP: 5259, ATK: 210, DEF: 202, SpATK: 418, SpDEF: 164, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 19.67 , Speed: 4150 },
-    11: { HP: 5610, ATK: 223, DEF: 225, SpATK: 477, SpDEF: 182, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 21.36 , Speed: 4300 },
-    12: { HP: 5995, ATK: 237, DEF: 250, SpATK: 542, SpDEF: 202, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 23.22 , Speed: 4300 },
-    13: { HP: 6419, ATK: 253, DEF: 277, SpATK: 614, SpDEF: 224, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 25.27 , Speed: 4300 },
-    14: { HP: 6886, ATK: 271, DEF: 307, SpATK: 693, SpDEF: 248, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 27.52 , Speed: 4300 },
-    15: { HP: 7400, ATK: 290, DEF: 340, SpATK: 780, SpDEF: 275, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4300 }
+    2: { HP: 3381, ATK: 140, DEF: 78, SpATK: 105, SpDEF: 66, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.71 , Speed: 3700 },
+    3: { HP: 3524, ATK: 146, DEF: 87, SpATK: 132, SpDEF: 73, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.49 , Speed: 3700 },
+    4: { HP: 3682, ATK: 153, DEF: 96, SpATK: 162, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.35 , Speed: 3700 },
+    5: { HP: 3855, ATK: 160, DEF: 106, SpATK: 195, SpDEF: 88, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 13.3 , Speed: 3850 },
+    6: { HP: 4046, ATK: 168, DEF: 118, SpATK: 231, SpDEF: 97, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 14.34 , Speed: 3850 },
+    7: { HP: 4256, ATK: 177, DEF: 131, SpATK: 271, SpDEF: 107, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 15.49 , Speed: 4000 },
+    8: { HP: 4488, ATK: 187, DEF: 145, SpATK: 315, SpDEF: 118, CritRate: 0 , CDR: 5 , Lifesteal: 0 , AtkSPD: 16.75 , Speed: 4000 },
+    9: { HP: 4742, ATK: 198, DEF: 160, SpATK: 364, SpDEF: 129, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.14 , Speed: 4150 },
+    10: { HP: 5022, ATK: 210, DEF: 177, SpATK: 418, SpDEF: 143, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 19.67 , Speed: 4150 },
+    11: { HP: 5329, ATK: 223, DEF: 195, SpATK: 477, SpDEF: 157, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 21.36 , Speed: 4300 },
+    12: { HP: 5667, ATK: 237, DEF: 216, SpATK: 542, SpDEF: 173, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 23.22 , Speed: 4300 },
+    13: { HP: 6040, ATK: 253, DEF: 238, SpATK: 614, SpDEF: 190, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 25.27 , Speed: 4300 },
+    14: { HP: 6449, ATK: 271, DEF: 263, SpATK: 693, SpDEF: 209, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 27.52 , Speed: 4300 },
+    15: { HP: 6900, ATK: 290, DEF: 290, SpATK: 780, SpDEF: 230, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4300 },
   },
 
     "sylveon": {
@@ -4775,6 +4810,19 @@ const pokemonRatings = {
     Smite: 2.5,
     Sweep: 1.5
   },
+  megagyarados: {
+    Attack: 4,
+    Endure: 3,
+    Mobility: 2.5,
+    Score: 2,
+    Support: 1,
+    Invade: 0,
+    Farm: 3,
+    Gank: 4,
+    CC: 3,
+    Smite: 2.5,
+    Sweep: 1.5
+  },
   hooh: {
     Attack: 3,
     Endure: 4,
@@ -5402,6 +5450,7 @@ const pokemonRoutesEffectiveness = {
   greedent: { top: 75, jungle: 0, bot: 15 },
   greninja: { top: 20, jungle: 40, bot: 40 },
   gyarados: { top: 70, jungle: 0, bot: 30 },
+  megagyarados: { top: 70, jungle: 0, bot: 30 },
   hooh: { top: 60, jungle: 0, bot: 40 },
   hoopa: { top: 65, jungle: 0, bot: 35 },
   inteleon: { top: 5, jungle: 25, bot: 70 },
@@ -7924,7 +7973,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Heal - per Tick (per half second)",
-          formula: (attribute, Level) => 0.64 * attribute + 0 * (Level - 1) + 58,
+          formula: (attribute, Level) => 0.60 * attribute + 0 * (Level - 1) + 55,
           type: "heal",
           healAttribute: "SpATK"
         }
@@ -7987,7 +8036,7 @@ const skillDamage = {
       formulas: [
 		{
 		  label: "Shield",
-          formula: (SPATK, Level) => 2.6 * SPATK + 0 * (Level - 1) + 900,
+          formula: (SPATK, Level) => 2.34 * SPATK + 0 * (Level - 1) + 810,
           type: "special"
 		}
       ]
@@ -8699,20 +8748,21 @@ const skillDamage = {
         },
 		{
           label: "Damage - Boosted",
-          formula: (SPATK, Level) => 1.6 * SPATK + 0 * (Level - 1) + 336,
+          formula: (SPATK, Level) => 1.44 * SPATK + 0 * (Level - 1) + 302,
           type: "special"
         },
         {
           label: "Healing",
-          type: "text-only",
-		      additionalText: "20% damage dealt"
+          formula: (firstHitDamage, Level) => 0.2 * firstHitDamage,
+          type: "dependent",
+		      dependsOn: 0
         },
       ]
 	},
 
     "s11": {
       name: "Dark Void",
-      cooldown: 4,
+      cooldown: 6,
       buff: {
       },
       effects: ["Sleep"],
@@ -9249,16 +9299,15 @@ const skillDamage = {
       name: "Power Whip",
       cooldown: 6,
       buff: {},
-      effects: ["Stun"],
       formulas: [
         {
           label: "Damage",
-          formula: (ATK, Level) => 2.14 * ATK + 11 * (Level - 1) + 320,
+          formula: (ATK, Level) => 1.54 * ATK + 8 * (Level - 1) + 230,
           type: "physical"
         },
 		{
           label: "Damage - Additional (Edge)",
-          formula: (ATK, Level) => 2.14 * ATK + 11 * (Level - 1) + 320,
+          formula: (ATK, Level) => 1.54 * ATK + 8 * (Level - 1) + 230,
           type: "physical"
         },
 		{
@@ -9270,7 +9319,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Whirlpool",
-      cooldown: 6,
+      cooldown: 5,
       buff:{},
       selfBuff: {
         CooldownFlat: 0.5
@@ -9284,12 +9333,12 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage",
-          formula: (ATK, Level) => 2.7 * ATK + 14 * (Level - 1) + 408,
+          formula: (ATK, Level) => 2.97 * ATK + 15 * (Level - 1) + 450,
           type: "physical"
         },
         {
           label: "Damage - Whirlpool (per Tick)",
-          formula: (ATK, Level) => 0.87 * ATK + 5 * (Level - 1) + 130,
+          formula: (ATK, Level) => 0.95 * ATK + 6 * (Level - 1) + 144,
           type: "physical"
         }
       ]
@@ -9352,22 +9401,22 @@ const skillDamage = {
 		formulas: [
  		{
 		      label: "Damage - First Hit",
-          formula: (ATK, Level) => 1.3 * ATK + 7 * (Level - 1) + 195,
+          formula: (ATK, Level) => 1.14 * ATK + 6 * (Level - 1) + 172,
           type: "physical"
 		},
 		{
 		      label: "Damage - Second Hit",
-          formula: (ATK, Level) => 1.3 * ATK + 7 * (Level - 1) + 195,
+          formula: (ATK, Level) => 1.14 * ATK + 6 * (Level - 1) + 172,
           type: "physical"
 		},
     {
 		      label: "Damage - DoT (9 Ticks)",
-          formula: (ATK, Level) => 0.25 * ATK + 1 * (Level - 1) + 40,
+          formula: (ATK, Level) => 0.22 * ATK + 1 * (Level - 1) + 34,
           type: "physical"
 		},
     {
 		      label: "Healing",
-          formula: (firstHitDamage, Level) => 2.5 * firstHitDamage,
+          formula: (firstHitDamage, Level) => 1.5 * firstHitDamage,
           type: "dependent",
           dependsOn: 2
 		},
@@ -11419,7 +11468,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - per Ice Crystal",
-          formula: (SPATK, Level) => 0.37 * SPATK + 4 * (Level - 1) + 97,
+          formula: (SPATK, Level) => 0.41 * SPATK + 4 * (Level - 1) + 106,
           type: "special"
         },
         {
@@ -11481,7 +11530,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Freeze Dry",
-      cooldown: 8.5,
+      cooldown: 7.5,
       effects: ["Freeze"],
       buff:{
         SpATK: "50%",
@@ -11521,7 +11570,7 @@ const skillDamage = {
 		formulas: [
         {
           label: "Damage",
-          formula: (SPATK, Level) => 1 * SPATK + 7 * (Level - 1) + 320,
+          formula: (SPATK, Level) => 1.21 * SPATK + 8 * (Level - 1) + 384,
           type: "special"
         }
 	]
@@ -12081,12 +12130,12 @@ const skillDamage = {
         },
 		{
           label: "Damage - Basic",
-          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.38 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
           label: "Damage - Boosted",
-          formula: (ATK, Level) => 1.6 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.84 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 				{
@@ -12096,12 +12145,12 @@ const skillDamage = {
         },
 		{
           label: "Damage - Basic Skill Plus",
-          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 		{
           label: "Damage - Boosted Skill Plus",
-          formula: (ATK, Level) => 1.7 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.96 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         }
       ]
@@ -12152,12 +12201,12 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage",
-          formula: (ATK, Level) => 1.29 * ATK + 6 * (Level - 1) + 225,
+          formula: (ATK, Level) => 1.41 * ATK + 7 * (Level - 1) + 246,
           type: "physical",
         },
         	{
           label: "Shield",
-          formula: (HP, Level) => 0.1 * HP + 200,
+          formula: (HP, Level) => 0.13 * HP + 260,
           type: "hp",
         }
       ]
@@ -12212,6 +12261,171 @@ const skillDamage = {
 		{
           label: "Damage - Whirlpool (5 Ticks)",
           formula: (ATK, Level) => 0.162 * ATK + 1 * (Level - 1) + 33,
+          type: "physical"
+        },
+		{
+          label: "Damage - Water Spout level",
+          formula: (ATK, Level) => 3.24 * ATK + 23 * (Level - 1) + 650,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
+  "megagyarados": {
+      "passive": {
+          name: "Intimidate",
+          description: "Reduces the Attack of enemies hit by 30% and permanently gains bonus HP, Attack, and attack speed.",
+          buff: {
+            AtkSPD: "40%",
+            ATK: 100,
+            HP: 1200
+          },
+          debuffs: {
+            ATK: 30
+          },
+          debuffLabels: {
+            ATK: "(DEBUFF) Attack Reduction"
+          },
+          formulas: [
+          ]
+        },
+        "passive1": {
+          name: "Mold Breaker",
+          description: "Gains Attack, Defense, and Sp. Def boosts, and its damage ignores part of the target's Defense.",
+          buff: {
+            DEF: "50%",
+            ATK: "25%",
+            SpDEF: "50%"
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Dragon Breath",
+      cooldown: 5,
+      effects: ["Paralyze"],
+      buff: {
+        AtkSPD: 70
+      },
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.93 * ATK + 22 * (Level - 1) + 325,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1.38 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted",
+          formula: (ATK, Level) => 1.84 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage (Mega) - Basic",
+          formula: (ATK, Level) => 1.92 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+				{
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 2.32 * ATK + 26 * (Level - 1) + 390,
+          type: "physical"
+        },
+		{
+          label: "Damage - Basic Skill Plus",
+          formula: (ATK, Level) => 1.5 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+		{
+          label: "Damage - Boosted Skill Plus",
+          formula: (ATK, Level) => 1.96 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage (Mega) - Basic Skill Plus",
+          formula: (ATK, Level) => 1.92 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "s21": {
+      name: "Waterfall",
+      cooldown: 6,
+      buff: {},
+      selfBuff: {
+        CooldownPercent: 30
+      },
+      selfBuffPlus:{
+        levelRequired: 12,
+        buffs: {
+        CooldownFlat: 1
+        }
+      },
+      formulas: [
+		{
+          label: "Damage",
+          formula: (ATK, Level) => 1.41 * ATK + 7 * (Level - 1) + 246,
+          type: "physical",
+        },
+        	{
+          label: "Shield",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical",
+        }
+      ]
+    },
+	"ult": {
+		name: "Dragon Current",
+    cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Untargetable"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      }
+    },
+		formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.62 * ATK + 12 * (Level - 1) + 325,
+          type: "physical"
+        },
+		{
+          label: "Damage - Whirlpool level",
+          formula: (ATK, Level) => 2.43 * ATK + 17 * (Level - 1) + 488,
+          type: "physical"
+        },
+		{
+          label: "Damage - Whirlpool (5 Ticks)",
+          formula: (ATK, Level) => 0.162 * ATK + 17 * (Level - 1) + 488,
           type: "physical"
         },
 		{
@@ -12900,12 +13114,12 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage - Projectile",
-          formula: (SPATK, Level) => 0.60 * SPATK + 12 * (Level - 1) + 330,
+          formula: (SPATK, Level) => 0.54 * SPATK + 12 * (Level - 1) + 294,
           type: "special"
         },
 		{
           label: "Damage - Mist Zone (x2 hits)",
-          formula: (SPATK, Level) => 0.20 * SPATK + 4 * (Level - 1) + 110,
+          formula: (SPATK, Level) => 0.18 * SPATK + 4 * (Level - 1) + 98,
           type: "special"
         }
       ]
@@ -12921,12 +13135,12 @@ const skillDamage = {
         },
 		{
           label: "Shield",
-          formula: (SPATK, Level) => 1.5 * SPATK + 0 * (Level - 1) + 400,
+          formula: (SPATK, Level) => 1.35 * SPATK + 0 * (Level - 1) + 360,
           type: "shield"
         },
 		{
           label: "Shield Skill Plus",
-          formula: (SPATK, Level) => 1.8 * SPATK + 0 * (Level - 1) + 480,
+          formula: (SPATK, Level) => 1.62 * SPATK + 0 * (Level - 1) + 432,
           type: "shield"
         },
           {
@@ -12960,7 +13174,7 @@ const skillDamage = {
     {
       label: "Damage - Projectile (per Projectile)",
       formula: (SPATK, Level, HP, eonPower) => {
-        const baseDamage = 0.44 * SPATK + 6 * (Level - 1) + 130;
+        const baseDamage = 0.39 * SPATK + 5 * (Level - 1) + 114;
         
         // Se Eon Power <= 100, retorna dano base
         if (eonPower <= 100) {
@@ -13823,17 +14037,17 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - Small Icicles (3x)",
-          formula: (ATK, Level) => 0.35 * ATK + 3 * (Level - 1) + 110,
+          formula: (ATK, Level) => 0.31 * ATK + 3 * (Level - 1) + 100,
           type: "physical"
         },
 		{
           label: "Damage - Large Icicle",
-          formula: (ATK, Level) => 0.60 * ATK + 5 * (Level - 1) + 180,
+          formula: (ATK, Level) => 0.55 * ATK + 4 * (Level - 1) + 162,
           type: "physical"
         },
 		{
           label: "Damage - Shatter",
-          formula: (ATK, Level) => 0.80 * ATK + 6 * (Level - 1) + 240,
+          formula: (ATK, Level) => 0.73 * ATK + 5 * (Level - 1) + 216,
           type: "physical"
         }
       ]
@@ -14753,13 +14967,13 @@ const skillDamage = {
       name: "Teleport",
       cooldown: 10,
       buff:{
-        Speed: "20%",
+        Speed: "30%",
       },
-      skillDamageMultiplier: 1.1,
+      skillDamageMultiplier: 1.2,
       affectsBasicAttack: true,
       buffPlus: {
         levelRequired: 13,
-        skillDamageMultiplier: 1.0449,
+        skillDamageMultiplier: 1.0849,
         affectsBasicAttack: true
       },
       formulas: [
@@ -14888,7 +15102,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Recover",
-      cooldown: 11,
+      cooldown: 10,
       buff:{
         Speed: "30%",
         HPRegen: 40,
@@ -14921,15 +15135,15 @@ const skillDamage = {
     
     "s22": {
       name: "Teleport",
-      cooldown: 11,
+      cooldown: 10,
       buff:{
-        Speed: "20%",
+        Speed: "30%",
       },
-      skillDamageMultiplier: 1.1,
+      skillDamageMultiplier: 1.2,
       affectsBasicAttack: true,
       buffPlus: {
         levelRequired: 13,
-        skillDamageMultiplier: 1.0449,
+        skillDamageMultiplier: 1.0849,
         affectsBasicAttack: true
       },
       formulas: [
@@ -16313,17 +16527,17 @@ const skillDamage = {
       formulas: [
 	    {
           label: "Damage",
-          formula: (SpATK, Level) => 1.93 * SpATK + 0 * (Level - 1) + 370,
+          formula: (SpATK, Level) => 1.78 * SpATK + 0 * (Level - 1) + 340,
           type: "special"
         },
 		{
           label: "Damage - Activated by Thunderbolt",
-          formula: (SpATK, Level) => 2.13 * SpATK + 0 * (Level - 1) + 404,
+          formula: (SpATK, Level) => 1.87 * SpATK + 0 * (Level - 1) + 356,
           type: "special"
         },
 		{
           label: "Damage - DoT (8 Ticks) Skill Plus",
-          formula: (SpATK, Level) => 0.085 * SpATK + 0 * (Level - 1) + 20,
+          formula: (SpATK, Level) => 0.78 * SpATK + 0 * (Level - 1) + 18,
           type: "special"
         }
       ]
@@ -16709,7 +16923,7 @@ const skillDamage = {
 	"atkboosted": {
 	  name: "Basic Attack",
     buff: {
-      DEF: "40%"
+      DEF: "50%"
     },
     debuffs: {
       Speed: 30
@@ -16893,17 +17107,17 @@ const skillDamage = {
         },
 		{
           label: "Healing",
-          formula: (ATK, Level) => 1.15 * ATK + 0 * (Level - 1) + 345,
+          formula: (ATK, Level) => 1.27 * ATK + 0 * (Level - 1) + 380,
           type: "physical"
         },
 		{
           label: "Damage - Slash Skill Plus",
-          formula: (ATK, Level) => 1.06 * ATK + 13 * (Level - 1) + 315,
+          formula: (ATK, Level) => 1.067 * ATK + 13 * (Level - 1) + 315,
           type: "physical"
         },
 		{
           label: "Damage - Dash Skill Plus",
-          formula: (ATK, Level) => 1.06 * ATK + 13 * (Level - 1) + 315,
+          formula: (ATK, Level) => 1.067 * ATK + 13 * (Level - 1) + 315,
           type: "physical"
         }
       ]
@@ -17365,7 +17579,7 @@ const skillDamage = {
           formulas: [
             {
           label: "Shield",
-          formula: (SpATK, Level) => 0.5 * SpATK + 0 * (Level - 1) + 200,
+          formula: (SpATK, Level) => 0.45 * SpATK + 0 * (Level - 1) + 180,
           type: "special"
         },
          {
@@ -18550,7 +18764,7 @@ const skillDamage = {
         },
 		{
           label: "Damage - Additional",
-          formula: (ATK, Level) => 0.492 * ATK + 4 * (Level - 1) + 99,
+          formula: (ATK, Level) => 0.67 * ATK + 5 * (Level - 1) + 134,
           type: "physical"
         }
       ]
@@ -18584,7 +18798,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Ancient Power",
-      cooldown: 11,
+      cooldown: 10,
       buff: {
         Speed: "20%",
         DEFPen: 100
@@ -18598,7 +18812,7 @@ const skillDamage = {
         },
         {
           label: "Shield - per Stack",
-          formula: (ATK, Level) => 0.75 * ATK + 0 * (Level - 1) + 300,
+          formula: (ATK, Level) => 0.90 * ATK + 0 * (Level - 1) + 360,
           type: "physical"
         },
         {
@@ -18608,17 +18822,17 @@ const skillDamage = {
         },
 		    {
           label: "Shield - Additional",
-          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 400,
+          formula: (ATK, Level) => 0.90 * ATK + 0 * (Level - 1) + 360,
           type: "physical"
         },
         {
           label: "Shield - per Stack Skill Plus",
-          formula: (ATK, Level) => 0.9 * ATK + 0 * (Level - 1) + 360,
+          formula: (ATK, Level) => 1.08 * ATK + 0 * (Level - 1) + 432,
           type: "physical"
         },
         {
           label: "Shield - Additional Skill Plus",
-          formula: (ATK, Level) => 1.2 * ATK + 0 * (Level - 1) + 480,
+          formula: (ATK, Level) => 1.08 * ATK + 0 * (Level - 1) + 432,
           type: "physical"
         }
       ]
@@ -20395,7 +20609,8 @@ const skillDamage = {
     skin6: "Pink Unite Style",
     skin7: "Graceful Style",
     skin8: "Tea Party Style (Brown)",
-    skin9: "Beach Style"
+    skin9: "Beach Style",
+    skin10: "Miracle Style"
   },
   goodra: {
     default: "Default",
@@ -20433,6 +20648,9 @@ const skillDamage = {
     skin1: "New Year Style",
     skin2: "Darkness Style",
     skin3: "Captain Style"
+  },
+  megagyarados: {
+    default: "Default",
   },
   hooh: {
     default: "Default",

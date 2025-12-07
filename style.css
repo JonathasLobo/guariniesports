@@ -1593,6 +1593,103 @@ html {
   }
 }
 
+/* ============================================
+   SISTEMA DE ABAS - TOP BUILDS
+   ============================================ */
+
+.builds-tabs-header {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.builds-tab {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.builds-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 173, 0, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.builds-tab:hover::before {
+  left: 100%;
+}
+
+.builds-tab:hover {
+  border-color: #ffad00;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 173, 0, 0.3);
+}
+
+.builds-tab.active {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 173, 0, 0.5);
+}
+
+.builds-tab.active::before {
+  display: none;
+}
+
+/* Animação de fade para o container */
+.top-builds-container {
+  transition: opacity 0.3s ease;
+}
+
+.top-builds-container.loading {
+  opacity: 0.5;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .builds-tabs-header {
+    gap: 10px;
+  }
+  
+  .builds-tab {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .builds-tabs-header {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 30px;
+  }
+  
+  .builds-tab {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+}
+
  /* ============================================
    SISTEMA DE APOIADORES/PARTNERS - ATUALIZADO
    ============================================ */

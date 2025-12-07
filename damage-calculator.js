@@ -1269,7 +1269,8 @@ function normalizePokemonName(name) {
     'alolanraichu': 'alolan raichu',
     'alolanninetales': 'alolan ninetales',
     'galarianrapidash': 'galarian rapidash',
-    'mrmime': 'mr. mime'
+    'mrmime': 'mr. mime',
+    'megagyarados': 'mega gyarados'
   };
 
   const mapped = nameMapping[normalized.replace(/[\s.-]/g, '')];
@@ -1806,6 +1807,10 @@ const STAT_EFFECT_CONFIG = {
     s1: ["s12", "u11"],
     s2: ["s21", "s11"]
   },
+  megagyarados: {
+    s1: ["s11"],
+    s2: ["s21"] 
+  },
   }
   const SKILL_KEY_ALIASES = {
   greedent: {
@@ -1844,7 +1849,8 @@ const STAT_EFFECT_CONFIG = {
     "mewtwox": "mewtwonitex",
     "mewtwoy": "mewtwonitey",
     "megalucario": "lucarionite",
-    "megacharizardx": "charizarditex"
+    "megacharizardx": "charizarditex",
+    "megagyarados": "gyaradosite"
   };
 
   // Função para criar o seletor de dano crítico
