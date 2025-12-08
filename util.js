@@ -20361,7 +20361,8 @@ const skillDamage = {
     skin2: "Purple Unite Style",
     skin3: "Punk Style",
     skin4: "Champion Style",
-    skin5: "Neo Street Style"
+    skin5: "Neo Street Style",
+    skin6: "Frontier Style"
   },
   blissey: {
     default: "Default",
@@ -20647,7 +20648,8 @@ const skillDamage = {
     default: "Default",
     skin1: "New Year Style",
     skin2: "Darkness Style",
-    skin3: "Captain Style"
+    skin3: "Captain Style",
+    skin4: "Kimono Style"
   },
   megagyarados: {
     default: "Default",
@@ -20770,7 +20772,8 @@ const skillDamage = {
     skin1: "Costume Party Style	",
     skin2: "Pastel Style",
     skin3: "Noble Style",
-    skin4: "Palace Style"
+    skin4: "Palace Style",
+    skin5: "Concert Style"
   },
   miraidon: {
     default: "Default",
@@ -20896,7 +20899,8 @@ const skillDamage = {
     skin4: "Knight Style",
     skin5: "New Year Style",
     skin6: "Poncho Style (Light Green)",
-    skin7: "Elegant Style"
+    skin7: "Elegant Style",
+    skin8: "Sweet Style"
   },
   talonflame: {
     default: "Default",

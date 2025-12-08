@@ -897,6 +897,7 @@ async function loadAllMetaData() {
       'meta10-11-2025.json',
       'meta17-11-2025.json',
       'meta24-11-2025.json',
+      'meta08-12-2025.json'
       // Adicione mais arquivos conforme criar
       // 'meta17-11-2025.json',
       // 'meta24-11-2025.json',
@@ -941,19 +942,14 @@ async function loadAllMetaData() {
   }
 }
 
-// Função para extrair dados de um pokémon específico do histórico
 function extractPokemonMetaHistory(pokemonName) {
   if (allMetaDataHistory.length === 0) {
     console.log('⚠️ Nenhum dado de meta carregado');
     return null;
   }
 
-  let searchName = pokemonName;
-  if (pokemonName.toLowerCase() === "scyther") {
-    searchName = "scizor";
-    console.log("📊 Meta: Scyther → Usando dados do Scizor");
-  }
-  
+  // ✅ APLICAR ALIAS
+  const searchName = applyPokemonAlias(pokemonName);
   const normalizedName = normalizePokemonName(searchName);
   console.log(`📊 Extraindo histórico para: ${pokemonName} (normalizado: ${normalizedName})`);
   
@@ -964,24 +960,33 @@ function extractPokemonMetaHistory(pokemonName) {
     banrates: []
   };
   
-  allMetaDataHistory.forEach(metaEntry => {
-    const date = metaEntry.date;
-    const data = metaEntry.data;
-    
-    // Buscar winrate
-    const winrateEntry = data.taxaVitoria.find(
-      entry => normalizePokemonName(entry.nome) === normalizedName
-    );
-    
-    // Buscar pickrate
-    const pickrateEntry = data.taxaSelecao.find(
-      entry => normalizePokemonName(entry.nome) === normalizedName
-    );
-    
-    // Buscar banrate
-    const banrateEntry = data.taxaBanimento.find(
-      entry => normalizePokemonName(entry.nome) === normalizedName
-    );
+allMetaDataHistory.forEach(metaEntry => {
+  const date = metaEntry.date;
+  const data = metaEntry.data;
+  
+  // 🔍 DEBUG: Ver nomes disponíveis no JSON
+  if (date === '08-12-2025') {
+    console.log('🔍 Procurando por:', normalizedName);
+    console.log('🔍 Nomes no JSON:', data.taxaVitoria.slice(0, 20).map(e => ({
+      original: e.nome,
+      normalizado: normalizePokemonName(e.nome)
+    })));
+  }
+  
+  // Buscar winrate
+  const winrateEntry = data.taxaVitoria.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
+  
+  // Buscar pickrate
+  const pickrateEntry = data.taxaSelecao.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
+  
+  // Buscar banrate
+  const banrateEntry = data.taxaBanimento.find(
+    entry => normalizePokemonName(entry.nome) === normalizedName
+  );
     
     // Adicionar aos arrays (mesmo que seja null)
     history.dates.push(date);
@@ -1100,14 +1105,16 @@ function renderMetaComparison(pokemonName) {
     return;
   }
   
-  // 🛑 PREVENIR RECARGA DESNECESSÁRIA
+  // ✅ APLICAR ALIAS ANTES DE TUDO
+  const searchName = applyPokemonAlias(pokemonName);
+  
   // Verificar se já existem gráficos e se é o mesmo pokémon
   const existingCharts = metaChartsContainer.querySelectorAll('canvas');
   const currentPokemon = metaColumn.dataset.currentPokemon;
   
-  if (existingCharts.length > 0 && currentPokemon === pokemonName) {
-    console.log('⚡ Gráficos já renderizados para', pokemonName);
-    return; // Não recarregar se já está mostrando o mesmo pokémon
+  if (existingCharts.length > 0 && currentPokemon === searchName) {
+    console.log('⚡ Gráficos já renderizados para', searchName);
+    return;
   }
   
   // Verificar se há dados suficientes
@@ -1117,8 +1124,8 @@ function renderMetaComparison(pokemonName) {
     return;
   }
   
-  // Extrair histórico do pokémon
-  const history = extractPokemonMetaHistory(pokemonName);
+ // Extrair histórico do pokémon
+  const history = extractPokemonMetaHistory(searchName);
   
   if (!history || history.dates.length === 0) {
     metaColumn.classList.remove('show');
@@ -1137,11 +1144,11 @@ function renderMetaComparison(pokemonName) {
     return;
   }
   
-  // Mostrar coluna
+// Mostrar coluna
   metaColumn.classList.add('show');
   
-  // ✅ MARCAR POKEMON ATUAL NO DATASET
-  metaColumn.dataset.currentPokemon = pokemonName;
+  // ✅ MARCAR POKEMON ATUAL NO DATASET (usar nome tratado)
+  metaColumn.dataset.currentPokemon = searchName;
   
   // Limpar container
   metaChartsContainer.innerHTML = `
@@ -1202,8 +1209,8 @@ function renderMetaComparison(pokemonName) {
       values: validBanrates
     }, '#dc3545');
 
-      // ✅ ADICIONE AQUI:
-  const metaStatsHTML = createMetaStatsHTML(pokemonName);
+// ✅ ADICIONE AQUI:
+  const metaStatsHTML = createMetaStatsHTML(searchName);
   if (metaStatsHTML) {
     metaChartsContainer.insertAdjacentHTML('beforeend', metaStatsHTML);
   }
@@ -1218,7 +1225,7 @@ function renderMetaComparison(pokemonName) {
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
-    const fileName = `meta24-11-2025.json`;
+    const fileName = `meta08-12-2025.json`;
     
     console.log(`🔍 Tentando carregar: ${fileName}`);
     console.log(`📍 URL completa: ${window.location.origin}/${fileName}`);
@@ -1259,40 +1266,61 @@ function renderMetaComparison(pokemonName) {
   }
 }
 
+// Função auxiliar para aplicar aliases de pokémon
+function applyPokemonAlias(pokemonName) {
+  if (!pokemonName) return pokemonName;
+  
+  const lowerName = pokemonName.toLowerCase();
+  
+  if (lowerName === "scyther") {
+    return "scizor";
+  } else if (lowerName === "mewtwox") {
+    return "mewtwo x";
+  } else if (lowerName === "mewtwoy") {
+    return "mewtwo y";
+  }
+  
+  return pokemonName;
+}
+
 function normalizePokemonName(name) {
   if (!name) return '';
+  
+  // Primeiro: trim e lowercase
   let normalized = name.trim().toLowerCase();
   
+  // Criar versão sem espaços para mapear variações
+  const noSpaces = normalized.replace(/[\s.-]/g, '');
+  
+  // Mapeamento: chave SEM espaços -> valor COM formato correto (lowercase)
   const nameMapping = {
+    'mewtwox': 'mewtwo x',
+    'mewtwoy': 'mewtwo y',
     'megacharizardx': 'mega charizard x',
     'megalucario': 'mega lucario',
+    'megagyarados': 'mega gyarados',
     'alolanraichu': 'alolan raichu',
     'alolanninetales': 'alolan ninetales',
     'galarianrapidash': 'galarian rapidash',
-    'mrmime': 'mr. mime',
-    'megagyarados': 'mega gyarados'
+    'mrmime': 'mr. mime'
   };
 
-  const mapped = nameMapping[normalized.replace(/[\s.-]/g, '')];
-  return mapped || normalized;
+  // Se encontrou mapeamento, retornar o valor mapeado
+  if (nameMapping[noSpaces]) {
+    return nameMapping[noSpaces];
+  }
+  
+  // Senão, retornar o nome normalizado (lowercase, com espaços preservados)
+  return normalized;
 }
 
 function getPokemonMetaStats(pokemonName) {
   if (!currentMetaData) return null;
 
-  // ✅ APLICAR ALIAS ANTES DE NORMALIZAR
-  let searchName = pokemonName;
-  if (pokemonName.toLowerCase() === "scyther") {
-    searchName = "scizor";
-    console.log("📊 Meta: Scyther → Usando dados do Scizor");
-  }
-
+  // Aplicar alias
+  const searchName = applyPokemonAlias(pokemonName);
   const normalizedName = normalizePokemonName(searchName);
-  const stats = { winrate: null, pickrate: null, banrate: null };
-
-  const winrateEntry = currentMetaData.taxaVitoria.find(
-    entry => normalizePokemonName(entry.nome) === normalizedName
-  );
+  
   if (winrateEntry) {
     stats.winrate = { rank: winrateEntry.ranking, rate: winrateEntry.taxa };
   }
@@ -1317,7 +1345,10 @@ function getPokemonMetaStats(pokemonName) {
 function createMetaStatsHTML(pokemonName) {
   if (!currentMetaData || !pokemonName) return '';
 
-  const stats = getPokemonMetaStats(pokemonName);
+  // ✅ APLICAR ALIAS
+  const searchName = applyPokemonAlias(pokemonName);
+  const stats = getPokemonMetaStats(searchName);
+  
   if (!stats || (!stats.winrate && !stats.pickrate && !stats.banrate)) return '';
 
   let html = '<div class="meta-stats-week">';

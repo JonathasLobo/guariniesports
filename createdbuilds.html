@@ -38,7 +38,7 @@
    ======================================== */
 
 .pokemon-builds-container {
-  max-width: 1400px;
+  max-width: 100%; /* Ocupa toda a largura */
   margin: 40px auto;
   padding: 0 20px;
 }
@@ -120,9 +120,10 @@
 
 .builds-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(5, 1fr); /* 5 colunas lado a lado */
+  gap: 20px;
   padding: 10px;
+  width: 150%;
 }
 
 /* ========================================
@@ -580,7 +581,7 @@
 
 @media (max-width: 1200px) {
   .builds-list {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas em telas médias */
     gap: 20px;
   }
 }
