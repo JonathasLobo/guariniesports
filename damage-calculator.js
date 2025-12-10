@@ -1302,7 +1302,8 @@ function normalizePokemonName(name) {
     'alolanraichu': 'alolan raichu',
     'alolanninetales': 'alolan ninetales',
     'galarianrapidash': 'galarian rapidash',
-    'mrmime': 'mr. mime'
+    'mrmime': 'mr. mime',
+    'meowscara': 'meowscarada'
   };
 
   // Se encontrou mapeamento, retornar o valor mapeado

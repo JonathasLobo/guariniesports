@@ -126,6 +126,29 @@
       </div>
     </section>
 
+    <!-- SEÇÃO: Most Successful Pokémons by Role -->
+    <section id="most-successful-pokemon">
+      <h2>Most Successful Pokémons by Role</h2>
+      
+      <!-- Abas de filtro -->
+      <div class="pokemon-stats-tabs">
+        <button class="pokemon-stats-tab active" data-stat="winRate">
+          🏆 Win Rate
+        </button>
+        <button class="pokemon-stats-tab" data-stat="pickRate">
+          📊 Pick Rate
+        </button>
+        <button class="pokemon-stats-tab" data-stat="banRate">
+          🚫 Ban Rate
+        </button>
+      </div>
+      
+      <!-- Container dos cards de role -->
+      <div class="pokemon-roles-container" id="pokemonRolesContainer">
+        <div class="pokemon-loading">Loading Pokémon data...</div>
+      </div>
+    </section>
+
     <section id="noticias">
       <h2>News</h2>
       <div class="noticias-colunas">
@@ -1020,6 +1043,7 @@
 <script src="./videos/videos.js"></script>
 <script type="module" src="./noticias/noticias-index.js"></script>
 <script type="module" src="./noticias/botao-editor.js"></script>
+<script type="module" src="./pokemon-by-role.js"></script>
 
    <script>
     // ====================================

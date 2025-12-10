@@ -2335,3 +2335,348 @@ html {
     height: 12px;
   }
 }
+
+/* ============================================
+   MOST SUCCESSFUL POKÉMONS BY ROLE
+   ============================================ */
+
+#most-successful-pokemon {
+  padding: 40px 20px;
+  background: transparent;
+  margin: 40px auto;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#most-successful-pokemon h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Abas de filtro (Win Rate, Pick Rate, Ban Rate) */
+.pokemon-stats-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.pokemon-stats-tab {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.pokemon-stats-tab:hover {
+  border-color: #ffad00;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 173, 0, 0.3);
+}
+
+.pokemon-stats-tab.active {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 173, 0, 0.5);
+}
+
+/* Container dos cards de role */
+.pokemon-roles-container {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 30px;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 10px;
+}
+
+/* Telas muito grandes - manter 5 colunas */
+@media (min-width: 1800px) {
+  .pokemon-roles-container {
+    max-width: 1800px;
+    gap: 20px;
+  }
+}
+
+/* Telas grandes - 5 colunas com gap menor */
+@media (max-width: 1600px) {
+  .pokemon-roles-container {
+    gap: 12px;
+  }
+}
+
+/* Telas médias - 4 colunas */
+@media (max-width: 1400px) {
+  .pokemon-roles-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+}
+
+/* Telas menores - 3 colunas */
+@media (max-width: 1100px) {
+  .pokemon-roles-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+}
+
+/* Card de cada role */
+.role-card {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(40, 40, 40, 0.95));
+  border-radius: 15px;
+  padding: 20px 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+}
+
+.role-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(255, 173, 0, 0.3);
+  border-color: #ffad00;
+}
+
+/* Cabeçalho da role */
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.role-icon {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(255, 173, 0, 0.4));
+  flex-shrink: 0;
+}
+
+.role-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffad00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+/* Lista de pokémons */
+.pokemon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Item individual de pokémon */
+.pokemon-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 30, 30, 0.6);
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-width: 0;
+}
+
+.pokemon-item:hover {
+  background: rgba(255, 173, 0, 0.1);
+  border-color: rgba(255, 173, 0, 0.3);
+  transform: translateX(5px);
+}
+
+/* Ranking number */
+.pokemon-rank {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffad00;
+  min-width: 25px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Imagem do pokémon */
+.pokemon-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.pokemon-item:hover .pokemon-avatar {
+  transform: scale(1.1);
+  border-color: #ffc107;
+}
+
+/* Informações do pokémon */
+.pokemon-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pokemon-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Taxa (Win Rate / Pick Rate / Ban Rate) */
+.pokemon-rate {
+  font-size: 1rem;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: right;
+  padding: 4px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Cores para as taxas */
+.rate-high {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.15);
+}
+
+.rate-low {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.15);
+}
+
+/* Loading state */
+.pokemon-loading {
+  text-align: center;
+  padding: 40px;
+  color: #ffad00;
+  font-size: 1.2rem;
+}
+
+/* Responsivo - Tablet */
+@media (max-width: 900px) {
+  #most-successful-pokemon {
+    padding: 30px 15px;
+  }
+
+  #most-successful-pokemon h2 {
+    font-size: 2rem;
+  }
+
+  .pokemon-roles-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .role-name {
+    font-size: 1.2rem;
+  }
+}
+
+/* Responsivo - Mobile */
+@media (max-width: 768px) {
+  #most-successful-pokemon h2 {
+    font-size: 1.8rem;
+  }
+
+  .pokemon-stats-tabs {
+    gap: 10px;
+  }
+
+  .pokemon-stats-tab {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .pokemon-roles-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .role-header {
+    gap: 10px;
+  }
+
+  .role-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .pokemon-avatar {
+    width: 45px;
+    height: 45px;
+  }
+
+  .pokemon-name {
+    font-size: 0.95rem;
+  }
+
+  .pokemon-rate {
+    font-size: 1rem;
+    padding: 4px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemon-stats-tabs {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 30px;
+  }
+
+  .pokemon-stats-tab {
+    width: 100%;
+    padding: 12px 20px;
+  }
+
+  .pokemon-item {
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .pokemon-rank {
+    font-size: 1rem;
+    min-width: 25px;
+  }
+
+  .pokemon-avatar {
+    width: 40px;
+    height: 40px;
+  }
+}

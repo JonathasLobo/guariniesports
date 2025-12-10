@@ -21015,3 +21015,6 @@ const skillDamage = {
 if (typeof window !== 'undefined') {
   window.pokemonSkins = pokemonSkins;
 }
+
+// Exportar para uso em outros módulos
+export { pokemonRoles };
