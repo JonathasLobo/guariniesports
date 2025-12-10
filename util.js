@@ -21014,7 +21014,26 @@ const skillDamage = {
 
 if (typeof window !== 'undefined') {
   window.pokemonSkins = pokemonSkins;
+  window.pokemonRoles = pokemonRoles;
+  window.baseStats = baseStats;
+  window.gameHeldItens = gameHeldItens;
+  window.skillDamage = skillDamage;
+  // ... e todas as outras variáveis
 }
 
-// Exportar para uso em outros módulos
-export { pokemonRoles };
+// Exportar para uso como módulo
+export { 
+  pokemonRoles, 
+  baseStats, 
+  gameHeldItens, 
+  skillDamage,
+  pokemonBasedType,
+  rolesColor,
+  gameBattleItems,
+  gameHeldItensStatus,
+  gameHeldItensPassive,
+  levelStats,
+  pokemonRoutesEffectiveness,
+  pokemonRatings,
+  pokemonSkins
+};

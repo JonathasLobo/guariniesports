@@ -1,3 +1,37 @@
+// ===== IMPORTAR DADOS DO UTIL.JS =====
+import { 
+  pokemonRoles, 
+  baseStats, 
+  gameHeldItens, 
+  skillDamage,
+  pokemonBasedType,
+  rolesColor,
+  gameBattleItems,
+  gameHeldItensStatus,
+  gameHeldItensPassive,
+  levelStats,
+  pokemonRoutesEffectiveness,
+  pokemonRatings,
+  pokemonSkins
+} from './util.js';
+
+// Expor globalmente (para compatibilidade com código existente)
+window.pokemonRoles = pokemonRoles;
+window.baseStats = baseStats;
+window.gameHeldItens = gameHeldItens;
+window.skillDamage = skillDamage;
+window.pokemonBasedType = pokemonBasedType;
+window.rolesColor = rolesColor;
+window.gameBattleItems = gameBattleItems;
+window.gameHeldItensStatus = gameHeldItensStatus;
+window.gameHeldItensPassive = gameHeldItensPassive;
+window.levelStats = levelStats;
+window.pokemonRoutesEffectiveness = pokemonRoutesEffectiveness;
+window.pokemonRatings = pokemonRatings;
+window.pokemonSkins = pokemonSkins;
+
+console.log('✅ Dados importados do util.js com sucesso!');
+
 // ===== CONFIGURAÇÃO DO FIREBASE (INÍCIO) =====
 let auth, db, BuildManager;
 
