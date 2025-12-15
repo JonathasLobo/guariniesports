@@ -26,9 +26,6 @@ const pokemonImageMapping = {
   'Mr. Mime': 'mrmime',
   'Ho-Oh': 'hooh',
   'Meowscarada': 'meowscara',
-  
-  // Adicione aqui outros mapeamentos conforme necessário
-  // Formato: 'Nome no JSON': 'nomedoarquivo'
 };
 
 // Ícones das roles
@@ -53,16 +50,15 @@ let processedDataCache = {
 
 let isDataLoaded = false;
 
-// Função para normalizar nome do pokémon para buscar na role
+// ✅ FUNÇÃO CORRIGIDA: Normaliza o nome mantendo "mega" para corresponder ao util.js
 function normalizeForRole(name) {
   return name
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '')
-    .replace('alolan', '')
-    .replace('galarian', '')
-    .replace('mega', '');
+    .replace(/\s+/g, '')      // Remove todos os espaços
+    .replace('alolan', '')    // Remove prefixos regionais
+    .replace('galarian', ''); // ✅ NÃO remove 'mega' - mantém para corresponder ao util.js
 }
 
 // Função para normalizar nome do pokémon para imagem
@@ -113,7 +109,7 @@ function getPokemonImagePath(pokemonName) {
   const normalized = normalizeForImage(pokemonName);
   const path = `./estatisticas-shad/images/backgrounds/${normalized}-left-bg.png`;
   
-  // Log para debug (comentar depois de ajustar)
+  // Log para debug
   if (pokemonName !== normalized) {
     console.log(`🖼️ Imagem: "${pokemonName}" → "${normalized}-left-bg.png"`);
   }
