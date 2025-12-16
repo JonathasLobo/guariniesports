@@ -145,26 +145,34 @@ function googleTranslateElementInit() {
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { 
-    getAuth, 
-    createUserWithEmailAndPassword, 
-    updateProfile,
-    onAuthStateChanged 
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  updateProfile,
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
-    authDomain: "site-grn.firebaseapp.com",
-    projectId: "site-grn",
-    storageBucket: "site-grn.firebasestorage.app",
-    messagingSenderId: "27613322806",
-    appId: "1:27613322806:web:ad4dc08ce043f19d530297",
-    measurementId: "G-84NHN394WF"
-  };
+// 👇 ADICIONE ESTAS LINHAS
+import { 
+  getFirestore, 
+  doc, 
+  setDoc 
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+  authDomain: "site-grn.firebaseapp.com",
+  projectId: "site-grn",
+  storageBucket: "site-grn.firebasestorage.app",
+  messagingSenderId: "27613322806",
+  appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+  measurementId: "G-84NHN394WF"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
   // Elementos do DOM
   const nome = document.getElementById("nome");
