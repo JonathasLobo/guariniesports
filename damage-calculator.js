@@ -1853,7 +1853,7 @@ const STAT_EFFECT_CONFIG = {
   },
   megacharizardy: {
     s1: ["s11"],
-    s2: ["U11"] 
+    s2: ["u11"] 
   },
   garchomp: {
     s1: ["s21", "s12"],
