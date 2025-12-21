@@ -1332,6 +1332,7 @@ function normalizePokemonName(name) {
     'mewtwox': 'mewtwo x',
     'mewtwoy': 'mewtwo y',
     'megacharizardx': 'mega charizard x',
+    'megacharizardy': 'mega charizard y',
     'megalucario': 'mega lucario',
     'megagyarados': 'mega gyarados',
     'alolanraichu': 'alolan raichu',
@@ -1850,6 +1851,10 @@ const STAT_EFFECT_CONFIG = {
     s1: ["s12"],
     s2: ["U12"] 
   },
+  megacharizardy: {
+    s1: ["s11"],
+    s2: ["U11"] 
+  },
   garchomp: {
     s1: ["s21", "s12"],
     s2: ["s11", "s22"]
@@ -1878,6 +1883,7 @@ const STAT_EFFECT_CONFIG = {
     s1: ["s11"],
     s2: ["s21"] 
   },
+  
   }
   const SKILL_KEY_ALIASES = {
   greedent: {
@@ -1917,6 +1923,7 @@ const STAT_EFFECT_CONFIG = {
     "mewtwoy": "mewtwonitey",
     "megalucario": "lucarionite",
     "megacharizardx": "charizarditex",
+    "megacharizardy": "charizarditey",
     "megagyarados": "gyaradosite"
   };
 

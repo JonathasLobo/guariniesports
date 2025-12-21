@@ -21,6 +21,7 @@ const pokemonBaseImages = {
     chandelure: 'chandelure-left-bg',
     charizard: 'charizard-left-bg',
     megacharizardx: 'megacharizardx-left-bg',
+    megacharizardy: 'megacharizardy-left-bg',
 	ceruledge: 'ceruledge-left-bg',
     cinderace: 'cinderace-left-bg',
     clefable: 'clefable-left-bg',
@@ -106,6 +107,7 @@ const pokemonRoles = {
     chandelure: 'Attacker',
     charizard: 'All Rounder',
     megacharizardx: 'All Rounder',
+    megacharizardy: 'All Rounder',
 	ceruledge: 'All Rounder',
     cinderace: 'Attacker',
     clefable: 'Support',
@@ -194,6 +196,7 @@ const pokemonLanes = {
     chandelure: 'Bot',
     charizard: 'Jungle',
     megacharizardx: 'Jungle',
+    megacharizardy: 'Jungle',
 	ceruledge: 'Jungle',
     cinderace: 'Jungle',
     clefable: 'Top',
@@ -281,6 +284,7 @@ const pokemonBasedType  = {
     chandelure: 'SpATK',
     charizard: 'ATK',
     megacharizardx: 'ATK',
+    megacharizardy: 'ATK',
 	ceruledge: 'ATK',
     cinderace: 'ATK',
     clefable: 'SpATK',
@@ -450,6 +454,10 @@ const pokemonSkills = {
     "megacharizardx": {
 		"s12": "Fire Punch",
 		"u12": "Fire Blitz"
+    },
+    "megacharizardy": {
+		"s11": "Flamethrower",
+		"u11": "Fire Blast"
     },
 	"ceruledge": {
 		"s11": "Bitter Blade",
@@ -894,6 +902,7 @@ const gameHeldItens = {
 	"buddybarrier": 'Buddy Barrier',
 	"chargingcharm": 'Charging Charm',
   "charizarditex": 'Charizardite X',
+  "charizarditey": 'Charizardite Y',
 	"choicescarf": 'Choice Scarf',
 	"choicespecs": 'Choice Specs',
 	"curseincense": 'Curse Incense',
@@ -936,6 +945,7 @@ const gameHeldItensStatus = {
 	"buddybarrier": ['HP +450'],
 	"chargingcharm": ['ATK +15','Speed +120'],
   "charizarditex": [],
+  "charizarditey": [],
 	"choicescarf": ['AtkSPD +7.5%','Speed +150'],
 	"choicespecs": ['SpATK +39'],
 	"curseincense": ['SpATK +39'],
@@ -1007,6 +1017,7 @@ const defaultHeldItems = {
     chandelure: ['slickspoon','choicespecs','drivelens'],
     charizard: ['muscleband','attackweight','accelbracer'],
     megacharizardx: ['charizarditex','attackweight','accelbracer'],
+    megacharizardy: ['charizarditey','attackweight','draincrown'],
 	ceruledge: ['muscleband','attackweight','razorclaw'],
     cinderace: ['muscleband','rapidscarf','scopelens'],
     clefable: ['resonantguard','buddybarrier','expshare'],
@@ -1264,6 +1275,20 @@ const baseStats = {
 		"CritDmg": 0,
 	},
   "megacharizardx": {
+		"HP": 7700,
+		"ATK": 462,
+		"DEF": 400,
+		"SpATK": 115,
+		"SpDEF": 320,
+		"CritRate": 30,
+		"CDR": 0,
+		"AtkSPD": 0,
+		"HPRegen": 15,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
+  "megacharizardy": {
 		"HP": 7700,
 		"ATK": 462,
 		"DEF": 400,
@@ -2307,6 +2332,7 @@ const pokemonKillsRate = {
 	"chandelure": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"charizard": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
   "megacharizardx": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
+  "megacharizardy": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"cinderace": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"clefable": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
 	"comfey": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 4.1, max: Infinity } },
@@ -2393,6 +2419,7 @@ const pokemonAssistRate = {
 	"chandelure": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"charizard": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
   "megacharizardx": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "megacharizardy": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"cinderace": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"clefable": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"comfey": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
@@ -2479,6 +2506,7 @@ const pokemonDamageDoneRate = {
 	"chandelure": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"charizard": {inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
   "megacharizardx": {inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
+  "megacharizardy": {inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"cinderace": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"clefable": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"comfey": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
@@ -2565,6 +2593,7 @@ const pokemonDamageTakenRate = {
 	"chandelure": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"charizard": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
   "megacharizardx": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
+  "megacharizardy": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"cinderace": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"clefable": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"comfey": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
@@ -2651,6 +2680,7 @@ const pokemonDamageHealedRate = {
 	"chandelure": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"charizard": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
   "megacharizardx": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
+  "megacharizardy": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"cinderace": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"clefable": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"comfey": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
@@ -2736,6 +2766,7 @@ const pokemonTierListUDB = {
     chandelure: 'C',
     charizard: 'B',
     megacharizardx: 'S',
+    megacharizardy: 'S',
 	ceruledge: 'A',
     cinderace: 'B',
     clefable: 'A',
@@ -2861,7 +2892,7 @@ const levelStats = {
     15: { HP: 9000, ATK: 280, DEF: 320, SpATK: 696, SpDEF: 370, CritRate: 0 , CDR: 10 , Lifesteal: 0 , AtkSPD: 19.99 , Speed: 4400 }
   },
     "armarouge": {
-	1: { HP: 3300, ATK: 150, DEF: 60, SpATK: 80, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
+	  1: { HP: 3300, ATK: 150, DEF: 60, SpATK: 80, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
     2: { HP: 3387, ATK: 154, DEF: 65, SpATK: 94, SpDEF: 44, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.89 , Speed: 3600 },
     3: { HP: 3486, ATK: 159, DEF: 71, SpATK: 110, SpDEF: 49, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.91 , Speed: 3600 },
     4: { HP: 3600, ATK: 165, DEF: 78, SpATK: 128, SpDEF: 55, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.08 , Speed: 3750 },
@@ -3035,6 +3066,24 @@ const levelStats = {
     13: { HP: 6433, ATK: 377, DEF: 307, SpATK: 88, SpDEF: 245, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 },
     14: { HP: 7009, ATK: 416, DEF: 349, SpATK: 100, SpDEF: 279, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 },
     15: { HP: 7700, ATK: 462, DEF: 400, SpATK: 115, SpDEF: 320, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 },
+  },
+
+  "megacharizardy": {
+    1: { HP: 3200, ATK: 161, DEF: 70, SpATK: 20, SpDEF: 54, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 0.00 , Speed: 3700 },
+    2: { HP: 3264, ATK: 165, DEF: 75, SpATK: 21, SpDEF: 58, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 0.00 , Speed: 3700 },
+    3: { HP: 3341, ATK: 170, DEF: 81, SpATK: 23, SpDEF: 63, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 0.00 , Speed: 3700 },
+    4: { HP: 3434, ATK: 176, DEF: 88, SpATK: 25, SpDEF: 68, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 0.00 , Speed: 3700 },
+    5: { HP: 3771, ATK: 199, DEF: 121, SpATK: 32, SpDEF: 95, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 0.00 , Speed: 3850 },
+    6: { HP: 3905, ATK: 208, DEF: 131, SpATK: 35, SpDEF: 103, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 0.00 , Speed: 3850 },
+    7: { HP: 4516, ATK: 249, DEF: 168, SpATK: 48, SpDEF: 132, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 0.00 , Speed: 4000 },
+    8: { HP: 4709, ATK: 262, DEF: 182, SpATK: 52, SpDEF: 143, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 0.00 , Speed: 4000 },
+    9: { HP: 4941, ATK: 277, DEF: 199, SpATK: 57, SpDEF: 157, CritRate: 30 , CDR: 0 , Lifesteal: 10 , AtkSPD: 0.00 , Speed: 4150 },
+    10: { HP: 5219, ATK: 296, DEF: 219, SpATK: 63, SpDEF: 173, CritRate: 30 , CDR: 0 , Lifesteal: 10 , AtkSPD: 0.00 , Speed: 4150 },
+    11: { HP: 5553, ATK: 318, DEF: 243, SpATK: 70, SpDEF: 193, CritRate: 30 , CDR: 0 , Lifesteal: 10 , AtkSPD: 0.00 , Speed: 4300 },
+    12: { HP: 5953, ATK: 345, DEF: 272, SpATK: 78, SpDEF: 217, CritRate: 30 , CDR: 0 , Lifesteal: 10 , AtkSPD: 0.00 , Speed: 4300 },
+    13: { HP: 6433, ATK: 377, DEF: 307, SpATK: 88, SpDEF: 245, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 },
+    14: { HP: 7009, ATK: 416, DEF: 349, SpATK: 100, SpDEF: 279, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 },
+    15: { HP: 7700, ATK: 462, DEF: 400, SpATK: 115, SpDEF: 320, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 0.00 , Speed: 4300 }
   },
 
     "cinderace": {
@@ -4485,6 +4534,19 @@ const pokemonRatings = {
     Smite: 2,
     Sweep: 1
   },
+  megacharizardy: {
+    Attack: 4,
+    Endure: 3.5,
+    Mobility: 2.5,
+    Score: 3,
+    Support: 0.5,
+    Invade: 1,
+    Farm: 2.5,
+    Gank: 3,
+    CC: 2,
+    Smite: 2,
+    Sweep: 1
+  },
   cinderace: {
     Attack: 4,
     Endure: 1.5,
@@ -5425,6 +5487,7 @@ const pokemonRoutesEffectiveness = {
   chandelure: { top: 15, jungle: 35, bot: 50 },
   charizard: { top: 20, jungle: 50, bot: 30 },
   megacharizardx: { top: 15, jungle: 65, bot: 20 },
+  megacharizardy: { top: 15, jungle: 65, bot: 20 },
   cinderace: { top: 10, jungle: 50, bot: 40 },
   clefable: { top: 55, jungle: 0, bot: 45 },
   comfey: { top: 50, jungle: 0, bot: 50 },
@@ -7782,6 +7845,148 @@ const skillDamage = {
         {
           label: "Damage - Slam Additional",
           type: "text-only",
+		      additionalText: "8% of enemy max HP"
+        },
+	 ]
+	}
+  },
+
+  "megacharizardy": {
+      "passive": {
+          name: "Blaze",
+          description: "Increases Attack by 20% for 5 seconds after Charizard gets hit.",
+          buff: {
+            ATK: "20%",
+          },
+          formulas: [
+          ]
+        },
+        "passive1": {
+          name: "Drought",
+          description: "Mega Evolution creates a sunny area that increases Mega Charizard Y's damage by 10% while inside it.",
+          buff: {
+          },
+          skillDamageMultiplier: 1.10, // 10% de aumento
+          affectsBasicAttack: true,
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+    buff: {
+      Speed: "-5%"
+    },
+      formulas: [
+        {
+          label: "Damage - Basic (4x)",
+          formula: (ATK, Level) => 0.308 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Additional to Charizard Burn targets (4x)",
+          formula: (ATK, Level) => 0.32 * ATK + 2 * (Level - 1) + 10,
+          type: "physical"
+        }
+      ]
+	},
+    "s11": {
+      name: "Flamethrower",
+      cooldown: 6,
+      effects: ["Burn"],
+      buff: {
+        Speed: "55%"
+      },
+      debuffs: {
+        ATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.31 * ATK + 6 * (Level - 1) + 144,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (5 Ticks)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.54 * ATK + 7 * (Level - 1) + 170,
+          type: "physical"
+        },
+		{
+          label: "Damage - Burn (5 Ticks) Skill Plus",
+          formula: (ATK, Level) => 0.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+    },
+    "U11": {
+      name: "Fire Blast",
+      cooldown: 6.5,
+      buff:{},
+      debuffs:{
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.31 * ATK + 4 * (Level - 1) + 158,
+          type: "physical"
+        },
+		{
+          label: "Damage - Area (10 Ticks)",
+          formula: (ATK, Level) => 0.32 * ATK + 1 * (Level - 1) + 40,
+          type: "physical"
+        },
+        {
+          label: "Damage Skill Plus",
+          formula: (ATK, Level) => 1.4 * ATK + 5 * (Level - 1) + 184,
+          type: "physical"
+        },
+		{
+          label: "Damage - Area (10 Ticks) Skill Plus",
+          formula: (ATK, Level) => 0.35 * ATK + 1 * (Level - 1) + 46,
+          type: "physical"
+        }
+      ]
+    },
+	"ult": {
+		name: "Seismic Slam",
+    cooldown: 112,
+    buff:{},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Bound", "Invincible"],
+      buffs: {
+        Speed: "30%",
+        Shield: 20,
+        HPRegen: 80
+      },
+      debuffs: {
+        ATK: 5
+      },
+      debuffLabels: {
+        ATK: "(DEBUFF) Attack Reduction"
+      }
+    },
+		formulas: [
+		{
+          label: "Damage - Burning (2x)",
+          formula: (ATK, Level) => 0.2 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 3.07 * ATK + 8 * (Level - 1) + 380,
+          type: "physical",
 		      additionalText: "8% of enemy max HP"
         },
 	 ]
@@ -12294,9 +12499,10 @@ const skillDamage = {
           name: "Mold Breaker",
           description: "Gains Attack, Defense, and Sp. Def boosts, and its damage ignores part of the target's Defense.",
           buff: {
-            DEF: "50%",
+            DEF: "30%",
             ATK: "25%",
-            SpDEF: "50%"
+            SpDEF: "30%",
+            DEFPen: 30
           },
           formulas: [
           ]
@@ -12348,7 +12554,7 @@ const skillDamage = {
         },
         {
           label: "Damage (Mega) - Basic",
-          formula: (ATK, Level) => 1.92 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.63 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         },
 				{
@@ -12368,7 +12574,7 @@ const skillDamage = {
         },
         {
           label: "Damage (Mega) - Basic Skill Plus",
-          formula: (ATK, Level) => 1.92 * ATK + 0 * (Level - 1) + 0,
+          formula: (ATK, Level) => 1.78 * ATK + 0 * (Level - 1) + 0,
           type: "physical"
         }
       ]
@@ -12401,7 +12607,7 @@ const skillDamage = {
     },
 	"ult": {
 		name: "Dragon Current",
-    cooldown: 89,
+    cooldown: 112,
     buff: {},
     buffPlus: {
       levelRequired: 9,
@@ -20414,6 +20620,9 @@ const skillDamage = {
   megacharizardx: {
     default: "Default"
   },
+  megacharizardy: {
+    default: "Default"
+  },
   cinderace: {
     default: "Default",
     skin1: "Captain Style",
@@ -20758,14 +20967,16 @@ const skillDamage = {
     skin1: "Mega Style",
     skin2: "Martial Arts Style (X)",
     skin3: "Pokébuki Style (X)",
-    skin4: "Dark Lord Style (X)"
+    skin4: "Dark Lord Style (X)",
+    skin5: "Fairy-Tale Style (X)"
   },
   mewtwoy: {
     default: "Default",
     skin1: "Mega Style",
     skin2: "Martial Arts Style (Y)",
     skin3: "Pokébuki Style (Y)",
-    skin4: "Dark Lord Style (Y)"
+    skin4: "Dark Lord Style (Y)",
+    skin5: "Fairy-Tale Style (Y)"
   },
   mimikyu: {
     default: "Default",
@@ -20852,7 +21063,8 @@ const skillDamage = {
     skin4: "Wanderer Style",
     skin5: "Aristocrat Style",
     skin6: "Fairy-Tale Style",
-    skin7: "Festival Style"
+    skin7: "Festival Style",
+    skin8: "Neo Street Style"
   },
   scyther: {
     default: "Default"
@@ -20867,7 +21079,8 @@ const skillDamage = {
     skin6: "Wanderer Style",
     skin7: "Porcelain Style",
     skin8: "Champion Style",
-    skin9: "Beach Style"
+    skin9: "Beach Style",
+    skin10: "Champion Style (Gold)"
   },
   snorlax: {
     default: "Default",
@@ -21023,7 +21236,8 @@ if (typeof window !== 'undefined') {
 
 // Exportar para uso como módulo
 export { 
-  pokemonRoles, 
+  pokemonRoles,
+  pokemonLanes, 
   baseStats, 
   gameHeldItens, 
   skillDamage,
