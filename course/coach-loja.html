@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cursos e Mentorias | Guariní e-Sports</title>
+  <link rel="icon" href="../favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <!-- Esta página NÃO contém CSS, utiliza o CSS global existente -->
+</head>
+<body>
+  <main id="courses-page" class="page-courses">
+    <header class="pc-header">
+      <h1 class="pc-title">Cursos & Mentorias</h1>
+      <p class="pc-subtitle">Aprenda com profissionais da comunidade e melhore seu desempenho nos jogos.</p>
+    </header>
+
+    <!-- Campo de busca e filtros -->
+    <section class="pc-filters" aria-label="Busca e filtros de cursos">
+      <div class="pc-row">
+        <input id="course-search" class="pc-input" type="search" placeholder="Buscar por jogo, curso ou coach">
+
+        <select id="filter-course-game" class="pc-select">
+          <option value="">Todos os jogos</option>
+          <option value="pokemon">Pokémon</option>
+          <option value="valorant">Valorant</option>
+          <option value="lol">League of Legends</option>
+        </select>
+
+        <select id="filter-course-type" class="pc-select">
+          <option value="">Todos os tipos</option>
+          <option value="curso">Curso</option>
+          <option value="mentoria">Mentoria</option>
+        </select>
+
+        <button id="clear-course-filters" class="pc-btn">Limpar</button>
+      </div>
+    </section>
+
+    <!-- Catálogo de cursos -->
+    <section id="course-list" class="pc-list" aria-live="polite"></section>
+
+    <!-- Modal de detalhes do curso -->
+    <div id="course-modal" class="pc-modal" aria-hidden="true">
+      <div class="pc-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="course-modal-title">
+        <button id="course-modal-close" class="pc-modal-close">×</button>
+        <div id="course-modal-content"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const listEl = document.getElementById('course-list');
+      const searchInput = document.getElementById('course-search');
+      const gameFilter = document.getElementById('filter-course-game');
+      const typeFilter = document.getElementById('filter-course-type');
+      const clearBtn = document.getElementById('clear-course-filters');
+
+      // Mock de cursos (substituir pelo backend)
+      let courses = [
+        {
+          id: 'c1',
+          title: 'Treinamento Competitivo VGC — Básico ao Avançado',
+          coach: 'Vitor#1001',
+          game: 'pokemon',
+          type: 'curso',
+          price: 120.00,
+          currency: 'BRL',
+          description: 'Curso completo com aulas gravadas, análises e exercícios para dominar o formato competitivo.',
+          thumbnail: '',
+          lessons: 12
+        },
+        {
+          id: 'c2',
+          title: 'Mentoria de Aim e Sensibilidade — FPS',
+          coach: 'LealFPS',
+          game: 'valorant',
+          type: 'mentoria',
+          price: 80.00,
+          currency: 'BRL',
+          description: 'Mentoria 1:1 com foco em movimentação, mira, crosshair placement e revisão de gameplay.',
+          thumbnail: '',
+          lessons: null
+        }
+      ];
+
+      function formatPrice(p, c) {
+        try {
+          return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: c }).format(p);
+        } catch {
+          return p + ' ' + c;
+        }
+      }
+
+      function escapeHtml(text) {
+        return text ? text.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])) : '';
+      }
+
+      function truncate(text, n) { return text && text.length > n ? text.slice(0, n) + '…' : text; }
+
+      function render(items) {
+        listEl.innerHTML = '';
+        if (!items.length) {
+          listEl.innerHTML = '<p class="pc-empty">Nenhum curso encontrado.</p>';
+          return;
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'pc-grid';
+
+        items.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'pc-card';
+
+          card.innerHTML = `
+            <div class="pc-thumb">${item.thumbnail ? `<img src="${item.thumbnail}" alt="Thumbnail">` : ''}</div>
+            <h3 class="pc-card-title">${escapeHtml(item.title)}</h3>
+            <p class="pc-card-meta">${escapeHtml(item.game)} • ${escapeHtml(item.type)}</p>
+            <p class="pc-card-desc">${escapeHtml(truncate(item.description, 120))}</p>
+            <p class="pc-card-price">${formatPrice(item.price, item.currency)}</p>
+            <button class="pc-btn-primary" data-id="${item.id}">Ver detalhes</button>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        listEl.appendChild(grid);
+      }
+
+      render(courses);
+
+      function applyFilters() {
+        const q = searchInput.value.trim().toLowerCase();
+        const g = gameFilter.value;
+        const t = typeFilter.value;
+
+        const filtered = courses.filter(c => {
+          if (g && c.game !== g) return false;
+          if (t && c.type !== t) return false;
+          if (q) {
+            return [c.title, c.description, c.game, c.type, c.coach]
+              .some(f => f.toLowerCase().includes(q));
+          }
+          return true;
+        });
+
+        render(filtered);
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      gameFilter.addEventListener('change', applyFilters);
+      typeFilter.addEventListener('change', applyFilters);
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        gameFilter.value = '';
+        typeFilter.value = '';
+        applyFilters();
+      });
+
+      // Modal de detalhes
+      listEl.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+
+        const course = courses.find(c => c.id === btn.dataset.id);
+        if (course) openModal(course);
+      });
+
+      function openModal(c) {
+        const modal = document.getElementById('course-modal');
+        const content = document.getElementById('course-modal-content');
+
+        modal.setAttribute('aria-hidden', 'false');
+        content.innerHTML = `
+          <h2 id="course-modal-title">${escapeHtml(c.title)}</h2>
+          <p><strong>Coach:</strong> ${escapeHtml(c.coach)}</p>
+          <p><strong>Jogo:</strong> ${escapeHtml(c.game)}</p>
+          <p><strong>Tipo:</strong> ${escapeHtml(c.type)}</p>
+          <p><strong>Descrição:</strong> ${escapeHtml(c.description)}</p>
+          <p><strong>Preço:</strong> ${formatPrice(c.price, c.currency)}</p>
+          <p><strong>Aulas:</strong> ${c.lessons ? c.lessons + ' aulas' : 'Mentoria individual'}</p>
+
+          <button class="pc-btn-buy" onclick="alert('Integração de compra aqui')">Comprar agora</button>
+        `;
+      }
+
+      document.getElementById('course-modal-close').addEventListener('click', () => {
+        const modal = document.getElementById('course-modal');
+        modal.setAttribute('aria-hidden', 'true');
+        document.getElementById('course-modal-content').innerHTML = '';
+      });
+
+      // Sugestões de backend:
+      // GET /api/courses -> retorna todos os cursos publicados
+      // GET /api/courses/:id -> detalhes
+      // POST /api/checkout -> cria checkout (PagSeguro, Stripe, Pagar.me)
+    })();
+  </script>
+</body>
+</html>
