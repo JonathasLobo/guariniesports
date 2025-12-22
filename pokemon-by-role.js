@@ -10,6 +10,7 @@ import { pokemonRoles } from './util.js';
 const pokemonImageMapping = {
   // === MEGAS ===
   'Mega Charizard X': 'megacharizardx',
+  'Mega Charizard Y': 'megacharizardy',
   'Mega Gyarados': 'megagyarados',
   'Mega Lucario': 'megalucario',
   
