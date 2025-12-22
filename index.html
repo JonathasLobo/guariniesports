@@ -90,8 +90,7 @@
         type="text" 
         id="profileSearchInput" 
         class="profile-search-input" 
-        placeholder="Search Player ID..."
-        maxlength="7"
+        placeholder="Search Player/Team ID..."
       >
       <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
         🔍
@@ -791,106 +790,159 @@
     // ========================================
     // BUSCA DE PERFIL - COM BUSCA AUTOMÁTICA
     // ========================================
+  // Função para buscar perfil
+async function buscarPerfil() {
+  const playerId = profileSearchInput.value.trim().toUpperCase();
+  
+  // IMPORTANTE: Só buscar se tiver 5-7 caracteres
+  if (playerId.length < 5 || playerId.length > 7) {
+    return;
+  }
+  
+  try {
+    profileSearchResults.innerHTML = '<div class="profile-search-no-results">Searching...</div>';
+    profileSearchResults.classList.add('show');
+    
+    console.log('Buscando Player ID:', playerId);
+    
+    const usuariosRef = collection(db, "usuarios");
+    const q = query(usuariosRef, where("playerId", "==", playerId));
+    
+    console.log('Query criada, executando busca...');
+    
+    const querySnapshot = await getDocs(q);
+    
+    console.log('Resultado da busca:', {
+      empty: querySnapshot.empty,
+      size: querySnapshot.size
+    });
+    
+    if (querySnapshot.empty) {
+      console.log('Nenhum usuario encontrado com Player ID:', playerId);
+      profileSearchResults.innerHTML = '<div class="profile-search-no-results">Player not found</div>';
+      return;
+    }
+    
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    const userId = userDoc.id;
+    
+    console.log('Usuario encontrado:', {
+      userId: userId,
+      playerId: userData.playerId,
+      displayName: userData.displayName,
+      email: userData.email
+    });
+    
+    profileSearchResults.innerHTML = `
+      <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+        <div style="flex: 1;">
+          <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+            Player found!
+          </div>
+          <div style="color: #fff; font-size: 13px;">
+            ${userData.displayName || 'Anonymous'}
+          </div>
+          <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+            ID: ${userData.playerId}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 10px; text-align: center;">
+        <button 
+          onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
+          style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+          onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+          onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+        >
+          View Profile
+        </button>
+      </div>
+    `;
+    
+  } catch (error) {
+    console.error('Erro ao buscar perfil:', error);
+    console.error('Detalhes do erro:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    
+    profileSearchResults.innerHTML = `
+      <div class="profile-search-no-results" style="color: #ff6b6b;">
+        Search error<br>
+        <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
+          ${error.message}
+        </small>
+      </div>
+    `;
+  }
+}
+// ========================================
+// BUSCA DE TEAM (APÓS buscarPerfil)
+// ========================================
 
-    // Função para buscar perfil
-    async function buscarPerfil() {
-      const playerId = profileSearchInput.value.trim().toUpperCase();
+async function buscarTeam() {
+  const teamIdInput = profileSearchInput.value.trim().toUpperCase();
+  
+  // Se tem mais de 7 caracteres, buscar como Team ID
+  if (teamIdInput.length > 7) {
+    try {
+      profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching team...</div>';
+      profileSearchResults.classList.add('show');
       
-      if (!playerId) {
-        profileSearchResults.classList.remove('show');
+      console.log('🏆 Buscando Team ID:', teamIdInput);
+      
+      const teamDocRef = doc(db, "teams", teamIdInput);
+      const teamDocSnap = await getDoc(teamDocRef);
+      
+      if (!teamDocSnap.exists()) {
+        console.log('❌ Team não encontrado:', teamIdInput);
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Team not found</div>';
         return;
       }
       
-      if (playerId.length < 5 || playerId.length > 7) {
-        // Não mostrar nada se não tiver 7 caracteres
-        profileSearchResults.classList.remove('show');
-        return;
-      }
+      const teamData = teamDocSnap.data();
       
-      try {
-        // Mostrar loading
-        profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
-        profileSearchResults.classList.add('show');
-        
-        console.log('🔍 Buscando Player ID:', playerId);
-        
-        // Buscar usuário com esse Player ID
-        const usuariosRef = collection(db, "usuarios");
-        const q = query(usuariosRef, where("playerId", "==", playerId));
-        
-        console.log('📡 Query criada, executando busca...');
-        
-        const querySnapshot = await getDocs(q);
-        
-        console.log('📦 Resultado da busca:', {
-          empty: querySnapshot.empty,
-          size: querySnapshot.size
-        });
-        
-        if (querySnapshot.empty) {
-          console.log('❌ Nenhum usuário encontrado com Player ID:', playerId);
-          profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
-          return;
-        }
-        
-        // Pegar o primeiro resultado (Player ID é único)
-        const userDoc = querySnapshot.docs[0];
-        const userData = userDoc.data();
-        const userId = userDoc.id;
-        
-        console.log('✅ Usuário encontrado:', {
-          userId: userId,
-          playerId: userData.playerId,
-          displayName: userData.displayName,
-          email: userData.email
-        });
-        
-        // Mostrar resultado encontrado
-        profileSearchResults.innerHTML = `
-          <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
-            <div style="flex: 1;">
-              <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
-                ✅ Player found!
-              </div>
-              <div style="color: #fff; font-size: 13px;">
-                ${userData.displayName || 'Anonymous'}
-              </div>
-              <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
-                ID: ${userData.playerId}
-              </div>
+      console.log('✅ Team encontrado:', teamData);
+      
+      // Mostrar resultado do team
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+          <div style="flex: 1;">
+            <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+              ✅ Team found!
+            </div>
+            <div style="color: #fff; font-size: 13px;">
+              ${teamData.teamName}
+            </div>
+            <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+              ID: ${teamData.teamId}
             </div>
           </div>
-          <div style="margin-top: 10px; text-align: center;">
-            <button 
-              onclick="window.location.href='./perfil/perfil-view.html?uid=${userId}'" 
-              style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
-              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
-              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
-            >
-              👤 View Profile
-            </button>
-          </div>
-        `;
-        
-      } catch (error) {
-        console.error('❌ Erro ao buscar perfil:', error);
-        console.error('Detalhes do erro:', {
-          message: error.message,
-          code: error.code,
-          stack: error.stack
-        });
-        
-        profileSearchResults.innerHTML = `
-          <div class="profile-search-no-results" style="color: #ff6b6b;">
-            ❌ Search error<br>
-            <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
-              ${error.message}
-            </small>
-          </div>
-        `;
-      }
+        </div>
+        <div style="margin-top: 10px; text-align: center;">
+          <button 
+            onclick="window.location.href='./teams/team-view.html?teamId=${teamIdInput}'" 
+            style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+          >
+            🏆 View Team
+          </button>
+        </div>
+      `;
+      
+    } catch (error) {
+      console.error('❌ Erro ao buscar team:', error);
+      profileSearchResults.innerHTML = `
+        <div class="profile-search-no-results" style="color: #ff6b6b;">
+          ❌ Search error
+        </div>
+      `;
     }
-
+  }
+}
     // Toggle da barra de busca
     profileSearchBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -915,23 +967,28 @@
       }
     });
 
-    // Validação do input e BUSCA AUTOMÁTICA ao digitar 7 caracteres
-    profileSearchInput.addEventListener('input', async (e) => {
-      // Validação: apenas alfanumérico, máximo 7 caracteres
-      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (e.target.value.length > 7) {
-        e.target.value = e.target.value.slice(0, 7);
-      }
-      
-      // 🔥 BUSCA AUTOMÁTICA quando atingir 7 caracteres
-      if (e.target.value.length >= 5 && e.target.value.length <= 7) { 
-        console.log('🎯 7 caracteres digitados - buscando automaticamente...');
-        await buscarPerfil();
-      } else {
-        // Se tiver menos de 7 caracteres, esconder resultados
-        profileSearchResults.classList.remove('show');
-      }
-    });
+// Validacao e busca automatica ao digitar
+profileSearchInput.addEventListener('input', async (e) => {
+  // Validacao: apenas alfanumerico
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  
+  const inputLength = e.target.value.length;
+  
+  // BUSCAR IMEDIATAMENTE quando atingir 5, 6 ou 7 caracteres (JOGADOR)
+  if (inputLength >= 5 && inputLength <= 7) {
+    console.log('Buscando jogador...');
+    await buscarPerfil();
+  }
+  // BUSCAR TEAM quando tiver exatamente 8 caracteres ou mais
+  else if (inputLength >= 8) {
+    console.log('Buscando team...');
+    await buscarTeam();
+  }
+  // Menos de 5: esconder resultados
+  else {
+    profileSearchResults.classList.remove('show');
+  }
+});
 
     // Fechar ao clicar fora
     document.addEventListener('click', (e) => {
