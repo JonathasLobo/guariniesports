@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Curso - E-Sports Academy</title>
+    <link rel="stylesheet" href="./style-course.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Cadastrar Curso</h1>
+        <p class="subtitle">Compartilhe seu conhecimento em e-sports</p>
+
+        <form id="courseForm">
+            <!-- Título do Curso -->
+            <div class="form-group">
+                <label for="title">Título do Curso <span class="required">*</span></label>
+                <input type="text" id="title" placeholder="Ex: Dominando o League of Legends - Do Bronze ao Diamante" required>
+            </div>
+
+            <!-- Upload de Imagem de Capa -->
+            <div class="form-group">
+                <label>Imagem de Capa <span class="required">*</span></label>
+                <div class="file-input-wrapper">
+                    <label for="coverImage" class="file-input-label">
+                        📸 Escolher Imagem (JPG, PNG - máx 5MB)
+                    </label>
+                    <input type="file" id="coverImage" accept="image/jpeg,image/png,image/jpg" required>
+                </div>
+                <div class="file-name" id="coverImageName">Nenhum arquivo selecionado</div>
+            </div>
+
+            <!-- Descrição Curta -->
+            <div class="form-group">
+                <label for="shortDesc">Descrição Curta (para listagem) <span class="required">*</span></label>
+                <textarea id="shortDesc" maxlength="200" placeholder="Resumo atrativo do seu curso (máximo 200 caracteres)" required></textarea>
+                <div class="char-counter"><span id="shortDescCount">0</span>/200</div>
+            </div>
+
+            <!-- Descrição Longa -->
+            <div class="form-group">
+                <label for="longDesc">Descrição Completa <span class="required">*</span></label>
+                <textarea id="longDesc" rows="8" placeholder="Detalhe o conteúdo do curso, o que o aluno vai aprender, pré-requisitos, etc." required></textarea>
+            </div>
+
+            <!-- Link do Vídeo YouTube -->
+            <div class="form-group">
+                <label for="videoUrl">Link do Vídeo (YouTube) <span class="required">*</span></label>
+                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+                <div class="info-box">
+                    ⚠️ <strong>Importante:</strong> Configure seu vídeo como "Não listado" no YouTube para garantir que apenas os compradores do curso tenham acesso através da plataforma.
+                </div>
+            </div>
+
+            <!-- Upload de PDF -->
+            <div class="form-group">
+                <label>Material Complementar (PDF)</label>
+                <div class="file-input-wrapper">
+                    <label for="pdfFile" class="file-input-label">
+                        📄 Escolher PDF (máx 10MB)
+                    </label>
+                    <input type="file" id="pdfFile" accept="application/pdf">
+                </div>
+                <div class="file-name" id="pdfFileName">Nenhum arquivo selecionado</div>
+            </div>
+
+            <!-- Valor do Curso -->
+            <div class="form-group">
+                <label for="price">Valor do Curso (R$) <span class="required">*</span></label>
+                <input type="number" id="price" min="0" step="0.01" placeholder="99.90" required>
+            </div>
+
+            <!-- Formas de Recebimento -->
+            <div class="form-group">
+                <label>Formas de Recebimento <span class="required">*</span></label>
+                <div class="payment-methods">
+                    <div class="payment-option">
+                        <input type="checkbox" id="pix" value="Pix">
+                        <label for="pix">💰 Pix</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="checkbox" id="mercadopago" value="Mercado Pago">
+                        <label for="mercadopago">💳 Mercado Pago</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="checkbox" id="stripe" value="Stripe">
+                        <label for="stripe">💵 Stripe</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="checkbox" id="paypal" value="PayPal">
+                        <label for="paypal">🌐 PayPal</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                🚀 Cadastrar Curso
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Enviando seu curso...</p>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <!-- Carregar o script do Firebase e o código JavaScript -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
