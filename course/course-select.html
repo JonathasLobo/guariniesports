@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Sports Academy - Criar Conteúdo</title>
+    <link rel="stylesheet" href="./style-course.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Criar Conteúdo</h1>
+        <p class="subtitle">Escolha o tipo de conteúdo que deseja oferecer na plataforma</p>
+
+        <div class="form-group">
+            <!-- Card de Curso -->
+            <div class="file-input-wrapper" onclick="navigateTo('./course.html')" style="cursor: pointer; margin-bottom: 25px;">
+                <div class="file-input-label" style="flex-direction: column; padding: 40px 30px; gap: 15px;">
+                    <div style="font-size: 4em;">📚</div>
+                    <div style="font-size: 1.8em; font-weight: 600; color: #00f2fe;">Curso</div>
+                    <div style="color: #b0b0b0; text-align: center; margin: 10px 0;">
+                        Crie um curso completo com vídeo-aulas e material complementar para ensinar sua expertise
+                    </div>
+                    <div style="width: 100%; text-align: left; color: #d0d0d0; font-size: 0.95em;">
+                        <div style="margin: 8px 0;">✓ Vídeo-aulas no YouTube</div>
+                        <div style="margin: 8px 0;">✓ Material PDF complementar</div>
+                        <div style="margin: 8px 0;">✓ Acesso permanente</div>
+                        <div style="margin: 8px 0;">✓ Conteúdo gravado</div>
+                    </div>
+                    <button class="btn-submit" style="width: auto; padding: 12px 35px; margin-top: 15px;" onclick="event.stopPropagation(); navigateTo('./course.html')">
+                        Criar Curso
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card de Mentoria -->
+            <div class="file-input-wrapper" onclick="navigateTo('./mentoring.html')" style="cursor: pointer;">
+                <div class="file-input-label" style="flex-direction: column; padding: 40px 30px; gap: 15px;">
+                    <div style="font-size: 4em;">🎯</div>
+                    <div style="font-size: 1.8em; font-weight: 600; color: #00f2fe;">Mentoria</div>
+                    <div style="color: #b0b0b0; text-align: center; margin: 10px 0;">
+                        Ofereça sessões ao vivo individuais ou em grupo para acompanhamento personalizado
+                    </div>
+                    <div style="width: 100%; text-align: left; color: #d0d0d0; font-size: 0.95em;">
+                        <div style="margin: 8px 0;">✓ Sessões ao vivo por call</div>
+                        <div style="margin: 8px 0;">✓ Análise de partidas</div>
+                        <div style="margin: 8px 0;">✓ Acompanhamento direto</div>
+                        <div style="margin: 8px 0;">✓ Individual ou em grupo</div>
+                    </div>
+                    <button class="btn-submit" style="width: auto; padding: 12px 35px; margin-top: 15px;" onclick="event.stopPropagation(); navigateTo('./mentoring.html')">
+                        Criar Mentoria
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
