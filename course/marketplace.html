@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cursos e Mentorias de E-sports - Aprenda com os melhores jogadores">
+  <title>Cursos e Mentorias - Guariní E-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Estilos específicos do marketplace */
+    .marketplace-header {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .marketplace-header h1 {
+      color: #ffad00;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .marketplace-header p {
+      color: #aaa;
+      font-size: 1.2em;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 12px 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1em;
+      font-weight: 600;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 173, 0, 0.2);
+      border-color: #ffad00;
+      transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(45deg, #ff7500, #ffad00);
+      border-color: #ffad00;
+      color: #000;
+    }
+
+    .create-content-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background: linear-gradient(45deg, #ff7500, #ffad00);
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(255, 173, 0, 0.5);
+      transition: all 0.3s;
+      z-index: 1000;
+      display: none;
+    }
+
+    .create-content-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 173, 0, 0.7);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: #ffad00;
+      box-shadow: 0 10px 30px rgba(255, 173, 0, 0.3);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .badge-course {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+    }
+
+    .badge-mentoria {
+      background: linear-gradient(45deg, #ff7500, #ffad00);
+    }
+
+    .product-content {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-title {
+      color: #ffad00;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .product-description {
+      color: #aaa;
+      font-size: 0.95em;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+
+    .product-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .product-price {
+      color: #ffad00;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .btn-buy {
+      padding: 10px 25px;
+      background: linear-gradient(45deg, #ff7500, #ffad00);
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-buy:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 60px 20px;
+      color: #ffad00;
+      font-size: 1.2em;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 173, 0, 0.2);
+      border-top: 4px solid #ffad00;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+      font-size: 1.2em;
+    }
+
+    @media (max-width: 768px) {
+      .marketplace-header h1 {
+        font-size: 1.8em;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+
+      .create-content-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1em;
+      }
+
+      .filter-buttons {
+        padding: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Olá, visitante!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="./groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main>
+    <div class="marketplace-header">
+      <h1>🎮 Cursos e Mentorias</h1>
+      <p>Aprenda com os melhores jogadores profissionais</p>
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">📚 Todos</button>
+      <button class="filter-btn" data-filter="courses">🎓 Cursos</button>
+      <button class="filter-btn" data-filter="mentorias">🎯 Mentorias</button>
+    </div>
+
+    <div id="loadingContainer" class="loading-container">
+      <div class="spinner"></div>
+      <p>Carregando conteúdos...</p>
+    </div>
+
+    <div id="productsGrid" class="products-grid" style="display: none;"></div>
+
+    <div id="noResults" class="no-results" style="display: none;">
+      <p>😕 Nenhum conteúdo encontrado</p>
+      <p style="font-size: 0.9em; margin-top: 10px;">Seja o primeiro a criar um curso ou mentoria!</p>
+    </div>
+  </main>
+
+  <!-- Botão flutuante para criar conteúdo (apenas para usuários logados) -->
+  <button class="create-content-btn" id="createContentBtn">
+    ➕ Criar Conteúdo
+  </button>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>&copy; © 2019 Guariní E-sport. All rights reserved.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Configuração do Firebase (usar a mesma do seu projeto)
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Elementos do DOM
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+    const createContentBtn = document.getElementById('createContentBtn');
+    const loadingContainer = document.getElementById('loadingContainer');
+    const productsGrid = document.getElementById('productsGrid');
+    const noResults = document.getElementById('noResults');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    let allProducts = [];
+    let currentFilter = 'all';
+
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Filtros
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderProducts();
+      });
+    });
+
+    // Atualizar UI com base no usuário
+    async function updateUI(user) {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let displayName = user.displayName || user.email.split('@')[0];
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.displayName) {
+              displayName = userData.displayName;
+            }
+          }
+          
+          userDropdownHeader.innerHTML = `<span>Olá, ${displayName}!</span>`;
+          authLink.textContent = 'Logout';
+          authLink.onclick = (e) => {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+          createContentBtn.style.display = 'block';
+          
+        } catch (error) {
+          console.error('Erro ao carregar dados:', error);
+          userDropdownHeader.innerHTML = '<span>Olá, usuário!</span>';
+          authLink.textContent = 'Logout';
+          authLink.onclick = (e) => {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+          createContentBtn.style.display = 'block';
+        }
+      } else {
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = (e) => {
+          e.preventDefault();
+          window.location.href = '../login/login.html';
+        };
+        perfilLink.style.display = 'none';
+        createContentBtn.style.display = 'none';
+      }
+    }
+
+    async function handleLogout() {
+      if (confirm('Deseja realmente fazer logout?')) {
+        try {
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout.');
+        }
+      }
+    }
+
+    // Carregar produtos
+    async function loadProducts() {
+      try {
+        allProducts = [];
+
+        // Carregar cursos
+        const coursesSnapshot = await getDocs(collection(db, "courses"));
+        coursesSnapshot.forEach(doc => {
+          allProducts.push({
+            id: doc.id,
+            type: 'course',
+            ...doc.data()
+          });
+        });
+
+        // Carregar mentorias
+        const mentoriasSnapshot = await getDocs(collection(db, "mentorias"));
+        mentoriasSnapshot.forEach(doc => {
+          allProducts.push({
+            id: doc.id,
+            type: 'mentoria',
+            ...doc.data()
+          });
+        });
+
+        loadingContainer.style.display = 'none';
+        renderProducts();
+
+      } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        loadingContainer.innerHTML = '<p style="color: #ff6b6b;">❌ Erro ao carregar conteúdos</p>';
+      }
+    }
+
+    // Renderizar produtos
+    function renderProducts() {
+      let filtered = allProducts;
+
+      if (currentFilter === 'courses') {
+        filtered = allProducts.filter(p => p.type === 'course');
+      } else if (currentFilter === 'mentorias') {
+        filtered = allProducts.filter(p => p.type === 'mentoria');
+      }
+
+      if (filtered.length === 0) {
+        productsGrid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+      }
+
+      noResults.style.display = 'none';
+      productsGrid.style.display = 'grid';
+      productsGrid.innerHTML = '';
+
+      filtered.forEach(product => {
+        const card = createProductCard(product);
+        productsGrid.appendChild(card);
+      });
+    }
+
+    // Criar card de produto
+    function createProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      const isCourse = product.type === 'course';
+      const badgeClass = isCourse ? 'badge-course' : 'badge-mentoria';
+      const badgeText = isCourse ? '🎓 Curso' : '🎯 Mentoria';
+
+      let infoHTML = '';
+      if (isCourse) {
+        infoHTML = `
+          <div class="product-info-item">📹 Vídeo-aula completa</div>
+          <div class="product-info-item">📄 Material em PDF</div>
+        `;
+      } else {
+        infoHTML = `
+          <div class="product-info-item">🎮 ${product.gameMode || 'Jogo não especificado'}</div>
+          <div class="product-info-item">⏱️ ${product.sessionDuration || 60} minutos por sessão</div>
+          <div class="product-info-item">📊 ${product.numberOfSessions || 1} sessões</div>
+          <div class="product-info-item">💬 ${product.platform || 'Discord'}</div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div style="position: relative;">
+          <img src="${product.coverImageUrl || '../img-site/placeholder.png'}" alt="${product.title}" class="product-image">
+          <div class="product-badge ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">${product.title}</h3>
+          <p class="product-description">${product.shortDescription}</p>
+          <div class="product-info">
+            ${infoHTML}
+          </div>
+          <div class="product-footer">
+            <div class="product-price">R$ ${(product.price || product.totalValue || 0).toFixed(2).replace('.', ',')}</div>
+            <button class="btn-buy" onclick="alert('Sistema de compra em desenvolvimento!')">Comprar</button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Botão criar conteúdo
+    createContentBtn.addEventListener('click', () => {
+      window.location.href = './course-select.html';
+    });
+
+    // Monitorar autenticação e carregar produtos
+    onAuthStateChanged(auth, async (user) => {
+      await updateUI(user);
+      await loadProducts();
+    });
+  </script>
+</body>
+</html>

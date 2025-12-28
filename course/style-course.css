@@ -29,7 +29,7 @@ h1 {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 10px;
-    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    background: linear-gradient(90deg, #fbb258, #ff7500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -50,7 +50,7 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #00f2fe;
+    color: #fbb258;
     font-size: 0.95em;
 }
 
@@ -74,7 +74,7 @@ select {
 
 /* Corrigir cor das options do select */
 select option {
-    background: #1a1a2e;
+    background: #833d00;
     color: #fff;
     padding: 10px;
 }
@@ -82,7 +82,7 @@ select option {
 select option:hover,
 select option:focus,
 select option:checked {
-    background: #00f2fe;
+    background: #fe8a01;
     color: #000;
 }
 
@@ -91,7 +91,7 @@ input[type="number"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #00f2fe;
+    border-color: #ffad00;
     background: rgba(255, 255, 255, 0.15);
 }
 
@@ -133,8 +133,8 @@ textarea {
     align-items: center;
     justify-content: center;
     padding: 15px;
-    background: rgba(0, 242, 254, 0.1);
-    border: 2px dashed #00f2fe;
+    background: rgba(254, 216, 0, 0.1);
+    border: 2px dashed #fbb258;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s;
@@ -142,8 +142,8 @@ textarea {
 }
 
 .file-input-label:hover {
-    background: rgba(0, 242, 254, 0.2);
-    border-color: #4facfe;
+    background: rgba(254, 186, 0, 0.2);
+    border-color: #fe8a01;
 }
 
 .file-input-wrapper input[type="file"] {
@@ -184,7 +184,7 @@ textarea {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: #00f2fe;
+    accent-color: #ffad00;
 }
 
 .payment-option label {
@@ -197,7 +197,7 @@ textarea {
 .btn-submit {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    background: linear-gradient(90deg, #fbb258, #fe8a01);
     border: none;
     border-radius: 10px;
     color: #fff;
@@ -210,7 +210,7 @@ textarea {
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px 0 rgba(0, 242, 254, 0.4);
+    box-shadow: 0 5px 20px 0 rgba(254, 165, 0, 0.4);
 }
 
 .btn-submit:disabled {
@@ -228,9 +228,9 @@ textarea {
 }
 
 .message.success {
-    background: rgba(46, 213, 115, 0.2);
-    border: 1px solid #2ed573;
-    color: #2ed573;
+    background: rgba(213, 210, 46, 0.2);
+    border: 1px solid #fe8a01;
+    color: #fbb258;
 }
 
 .message.error {
@@ -258,7 +258,7 @@ textarea {
 
 .spinner {
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid #00f2fe;
+    border-top: 3px solid #ffad00;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -297,5 +297,18 @@ textarea {
 
 .file-input-wrapper[onclick]:hover .file-input-label {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px 0 rgba(0, 242, 254, 0.3);
+    box-shadow: 0 10px 30px 0 rgba(254, 237, 0, 0.3);
+}
+
+.btn-back {
+    /* Estilo glassmorphism */
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #ff7500;
+}
+
+.btn-back:hover {
+    /* Efeito hover com movimento para esquerda */
+    transform: translateX(-5px);
+    border-color: #ff7500;
 }
