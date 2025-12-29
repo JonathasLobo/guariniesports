@@ -936,46 +936,46 @@ const gameHeldItens = {
 }
 
 const gameHeldItensStatus = {
-	"accelbracer": ['ATK +15','CDR +4.5%'],
-	"aeoscookie": ['HP +240'],
-	"amuletcoin": ['HP +240','Speed +150'],
-	"assaultvest": ['HP +270','SpDEF +51'],
-	"attackweight": ['ATK +18'],
-  "bigroot": ['HP +450'],
-	"buddybarrier": ['HP +450'],
-	"chargingcharm": ['ATK +15','Speed +120'],
+	"accelbracer": ['ATK +17.5','CDR +3.5%'],
+	"aeoscookie": ['HP +280'],
+	"amuletcoin": ['HP +280','Speed +175'],
+	"assaultvest": ['HP +315','SpDEF +59.5'],
+	"attackweight": ['ATK +21'],
+  "bigroot": ['HP +525'],
+	"buddybarrier": ['HP +525'],
+	"chargingcharm": ['ATK +17.5','Speed +140'],
   "charizarditex": [],
   "charizarditey": [],
-	"choicescarf": ['AtkSPD +7.5%','Speed +150'],
-	"choicespecs": ['SpATK +39'],
-	"curseincense": ['SpATK +39'],
-	"cursebangle": ['ATK +24'],
-	"draincrown": ['HP +120','ATK +18'],
-	"drivelens": ['SpATK +24','CDR +4.5%'],
-	"energyamplifier": ['EnergyRate +6%','CDR +4.5%'],
-	"expshare": ['HP +240','Speed +150'],
-	"floatstone": ['ATK +24','Speed +150'],
-	"focusband": ['DEF +30','SpDEF +30'],
+	"choicescarf": ['AtkSPD +8.75%','Speed +175'],
+	"choicespecs": ['SpATK +44'],
+	"curseincense": ['SpATK +45.5'],
+	"cursebangle": ['ATK +28'],
+	"draincrown": ['HP +140','ATK +21'],
+	"drivelens": ['SpATK +28','CDR +3.5%'],
+	"energyamplifier": ['EnergyRate +7%','CDR +5.25%'],
+	"expshare": ['HP +420','Speed +175'],
+	"floatstone": ['ATK +28','Speed +175'],
+	"focusband": ['DEF +35','SpDEF +35'],
   "gyaradosite": [],
-	"leftovers": ['HP +360','HPRegen +9'],
+	"leftovers": ['HP +420','HPRegen +10.5'],
   "lucarionite": [],
   "mewtwonitex": [],
   "mewtwonitey": [],
-	"muscleband": ['ATK +15','AtkSPD +7.5%'],
-	"rapidscarf": ['ATK +12','AtkSPD +9%'],
-	"razorclaw": ['ATK +15','CritRate +2.1%'],
-	"rescuehood": ['DEF +30','SpDEF +30'],
-	"resonantguard": ['HP +450','HPRegen +18'],
-	"rockyhelmet": ['HP +270','Def +51'],
+	"muscleband": ['ATK +17.5','AtkSPD +8.75%'],
+	"rapidscarf": ['ATK +14','AtkSPD +10.5%'],
+	"razorclaw": ['ATK +17.5','CritRate +2.35%'],
+	"rescuehood": ['DEF +35','SpDEF +35'],
+	"resonantguard": ['HP +525','HPRegen +21'],
+	"rockyhelmet": ['HP +315','Def +59.5'],
 	"rustedsword": [],
-	"scopelens": ['CritRate +6%','CritDmg +12%'],
-	"scoreshield": ['HP +450'],
-	"shellbell": ['SpATK +24','CDR +4.5%'],
-	"slickspoon": ['HP +210','SpATK +30'],
-	"spatkspecs": ['SpATK +24'],
-  "tenacitybelt": ['DEF +30','SpDEF +30'],
-	"weaknesspolice": ['HP +210','ATK +15'],
-	"wiseglasses": ['SpATK +39'],
+	"scopelens": ['CritRate +7%','CritDmg +14%'],
+	"scoreshield": ['HP +525'],
+	"shellbell": ['SpATK +28','CDR +5.25%'],
+	"slickspoon": ['HP +245','SpATK +35'],
+	"spatkspecs": ['SpATK +28'],
+  "tenacitybelt": ['DEF +35','SpDEF +35'],
+	"weaknesspolice": ['HP +235','ATK +17.5'],
+	"wiseglasses": ['SpATK +44'],
 }
 
 const gameHeldItensPassive = {
@@ -3195,21 +3195,21 @@ const levelStats = {
   },
 
     "decidueye": {
-    1: { HP: 3000, ATK: 125, DEF: 50, SpATK: 20, SpDEF: 30, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
-    2: { HP: 3031, ATK: 130, DEF: 53, SpATK: 22, SpDEF: 33, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.57 , Speed: 3600 },
-    3: { HP: 3068, ATK: 136, DEF: 57, SpATK: 24, SpDEF: 36, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.46 , Speed: 3600 },
-    4: { HP: 3112, ATK: 143, DEF: 62, SpATK: 27, SpDEF: 40, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 15.73 , Speed: 3600 },
-    5: { HP: 3273, ATK: 167, DEF: 78, SpATK: 37, SpDEF: 55, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 23.96 , Speed: 3750 },
-    6: { HP: 3337, ATK: 177, DEF: 85, SpATK: 41, SpDEF: 61, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 27.24 , Speed: 3750 },
-    7: { HP: 3629, ATK: 221, DEF: 115, SpATK: 58, SpDEF: 88, CritRate: 15 , CDR: 0 , Lifesteal: 10 , AtkSPD: 42.17 , Speed: 3900 },
-    8: { HP: 3721, ATK: 235, DEF: 124, SpATK: 64, SpDEF: 97, CritRate: 15 , CDR: 0 , Lifesteal: 10 , AtkSPD: 46.89 , Speed: 3900 },
-    9: { HP: 3832, ATK: 252, DEF: 135, SpATK: 71, SpDEF: 107, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 52.55 , Speed: 4050 },
-    10: { HP: 3965, ATK: 272, DEF: 149, SpATK: 79, SpDEF: 119, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 59.34 , Speed: 4050 },
-    11: { HP: 4125, ATK: 296, DEF: 165, SpATK: 89, SpDEF: 134, CritRate: 30 , CDR: 0 , Lifesteal: 20 , AtkSPD: 67.5 , Speed: 4200 },
-    12: { HP: 4316, ATK: 325, DEF: 185, SpATK: 100, SpDEF: 152, CritRate: 30 , CDR: 0 , Lifesteal: 20 , AtkSPD: 77.28 , Speed: 4200 },
-    13: { HP: 4546, ATK: 359, DEF: 208, SpATK: 114, SpDEF: 173, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 89.02 , Speed: 4200 },
-    14: { HP: 4821, ATK: 400, DEF: 236, SpATK: 130, SpDEF: 199, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 103.1 , Speed: 4200 },
-    15: { HP: 5152, ATK: 450, DEF: 270, SpATK: 150, SpDEF: 230, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 120.00 , Speed: 4200 },
+    1: { HP: 3200, ATK: 125, DEF: 50, SpATK: 20, SpDEF: 76, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3600 },
+    2: { HP: 3240, ATK: 130, DEF: 53, SpATK: 22, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.57 , Speed: 3600 },
+    3: { HP: 3288, ATK: 135, DEF: 57, SpATK: 24, SpDEF: 84, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.46 , Speed: 3600 },
+    4: { HP: 3346, ATK: 142, DEF: 62, SpATK: 27, SpDEF: 89, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 15.73 , Speed: 3600 },
+    5: { HP: 3556, ATK: 166, DEF: 78, SpATK: 37, SpDEF: 108, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 23.96 , Speed: 3750 },
+    6: { HP: 3639, ATK: 176, DEF: 85, SpATK: 41, SpDEF: 116, CritRate: 15 , CDR: 0 , Lifesteal: 5 , AtkSPD: 27.24 , Speed: 3750 },
+    7: { HP: 4019, ATK: 220, DEF: 115, SpATK: 58, SpDEF: 150, CritRate: 15 , CDR: 0 , Lifesteal: 10 , AtkSPD: 42.17 , Speed: 3900 },
+    8: { HP: 4139, ATK: 234, DEF: 124, SpATK: 64, SpDEF: 161, CritRate: 15 , CDR: 0 , Lifesteal: 10 , AtkSPD: 46.89 , Speed: 3900 },
+    9: { HP: 4283, ATK: 251, DEF: 135, SpATK: 71, SpDEF: 174, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 52.55 , Speed: 4050 },
+    10: { HP: 4456, ATK: 271, DEF: 149, SpATK: 79, SpDEF: 190, CritRate: 30 , CDR: 0 , Lifesteal: 15 , AtkSPD: 59.34 , Speed: 4050 },
+    11: { HP: 4664, ATK: 295, DEF: 165, SpATK: 89, SpDEF: 209, CritRate: 30 , CDR: 0 , Lifesteal: 20 , AtkSPD: 67.5 , Speed: 4200 },
+    12: { HP: 4913, ATK: 324, DEF: 185, SpATK: 100, SpDEF: 231, CritRate: 30 , CDR: 0 , Lifesteal: 20 , AtkSPD: 77.28 , Speed: 4200 },
+    13: { HP: 5211, ATK: 358, DEF: 208, SpATK: 114, SpDEF: 258, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 89.02 , Speed: 4200 },
+    14: { HP: 5570, ATK: 400, DEF: 236, SpATK: 130, SpDEF: 291, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 103.1 , Speed: 4200 },
+    15: { HP: 6000, ATK: 450, DEF: 270, SpATK: 150, SpDEF: 330, CritRate: 30 , CDR: 0 , Lifesteal: 25 , AtkSPD: 120.00 , Speed: 4200 },
   },
 
     "delphox": {
@@ -6523,7 +6523,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Hydro Pump",
-      cooldown: 6,
+      cooldown: 5.5,
       effects: ["Stun"],
       buff: {
         Speed: "30%"
@@ -6531,7 +6531,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage (3 Hits)",
-          formula: (SPATK, Level) => 0.39 * SPATK + 8 * (Level - 1) + 280,
+          formula: (SPATK, Level) => 0.43 * SPATK + 9 * (Level - 1) + 306,
           type: "special"
         },
         {
@@ -6553,7 +6553,7 @@ const skillDamage = {
     },
     "s21": {
       name: "Surf",
-      cooldown: 7.5,
+      cooldown: 7,
       effects: ["Unstoppable"],
       buff:{
       },
@@ -6563,9 +6563,14 @@ const skillDamage = {
           formula: (SPATK, Level) => 1.25 * SPATK + 18 * (Level - 1) + 800,
           type: "special"
         },
+        {
+          label: "Shield",
+          formula: (SPATK, Level) => 2.43 * SPATK + 0 * (Level - 1) + 243,
+          type: "special"
+        },
 		{
           label: "Shield Skill Plus",
-          formula: (SPATK, Level) => 2.43 * SPATK + 14 * (Level - 1) + 243,
+          formula: (SPATK, Level) => 2.92 * SPATK + 0 * (Level - 1) + 290,
           type: "special"
         }
       ]
@@ -7723,6 +7728,11 @@ const skillDamage = {
             HPRegen: 3
           },
           formulas: [
+            {
+          label: "Damage - Added to Move",
+          formula: (ATK, Level) => 0.85 * ATK + 3 * (Level - 1) + 96,
+          type: "physical"
+        },
           ]
         },
         "passive1": {
@@ -7734,14 +7744,9 @@ const skillDamage = {
             HPRegen: 6
           },
           formulas: [
-          {
-          label: "Damage - Added to Move",
-          formula: (ATK, Level) => 1.06 * ATK + 4 * (Level - 1) + 120,
-          type: "physical"
-        },
         {
           label: "Damage - Added to Move (Mega)",
-          formula: (ATK, Level) => 2.12 * ATK + 8 * (Level - 1) + 240,
+          formula: (ATK, Level) => 1.7 * ATK + 6 * (Level - 1) + 192,
           type: "physical"
         },
           ]
@@ -9217,7 +9222,7 @@ const skillDamage = {
         },
         {
           label: "Damage - Exiting Stitch Area",
-          formula: (ATK, Level) => 0.496 * ATK + 1 * (Level - 1) + 40,
+          formula: (ATK, Level) => 0.99 * ATK + 2 * (Level - 1) + 80,
           type: "physical"
         }
       ]
@@ -9473,7 +9478,7 @@ const skillDamage = {
           formulas: [
           {
             label: "Damage - Additional",
-            formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 0,
+            formula: (ATK, Level) => 1.19 * ATK + 0 * (Level - 1) + 0,
             type: "physical"
           },
           {
@@ -9538,7 +9543,7 @@ const skillDamage = {
       formulas: [
         {
           label: "Damage",
-          formula: (ATK, Level) => 2.97 * ATK + 15 * (Level - 1) + 450,
+          formula: (ATK, Level) => 2.73 * ATK + 14 * (Level - 1) + 414,
           type: "physical"
         },
         {
@@ -12682,7 +12687,7 @@ const skillDamage = {
       cooldown: 12,
       effects: ["Stun", "Burn"],
       buff:{
-        ATK: "15%",
+        ATK: "25%",
         Speed: "30%"
       },
       debuffs: {
@@ -12732,9 +12737,9 @@ const skillDamage = {
           formula: (ATK, Level) => 2.05 * ATK + 4 * (Level - 1) + 208,
           type: "physical",
         },
-                {
+        {
           label: "Shield",
-          formula: (HP, Level) => 0.3 * HP,
+          formula: (HP, Level) => 0.33 * HP,
           type: "hp",
         }
       ]
@@ -12799,7 +12804,7 @@ const skillDamage = {
         },
 		{
           label: "Healing Skill Plus",
-          formula: (ATK, Level) => 0.7 * ATK + 0 * (Level - 1) + 100,
+          formula: (ATK, Level) => 0.77 * ATK + 0 * (Level - 1) + 110,
           type: "physical"
         }
       ]
@@ -13058,7 +13063,7 @@ const skillDamage = {
     },
     "s12": {
       name: "Acrobatics",
-      cooldown: 7,
+      cooldown: 6,
       buff:{
         otherSkillsCooldownReduction: {
           s22: "40%"
@@ -13112,14 +13117,14 @@ const skillDamage = {
       name: "Liquidation",
       cooldown: 6,
       buff:{
-        Speed: "-60%",
+        Speed: "-40%",
       },
       skillDamageMultiplier: 1.20,
       affectsBasicAttack: true,
       formulas: [
 		{
 		  label: "Damage (per bullet)",
-          formula: (SPATK, Level) => 0.142 * SPATK + 1 * (Level - 1) + 4,
+          formula: (SPATK, Level) => 0.15 * SPATK + 1 * (Level - 1) + 46,
           type: "special"
 		}
       ]
@@ -14078,12 +14083,6 @@ const skillDamage = {
       buff:{
         CritRate: 10
       },
-      buffPlus: {
-        levelRequired: 13,
-        buffs: {
-          ATK: 40
-        }
-      },
       formulas: [
 		{
           label: "Damage",
@@ -14129,7 +14128,7 @@ const skillDamage = {
     },
     "s22": {
       name: "Submission",
-      cooldown: 9,
+      cooldown: 8,
       effects: ["Unstoppable"],
       buff: {
         Speed: "70%",
@@ -14161,8 +14160,8 @@ const skillDamage = {
       buffs: {
         Speed: "40%",
         ATK: "25%",
-        DEF: 250,
-        SpDEF: 250,
+        DEF: 300,
+        SpDEF: 300,
         AtkSPD: 35,
         Shield: 20
       }
@@ -15505,7 +15504,7 @@ const skillDamage = {
       name: "Trick Room",
       cooldown: 7,
       buff:{
-        DmgTaken: 70 
+        DmgTaken: 50 
       },
       selfBuffPlus: {
         levelRequired: 13,
@@ -15704,7 +15703,7 @@ const skillDamage = {
 		formulas: [
         {
           label: "Damage - Base per meteorite",
-          formula: (SpATK, Level) => 0.7 * SpATK + 5 * (Level - 1) + 500,
+          formula: (SpATK, Level) => 0.7 * SpATK + 5 * (Level - 1) + 400,
           type: "special"
         }
 	 ]
@@ -17851,12 +17850,12 @@ const skillDamage = {
       formulas: [
 	    {
           label: "Damage",
-          formula: (SpATK, Level) => 0.55 * SpATK + 4 * (Level - 1) + 270,
+          formula: (SpATK, Level) => 0.7 * SpATK + 6 * (Level - 1) + 351,
           type: "special"
         },
 		{
           label: "Damage Skill Plus",
-          formula: (SpATK, Level) => 0.66 * SpATK + 5 * (Level - 1) + 324,
+          formula: (SpATK, Level) => 0.827 * SpATK + 8 * (Level - 1) + 417,
           type: "special"
         }
       ]
@@ -17893,7 +17892,7 @@ const skillDamage = {
       cooldown: 5,
       buff: {},
       debuffs: {
-        Speed: 20
+        Speed: 30
       },
       debuffLabels: {
         Speed: "(DEBUFF) MoveSpeed Reduction"
@@ -17912,14 +17911,14 @@ const skillDamage = {
         },
 		{
           label: "Damage - Pillar break",
-          formula: (SpATK, Level) => 0.75 * SpATK + 3 * (Level - 1) + 360,
+          formula: (SpATK, Level) => 0.881 * SpATK + 5 * (Level - 1) + 431,
           type: "special"
         }
       ]
     },
 	"ult": {
 		name: "Endless Ice Spikes",
-    cooldown: 112,
+    cooldown: 100,
     buff: {},
     buffPlus: {
       levelRequired: 9,
@@ -19491,7 +19490,7 @@ const skillDamage = {
           formulas: [
           {
           label: "Healing",
-          formula: (SPATK, Level) => 3 * SPATK + 0 * (Level - 1) + 225,
+          formula: (SPATK, Level) => 2.4 * SPATK + 0 * (Level - 1) + 180,
           type: "special"
 		      },
           ]
@@ -19534,17 +19533,17 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - First Hit",
-          formula: (SpATK, Level) => 0.9 * SpATK + 6 * (Level - 1) + 180,
+          formula: (SpATK, Level) => 0.72 * SpATK + 6 * (Level - 1) + 180,
           type: "special"
         },
         {
           label: "Damage - Stream (per Tick up to 5x)",
-          formula: (SpATK, Level) => 0.3 * SpATK + 2 * (Level - 1) + 60,
+          formula: (SpATK, Level) => 0.24 * SpATK + 1 * (Level - 1) + 60,
           type: "special"
         },
         {
           label: "Damage - Last Hit",
-          formula: (SpATK, Level) => 0.9 * SpATK + 6 * (Level - 1) + 180,
+          formula: (SpATK, Level) => 0.72 * SpATK + 6 * (Level - 1) + 180,
           type: "special"
         },
       ]
@@ -19555,7 +19554,7 @@ const skillDamage = {
       buff: {
       },
       debuffs: {
-        Speed: 40
+        Speed: 30
       },
       debuffLabels: {
         Speed: "(DEBUFF) MoveSpeed Reduction"
@@ -19563,7 +19562,7 @@ const skillDamage = {
       formulas: [
 	    {
           label: "Damage",
-          formula: (SpATK, Level) => 2.2 * SpATK + 16 * (Level - 1) + 440,
+          formula: (SpATK, Level) => 1.6 * SpATK + 16 * (Level - 1) + 440,
           type: "special"
         }
       ]
@@ -19575,12 +19574,12 @@ const skillDamage = {
       formulas: [
 		{
           label: "Heal",
-          formula: (SpATK, Level) => 0.6 * SpATK + 0 * (Level - 1) + 0,
+          formula: (SpATK, Level) => 0.528 * SpATK + 0 * (Level - 1) + 0,
           type: "special"
         },
 		{
           label: "Heal Skill Plus",
-          formula: (SpATK, Level) => 0.72 * SpATK + 0 * (Level - 1) + 0,
+          formula: (SpATK, Level) => 0.64 * SpATK + 0 * (Level - 1) + 0,
           type: "special"
         },
       ]
@@ -19590,7 +19589,7 @@ const skillDamage = {
       cooldown: 6.5,
       buff: {
         Speed: "60%",
-        DmgTaken: 25
+        DmgTaken: 15
       },
       buffPlus: {
         levelRequired: 12,
@@ -19601,12 +19600,12 @@ const skillDamage = {
       formulas: [
 		{
           label: "Damage - First Hit",
-          formula: (SpATK, Level) => 1.68 * SpATK + 12 * (Level - 1) + 350,
+          formula: (SpATK, Level) => 1.2 * SpATK + 12 * (Level - 1) + 350,
           type: "special"
         },
         {
           label: "Damage - Second Hit",
-          formula: (SpATK, Level) => 0.84 * SpATK + 6 * (Level - 1) + 175,
+          formula: (SpATK, Level) => 0.6 * SpATK + 6 * (Level - 1) + 175,
           type: "special"
         },
         {
