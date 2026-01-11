@@ -60,6 +60,7 @@ const pokemonBaseImages = {
     mamoswine: 'mamoswine-left-bg',
     megalucario: 'megalucario-left-bg',
 	meowscara: 'meowscara-left-bg',
+  meowth: 'meowth-left-bg',
 	metagross: 'metagross-left-bg',
     mew: 'mew-left-bg',
 	mewtwox: 'mewtwox-left-bg',
@@ -147,6 +148,7 @@ const pokemonRoles = {
     mamoswine: 'Defender',
     megalucario: 'All Rounder',
 	meowscara: 'Speedster',
+  meowth: 'Speedster',
 	metagross: 'All Rounder',
     mew: 'Attacker',
 	mewtwox: 'All Rounder',
@@ -236,6 +238,7 @@ const pokemonLanes = {
     mamoswine: 'Bot',
     megalucario: 'Top',
 	meowscara: 'Jungle',
+  meowth: 'Jungle',
 	metagross: 'Top',
     mew: 'Bot',
 	mewtwox: 'Top',
@@ -324,6 +327,7 @@ const pokemonBasedType  = {
     mamoswine: 'ATK',
     megalucario: 'ATK',
 	meowscara: 'ATK',
+  meowth: 'ATK',
 	metagross: 'ATK',
     mew: 'SpATK',
 	mewtwox: 'ATK',
@@ -682,6 +686,12 @@ const pokemonSkills = {
 		"s12": "Night Slash",
 		"s21": "Double Team",
 		"s22": "Trailblaze"
+    },
+  "meowth": {
+		"s11": "Pay Day",
+		"s12": "Fury Swipes",
+		"s21": "Feint Attack",
+		"s22": "Assurance"
     },
 	"metagross": {
 		"s11": "Meteor Mash",
@@ -1057,6 +1067,7 @@ const defaultHeldItems = {
     mamoswine: ['focusband','expshare','weaknesspolice'],
     megalucario: ['lucarionite','attackweight','weaknesspolice'],
 	meowscara: ['scopelens','attackweight','razorclaw'],
+  meowth: ['scopelens','attackweight','razorclaw'],
 	metagross: ['muscleband','attackweight','weaknesspolice'],
     mew: ['slickspoon','wiseglasses','choicespecs'],
 	mewtwox: ['mewtwonitex','rapidscarf','razorclaw'],
@@ -1836,6 +1847,20 @@ const baseStats = {
 		"Speed": 4250,
 		"CritDmg": 0,
 	},
+  "meowth": {
+		"HP": 7000,
+		"ATK": 630,
+		"DEF": 300,
+		"SpATK": 116,
+		"SpDEF": 300,
+		"CritRate": 10,
+		"CDR": 20,
+		"AtkSPD": 40,
+		"HPRegen": 0,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
 	"metagross": {
 		"HP": 8150,
 		"ATK": 530,
@@ -2371,6 +2396,7 @@ const pokemonKillsRate = {
 	"mamoswine": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
   "megalucario": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
+  "meowth": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
 	"mewtwox": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2458,6 +2484,7 @@ const pokemonAssistRate = {
 	"mamoswine": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
   "megalucario": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "meowth": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"mewtwox": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2545,6 +2572,7 @@ const pokemonDamageDoneRate = {
 	"mamoswine": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
   "megalucario": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
+  "meowth": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"mewtwox": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
@@ -2632,6 +2660,7 @@ const pokemonDamageTakenRate = {
 	"mamoswine": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
   "megalucario": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"meowscara": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
+  "meowth": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"metagross": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"mew": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"mewtwox": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2719,6 +2748,7 @@ const pokemonDamageHealedRate = {
 	"mamoswine": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
   "megalucario": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"meowscara": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
+  "meowth": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"metagross": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"mew": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"mewtwox": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
@@ -2806,6 +2836,7 @@ const pokemonTierListUDB = {
     mamoswine: 'B+',
     megalucario: 'S',
 	meowscara: 'B+',
+  meowth: 'TBD',
 	metagross: 'B+',
     mew: 'S',
 	mewtwox: 'D',
@@ -3768,6 +3799,24 @@ const levelStats = {
     13: { HP: 5536, ATK: 498, DEF: 258, SpATK: 87, SpDEF: 177, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 31.55 , Speed: 4250 },
     14: { HP: 5970, ATK: 558, DEF: 295, SpATK: 99, SpDEF: 201, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 35.39 , Speed: 4250 },
     15: { HP: 6490, ATK: 630, DEF: 340, SpATK: 114, SpDEF: 230, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 40.00 , Speed: 4250 },
+  },
+
+  "meowth": {
+    1: { HP: 3320, ATK: 178, DEF: 72, SpATK: 20, SpDEF: 72, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3452, ATK: 194, DEF: 80, SpATK: 23, SpDEF: 80, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.07 , Speed: 3700 },
+    3: { HP: 3596, ATK: 212, DEF: 89, SpATK: 27, SpDEF: 89, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.25 , Speed: 3700 },
+    4: { HP: 3755, ATK: 231, DEF: 99, SpATK: 31, SpDEF: 99, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.55 , Speed: 3700 },
+    5: { HP: 3930, ATK: 253, DEF: 110, SpATK: 36, SpDEF: 110, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 14.97 , Speed: 3850 },
+    6: { HP: 4123, ATK: 277, DEF: 122, SpATK: 41, SpDEF: 122, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 16.54 , Speed: 3850 },
+    7: { HP: 4335, ATK: 303, DEF: 135, SpATK: 46, SpDEF: 135, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 18.27 , Speed: 4000 },
+    8: { HP: 4568, ATK: 331, DEF: 149, SpATK: 53, SpDEF: 149, CritRate: 5 , CDR: 10 , Lifesteal: 0 , AtkSPD: 20.17 , Speed: 4000 },
+    9: { HP: 4824, ATK: 363, DEF: 165, SpATK: 59, SpDEF: 165, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 22.26 , Speed: 4150 },
+    10: { HP: 5106, ATK: 397, DEF: 183, SpATK: 67, SpDEF: 183, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 24.56 , Speed: 4150 },
+    11: { HP: 5416, ATK: 435, DEF: 202, SpATK: 75, SpDEF: 202, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 27.09 , Speed: 4300 },
+    12: { HP: 5757, ATK: 477, DEF: 223, SpATK: 84, SpDEF: 223, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 29.87 , Speed: 4300 },
+    13: { HP: 6133, ATK: 523, DEF: 246, SpATK: 93, SpDEF: 246, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 32.93 , Speed: 4300 },
+    14: { HP: 6545, ATK: 574, DEF: 272, SpATK: 104, SpDEF: 272, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 36.29 , Speed: 4300 },
+    15: { HP: 7000, ATK: 630, DEF: 300, SpATK: 116, SpDEF: 300, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 40.00 , Speed: 4300 },
   },
 
   "metagross": {
@@ -5041,6 +5090,19 @@ const pokemonRatings = {
     Smite: 3,
     Sweep: 1.5
   },
+  meowth: {
+    Attack: 4.5,
+    Endure: 1.5,
+    Mobility: 4,
+    Score: 2,
+    Support: 0,
+    Invade: 3,
+    Farm: 3.5,
+    Gank: 4,
+    CC: 4,
+    Smite: 2.5,
+    Sweep: 1.5
+  },
   metagross: {
     Attack: 3.5,
     Endure: 4,
@@ -5526,6 +5588,7 @@ const pokemonRoutesEffectiveness = {
   machamp: { top: 50, jungle: 20, bot: 30 },
   mamoswine: { top: 30, jungle: 10, bot: 60 },
   meowscara: { top: 20, jungle: 60, bot: 20 },
+  meowth: { top: 20, jungle: 60, bot: 20 },
   metagross: { top: 50, jungle: 50, bot: 0 },
   mew: { top: 10, jungle: 25, bot: 65 },
   mewtwox: { top: 70, jungle: 10, bot: 20 },
@@ -14638,6 +14701,181 @@ const skillDamage = {
 	}
   },
 
+  	"meowth": {
+    "passive": {
+          name: "Pickup",
+          description: "Steals battle items from enemies or wild Pokémon, and gains movement speed when moving toward or collecting Aeos energy/coins.",
+          effects: ["Invisible"],
+          buff: {
+            Speed: "40%",
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        },
+        {
+          label: "Damage - Boosted ",
+          formula: (ATK, Level) => 1.3 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+
+    "s11": {
+      name: "Pay Day",
+      cooldown: 6,
+      buff: {},
+      debuffs: {
+        Speed: 30
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuff: {
+        CooldownFlat: 4
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.95 * ATK + 0 * (Level - 1) + 292,
+          type: "physical"
+        },
+		{
+          label: "Damage - Skill Plus",
+          formula: (ATK, Level) => 2.34 * ATK + 0 * (Level - 1) + 351,
+          type: "physical"
+        }
+      ]
+    },
+    "s12": {
+      name: "Fury Swipes",
+      cooldown: 5,
+      buff: {
+      },
+      otherSkillsCooldownReduction :{
+        s21: 1,
+        s22: 1
+      },
+      formulas: [
+		{
+          label: "Damage - First Hit",
+          formula: (ATK, Level) => 1.1 * ATK + 0 * (Level - 1) + 168,
+          type: "physical"
+        },
+        	{
+          label: "Damage - Subsequent Hits",
+          formula: (ATK, Level) => 0.55 * ATK + 0 * (Level - 1) + 84,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 0.36 * ATK + 0 * (Level - 1) + 54,
+          type: "physical"
+        },
+        {
+          label: "Shield - Additional (Per Hit)",
+          formula: (ATK, Level) => 0.12 * ATK + 0 * (Level - 1) + 18,
+          type: "physical"
+        },
+        {
+          label: "Damage - First Hit Skill Plus",
+          formula: (ATK, Level) => 1.32 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Damage - Subsequent Hits Skill Plus",
+          formula: (ATK, Level) => 0.66 * ATK + 0 * (Level - 1) + 100,
+          type: "physical"
+        },
+      ]
+    },
+    "s21": {
+      name: "Feint Attack",
+      cooldown: 7,
+      effects: ["Stun"],
+      buff:{
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 2.6 * ATK + 0 * (Level - 1) + 390,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 1.92 * ATK + 0 * (Level - 1) + 288,
+          type: "physical"
+        },
+        {
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 2.32 * ATK + 0 * (Level - 1) + 346,
+          type: "physical"
+        },
+      ]
+    },
+    "s22": {
+      name: "Assurance",
+      cooldown: 5,
+      buff: {
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
+      formulas: [
+		{
+          label: "Damage (Less Than 5 Coin Marks)",
+          formula: (ATK, Level) => 1.4 * ATK + 0 * (Level - 1) + 210,
+          type: "physical"
+        },
+        {
+          label: "Damage (5 Coin Marks)",
+          formula: (ATK, Level) => 2.8 * ATK + 0 * (Level - 1) + 420,
+          type: "physical"
+        },
+        {
+          label: "Heal",
+          formula: (ATK, Level) => 0.35 * ATK + 0 * (Level - 1) + 52,
+          type: "physical"
+        },
+        {
+          label: "Heal - Additional (Per Coin Mark)",
+          formula: (ATK, Level) => 0.35 * ATK + 0 * (Level - 1) + 52,
+          type: "physical"
+        },
+      ]
+    },
+	"ult": {
+		name: "Gold Coin Barrage",
+    cooldown: 100,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable"],
+      buffs:{
+        Speed: "-30%",
+        Shield: 20
+      },
+    },
+		formulas: [
+        {
+          label: "Damage - Per Coin (10x)",
+          formula: (ATK, Level) => 0.91 * ATK + 0 * (Level - 1) + 137,
+          type: "physical"
+        }
+	 ]
+	}
+  },
+
   	"metagross": {
     "passive": {
           name: "Clear Body",
@@ -20943,6 +21181,10 @@ const skillDamage = {
     skin1: "Phantom Thief Style",
     skin2: "Dancer Style",
     skin3: "Beach Style"
+  },
+  meowth: {
+    default: "Default",
+    skin1: "Happi Style",
   },
   metagross: {
     default: "Default",
