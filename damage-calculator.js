@@ -933,7 +933,9 @@ async function loadAllMetaData() {
       'meta24-11-2025.json',
       'meta08-12-2025.json',
       'meta15-12-2025.json',
-      'meta22-12-2025.json'
+      'meta22-12-2025.json',
+      'meta29-12-2025.json',
+      'meta12-01-2026.json',
       // Adicione mais arquivos conforme criar
       // 'meta17-11-2025.json',
       // 'meta24-11-2025.json',
@@ -1261,7 +1263,7 @@ function renderMetaComparison(pokemonName) {
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
-    const fileName = `meta22-12-2025.json`;
+    const fileName = `meta12-01-2026.json`;
     
     console.log(`🔍 Tentando carregar: ${fileName}`);
     console.log(`📍 URL completa: ${window.location.origin}/${fileName}`);
