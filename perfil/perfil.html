@@ -138,6 +138,47 @@
             </button>
             <span class="share-feedback" id="shareFeedback" style="display: none;">✅ Copied!</span>
           </div>
+<!-- Team Section -->
+<div class="perfil-team-container">
+  
+  <!-- Botão Create Team (mostrado quando não tem time) -->
+  <button class="btn-create-team" id="btnCreateTeam" style="display: none;">
+    ⚔️ Create Team
+  </button>
+  
+  <!-- Display do Time (mostrado quando tem time) -->
+  <div class="team-display" id="teamDisplay" style="display: none;">
+    <div class="team-display-logo" id="teamLogo">
+      <img src="" alt="Team Logo">
+    </div>
+    <div class="team-display-info">
+      <p class="team-display-name" id="teamName">-</p>
+      <p class="team-display-id" id="teamId">ID: -</p>
+    </div>
+    <button class="btn-view-team" id="btnViewTeam" 
+        onclick="window.location.href='../teams/team-view.html?teamId=' + document.getElementById('teamId').textContent.replace('ID: ', '').split(' • ')[1]">
+      👁️ View Team
+    </button>
+  </div>
+</div>
+
+<!-- Team Invite (aparece entre Share Profile e Last Views) -->
+<div class="team-invite-container" id="teamInviteContainer" style="display: none;">
+  <h4 class="team-invite-header">
+    📧 Team Invitation
+  </h4>
+  <p class="team-invite-text" id="inviteText">
+    You have been invited to join team <strong id="inviteTeamName">-</strong>
+  </p>
+  <div class="team-invite-actions">
+    <button class="btn-accept-invite" id="btnAcceptInvite">
+      ✅ Accept
+    </button>
+    <button class="btn-decline-invite" id="btnDeclineInvite">
+      ❌ Decline
+    </button>
+  </div>
+</div>
 
           <!-- Modal de Ajuda -->
           <div class="modal-help-overlay" id="modalHelpPlayerId">
@@ -154,6 +195,7 @@
             </div>
           </div>
         </div>
+
           <!-- Últimas Visualizações -->
           <div class="perfil-recent-views" id="recentViewsSection">
             <h4>Last Views</h4>
@@ -1472,6 +1514,7 @@ async function updateUI(user) {
       await carregarBuildsUsuario(user.uid);
       await carregarPlayerId(user.uid);
       await carregarUltimasVisualizacoes(user.uid);
+      await carregarStatusTime(user.uid);
       
     } catch (error) {
       console.error('❌ Erro ao carregar dados do usuário:', error);
@@ -1501,6 +1544,358 @@ async function updateUI(user) {
       console.error('Erro no logout:', error);
       alert('Erro ao fazer logout. Tente novamente.');
     }
+  }
+}
+
+// ========================================
+// SISTEMA DE TIMES
+// ========================================
+
+const btnCreateTeam = document.getElementById('btnCreateTeam');
+const teamDisplay = document.getElementById('teamDisplay');
+const teamLogo = document.getElementById('teamLogo');
+const teamName = document.getElementById('teamName');
+const teamId = document.getElementById('teamId');
+const btnViewTeam = document.getElementById('btnViewTeam');
+const teamInviteContainer = document.getElementById('teamInviteContainer');
+const inviteTeamName = document.getElementById('inviteTeamName');
+const btnAcceptInvite = document.getElementById('btnAcceptInvite');
+const btnDeclineInvite = document.getElementById('btnDeclineInvite');
+
+// Botão Create Team
+btnCreateTeam.addEventListener('click', () => {
+  window.location.href = 'create-team.html';
+});
+
+// Carregar status do time do usuário
+async function carregarStatusTime(userId) {
+  try {
+    console.log('⚔️ Carregando status do time...');
+    
+    const userDocRef = doc(db, "usuarios", userId);
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (!userDocSnap.exists()) {
+      btnCreateTeam.style.display = 'inline-flex';
+      teamDisplay.style.display = 'none';
+      return;
+    }
+    
+    const userData = userDocSnap.data();
+    
+    // ✅ VERIFICAÇÃO 1: Verificar convite pendente
+    if (userData.pendingTeamInvite) {
+      await exibirConviteTime(userData.pendingTeamInvite);
+    }
+    
+    // ✅ VERIFICAÇÃO 2: Verificar se tem teamId no documento
+    if (userData.teamId) {
+      console.log('📋 TeamId encontrado:', userData.teamId);
+      
+      // ✅ VERIFICAÇÃO 3: Verificar se o time AINDA EXISTE no Firestore
+      const teamDocRef = doc(db, "teams", userData.teamId);
+      const teamDocSnap = await getDoc(teamDocRef);
+      
+      if (!teamDocSnap.exists()) {
+        console.log('⚠️ Time não existe mais - limpando dados do usuário');
+        
+        // Limpar teamId do usuário
+        await updateDoc(userDocRef, {
+          teamId: null,
+          teamStatus: null
+        });
+        
+        // Mostrar botão de criar time
+        btnCreateTeam.style.display = 'inline-flex';
+        teamDisplay.style.display = 'none';
+        return;
+      }
+      
+      const teamData = teamDocSnap.data();
+      
+      // ✅ VERIFICAÇÃO 4: Verificar se o usuário AINDA ESTÁ na lista de membros
+      const isMember = teamData.members.some(m => m.userId === userId);
+      
+      if (!isMember) {
+        console.log('⚠️ Usuário não está mais na lista de membros - limpando dados');
+        
+        // Limpar teamId do usuário
+        await updateDoc(userDocRef, {
+          teamId: null,
+          teamStatus: null
+        });
+        
+        // Mostrar botão de criar time
+        btnCreateTeam.style.display = 'inline-flex';
+        teamDisplay.style.display = 'none';
+        return;
+      }
+      
+      // ✅ Se passou por todas as verificações, exibir o time
+      await exibirTime(userData.teamId);
+      
+    } else {
+      // Não tem teamId - mostrar botão de criar
+      btnCreateTeam.style.display = 'inline-flex';
+      teamDisplay.style.display = 'none';
+    }
+    
+  } catch (error) {
+    console.error('❌ Erro ao carregar status do time:', error);
+    btnCreateTeam.style.display = 'inline-flex';
+    teamDisplay.style.display = 'none';
+  }
+}
+
+// Exibir convite de time
+async function exibirConviteTime(invite) {
+  try {
+    inviteTeamName.textContent = invite.teamName;
+    teamInviteContainer.style.display = 'block';
+    
+    console.log('📧 Convite exibido:', invite);
+    
+  } catch (error) {
+    console.error('❌ Erro ao exibir convite:', error);
+  }
+}
+
+// Aceitar convite
+// Aceitar convite
+btnAcceptInvite.addEventListener('click', async () => {
+  try {
+    if (!currentUser) {
+      alert('⚠️ You need to be logged in to accept invites');
+      return;
+    }
+    
+    btnAcceptInvite.disabled = true;
+    btnDeclineInvite.disabled = true;
+    btnAcceptInvite.textContent = '⏳ Accepting...';
+    
+    console.log('✅ Iniciando aceitação de convite...');
+    
+    const userDocRef = doc(db, "usuarios", currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (!userDocSnap.exists()) {
+      alert('❌ User data not found');
+      return;
+    }
+    
+    const invite = userDocSnap.data().pendingTeamInvite;
+    
+    if (!invite || !invite.teamId) {
+      alert('❌ Invite not found');
+      window.location.reload();
+      return;
+    }
+    
+    console.log('📧 Convite encontrado:', invite);
+    
+    // 1️⃣ Atualizar documento do time PRIMEIRO
+    const teamDocRef = doc(db, "teams", invite.teamId);
+    const teamDocSnap = await getDoc(teamDocRef);
+    
+    if (!teamDocSnap.exists()) {
+      alert('❌ Team not found');
+      await updateDoc(userDocRef, {
+        pendingTeamInvite: null
+      });
+      window.location.reload();
+      return;
+    }
+    
+    const teamData = teamDocSnap.data();
+    const updatedMembers = teamData.members.map(member => {
+      if (member.userId === currentUser.uid) {
+        return {
+          ...member,
+          status: 'accepted',
+          joinedAt: new Date()
+        };
+      }
+      return member;
+    });
+    
+    await updateDoc(teamDocRef, {
+      members: updatedMembers
+    });
+    
+    console.log('✅ Time atualizado com sucesso');
+    
+    // 2️⃣ Atualizar documento do usuário DEPOIS
+    await updateDoc(userDocRef, {
+      teamId: invite.teamId,
+      teamStatus: 'accepted',
+      pendingTeamInvite: null
+    });
+    
+    console.log('✅ Usuário atualizado com sucesso');
+    console.log('🎉 Convite aceito!');
+    
+    alert('✅ You joined the team!');
+    
+    // Recarregar página
+    window.location.reload();
+    
+  } catch (error) {
+    console.error('❌ Erro ao aceitar convite:', error);
+    console.error('Detalhes:', {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
+    
+    alert('❌ Error accepting invite: ' + error.message);
+    
+    btnAcceptInvite.disabled = false;
+    btnDeclineInvite.disabled = false;
+    btnAcceptInvite.textContent = '✅ Accept';
+  }
+});
+
+// Recusar convite
+// Recusar convite
+btnDeclineInvite.addEventListener('click', async () => {
+  try {
+    if (!currentUser) {
+      alert('⚠️ You need to be logged in to decline invites');
+      return;
+    }
+    
+    const confirmar = confirm('Decline team invitation?');
+    if (!confirmar) return;
+    
+    btnDeclineInvite.disabled = true;
+    btnAcceptInvite.disabled = true;
+    btnDeclineInvite.textContent = '⏳ Declining...';
+    
+    console.log('🗑️ Iniciando recusa de convite...');
+    
+    const userDocRef = doc(db, "usuarios", currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (!userDocSnap.exists()) {
+      alert('❌ User data not found');
+      return;
+    }
+    
+    const userData = userDocSnap.data();
+    const invite = userData.pendingTeamInvite;
+    
+    // ✅ VERIFICAÇÃO: Se não há convite, apenas limpar e recarregar
+    if (!invite || !invite.teamId) {
+      console.log('⚠️ Nenhum convite encontrado, limpando dados...');
+      
+      await updateDoc(userDocRef, {
+        pendingTeamInvite: null
+      });
+      
+      alert('Invite data cleared');
+      window.location.reload();
+      return;
+    }
+    
+    console.log('📧 Convite encontrado:', invite);
+    
+    // 1️⃣ Remover convite do usuário
+    await updateDoc(userDocRef, {
+      pendingTeamInvite: null
+    });
+    
+    console.log('✅ Convite removido do usuário');
+    
+    // 2️⃣ Tentar remover usuário do time (se o time ainda existir)
+    try {
+      const teamDocRef = doc(db, "teams", invite.teamId);
+      const teamDocSnap = await getDoc(teamDocRef);
+      
+      if (teamDocSnap.exists()) {
+        const teamData = teamDocSnap.data();
+        const updatedMembers = teamData.members.filter(
+          member => member.userId !== currentUser.uid
+        );
+        
+        await updateDoc(teamDocRef, {
+          members: updatedMembers
+        });
+        
+        console.log('✅ Usuário removido da lista do time');
+      } else {
+        console.log('ℹ️ Time não existe mais');
+      }
+    } catch (teamError) {
+      console.error('⚠️ Erro ao atualizar time:', teamError);
+      // Continua mesmo se der erro no time
+    }
+    
+    console.log('✅ Convite recusado com sucesso');
+    alert('Invitation declined');
+    
+    // Recarregar página
+    window.location.reload();
+    
+  } catch (error) {
+    console.error('❌ Erro ao recusar convite:', error);
+    console.error('Detalhes:', {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
+    
+    alert('❌ Error declining invite: ' + error.message);
+    
+    btnDeclineInvite.disabled = false;
+    btnAcceptInvite.disabled = false;
+    btnDeclineInvite.textContent = '❌ Decline';
+  }
+});
+
+// Exibir informações do time
+async function exibirTime(teamIdValue) {
+  try {
+    const teamDocRef = doc(db, "teams", teamIdValue);
+    const teamDocSnap = await getDoc(teamDocRef);
+    
+    if (!teamDocSnap.exists()) {
+      btnCreateTeam.style.display = 'inline-flex';
+      return;
+    }
+    
+    const teamData = teamDocSnap.data();
+
+     if (currentUser) {
+      const isMember = teamData.members.some(m => m.userId === currentUser.uid);
+      
+      if (!isMember) {
+        console.log('⚠️ Usuário atual não é membro - ocultando display');
+        btnCreateTeam.style.display = 'inline-flex';
+        teamDisplay.style.display = 'none';
+        return;
+      }
+    }
+    
+    // Atualizar interface
+    teamLogo.querySelector('img').src = teamData.logo;
+    teamName.textContent = teamData.teamName;
+    
+    // Exibir país com bandeira (estilo do index.html)
+    const countryFlag = teamData.countryFlag || 'flag-us';
+    const countryDisplay = teamData.countryName || 'Unknown';
+    
+    teamId.innerHTML = `
+      <span class="flag ${countryFlag}" style="display: inline-block; margin-right: 5px;"></span>
+      ${countryDisplay} • ID: ${teamData.teamId}
+    `;
+    
+    teamDisplay.style.display = 'flex';
+    
+    console.log('⚔️ Time exibido:', teamData);
+    
+  } catch (error) {
+    console.error('❌ Erro ao exibir time:', error);
+    btnCreateTeam.style.display = 'inline-flex';
   }
 }
 

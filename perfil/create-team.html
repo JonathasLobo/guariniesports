@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create Your Team - Guarini e-sport">
+  <title>Create Team - Guarini e-sport</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="create-team.css">
+  <meta name="theme-color" content="#ffad00">
+</head>
+
+<body>
+  <a id="topo"></a>
+
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="./perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <main>
+    <section class="create-team-section">
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <button onclick="history.back()" class="btn-back">
+          ← Back
+        </button>
+        <h2 style="margin: 0;">Create Your Team</h2>
+      </div>
+
+      <!-- Formulário de Criação do Time -->
+      <div class="create-team-card">
+        <div class="form-section">
+          <!-- Upload da Logo -->
+          <div class="logo-upload-section">
+            <h3>Team Logo</h3>
+            <div class="logo-preview-container">
+              <div class="logo-preview" id="logoPreview">
+                <span class="logo-placeholder">📷</span>
+              </div>
+              <input type="file" id="logoInput" accept="image/*" style="display: none;">
+              <button class="btn-upload-logo" id="btnUploadLogo">
+                📁 Choose Logo
+              </button>
+            </div>
+          </div>
+
+          <!-- Nome do Time -->
+          <div class="form-group">
+            <label for="teamName">Team Name *</label>
+            <input 
+              type="text" 
+              id="teamName" 
+              class="team-input" 
+              placeholder="Enter team name"
+              maxlength="30"
+              required
+            >
+          </div>
+
+          <!-- País -->
+          <div class="form-group">
+            <label for="teamCountry">Country *</label>
+            <select id="teamCountry" class="team-select" required>
+              <option value="">Select country</option>
+              <option value="brazil" data-flag="flag-br">Brazil</option>
+              <option value="usa" data-flag="flag-us">United States</option>
+              <option value="canada" data-flag="flag-ca">Canada</option>
+              <option value="mexico" data-flag="flag-mx">Mexico</option>
+              <option value="argentina" data-flag="flag-ar">Argentina</option>
+              <option value="chile" data-flag="flag-cl">Chile</option>
+              <option value="colombia" data-flag="flag-co">Colombia</option>
+              <option value="peru" data-flag="flag-pe">Peru</option>
+              <option value="japan" data-flag="flag-jp">Japan</option>
+              <option value="south-korea" data-flag="flag-kr">South Korea</option>
+              <option value="china" data-flag="flag-cn">China</option>
+              <option value="taiwan" data-flag="flag-tw">Taiwan</option>
+              <option value="thailand" data-flag="flag-th">Thailand</option>
+              <option value="philippines" data-flag="flag-ph">Philippines</option>
+              <option value="singapore" data-flag="flag-sg">Singapore</option>
+              <option value="malaysia" data-flag="flag-my">Malaysia</option>
+              <option value="indonesia" data-flag="flag-id">Indonesia</option>
+              <option value="vietnam" data-flag="flag-vn">Vietnam</option>
+              <option value="india" data-flag="flag-in">India</option>
+              <option value="uk" data-flag="flag-gb">United Kingdom</option>
+              <option value="germany" data-flag="flag-de">Germany</option>
+              <option value="france" data-flag="flag-fr">France</option>
+              <option value="spain" data-flag="flag-es">Spain</option>
+              <option value="italy" data-flag="flag-it">Italy</option>
+              <option value="netherlands" data-flag="flag-nl">Netherlands</option>
+              <option value="portugal" data-flag="flag-pt">Portugal</option>
+              <option value="poland" data-flag="flag-pl">Poland</option>
+              <option value="russia" data-flag="flag-ru">Russia</option>
+              <option value="sweden" data-flag="flag-se">Sweden</option>
+              <option value="norway" data-flag="flag-no">Norway</option>
+              <option value="denmark" data-flag="flag-dk">Denmark</option>
+              <option value="finland" data-flag="flag-fi">Finland</option>
+              <option value="turkey" data-flag="flag-tr">Turkey</option>
+              <option value="australia" data-flag="flag-au">Australia</option>
+              <option value="new-zealand" data-flag="flag-nz">New Zealand</option>
+              <option value="south-africa" data-flag="flag-za">South Africa</option>
+              <option value="egypt" data-flag="flag-eg">Egypt</option>
+              <option value="saudi-arabia" data-flag="flag-sa">Saudi Arabia</option>
+              <option value="uae" data-flag="flag-ae">United Arab Emirates</option>
+            </select>
+          </div>
+
+          <!-- ID do Time (Gerado automaticamente) -->
+          <div class="form-group">
+            <label>Team ID</label>
+            <div class="team-id-display" id="teamIdDisplay">
+              <span id="generatedTeamId">-</span>
+              <button class="btn-regenerate" id="btnRegenerateId" title="Generate new ID">
+                🔄
+              </button>
+            </div>
+          </div>
+
+          <!-- Adicionar Jogadores -->
+          <div class="form-group">
+            <label for="playerSearchInput">Add Players (max 8)</label>
+            <div class="player-search-container">
+              <input 
+                type="text" 
+                id="playerSearchInput" 
+                class="team-input" 
+                placeholder="Search Player ID..."
+                maxlength="7"
+              >
+              <button class="btn-search-player" id="btnSearchPlayer">
+                🔍 Search
+              </button>
+            </div>
+            <div class="player-search-results" id="playerSearchResults"></div>
+          </div>
+
+          <!-- Lista de Jogadores Adicionados -->
+          <div class="players-list-section">
+            <h4>Team Members (<span id="playersCount">0</span>/8)</h4>
+            <div class="players-list" id="playersList">
+              <div class="no-players-message">No players added yet</div>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button class="btn-cancel" onclick="history.back()">
+              ❌ Cancel
+            </button>
+            <button class="btn-create-team" id="btnCreateTeam">
+              ✅ Create Team
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-info">
+      <p>&copy; © 2019 Guarini E-sport. All rights reserved.</p>
+      <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
+      <p>Created by: Lobo & Shad</p>
+    </div>
+  </footer>
+
+  <script type="module" src="create-team.js"></script>
+</body>
+</html>

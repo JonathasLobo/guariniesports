@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Tournament - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="criar-torneio.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="create-tournament-container">
+      <h2>🏆 Create New Tournament</h2>
+
+      <div class="step-indicator">
+        <div class="step-item active" data-step="1">
+          <div class="step-number">1</div>
+          <span>Tournament Info & Teams</span>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-number">2</div>
+          <span>Group Draw</span>
+        </div>
+      </div>
+
+      <form id="createTournamentForm" class="tournament-form">
+        <div class="form-step active" id="step1">
+        <!-- INFORMAÇÕES BÁSICAS -->
+        <section class="form-section">
+          <h3>📋 Basic Information</h3>
+          
+          <div class="form-group">
+            <label for="tournamentName">Tournament Name *</label>
+            <input 
+              type="text" 
+              id="tournamentName" 
+              name="tournamentName" 
+              required 
+              maxlength="100"
+              placeholder="Ex: Spring Championship 2025"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="tournamentLogo">Tournament Logo *</label>
+            <div class="logo-upload-container">
+              <div class="logo-preview" id="logoPreview">
+                <span class="logo-placeholder">🖼️ Click to upload</span>
+                <img id="logoImage" style="display: none;">
+              </div>
+              <input 
+                type="file" 
+                id="tournamentLogo" 
+                accept="image/*"
+                style="display: none;"
+              >
+              <button type="button" class="btn-upload" id="btnUploadLogo">
+                Choose Logo
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="startDate">Start Date *</label>
+              <input 
+                type="date" 
+                id="startDate" 
+                name="startDate" 
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="endDate">End Date *</label>
+              <input 
+                type="date" 
+                id="endDate" 
+                name="endDate" 
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea 
+              id="description" 
+              name="description" 
+              rows="4"
+              maxlength="500"
+              placeholder="Brief description of the tournament..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="rulesFile">Tournament Rules (PDF, DOCX, TXT) *</label>
+            <div class="logo-upload-container">
+              <div style="text-align: center; width: 100%;">
+                <div id="rulesFileName" style="color: #aaa; margin-bottom: 10px; font-size: 0.9rem;">
+                  📄 No file selected
+                </div>
+                <input 
+                  type="file" 
+                  id="rulesFile" 
+                  accept=".pdf,.doc,.docx,.txt"
+                  style="display: none;"
+                >
+                <button type="button" class="btn-upload" id="btnUploadRules">
+                  Choose Rules File
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- INSCRIÇÃO DE TIMES -->
+<section class="form-section">
+  <h3>👥 Team Registration</h3>
+  
+  <!-- ⭐ NOVA FUNCIONALIDADE: Busca de Time por ID -->
+  <div class="registered-team-search">
+    <label>🏅 Search Registered Team</label>
+    <div class="team-search-container">
+      <input 
+        type="text" 
+        id="searchTeamId" 
+        placeholder="Enter 8-character Team ID..."
+        maxlength="8"
+        style="text-transform: uppercase;"
+      >
+      <button type="button" class="btn-search-team" id="btnSearchTeam">
+        🔍 Search
+      </button>
+    </div>
+    <div class="team-search-results" id="teamSearchResults"></div>
+  </div>
+
+  <!-- Separador visual -->
+  <div class="section-divider">
+    <span>OR</span>
+  </div>
+
+  <!-- 🎲 NOVO: Botão de Randomização para Testes -->
+<div style="margin-bottom: 30px; text-align: center; padding: 20px; background: rgba(139, 92, 246, 0.1); border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 12px;">
+  <h4 style="color: #a78bfa; margin-bottom: 15px;">🧪 TEST MODE</h4>
+  <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">
+    Automatically generate random teams to fill remaining slots
+  </p>
+  <button type="button" class="btn-draw" id="btnRandomTeam" style="margin: 0;">
+    🎲 Generate Random Team
+  </button>
+</div>
+
+  <!-- Formulário Manual Original -->
+  <div class="team-input-container">
+    <div class="form-group">
+      <label for="teamName">Team Name</label>
+      <input 
+        type="text" 
+        id="teamName" 
+        placeholder="Team name"
+        maxlength="50"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="teamLogo">Team Logo</label>
+      <div class="team-logo-upload">
+        <div class="team-logo-preview" id="teamLogoPreview">
+          <span>🖼️</span>
+        </div>
+        <input 
+          type="file" 
+          id="teamLogo" 
+          accept="image/*"
+          style="display: none;"
+        >
+        <button type="button" class="btn-mini-upload" id="btnUploadTeamLogo">
+          Upload
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="playerName">Player Name</label>
+      <input 
+        type="text" 
+        id="playerName" 
+        placeholder="Player name"
+        maxlength="50"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="playerId">Player ID</label>
+      <input 
+        type="text" 
+        id="playerId" 
+        placeholder="XXXXXXX"
+        maxlength="7"
+        style="text-transform: uppercase;"
+      >
+    </div>
+
+    <button type="button" class="btn-add-player" id="btnAddPlayer">
+      ➕ Add Player
+    </button>
+  </div>
+
+  <!-- Lista de jogadores do time atual -->
+  <div class="current-team-players" id="currentTeamPlayers" style="display: none;">
+    <h4>Players in this team:</h4>
+    <ul id="teamPlayersList"></ul>
+    <button type="button" class="btn-add-team" id="btnAddTeam">
+      ✅ Add Team to Tournament
+    </button>
+  </div>
+</section>
+
+        <!-- TIMES INSCRITOS -->
+        <section class="form-section">
+          <h3>📝 Registered Teams <span id="teamCounter" style="color: #4ade80;">(0/32)</span></h3>
+          <div class="registered-teams" id="registeredTeams">
+            <p class="empty-message">No teams registered yet</p>
+          </div>
+        </section>
+  </div> <!-- FIM do step1 -->
+
+  <!-- ADICIONE TODO ESSE STEP 2 AQUI -->
+  <div class="form-step" id="step2">
+    <section class="form-section">
+      <h3>🎲 Group Stage Draw</h3>
+      
+      <!-- Pool de times disponíveis -->
+      <div class="teams-pool">
+        <h4>Available Teams</h4>
+        <div class="teams-pool-grid" id="teamsPoolGrid"></div>
+      </div>
+
+      <!-- Animação de sorteio -->
+      <div class="draw-animation" id="drawAnimation">
+        🎲 Drawing...
+      </div>
+
+      <!-- Grupos A-D (linha de cima) -->
+      <div class="groups-container" id="groupsTopRow">
+        <div class="group-box">
+          <div class="group-header">GROUP A</div>
+          <div class="group-teams" data-group="A">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP B</div>
+          <div class="group-teams" data-group="B">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP C</div>
+          <div class="group-teams" data-group="C">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP D</div>
+          <div class="group-teams" data-group="D">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grupos E-H (linha de baixo) -->
+      <div class="groups-container" id="groupsBottomRow">
+        <div class="group-box">
+          <div class="group-header">GROUP E</div>
+          <div class="group-teams" data-group="E">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP F</div>
+          <div class="group-teams" data-group="F">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP G</div>
+          <div class="group-teams" data-group="G">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+        <div class="group-box">
+          <div class="group-header">GROUP H</div>
+          <div class="group-teams" data-group="H">
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+            <div class="group-team-slot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles do sorteio -->
+      <div class="draw-controls">
+        <button type="button" class="btn-draw" id="btnDrawOne">
+          🎲 Draw One Team
+        </button>
+        <button type="button" class="btn-draw" id="btnDrawAll">
+          🎲 Draw All Teams
+        </button>
+      </div>
+    </section>
+  </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" id="btnCancel">
+        Cancel
+      </button>
+      <button type="button" class="btn-submit" id="btnNextStep" style="display: block;">
+        Next Step →
+      </button>
+      <button type="button" class="btn-cancel" id="btnPrevStep" style="display: none; flex: 1;">
+        ← Previous
+      </button>
+      <button type="submit" class="btn-submit" id="btnFinalSubmit" style="display: none; flex: 2;">
+        🏆 Create Tournament
+      </button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2019 Guarini E-sport. All rights reserved.</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // ========================================
+    // VERIFICAÇÃO DE PERMISSÃO
+    // ========================================
+    let currentUser = null;
+    let logoFile = null;
+    let currentTeamLogo = null;
+    let currentTeamPlayers = [];
+    let registeredTeams = [];
+    let rulesFile = null; // ADICIONE ISSO
+    let allPlayerIds = []; // ADICIONE ISSO TAMBÉM
+    let currentStep = 1;
+    let drawnGroups = { A: [], B: [], C: [], D: [], E: [], F: [], G: [], H: [] };
+    let isCreatingTournament = false;
+
+    // ✅ CONSTANTES E FUNÇÕES DE VALIDAÇÃO
+    const MAX_TEAMS = 32;
+    const PLAYER_ID_LENGTH = 7;
+
+    function canAddMoreTeams() {
+      return registeredTeams.length < MAX_TEAMS;
+    }
+
+    function showMaxTeamsError() {
+      alert(`⚠️ Maximum limit reached (${MAX_TEAMS} teams)`);
+    }
+
+    function getTeamCountStatus() {
+      const count = registeredTeams.length;
+      if (count >= MAX_TEAMS) return 'full';
+      if (count >= 24) return 'warning';
+      return 'normal';
+    }
+
+    // ✅ EVENT DELEGATION PARA BOTÕES DINÂMICOS DE REMOVER TIME
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('btn-remove-team')) {
+        const index = parseInt(e.target.dataset.index);
+        const teamToRemove = registeredTeams[index];
+        
+        if (!teamToRemove) return;
+        
+        // Remover IDs dos jogadores da lista global
+        teamToRemove.players.forEach(player => {
+          const idIndex = allPlayerIds.indexOf(player.id);
+          if (idIndex > -1) {
+            allPlayerIds.splice(idIndex, 1);
+          }
+        });
+        
+        registeredTeams.splice(index, 1);
+        renderRegisteredTeams();
+      }
+    });
+
+    // 🎲 DADOS PARA RANDOMIZAÇÃO DE TESTES
+    const randomFirstNames = [
+      'Shadow', 'Dragon', 'Phoenix', 'Thunder', 'Lightning', 'Viper', 'Falcon', 
+      'Wolf', 'Eagle', 'Titan', 'Storm', 'Blaze', 'Frost', 'Ghost', 'Raven',
+      'Cyber', 'Nova', 'Apex', 'Razor', 'Steel', 'Inferno', 'Nexus', 'Vector',
+      'Omega', 'Alpha', 'Sigma', 'Delta', 'Gamma', 'Beta', 'Quantum'
+    ];
+
+    const randomLastNames = [
+      'Esports', 'Gaming', 'Warriors', 'Legends', 'Masters', 'Knights', 'Titans',
+      'Forces', 'Squad', 'Team', 'Crew', 'Guild', 'Clan', 'Alliance', 'Union',
+      'Elite', 'Pro', 'Winners', 'Champions', 'Heroes', 'Fighters', 'Guardians'
+    ];
+
+    const randomPlayerPrefixes = [
+      'xX', 'Pro', 'King', 'Lord', 'Dark', 'Ice', 'Fire', 'Mega', 'Ultra', 'Super',
+      'God', 'Epic', 'Hyper', 'Neo', 'Zen', 'Ace', 'Max', 'Rex', 'Hex', 'Vex'
+    ];
+
+    const randomPlayerSuffixes = [
+      'Xx', 'YT', 'TTV', 'TV', 'Live', 'Pro', 'God', 'King', '420', '999',
+      '777', '360', '1337', 'HD', '4K', 'GG', 'OP', 'Boss', 'Lord'
+    ];
+
+    function generateRandomTeamName() {
+      const first = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
+      const last = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
+      return `${first} ${last}`;
+    }
+
+    function generateRandomPlayerName() {
+      const prefix = randomPlayerPrefixes[Math.floor(Math.random() * randomPlayerPrefixes.length)];
+      const name = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
+      const suffix = randomPlayerSuffixes[Math.floor(Math.random() * randomPlayerSuffixes.length)];
+      return `${prefix}${name}${suffix}`;
+    }
+
+    function generateRandomPlayerId() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let id;
+      do {
+        id = '';
+        for (let i = 0; i < PLAYER_ID_LENGTH; i++) {
+          id += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+      } while (allPlayerIds.includes(id));
+      return id;
+    }
+
+  // ========================================
+  // FUNÇÕES AUXILIARES - MOVER PARA FORA DO DOM
+  // ========================================
+  function normalizeTeamName(name) {
+    if (!name) return '';
+    return name.trim().toLowerCase();
+  }
+
+  function canAddMoreTeams() {
+    return registeredTeams.length < MAX_TEAMS;
+  }
+
+  function showMaxTeamsError() {
+    alert(`⚠️ Maximum limit reached (${MAX_TEAMS} teams)`);
+  }
+
+  function getTeamCountStatus() {
+    const count = registeredTeams.length;
+    if (count >= MAX_TEAMS) return 'full';
+    if (count >= 24) return 'warning';
+    return 'normal';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('createTournamentForm');
+  if (form) {
+    // ✅ Listener já é adicionado na definição da função handleTournamentSubmit
+    console.log('✅ Form initialized');
+  }
+  
+  // Inicializar outras funcionalidades
+  renderRegisteredTeams();
+  
+  const btnRandomTeam = document.getElementById('btnRandomTeam');
+  if (btnRandomTeam) {
+    btnRandomTeam.addEventListener('click', generateRandomTeam);
+  }
+});
+
+// 🎲 FUNÇÃO PARA GERAR TIME ALEATÓRIO
+async function generateRandomTeam() {
+  // Verificar limite
+  if (!canAddMoreTeams()) {
+    showMaxTeamsError();
+    return;
+  }
+  
+  // Gerar nome do time
+  const teamName = generateRandomTeamName();
+  
+  // Gerar 4 jogadores aleatórios
+  const players = [];
+  for (let i = 0; i < 4; i++) {
+    players.push({
+      name: generateRandomPlayerName(),
+      id: generateRandomPlayerId()
+    });
+  }
+  
+  // Adicionar IDs à lista global
+  players.forEach(p => allPlayerIds.push(p.id));
+  
+  // Criar objeto do time
+  const team = {
+    teamId: null, // ✅ ADICIONAR: Garantir consistência
+    name: teamName,
+    logo: teamLogoUrl,
+    country: 'Unknown',
+    countryFlag: 'flag-us',
+    players: [...currentTeamPlayers],
+    isRegisteredTeam: false
+  };
+  
+  registeredTeams.push(team);
+  renderRegisteredTeams();
+  
+  console.log('✅ Random team generated:', team);
+  
+  // Feedback visual
+  const btn = document.getElementById('btnRandomTeam');
+  const originalText = btn.textContent;
+  btn.textContent = '✅ Team Added!';
+  btn.style.background = 'linear-gradient(45deg, #4ade80, #22c55e)';
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.style.background = '';
+  }, 1000);
+}
+
+    // ========================================
+    // NAVEGAÇÃO ENTRE STEPS
+    // ========================================
+    const btnNextStep = document.getElementById('btnNextStep');
+    const btnPrevStep = document.getElementById('btnPrevStep');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnFinalSubmit = document.getElementById('btnFinalSubmit');
+
+    btnCancel.addEventListener('click', () => {
+      if (confirm('⚠️ Are you sure? All progress will be lost.')) {
+        window.location.href = 'torneios.html';
+      }
+    });
+
+    btnNextStep.addEventListener('click', () => {
+      // Validar Step 1
+      const tournamentName = document.getElementById('tournamentName').value.trim();
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      
+      if (!tournamentName) {
+        alert('❌ Please enter a tournament name');
+        return;
+      }
+      
+      if (!logoFile) {
+        alert('❌ Please upload a tournament logo');
+        return;
+      }
+      
+      if (!rulesFile) {
+        alert('❌ Please upload the tournament rules file');
+        return;
+      }
+      
+      if (!startDate || !endDate) {
+        alert('❌ Please select start and end dates');
+        return;
+      }
+      
+      if (registeredTeams.length < 2) {
+        alert('❌ At least 2 teams are required');
+        return;
+      }
+      
+      // Ir para Step 2
+      goToStep(2);
+      initializeDrawStep();
+    });
+
+    btnPrevStep.addEventListener('click', () => {
+      goToStep(1);
+    });
+
+    function goToStep(step) {
+      currentStep = step;
+      
+      // Atualizar indicador de steps
+      document.querySelectorAll('.step-item').forEach(item => {
+        const stepNum = parseInt(item.dataset.step);
+        item.classList.remove('active', 'completed');
+        
+        if (stepNum === step) {
+          item.classList.add('active');
+        } else if (stepNum < step) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Mostrar/ocultar steps
+      document.querySelectorAll('.form-step').forEach(stepDiv => {
+        stepDiv.classList.remove('active');
+      });
+      document.getElementById(`step${step}`).classList.add('active');
+      
+      // Atualizar botões
+      if (step === 1) {
+        btnNextStep.style.display = 'block';
+        btnPrevStep.style.display = 'none';
+        btnFinalSubmit.style.display = 'none';
+        btnCancel.style.display = 'block';
+      } else if (step === 2) {
+        btnNextStep.style.display = 'none';
+        btnPrevStep.style.display = 'block';
+        btnFinalSubmit.style.display = 'block';
+        btnCancel.style.display = 'none';
+      }
+      
+      // Scroll para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ========================================
+    // INICIALIZAR STEP 2 - SORTEIO
+    // ========================================
+    function initializeDrawStep() {
+      const teamsPoolGrid = document.getElementById('teamsPoolGrid');
+      
+      // Renderizar pool de times
+      teamsPoolGrid.innerHTML = registeredTeams.map((team, index) => `
+        <div class="team-pool-item" data-team-index="${index}">
+          <div class="team-pool-logo">
+            ${team.logo 
+              ? `<img src="${team.logo}" alt="${team.name}">` 
+              : `<span>🏆</span>`
+            }
+          </div>
+          <div class="team-pool-name">${team.name}</div>
+        </div>
+      `).join('');
+      
+      // Resetar grupos
+      drawnGroups = { A: [], B: [], C: [], D: [], E: [], F: [], G: [], H: [] };
+      document.querySelectorAll('.group-team-slot').forEach(slot => {
+        slot.classList.remove('filled');
+        slot.innerHTML = '';
+      });
+    }
+
+    // ========================================
+    // SISTEMA DE SORTEIO
+    // ========================================
+    const btnDrawOne = document.getElementById('btnDrawOne');
+    const btnDrawAll = document.getElementById('btnDrawAll');
+    const drawAnimation = document.getElementById('drawAnimation');
+
+    btnDrawOne.addEventListener('click', () => {
+      drawOneTeam();
+    });
+
+    btnDrawAll.addEventListener('click', async () => {
+      if (confirm('🎲 Draw all remaining teams automatically?')) {
+        btnDrawOne.disabled = true;
+        btnDrawAll.disabled = true;
+        
+        const remainingTeams = registeredTeams.length - getTotalDrawnTeams();
+        
+        for (let i = 0; i < remainingTeams; i++) {
+          await drawOneTeam();
+          await sleep(800); // Delay entre sorteios
+        }
+        
+        btnDrawOne.disabled = false;
+        btnDrawAll.disabled = false;
+      }
+    });
+
+    function drawOneTeam() {
+      return new Promise((resolve) => {
+        // Verificar se ainda há times disponíveis
+        const availableTeams = registeredTeams.filter((team, index) => {
+          const teamItem = document.querySelector(`.team-pool-item[data-team-index="${index}"]`);
+          return !teamItem.classList.contains('drawn');
+        });
+        
+        if (availableTeams.length === 0) {
+          alert('✅ All teams have been drawn!');
+          resolve();
+          return;
+        }
+        
+        // Encontrar próximo slot vazio
+        const nextSlot = findNextEmptySlot();
+        if (!nextSlot) {
+          alert('❌ All group slots are filled!');
+          resolve();
+          return;
+        }
+        
+        // Sortear time aleatório
+        const randomIndex = Math.floor(Math.random() * availableTeams.length);
+        const selectedTeam = availableTeams[randomIndex];
+        const teamIndex = registeredTeams.indexOf(selectedTeam);
+        
+        // Animação
+        drawAnimation.classList.add('active');
+        drawAnimation.textContent = `🎲 Drawing... ${selectedTeam.name} → GROUP ${nextSlot.group}`;
+        
+        setTimeout(() => {
+          // Adicionar time ao grupo
+          drawnGroups[nextSlot.group].push(selectedTeam);
+          
+          // Atualizar UI do slot
+          nextSlot.element.classList.add('filled');
+          nextSlot.element.innerHTML = `
+            <div class="team-pool-logo">
+              ${selectedTeam.logo 
+                ? `<img src="${selectedTeam.logo}" alt="${selectedTeam.name}">` 
+                : `<span>🏆</span>`
+              }
+            </div>
+            <div class="team-pool-name">${selectedTeam.name}</div>
+          `;
+          
+          // Marcar time como sorteado no pool
+          const teamItem = document.querySelector(`.team-pool-item[data-team-index="${teamIndex}"]`);
+          teamItem.classList.add('drawn');
+          
+          // Remover animação
+          drawAnimation.classList.remove('active');
+          
+          resolve();
+        }, 1000);
+      });
+    }
+
+    // ✅ SORTEIO EQUILIBRADO - Preenche grupos em ordem para garantir distribuição uniforme
+    function findNextEmptySlot() {
+      const groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      
+      // Encontrar o grupo com menos times preenchidos
+      let targetGroup = null;
+      let minFilled = 4; // Máximo de times por grupo
+      
+      for (let group of groups) {
+        const groupContainer = document.querySelector(`.group-teams[data-group="${group}"]`);
+        const slots = groupContainer.querySelectorAll('.group-team-slot');
+        
+        let filledCount = 0;
+        for (let slot of slots) {
+          if (slot.classList.contains('filled')) {
+            filledCount++;
+          }
+        }
+        
+        // Se este grupo tem menos times que o mínimo encontrado
+        if (filledCount < minFilled) {
+          minFilled = filledCount;
+          targetGroup = group;
+        }
+      }
+      
+      // Se não encontrou nenhum grupo com espaço
+      if (targetGroup === null) {
+        return null;
+      }
+      
+      // Encontrar o primeiro slot vazio no grupo alvo
+      const groupContainer = document.querySelector(`.group-teams[data-group="${targetGroup}"]`);
+      const slots = groupContainer.querySelectorAll('.group-team-slot');
+      
+      for (let i = 0; i < slots.length; i++) {
+        if (!slots[i].classList.contains('filled')) {
+          return {
+            group: targetGroup,
+            position: i + 1,
+            element: slots[i]
+          };
+        }
+      }
+      
+      return null;
+    }
+
+    function getTotalDrawnTeams() {
+      return Object.values(drawnGroups).reduce((sum, group) => sum + group.length, 0);
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // ========================================
+    // GERAR PARTIDAS DOS GRUPOS
+    // ========================================
+    function generateGroupMatches(groups) {
+      const matches = {};
+      const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      
+      groupLetters.forEach(letter => {
+        const groupTeams = groups[letter];
+        
+        // Se o grupo não tem times suficientes, pular
+        if (!groupTeams || groupTeams.length < 4) {
+          matches[`group${letter}`] = [];
+          return;
+        }
+        
+        // Ordem padrão dos confrontos (índices 0-3 representam os 4 times)
+        const matchups = [
+          [0, 1], // Time A x Time B
+          [2, 3], // Time C x Time D
+          [1, 3], // Time B x Time D
+          [2, 0], // Time C x Time A
+          [0, 3], // Time A x Time D
+          [1, 2]  // Time B x Time C
+        ];
+        
+        matches[`group${letter}`] = matchups.map((matchup, index) => {
+          const team1 = groupTeams[matchup[0]];
+          const team2 = groupTeams[matchup[1]];
+          
+          return {
+            matchId: `${letter}${index + 1}`,
+            groupLetter: letter,
+            matchNumber: index + 1,
+            team1: {
+              name: team1.name,
+              logo: team1.logo,
+              players: team1.players
+            },
+            team2: {
+              name: team2.name,
+              logo: team2.logo,
+              players: team2.players
+            },
+            bestOf: 3, // Padrão MD3
+            result: {
+              team1Score: 0,
+              team2Score: 0,
+              winner: null,
+              status: "pending" // pending, ongoing, completed
+            },
+            scheduledDate: null,
+            playedDate: null,
+            createdAt: new Date()
+          };
+        });
+      });
+      
+      return matches;
+    }
+
+    // ========================================
+    // CALCULAR STANDINGS BASEADO NOS RESULTADOS
+    // ========================================
+    function calculateStandings(groups, matches) {
+      const standings = {};
+      const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      
+      groupLetters.forEach(letter => {
+        const groupTeams = groups[letter];
+        if (!groupTeams || groupTeams.length === 0) return;
+        
+        // Inicializar standings
+        standings[letter] = groupTeams.map(team => ({
+          team: team,
+          wins: 0,
+          losses: 0,
+          points: 0,
+          matchesPlayed: 0
+        }));
+        
+        // Processar resultados das partidas
+        const groupMatches = matches[`group${letter}`] || [];
+        
+        groupMatches.forEach(match => {
+          if (match.result.status === 'completed' && match.result.winner) {
+            const team1Index = standings[letter].findIndex(s => s.team.name === match.team1.name);
+            const team2Index = standings[letter].findIndex(s => s.team.name === match.team2.name);
+            
+            if (team1Index !== -1) standings[letter][team1Index].matchesPlayed++;
+            if (team2Index !== -1) standings[letter][team2Index].matchesPlayed++;
+            
+            if (match.result.winner === 'team1') {
+              if (team1Index !== -1) {
+                standings[letter][team1Index].wins++;
+                standings[letter][team1Index].points += 3;
+              }
+              if (team2Index !== -1) {
+                standings[letter][team2Index].losses++;
+              }
+            } else if (match.result.winner === 'team2') {
+              if (team2Index !== -1) {
+                standings[letter][team2Index].wins++;
+                standings[letter][team2Index].points += 3;
+              }
+              if (team1Index !== -1) {
+                standings[letter][team1Index].losses++;
+              }
+            }
+          }
+        });
+        
+        // Ordenar por pontos (depois por vitórias se empatar)
+        standings[letter].sort((a, b) => {
+          if (b.points !== a.points) return b.points - a.points;
+          return b.wins - a.wins;
+        });
+      });
+      
+      return standings;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert('❌ You must be logged in to create tournaments');
+        window.location.href = 'torneios.html';
+        return;
+      }
+
+      try {
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        
+        if (!userDoc.exists()) {
+          alert('❌ User data not found');
+          window.location.href = 'torneios.html';
+          return;
+        }
+
+        const userData = userDoc.data();
+        const userRole = userData.role;
+
+        if (userRole !== 'creator' && userRole !== 'admin') {
+          alert('❌ Only creators and admins can create tournaments');
+          window.location.href = 'torneios.html';
+          return;
+        }
+
+        currentUser = user;
+        console.log('✅ User authorized:', user.email);
+
+      } catch (error) {
+        console.error('❌ Error checking permissions:', error);
+        alert('Error checking permissions');
+        window.location.href = 'torneios.html';
+      }
+    });
+
+    // ========================================
+    // UPLOAD DE LOGO DO TORNEIO
+    // ========================================
+    const btnUploadLogo = document.getElementById('btnUploadLogo');
+    const tournamentLogo = document.getElementById('tournamentLogo');
+    const logoPreview = document.getElementById('logoPreview');
+    const logoImage = document.getElementById('logoImage');
+
+    btnUploadLogo.addEventListener('click', () => {
+      tournamentLogo.click();
+    });
+
+    logoPreview.addEventListener('click', () => {
+      tournamentLogo.click();
+    });
+
+    tournamentLogo.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        logoFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          logoImage.src = e.target.result;
+          logoImage.style.display = 'block';
+          logoPreview.querySelector('.logo-placeholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ========================================
+    // UPLOAD DE ARQUIVO DE REGRAS
+    // ========================================
+    const btnUploadRules = document.getElementById('btnUploadRules');
+    const rulesFileInput = document.getElementById('rulesFile');
+    const rulesFileName = document.getElementById('rulesFileName');
+
+    btnUploadRules.addEventListener('click', () => {
+      rulesFileInput.click();
+    });
+
+    rulesFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Verificar tamanho (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          alert('❌ File too large! Maximum 10MB');
+          rulesFileInput.value = '';
+          return;
+        }
+        
+        // Verificar tipo
+        const validTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'text/plain'
+        ];
+        
+        if (!validTypes.includes(file.type)) {
+          alert('❌ Invalid file type! Use PDF, DOC, DOCX or TXT');
+          rulesFileInput.value = '';
+          return;
+        }
+        
+        rulesFile = file;
+        rulesFileName.textContent = `📄 ${file.name}`;
+        rulesFileName.style.color = '#4ade80';
+      }
+    });
+
+// ========================================
+// BUSCA DE TIMES CADASTRADOS
+// ========================================
+const btnSearchTeam = document.getElementById('btnSearchTeam');
+const searchTeamId = document.getElementById('searchTeamId');
+const teamSearchResults = document.getElementById('teamSearchResults');
+
+let allTeamsCache = []; // Cache de times carregados
+
+// Validação do input
+searchTeamId.addEventListener('input', (e) => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (e.target.value.length > 8) {
+    e.target.value = e.target.value.slice(0, 8);
+  }
+  
+  // Filtrar lista enquanto digita
+  if (e.target.value.length > 0 && allTeamsCache.length > 0) {
+    filtrarTimesPorId(e.target.value);
+  } else if (e.target.value.length === 0 && teamSearchResults.classList.contains('show')) {
+    carregarTodosOsTimes(); // Mostrar lista completa se apagar tudo
+  }
+});
+
+// Ao focar no campo, mostrar lista de times
+searchTeamId.addEventListener('focus', async () => {
+  await carregarTodosOsTimes();
+});
+
+// Buscar ao pressionar Enter
+searchTeamId.addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter') {
+    const teamId = searchTeamId.value.trim().toUpperCase();
+    if (teamId.length === 8) {
+      await buscarTimePorId();
+    }
+  }
+});
+
+// Buscar ao clicar no botão OU mostrar lista
+btnSearchTeam.addEventListener('click', async () => {
+  const teamId = searchTeamId.value.trim().toUpperCase();
+  
+  if (teamId.length === 8) {
+    // Busca específica por ID
+    await buscarTimePorId();
+  } else {
+    // Mostrar lista de todos os times
+    await carregarTodosOsTimes();
+  }
+});
+
+// Fechar lista ao clicar fora
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.registered-team-search')) {
+    teamSearchResults.classList.remove('show');
+  }
+});
+
+// ✅ EVENT DELEGATION PARA ADICIONAR TIME CADASTRADO
+    document.addEventListener('click', async (e) => {
+      // Botão de adicionar da lista
+      if (e.target.classList.contains('btn-quick-add')) {
+        const teamId = e.target.dataset.teamId;
+        if (teamId) {
+          await adicionarTimeCadastrado(teamId);
+        }
+      }
+      
+      // Item da lista clicável
+      if (e.target.closest('.team-list-item')) {
+        const item = e.target.closest('.team-list-item');
+        if (!item.classList.contains('disabled')) {
+          const teamId = item.dataset.teamId;
+          if (teamId) {
+            await adicionarTimeCadastrado(teamId);
+          }
+        }
+      }
+      
+      // Botão de adicionar do card de busca
+      if (e.target.classList.contains('btn-add-searched-team')) {
+        const teamId = e.target.dataset.teamId;  // ✅ CORRETO
+        if (teamId) {
+          await adicionarTimeCadastrado(teamId);
+        }
+      }
+    });
+
+// ========================================
+// CARREGAR TODOS OS TIMES
+// ========================================
+async function carregarTodosOsTimes() {
+  try {
+    teamSearchResults.innerHTML = '<div class="team-search-loading">🔍 Loading teams...</div>';
+    teamSearchResults.classList.add('show');
+    
+    console.log('📋 Carregando todos os times cadastrados...');
+    
+    // Buscar todos os times do Firestore
+    const teamsRef = collection(db, "teams");
+    const teamsSnap = await getDocs(teamsRef);
+    
+    if (teamsSnap.empty) {
+      teamSearchResults.innerHTML = '<div class="team-search-error">📭 No teams registered on the site yet</div>';
+      return;
+    }
+    
+    // Processar times
+    allTeamsCache = [];
+    teamsSnap.forEach(docSnap => {
+      const teamData = docSnap.data();
+      const teamId = docSnap.id;
+      
+      // Filtrar apenas membros aceitos
+      const acceptedMembers = teamData.members?.filter(m => m.status === 'accepted') || [];
+      
+      allTeamsCache.push({
+        id: teamId,
+        data: teamData,
+        members: acceptedMembers
+      });
+    });
+    
+    console.log(`✅ ${allTeamsCache.length} time(s) encontrado(s)`);
+    
+    // Renderizar lista completa
+    renderizarListaTimes(allTeamsCache);
+    
+  } catch (error) {
+    console.error('❌ Erro ao carregar times:', error);
+    teamSearchResults.innerHTML = `<div class="team-search-error">❌ Error: ${error.message}</div>`;
+  }
+}
+
+// ========================================
+// FILTRAR TIMES POR ID (enquanto digita)
+// ========================================
+function filtrarTimesPorId(searchTerm) {
+  const filteredTeams = allTeamsCache.filter(team => 
+    team.id.toUpperCase().includes(searchTerm.toUpperCase())
+  );
+  
+  if (filteredTeams.length === 0) {
+    teamSearchResults.innerHTML = '<div class="team-search-error">🔍 No teams found with this ID</div>';
+  } else {
+    renderizarListaTimes(filteredTeams);
+  }
+}
+
+// ========================================
+// RENDERIZAR LISTA DE TIMES
+// ========================================
+function renderizarListaTimes(teams) {
+  const teamsHTML = teams.map(team => {
+    const { id, data, members } = team;
+    const countryFlag = data.countryFlag || 'flag-us';
+    const countryName = data.countryName || 'Unknown';
+    
+    // Verificar se já está cadastrado no torneio
+    const isAlreadyRegistered = registeredTeams.some(t => t.teamId === id);
+    
+    return `
+      <div class="team-list-item ${isAlreadyRegistered ? 'disabled' : ''}" 
+           ${!isAlreadyRegistered ? `data-team-id="${id}"` : ''}>
+        <div class="team-list-logo">
+          <img src="${data.logo}" alt="${data.teamName}" 
+               onerror="this.src='../img-site/placeholder-team.png'">
+        </div>
+        
+        <div class="team-list-info">
+          <div class="team-list-header">
+            <h5 class="team-list-name">${data.teamName}</h5>
+            ${isAlreadyRegistered ? '<span class="team-list-badge">✅ Added</span>' : ''}
+          </div>
+          
+          <div class="team-list-meta">
+            <span class="team-list-country">
+              <span class="flag ${countryFlag}"></span>
+              ${countryName}
+            </span>
+            <span class="team-list-id">ID: ${id}</span>
+            <span class="team-list-members">👥 ${members.length}</span>
+          </div>
+        </div>
+        
+        ${!isAlreadyRegistered ? `
+          <div class="team-list-action">
+            <button type="button" class="btn-quick-add" data-team-id="${id}">
+              ➕ Add
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+  
+  teamSearchResults.innerHTML = `
+    <div class="team-list-header-info">
+      <span>📋 ${teams.length} team(s) available</span>
+      <button type="button" class="btn-close-list" onclick="document.getElementById('teamSearchResults').classList.remove('show')">
+        ✕
+      </button>
+    </div>
+    <div class="team-list-container">
+      ${teamsHTML}
+    </div>
+  `;
+}
+
+// ========================================
+// BUSCAR TIME ESPECÍFICO POR ID
+// ========================================
+async function buscarTimePorId() {
+  const teamId = searchTeamId.value.trim().toUpperCase();
+  
+  if (!teamId || teamId.length !== 8) {
+    teamSearchResults.innerHTML = '<div class="team-search-error">⚠️ Team ID must be exactly 8 characters</div>';
+    teamSearchResults.classList.add('show');
+    return;
+  }
+  
+  try {
+    teamSearchResults.innerHTML = '<div class="team-search-loading">🔍 Searching...</div>';
+    teamSearchResults.classList.add('show');
+    
+    console.log('🔍 Buscando time:', teamId);
+    
+    // Buscar time no Firestore
+    const teamDocRef = doc(db, "teams", teamId);
+    const teamDocSnap = await getDoc(teamDocRef);
+    
+    if (!teamDocSnap.exists()) {
+      teamSearchResults.innerHTML = '<div class="team-search-error">❌ Team not found</div>';
+      return;
+    }
+    
+    const teamData = teamDocSnap.data();
+    console.log('✅ Time encontrado:', teamData);
+    
+    // Verificar se time já está cadastrado
+    if (registeredTeams.some(t => t.teamId === teamId)) {
+      teamSearchResults.innerHTML = '<div class="team-search-error">⚠️ This team is already registered</div>';
+      return;
+    }
+    
+    // Verificar se atingiu limite
+    if (!canAddMoreTeams()) {
+      teamSearchResults.innerHTML = '<div class="team-search-error">⚠️ Maximum limit reached (' + MAX_TEAMS + ' teams)</div>';
+      return;
+    }
+    
+    // Filtrar apenas membros aceitos
+    const acceptedMembers = teamData.members.filter(m => m.status === 'accepted');
+    
+    // Renderizar resultado detalhado
+    renderTeamSearchResult(teamData, acceptedMembers, teamId);
+    
+  } catch (error) {
+    console.error('❌ Erro ao buscar time:', error);
+    teamSearchResults.innerHTML = `<div class="team-search-error">❌ Error: ${error.message}</div>`;
+  }
+}
+
+// Renderizar resultado de busca específica (detalhado)
+function renderTeamSearchResult(teamData, members, teamId) {
+  const countryFlag = teamData.countryFlag || 'flag-us';
+  const countryName = teamData.countryName || 'Unknown';
+  
+  teamSearchResults.innerHTML = `
+    <div class="team-search-card">
+      <div class="team-search-logo">
+        <img src="${teamData.logo}" alt="${teamData.teamName}" 
+             onerror="this.src='../img-site/placeholder-team.png'">
+      </div>
+      
+      <div class="team-search-info">
+        <h4 class="team-search-name">${teamData.teamName}</h4>
+        
+        <div class="team-search-meta">
+          <span class="team-search-id">
+            <span class="flag ${countryFlag}"></span>
+            ${countryName} • ID: ${teamData.teamId}
+          </span>
+          <span class="team-search-members">
+            👥 ${members.length} player(s)
+          </span>
+        </div>
+        
+        <div class="team-search-players">
+          ${members.map(m => `
+            <div class="team-search-player">
+              ${m.displayName} (${m.playerId})
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <button type="button" class="btn-add-searched-team" 
+              data-team-id="${teamId}">
+        ✅ Add Team
+      </button>
+    </div>
+  `;
+}
+
+// ========================================
+// ADICIONAR TIME CADASTRADO
+// ========================================
+async function adicionarTimeCadastrado(teamId) {
+  try {
+    console.log('➕ Adicionando time cadastrado:', teamId);
+    
+    // ✅ TENTAR USAR CACHE PRIMEIRO
+    let teamData, acceptedMembers;
+    
+    const cachedTeam = allTeamsCache.find(t => t.id === teamId);
+    
+    if (cachedTeam) {
+      console.log('✅ Usando dados do cache');
+      teamData = cachedTeam.data;
+      acceptedMembers = cachedTeam.members;
+    } else {
+      console.log('⚠️ Time não encontrado no cache, buscando no Firestore...');
+      const teamDocRef = doc(db, "teams", teamId);
+      const teamDocSnap = await getDoc(teamDocRef);
+      
+      if (!teamDocSnap.exists()) {
+        alert('❌ Team not found');
+        return;
+      }
+      
+      teamData = teamDocSnap.data();
+      acceptedMembers = teamData.members.filter(m => m.status === 'accepted');
+    }
+    
+    // Verificar se já está no torneio
+    if (registeredTeams.some(t => t.teamId === teamId)) {
+      alert('⚠️ This team is already registered in the tournament');
+      return;
+    }
+    
+    // Verificar limite
+   if (!canAddMoreTeams()) {
+      showMaxTeamsError();
+      return;
+    }
+    
+    // Montar objeto do time
+    const team = {
+      teamId: teamId,
+      name: teamData.teamName,
+      logo: teamData.logo,
+      country: teamData.countryName || 'Unknown',
+      countryFlag: teamData.countryFlag || 'flag-us',
+      players: acceptedMembers.map(m => ({
+        name: m.displayName,
+        id: m.playerId
+      })),
+      isRegisteredTeam: true
+    };
+    
+    registeredTeams.push(team);
+    renderRegisteredTeams();
+    
+    // Atualizar lista (marcar como adicionado)
+    if (allTeamsCache.length > 0) {
+      renderizarListaTimes(allTeamsCache);
+    }
+    
+    console.log('✅ Time adicionado com sucesso');
+    alert('✅ Team added successfully!');
+    
+  } catch (error) {
+    console.error('❌ Erro ao adicionar time:', error);
+    alert('❌ Error adding team: ' + error.message);
+  }
+};
+
+    // ========================================
+    // UPLOAD DE LOGO DO TIME
+    // ========================================
+    const btnUploadTeamLogo = document.getElementById('btnUploadTeamLogo');
+    const teamLogo = document.getElementById('teamLogo');
+    const teamLogoPreview = document.getElementById('teamLogoPreview');
+
+    btnUploadTeamLogo.addEventListener('click', () => {
+      teamLogo.click();
+    });
+
+    teamLogoPreview.addEventListener('click', () => {
+      teamLogo.click();
+    });
+
+    teamLogo.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        currentTeamLogo = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          teamLogoPreview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ========================================
+    // ADICIONAR JOGADOR AO TIME
+    // ========================================
+    const btnAddPlayer = document.getElementById('btnAddPlayer');
+    const playerNameInput = document.getElementById('playerName');
+    const playerIdInput = document.getElementById('playerId');
+    const currentTeamPlayersDiv = document.getElementById('currentTeamPlayers');
+    const teamPlayersList = document.getElementById('teamPlayersList');
+
+    btnAddPlayer.addEventListener('click', () => {
+      const playerName = playerNameInput.value.trim();
+      const playerId = playerIdInput.value.trim().toUpperCase();
+
+      if (!playerName || !playerId) {
+        alert('❌ Please enter both player name and ID');
+        return;
+      }
+
+      // ✅ VALIDAÇÃO PADRONIZADA
+      if (playerId.length !== PLAYER_ID_LENGTH) {
+        alert(`❌ Player ID must be exactly ${PLAYER_ID_LENGTH} characters`);
+        return;
+      }
+
+      // ✅ VERIFICAR SE O ID JÁ EXISTE
+      if (allPlayerIds.includes(playerId)) {
+        alert('❌ This Player ID is already registered! Each player must have a unique ID.');
+        playerIdInput.value = '';
+        playerIdInput.focus();
+        return;
+      }
+
+      currentTeamPlayers.push({ name: playerName, id: playerId });
+      allPlayerIds.push(playerId); // Adicionar à lista global
+      
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${playerName} (ID: ${playerId})</span>
+        <button type="button" class="btn-remove-player" data-index="${currentTeamPlayers.length - 1}" data-player-id="${playerId}">❌</button>
+      `;
+      teamPlayersList.appendChild(li);
+
+      currentTeamPlayersDiv.style.display = 'block';
+      playerNameInput.value = '';
+      playerIdInput.value = '';
+
+      // Remover jogador
+      li.querySelector('.btn-remove-player').addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        const playerIdToRemove = this.dataset.playerId;
+        
+        currentTeamPlayers.splice(index, 1);
+        
+        // Remover da lista global de IDs
+        const idIndex = allPlayerIds.indexOf(playerIdToRemove);
+        if (idIndex > -1) {
+          allPlayerIds.splice(idIndex, 1);
+        }
+        
+        li.remove();
+        if (currentTeamPlayers.length === 0) {
+          currentTeamPlayersDiv.style.display = 'none';
+        }
+      });
+    });
+
+    // ========================================
+    // ADICIONAR TIME AO TORNEIO
+    // ========================================
+    const btnAddTeam = document.getElementById('btnAddTeam');
+    const teamNameInput = document.getElementById('teamName');
+    const registeredTeamsDiv = document.getElementById('registeredTeams');
+
+    btnAddTeam.addEventListener('click', async () => {
+      const teamName = teamNameInput.value.trim();
+
+      if (!canAddMoreTeams()) {
+          showMaxTeamsError();
+          return;
+      }
+
+      if (!teamName) {
+        alert('❌ Please enter a team name');
+        return;
+      }
+
+      if (currentTeamPlayers.length === 0) {
+        alert('❌ Please add at least one player to the team');
+        return;
+      }
+
+      let teamLogoUrl = null;
+      if (currentTeamLogo) {
+        try {
+          const logoRef = ref(storage, `tournament-teams/${Date.now()}_${currentTeamLogo.name}`);
+          await uploadBytes(logoRef, currentTeamLogo);
+          teamLogoUrl = await getDownloadURL(logoRef);
+        } catch (error) {
+          console.error('Error uploading team logo:', error);
+        }
+      }
+
+      const team = {
+        name: teamName,
+        logo: teamLogoUrl,
+        players: [...currentTeamPlayers]
+      };
+
+      registeredTeams.push(team);
+      renderRegisteredTeams();
+
+      // Limpar campos
+      teamNameInput.value = '';
+      teamPlayersList.innerHTML = '';
+      currentTeamPlayers = [];
+      currentTeamLogo = null;
+      currentTeamPlayersDiv.style.display = 'none';
+      teamLogoPreview.innerHTML = '<span>🖼️</span>';
+    });
+
+  function renderRegisteredTeams() {
+  // ✅ ATUALIZAR CONTADOR COM STATUS
+    const teamCounter = document.getElementById('teamCounter');
+    const count = registeredTeams.length;
+    const status = getTeamCountStatus();
+    
+    teamCounter.textContent = `(${count}/${MAX_TEAMS})`;
+    
+    // Aplicar cor baseado no status
+    const colors = {
+      'full': '#ff6b6b',
+      'warning': '#ffad00',
+      'normal': '#4ade80'
+    };
+    teamCounter.style.color = colors[status];
+    
+    if (registeredTeams.length === 0) {
+      registeredTeamsDiv.innerHTML = '<p class="empty-message">No teams registered yet</p>';
+      return;
+    }
+
+  registeredTeamsDiv.innerHTML = registeredTeams.map((team, index) => {
+    const isBye = team.name === 'BYE';
+    const isRegistered = team.isRegisteredTeam;
+    
+    return `
+      <div class="team-card ${isBye ? 'bye-team' : ''}">
+        <div class="team-card-logo">
+          ${team.logo 
+            ? `<img src="${team.logo}" alt="${team.name}" 
+                 onerror="this.src='../img-site/placeholder-team.png'">` 
+            : isBye 
+              ? `<span>💤</span>`
+              : `<span>🎲</span>`
+          }
+        </div>
+        <div class="team-card-info">
+          <h4>${team.name} ${isRegistered ? '🏅' : ''}</h4>
+          ${isRegistered ? `
+            <p style="color: #4ade80; font-size: 0.85rem; margin-bottom: 5px;">
+              <span class="flag ${team.countryFlag}"></span>
+              ${team.country} • ID: ${team.teamId}
+            </p>
+          ` : ''}
+          <p>${team.players.length} player(s)</p>
+          <ul class="team-card-players">
+            ${team.players.map(p => `<li>${p.name} (${p.id})</li>`).join('')}
+          </ul>
+        </div>
+        ${!isBye ? `
+          <button type="button" class="btn-remove-team" data-index="${index}">🗑️</button>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+
+ // ✅ Event listeners removidos - agora usa delegation global
+}
+const handleTournamentSubmit = async (e) => {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  
+  // 🔒 LOCK ATÔMICO - PROTEÇÃO CONTRA CLIQUES MÚLTIPLOS
+  if (isCreatingTournament) {
+    console.warn('⚠️ Tournament creation already in progress, ignoring duplicate submission');
+    return;
+  }
+  
+  isCreatingTournament = true;
+
+  // 🔒 CAPTURAR REFERÊNCIA DO BOTÃO E DESABILITAR IMEDIATAMENTE
+  const btnSubmit = document.getElementById('btnFinalSubmit');
+  const originalState = {
+    disabled: btnSubmit.disabled,
+    text: btnSubmit.textContent,
+    opacity: btnSubmit.style.opacity,
+    cursor: btnSubmit.style.cursor,
+    pointerEvents: btnSubmit.style.pointerEvents
+  };
+  
+  // 🔒 BLOQUEAR BOTÃO COMPLETAMENTE
+  btnSubmit.disabled = true;
+  btnSubmit.style.opacity = '0.5';
+  btnSubmit.style.cursor = 'not-allowed';
+  btnSubmit.style.pointerEvents = 'none';
+  btnSubmit.textContent = '⏳ Starting...';
+
+  // ✅ REVALIDAÇÃO DE PERMISSÃO (Segurança Extra)
+  if (!currentUser) {
+    alert('❌ Not authenticated. Please log in again.');
+    restoreButtonState(btnSubmit, originalState);
+    isCreatingTournament = false; // ✅ Resetar aqui porque falhou antes do Firebase
+    return;
+  }
+  
+  try {
+    const userDoc = await getDoc(doc(db, "usuarios", currentUser.uid));
+    
+    if (!userDoc.exists()) {
+      throw new Error('User data not found');
+    }
+    
+    const userData = userDoc.data();
+    const userRole = userData.role;
+    
+    if (userRole !== 'creator' && userRole !== 'admin') {
+      throw new Error('Only creators and admins can create tournaments');
+    }
+    
+    console.log('✅ User permission validated:', userRole);
+    
+  } catch (error) {
+    console.error('❌ Error validating permissions:', error);
+    alert('❌ Permission error: ' + error.message);
+    restoreButtonState(btnSubmit, originalState);
+    isCreatingTournament = false; // ✅ Resetar aqui porque falhou antes do Firebase
+    return;
+  }
+
+  // ✅ VALIDAÇÃO: Total de games sorteados
+  const totalDrawn = getTotalDrawnTeams();
+  if (totalDrawn < registeredTeams.length) {
+    alert(`❌ Please draw all teams! ${registeredTeams.length - totalDrawn} team(s) remaining.`);
+    restoreButtonState(btnSubmit, originalState);
+    isCreatingTournament = false; // ✅ Resetar aqui porque validação falhou
+    return;
+  }
+
+  // ✅ VALIDAR FORMATO COMPLETO
+  const formatValidation = validateMatchFormat(uploadedMatchesData, selectedFormat, selectedWinners);
+
+  // 🆕 TRATAR CASO ESPECIAL: needs_confirmation
+  if (formatValidation.valid === 'needs_confirmation') {
+    const userConfirmed = confirm(formatValidation.message);
+    
+    if (!userConfirmed) {
+      console.log('❌ User cancelled due to inconsistencies');
+      restoreButtonState(btnSubmit, originalState);
+      isCreatingTournament = false; // ✅ Resetar porque usuário cancelou
+      return;
+    }
+    
+    console.log('✅ User confirmed despite inconsistencies');
+    
+  } else if (!formatValidation.valid) {
+    alert(formatValidation.message);
+    restoreButtonState(btnSubmit, originalState);
+    isCreatingTournament = false; // ✅ Resetar porque validação falhou
+    return;
+  }
+
+  console.log('✅ Format validation complete:', formatValidation.score);
+
+  const tournamentName = document.getElementById('tournamentName').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const description = document.getElementById('description').value;
+
+  try {
+    // ===================================
+    // ETAPA 1: UPLOAD DE LOGO
+    // ===================================
+    let logoUrl;
+    try {
+      console.log('📤 Uploading tournament logo...');
+      btnSubmit.textContent = '📤 Uploading logo... (1/6)';
+      
+      const logoRef = ref(storage, `tournament-logos/${Date.now()}_${logoFile.name}`);
+      await uploadBytes(logoRef, logoFile);
+      logoUrl = await getDownloadURL(logoRef);
+      console.log('✅ Logo uploaded successfully');
+    } catch (error) {
+      console.error('❌ Logo upload failed:', error);
+      throw new Error(`Failed to upload logo: ${error.message}`);
+    }
+
+    // ===================================
+    // ETAPA 2: UPLOAD DE REGRAS
+    // ===================================
+    let rulesUrl;
+    try {
+      console.log('📤 Uploading rules file...');
+      btnSubmit.textContent = '📤 Uploading rules... (2/6)';
+      
+      const rulesRef = ref(storage, `tournament-rules/${Date.now()}_${rulesFile.name}`);
+      await uploadBytes(rulesRef, rulesFile);
+      rulesUrl = await getDownloadURL(rulesRef);
+      console.log('✅ Rules uploaded successfully');
+    } catch (error) {
+      console.error('❌ Rules upload failed:', error);
+      throw new Error(`Failed to upload rules: ${error.message}`);
+    }
+    
+    btnSubmit.textContent = '💾 Preparing tournament data... (3/6)';
+
+    // ===================================
+    // ETAPA 3: DIAGNÓSTICO DE TAMANHO
+    // ===================================
+    console.log('🔍 DIAGNOSTIC: Checking team sizes...');
+    registeredTeams.forEach((team, index) => {
+      const teamSize = new Blob([JSON.stringify(team)]).size;
+      console.log(`Team ${index + 1} (${team.name}): ${(teamSize / 1024).toFixed(2)} KB`);
+    });
+
+    // ===================================
+    // ETAPA 4: CRIAR VERSÃO MINIMALISTA
+    // ===================================
+    console.log('📦 Creating MINIMAL data for main document...');
+    
+    const minimalTeamsForMain = registeredTeams.map(team => ({
+      name: team.name,
+      logo: team.logo || null,
+      isRegisteredTeam: team.isRegisteredTeam || false
+    }));
+    
+    const minimalGroupsForMain = {};
+    Object.keys(drawnGroups).forEach(groupLetter => {
+      minimalGroupsForMain[groupLetter] = drawnGroups[groupLetter].map(team => team.name);
+    });
+
+    // ===================================
+    // ETAPA 5: DOCUMENTO PRINCIPAL
+    // ===================================
+    const tournamentData = {
+      name: tournamentName,
+      logoUrl: logoUrl,
+      rulesUrl: rulesUrl,
+      rulesFileName: rulesFile.name,
+      startDate: startDate,
+      endDate: endDate,
+      description: description,
+      teamCount: registeredTeams.length,
+      groupCount: Object.keys(drawnGroups).filter(g => drawnGroups[g].length > 0).length,
+      groups: minimalGroupsForMain,
+      type: 'group-knockout',
+      createdBy: currentUser.uid,
+      createdAt: new Date(),
+      views: 0,
+      status: 'upcoming',
+      dataVersion: 1,
+      lastModifiedAt: new Date().toISOString()
+    };
+
+    const dataSize = new Blob([JSON.stringify(tournamentData)]).size;
+    console.log(`🔍 Main document size: ${(dataSize / 1024).toFixed(2)} KB`);
+
+    if (dataSize > 900000) {
+      throw new Error('Document size exceeds safe limit. Please reduce team count.');
+    }
+
+    console.log('💾 Saving main tournament document...');
+    const tournamentDocRef = await addDoc(collection(db, "tournaments"), tournamentData);
+    const tournamentId = tournamentDocRef.id;
+    console.log('✅ Main document saved with ID:', tournamentId);
+
+    // ===================================
+    // ETAPA 6: SUBCOLEÇÕES - TEAMS
+    // ===================================
+    btnSubmit.textContent = '💾 Saving team details... (4/6)';
+    console.log('💾 Saving full team data to subcollection...');
+    
+    const teamDetailsRef = collection(db, "tournaments", tournamentId, "teamDetails");
+    
+    for (let i = 0; i < registeredTeams.length; i++) {
+      const team = registeredTeams[i];
+      await addDoc(teamDetailsRef, {
+        index: i,
+        teamId: team.teamId || null,
+        name: team.name,
+        logo: team.logo || null,
+        country: team.country || 'Unknown',
+        countryFlag: team.countryFlag || 'flag-us',
+        players: team.players,
+        isRegisteredTeam: team.isRegisteredTeam || false
+      });
+    }
+    console.log('✅ Full team data saved');
+
+    // ===================================
+    // ETAPA 7: SUBCOLEÇÕES - GRUPOS
+    // ===================================
+    console.log('💾 Saving full groups data to subcollection...');
+    
+    const fullGroupsData = {};
+    Object.keys(drawnGroups).forEach(groupLetter => {
+      fullGroupsData[groupLetter] = drawnGroups[groupLetter].map(team => ({
+        teamId: team.teamId || null,
+        name: team.name,
+        logo: team.logo || null,
+        country: team.country || 'Unknown',
+        countryFlag: team.countryFlag || 'flag-us',
+        players: team.players
+      }));
+    });
+
+    const fullGroupsDocRef = doc(db, "tournaments", tournamentId, "fullGroups", "data");
+    await setDoc(fullGroupsDocRef, fullGroupsData);
+    console.log('✅ Full groups data saved');
+
+    // ===================================
+    // ETAPA 8: SUBCOLEÇÕES - MATCHES
+    // ===================================
+    btnSubmit.textContent = '💾 Generating matches... (5/6)';
+    console.log('💾 Saving full matches to subcollection...');
+    
+    const matchDetailsRef = collection(db, "tournaments", tournamentId, "matchDetails");
+
+    const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    for (const letter of groupLetters) {
+      const groupTeams = drawnGroups[letter];
+      if (!groupTeams || groupTeams.length < 4) continue;
+      
+      const matchups = [
+        [0, 1], [2, 3], [1, 3], [2, 0], [0, 3], [1, 2]
+      ];
+      
+      for (let i = 0; i < matchups.length; i++) {
+        const [idx1, idx2] = matchups[i];
+        const team1 = groupTeams[idx1];
+        const team2 = groupTeams[idx2];
+        
+        await addDoc(matchDetailsRef, {
+          matchId: `${letter}${i + 1}`,
+          groupLetter: letter,
+          matchNumber: i + 1,
+          team1: {
+            name: team1.name,
+            logo: team1.logo,
+            players: team1.players,
+            teamId: team1.teamId || null
+          },
+          team2: {
+            name: team2.name,
+            logo: team2.logo,
+            players: team2.players,
+            teamId: team2.teamId || null
+          },
+          bestOf: 3,
+          result: {
+            team1Score: 0,
+            team2Score: 0,
+            winner: null,
+            status: "pending"
+          },
+          scheduledDate: null,
+          playedDate: null,
+          createdAt: new Date()
+        });
+      }
+    }
+    console.log('✅ Full matches saved');
+
+    // ===================================
+    // ETAPA 9: SUBCOLEÇÕES - STANDINGS
+    // ===================================
+    btnSubmit.textContent = '💾 Initializing standings... (6/6)';
+    console.log('💾 Saving initial standings...');
+    
+    const standingsRef = collection(db, "tournaments", tournamentId, "standings");
+    
+    for (const letter of groupLetters) {
+      const groupTeams = drawnGroups[letter];
+      if (!groupTeams || groupTeams.length === 0) continue;
+      
+      for (let i = 0; i < groupTeams.length; i++) {
+        const team = groupTeams[i];
+        await addDoc(standingsRef, {
+          groupLetter: letter,
+          position: i + 1,
+          teamName: team.name,
+          teamLogo: team.logo,
+          wins: 0,
+          losses: 0,
+          points: 0,
+          matchesPlayed: 0
+        });
+      }
+    }
+    console.log('✅ Standings saved');
+
+    // ===================================
+    // ETAPA 10: FINALIZAÇÃO
+    // ===================================
+    btnSubmit.textContent = '✅ Tournament Created!';
+    btnSubmit.style.background = 'linear-gradient(45deg, #4ade80, #22c55e)';
+
+    console.log('✅ Tournament created successfully!');
+
+    alert('✅ Tournament created successfully!\n\nAll data has been saved to Firebase.');
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // ✅ REDIRECT (flag NÃO é resetada aqui - página vai recarregar)
+    window.location.href = 'torneios.html';
+
+  } catch (error) {
+    console.error('❌ Error creating tournament:', error);
+    
+    // ❌ RESTAURAR ESTADO EM CASO DE ERRO
+    restoreButtonState(btnSubmit, originalState);
+    
+    let errorMessage = '❌ Error creating tournament:\n\n';
+    
+    if (error.message.includes('upload')) {
+      errorMessage += 'Failed to upload files. Please check:\n';
+      errorMessage += '• Your internet connection\n';
+      errorMessage += '• File sizes (max 10MB)\n';
+      errorMessage += '• File formats (images: JPG/PNG, rules: PDF/DOCX/TXT)';
+    } else if (error.message.includes('permission')) {
+      errorMessage += 'Permission denied. Please check:\n';
+      errorMessage += '• You are logged in\n';
+      errorMessage += '• Your account has creator/admin role';
+    } else if (error.message.includes('size exceeds')) {
+      errorMessage += 'Tournament data is too large.\n\n';
+      errorMessage += 'Try reducing:\n';
+      errorMessage += '• Number of teams\n';
+      errorMessage += '• Image file sizes\n';
+      errorMessage += '• Description length';
+    } else {
+      errorMessage += error.message;
+    }
+    
+    alert(errorMessage);
+    
+    // ✅ RESETAR FLAG APENAS EM CASO DE ERRO
+    isCreatingTournament = false;
+  }
+  // ❌ NÃO TEM FINALLY - não resetar flag aqui
+};
+
+// 🆕 FUNÇÃO AUXILIAR PARA RESTAURAR ESTADO DO BOTÃO
+function restoreButtonState(button, state) {
+  button.disabled = state.disabled;
+  button.textContent = state.text;
+  button.style.opacity = state.opacity;
+  button.style.cursor = state.cursor;
+  button.style.pointerEvents = state.pointerEvents;
+  button.style.background = '';
+}
+
+// ✅ GARANTIR QUE O LISTENER SEJA ADICIONADO APENAS UMA VEZ
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('createTournamentForm');
+  if (form) {
+    form.addEventListener('submit', handleTournamentSubmit, { once: false });
+    console.log('✅ Form submit listener attached');
+  }
+});
+  </script>
+</body>
+</html>

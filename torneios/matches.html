@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Match Management - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="matches.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Loading -->
+    <div id="loadingContainer" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading match...</p>
+    </div>
+
+    <!-- Container da Partida -->
+    <div id="matchContainer" class="match-container" style="display: none;">
+      
+      <!-- Cabeçalho da Partida -->
+      <div class="match-header">
+        <button class="btn-back" onclick="window.history.back()">
+          ← Back
+        </button>
+        <h1 id="matchTitle">Match Details</h1>
+        <div id="matchStatus" class="match-status-badge">Pending</div>
+      </div>
+
+      <!-- Seletor de Formato (Admin/Creator only) -->
+      <div id="formatSelector" class="format-selector" style="display: none;">
+        <h3>🎯 Select Match Format</h3>
+        <div class="format-buttons">
+          <button class="btn-format-select" data-format="1">MD1</button>
+          <button class="btn-format-select active" data-format="3">MD3</button>
+          <button class="btn-format-select" data-format="5">MD5</button>
+        </div>
+      </div>
+
+      <!-- Upload Section (Admin/Creator only) -->
+      <div id="uploadSection" class="upload-section" style="display: none;">
+        <div class="upload-card">
+          <div class="upload-icon">📤</div>
+          <h3>Upload Match Results</h3>
+          <p>Upload the JSON file with match data</p>
+          
+          <input 
+            type="file" 
+            id="jsonFileInput" 
+            accept=".json"
+            style="display: none;"
+          >
+          
+          <button class="btn-upload-json" id="btnUploadJson">
+            Choose JSON File
+          </button>
+          
+          <div id="uploadFileName" class="upload-file-name"></div>
+        </div>
+      </div>
+
+      <!-- Configuration Section (After upload, Admin/Creator only) -->
+      <div id="configSection" class="config-section" style="display: none;">
+        <h2>⚙️ Match Configuration</h2>
+        
+        <!-- Teams Configuration -->
+        <div class="teams-config">
+          <!-- Winner Team -->
+          <div class="team-config winner-team">
+            <div class="team-config-header">
+              <h3>🏆 Winner Team</h3>
+              <span class="team-score" id="winnerScore">0</span>
+            </div>
+            <div id="winnerTeamPlayers" class="team-players"></div>
+          </div>
+
+          <!-- VS Divider -->
+          <div class="vs-divider">VS</div>
+
+          <!-- Defeated Team -->
+          <div class="team-config defeated-team">
+            <div class="team-config-header">
+              <h3>💀 Defeated Team</h3>
+              <span class="team-score" id="defeatedScore">0</span>
+            </div>
+            <div id="defeatedTeamPlayers" class="team-players"></div>
+          </div>
+        </div>
+
+        <!-- Bans Section -->
+        <div class="bans-section">
+          <h3>🚫 Match Bans</h3>
+          <div class="bans-container">
+            <div class="bans-team">
+              <h4>Winner Team Bans</h4>
+              <div id="winnerBans" class="bans-grid">
+                <div class="ban-slot" data-team="winner" data-index="0">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+                <div class="ban-slot" data-team="winner" data-index="1">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+                <div class="ban-slot" data-team="winner" data-index="2">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+              </div>
+            </div>
+            <div class="bans-team">
+              <h4>Defeated Team Bans</h4>
+              <div id="defeatedBans" class="bans-grid">
+                <div class="ban-slot" data-team="defeated" data-index="0">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+                <div class="ban-slot" data-team="defeated" data-index="1">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+                <div class="ban-slot" data-team="defeated" data-index="2">
+                  <span class="ban-placeholder">+ Add Ban</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="config-actions">
+          <button class="btn-save-config" id="btnSaveConfig">
+            💾 Save Match Data
+          </button>
+        </div>
+      </div>
+
+<!-- Results Section (Visible to all after save) -->
+<div id="resultsSection" class="results-section" style="display: none;">
+  <h2>📊 Match Results</h2>
+  
+  <!-- Match Info Cards -->
+  <div class="match-info-grid">
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <div class="info-content">
+        <span class="info-label">Date</span>
+        <span class="info-value" id="matchDate">-</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🎮</div>
+      <div class="info-content">
+        <span class="info-label">Type</span>
+        <span class="info-value" id="matchType">-</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🎯</div>
+      <div class="info-content">
+        <span class="info-label">Format</span>
+        <span class="info-value" id="matchFormat">-</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sistema de Abas para Jogos Individuais -->
+  <div class="results-tabs-container">
+    <div class="results-tabs" id="resultsTabs">
+      <!-- Abas serão geradas dinamicamente -->
+    </div>
+    
+    <div class="results-tabs-content" id="resultsTabsContent">
+      <!-- Conteúdo das abas será gerado dinamicamente -->
+    </div>
+  </div>
+</div>
+
+    <!-- Error -->
+    <div id="errorContainer" class="error-container" style="display: none;">
+      <p>❌ Match not found</p>
+      <button class="btn-back" onclick="window.history.back()">
+        ← Go Back
+      </button>
+    </div>
+
+    <!-- Awaiting Section (Visitors) -->
+    <div id="awaitingSection" class="awaiting-section" style="display: none;">
+      <div class="awaiting-content">
+        <div class="awaiting-icon">⏳</div>
+        <h2>Match Results Pending</h2>
+        <p>This match hasn't been played yet. Check back later for results!</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2019 Guarini E-sport. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="matches.js"></script>
+</body>
+</html>

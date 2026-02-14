@@ -270,6 +270,12 @@
     order: 3; /* Vai para baixo em telas menores */
     max-height: 400px;
   }
+  
+  /* ADICIONAR ESTA LINHA: */
+  .perfil-team-display-sidebar {
+    width: 100%;
+    order: 4;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2139,5 +2145,446 @@
   
   .build-rating-view-only .build-average-number {
     font-size: 14px;
+  }
+}
+
+/* ============================================
+   TEAM SECTION - PERFIL
+   ============================================ */
+
+.perfil-team-container {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-team-label {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin: 0;
+  min-width: 60px;
+}
+
+/* Botão Create Team */
+.btn-create-team {
+  background: linear-gradient(135deg, #ff7500, #ffad00);
+  border: 2px solid #ff7500;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.3);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-create-team:hover {
+  background: linear-gradient(135deg, #ffad00, #ffc107);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+  border-color: #ffad00;
+}
+
+.btn-create-team:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(255, 117, 0, 0.3);
+}
+
+/* Display do Time */
+.team-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: rgba(255, 117, 0, 0.1);
+  border: 2px solid #ff7500;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.team-display-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #ff7500;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.team-display-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-display-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-display-name {
+  color: #ffad00;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-display-id {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.btn-view-team {
+  background: rgba(255, 117, 0, 0.2);
+  border: 2px solid #ff7500;
+  color: #ffad00;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-view-team:hover {
+  background: rgba(255, 117, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   TEAM INVITE CONTAINER
+   ============================================ */
+
+.team-invite-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.1));
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  display: none;
+  animation: slideInFromTop 0.5s ease;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.team-invite-header {
+  color: #ffc107;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-invite-text {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.team-invite-text strong {
+  color: #ffc107;
+  font-weight: 700;
+}
+
+.team-invite-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-accept-invite,
+.btn-decline-invite {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border: 2px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-accept-invite {
+  background: rgba(40, 167, 69, 0.2);
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.btn-accept-invite:hover {
+  background: #28a745;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-accept-invite:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-decline-invite {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.btn-decline-invite:hover {
+  background: #dc3545;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-decline-invite:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .team-invite-container {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .team-invite-header {
+    font-size: 1rem;
+  }
+
+  .team-invite-text {
+    font-size: 0.95rem;
+  }
+
+  .team-invite-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-accept-invite,
+  .btn-decline-invite {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-invite-container {
+    padding: 12px;
+  }
+
+  .team-invite-header {
+    font-size: 0.95rem;
+  }
+
+  .team-invite-text {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================
+   TEAM DISPLAY SIDEBAR - Abaixo do Last Views
+   ============================================ */
+
+.perfil-team-display-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 117, 0, 0.3);
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.perfil-team-display-sidebar h4 {
+  color: #ffad00;
+  font-size: 1rem;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 117, 0, 0.3);
+}
+
+.perfil-team-display-sidebar .team-display {
+  width: 100%;
+}
+
+.perfil-team-display-sidebar .btn-view-team {
+  width: 100%;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+/* ============================================
+   TEAM VIEW CONTAINER (perfil-view.html)
+   ============================================ */
+
+.perfil-team-view-container {
+  width: 320px;
+  flex-shrink: 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 117, 0, 0.3);
+  border-radius: 12px;
+}
+
+.team-view-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 117, 0, 0.1);
+  border: 1px solid rgba(255, 117, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.team-view-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #ff7500;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.5);
+}
+
+.team-view-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-view-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-view-name {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-view-id {
+  color: #aaa;
+  font-size: 0.75rem;
+  margin: 0;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.btn-view-team-profile {
+  width: 100%;
+  background: rgba(255, 117, 0, 0.2);
+  border: 2px solid #ff7500;
+  color: #ffad00;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-view-team-profile:hover {
+  background: rgba(255, 117, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.5);
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .perfil-team-view-container {
+    width: 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .perfil-team-view-container {
+    width: 100%;
+    order: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .perfil-team-view-container {
+    padding: 15px;
+  }
+  
+  .team-view-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .team-view-name {
+    font-size: 0.9rem;
+  }
+  
+  .team-view-id {
+    font-size: 0.7rem;
+  }
+  
+  .btn-view-team-profile {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-view-logo {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .team-view-name {
+    font-size: 0.85rem;
   }
 }

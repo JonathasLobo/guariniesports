@@ -1,0 +1,796 @@
+/* ============================================
+   REPORT - ESTILOS GERAIS
+   ============================================ */
+
+main {
+  padding: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
+  color: #fff;
+  min-height: calc(100vh - 200px);
+}
+
+.report-container {
+  max-width: 1600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* ============================================
+   LOADING E ERRO
+   ============================================ */
+
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 173, 0, 0.3);
+  border-top-color: #ffad00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   CABEÇALHO DO RELATÓRIO
+   ============================================ */
+
+.report-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 20px;
+  border: 3px solid rgba(255, 173, 0, 0.5);
+  box-shadow: 0 10px 40px rgba(255, 173, 0, 0.3);
+}
+
+.report-trophy {
+  font-size: 6rem;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.report-header h1 {
+  color: #ffad00;
+  font-size: 3rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.report-subtitle {
+  color: #aaa;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* ============================================
+   SEÇÃO DO CAMPEÃO
+   ============================================ */
+
+.champion-section {
+  margin-bottom: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.champion-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1));
+  border: 4px solid #ffd700;
+  border-radius: 25px;
+  padding: 50px;
+  text-align: center;
+  box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.champion-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.champion-crown {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: crownPulse 2s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes crownPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(5deg); }
+}
+
+.champion-logo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #ffd700;
+  margin: 0 auto 25px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.champion-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.champion-name {
+  color: #ffd700;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.champion-record {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   TABS DO RELATÓRIO
+   ============================================ */
+
+.report-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+  border-bottom: 3px solid rgba(255, 173, 0, 0.3);
+  padding-bottom: 0;
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+.report-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 18px 30px;
+  color: #aaa;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  border-bottom: 4px solid transparent;
+  white-space: nowrap;
+}
+
+.report-tab-btn:hover {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.1);
+}
+
+.report-tab-btn.active {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.2);
+  border-bottom-color: #ffad00;
+}
+
+/* ============================================
+   CONTEÚDO DAS TABS
+   ============================================ */
+
+.report-content {
+  min-height: 600px;
+}
+
+.report-tab-pane {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.report-tab-pane.active {
+  display: block;
+}
+
+.report-tab-pane h2 {
+  color: #ffad00;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  font-weight: 700;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   STATISTICAL LEADERS GRID
+   ============================================ */
+
+.leaders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.leader-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 30px;
+  border: 3px solid rgba(255, 173, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.leader-card:hover {
+  border-color: #ffad00;
+  box-shadow: 0 10px 30px rgba(255, 173, 0, 0.4);
+  transform: translateY(-5px);
+}
+
+.leader-card-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.leader-card-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.leader-card-title {
+  color: #ffad00;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.leader-player {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 2px solid rgba(74, 222, 128, 0.3);
+}
+
+.leader-player-pokemon {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 3px solid #4ade80;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.leader-player-pokemon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leader-player-info {
+  flex: 1;
+}
+
+.leader-player-name {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.leader-player-pokemon-name {
+  color: #4ade80;
+  font-size: 1rem;
+  text-transform: capitalize;
+}
+
+.leader-player-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffad00;
+  text-align: right;
+}
+
+/* ============================================
+   PLAYER AVERAGES
+   ============================================ */
+
+.averages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.average-player-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 12px;
+  padding: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  transition: all 0.3s ease;
+}
+
+.average-player-card:hover {
+  border-color: #ffad00;
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.3);
+}
+
+.average-player-rank {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffad00;
+  min-width: 60px;
+  text-align: center;
+}
+
+.average-player-card:nth-child(1) .average-player-rank {
+  color: #ffd700;
+  font-size: 2.5rem;
+}
+
+.average-player-card:nth-child(2) .average-player-rank {
+  color: #c0c0c0;
+  font-size: 2.3rem;
+}
+
+.average-player-card:nth-child(3) .average-player-rank {
+  color: #cd7f32;
+  font-size: 2.1rem;
+}
+
+.average-player-info {
+  flex: 1;
+}
+
+.average-player-name {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.average-player-games {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.average-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 15px;
+  flex: 2;
+}
+
+.average-stat-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.average-stat-label {
+  color: #aaa;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.average-stat-value {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   POKÉMON REPORT
+   ============================================ */
+
+.pokemon-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.pokemon-report-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.pokemon-report-card:hover {
+  border-color: #ffad00;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(255, 173, 0, 0.3);
+}
+
+.pokemon-report-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #ffad00;
+  margin: 0 auto 20px;
+  overflow: hidden;
+}
+
+.pokemon-report-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pokemon-report-name {
+  color: #ffad00;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+.pokemon-report-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.pokemon-report-stat {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 173, 0, 0.2);
+}
+
+.pokemon-report-stat-label {
+  color: #aaa;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+}
+
+.pokemon-report-stat-value {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   TEAMS REPORT
+   ============================================ */
+
+.teams-report-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.team-report-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  transition: all 0.3s ease;
+}
+
+.team-report-card:hover {
+  border-color: #ffad00;
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.3);
+}
+
+.team-report-rank {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffad00;
+  min-width: 70px;
+  text-align: center;
+}
+
+.team-report-card:nth-child(1) {
+  border-color: #ffd700;
+}
+
+.team-report-card:nth-child(1) .team-report-rank {
+  color: #ffd700;
+  font-size: 2.5rem;
+}
+
+.team-report-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #ffad00;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.team-report-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-report-info {
+  flex: 1;
+}
+
+.team-report-name {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.team-report-record {
+  color: #aaa;
+  font-size: 1rem;
+}
+
+.team-report-winrate {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #4ade80;
+  min-width: 150px;
+  text-align: right;
+}
+
+/* ============================================
+   ALL-STAR TEAM
+   ============================================ */
+
+.allstar-subtitle {
+  text-align: center;
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-bottom: 50px;
+}
+
+.allstar-formation {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.allstar-lane-group {
+  margin-bottom: 50px;
+}
+
+.allstar-lane-title {
+  text-align: center;
+  color: #ffad00;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.allstar-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.allstar-player-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.05));
+  border: 3px solid #ffd700;
+  border-radius: 15px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.allstar-player-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5);
+}
+
+.allstar-player-star {
+  font-size: 3rem;
+  animation: starRotate 10s linear infinite;
+}
+
+@keyframes starRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.allstar-player-pokemon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid #ffd700;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.allstar-player-pokemon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.allstar-player-details {
+  flex: 1;
+}
+
+.allstar-player-name {
+  color: #ffd700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.allstar-player-pokemon-name {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+}
+
+.allstar-player-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.allstar-stat {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.allstar-stat-label {
+  color: #aaa;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.allstar-stat-value {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.allstar-player-games {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* ============================================
+   BOTÃO VOLTAR
+   ============================================ */
+
+.btn-back {
+  background: linear-gradient(45deg, #6b6b6b, #8b8b8b);
+  border: none;
+  padding: 18px 50px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.btn-back:hover {
+  background: linear-gradient(45deg, #8b8b8b, #ababab);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   RESPONSIVO
+   ============================================ */
+
+@keyframes starRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1200px) {
+  .leaders-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .average-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .report-header h1 {
+    font-size: 2rem;
+  }
+  
+  .report-trophy {
+    font-size: 4rem;
+  }
+  
+  .champion-name {
+    font-size: 1.8rem;
+  }
+  
+  .report-tabs {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .report-tab-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .average-player-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .average-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+  }
+  
+  .allstar-players-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .allstar-player-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}

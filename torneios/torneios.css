@@ -1,0 +1,323 @@
+/* ============================================
+   ESTILOS DA PÁGINA DE TORNEIOS
+   ============================================ */
+
+/* Container geral das seções */
+.tournament-types,
+.manage-tournaments {
+  padding: 40px 20px;
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+.tournament-types h3,
+.manage-tournaments h3 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #fe8a01;
+  font-weight: 700;
+}
+
+/* ============================================
+   TIPOS DE TORNEIO
+   ============================================ */
+
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+.tournament-type-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tournament-type-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 173, 0, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.tournament-type-card:hover::before {
+  left: 100%;
+}
+
+.tournament-type-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(255, 173, 0, 0.4);
+  border-color: #ffad00;
+}
+
+.tournament-type-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tournament-type-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border-color: transparent;
+}
+
+.type-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 10px rgba(255, 173, 0, 0.3));
+}
+
+.tournament-type-card h4 {
+  font-size: 1.5rem;
+  color: #ffad00;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.type-description {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.type-info {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+/* ============================================
+   GERENCIAR TORNEIOS
+   ============================================ */
+
+.tournaments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+.tournament-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  min-height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tournament-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 173, 0, 0.15), transparent);
+  transition: left 0.5s;
+}
+
+.tournament-card:hover::before {
+  left: 100%;
+}
+
+.tournament-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(255, 173, 0, 0.4);
+  border-color: #ffad00;
+}
+
+/* Card de Criar Novo */
+.tournament-card.create-new {
+  border: 3px dashed rgba(255, 173, 0, 0.5);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(40, 40, 40, 0.8));
+}
+
+.tournament-card.create-new:hover {
+  border-color: #ffad00;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.9));
+}
+
+.create-icon {
+  font-size: 5rem;
+  color: #ffad00;
+  margin: 20px 0;
+  transition: transform 0.3s ease;
+}
+
+.tournament-card.create-new:hover .create-icon {
+  transform: scale(1.1) rotate(90deg);
+}
+
+.tournament-card h4 {
+  font-size: 1.3rem;
+  color: #ffad00;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+.create-description {
+  color: #ddd;
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+.btn-create {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border: none;
+  padding: 12px 30px;
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  margin-top: auto;
+}
+
+.btn-create:hover {
+  background: linear-gradient(45deg, #ffad00, #ffc107);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Cards de torneios existentes */
+.tournament-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #ffad00;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.3);
+  margin-bottom: 10px;
+}
+
+.tournament-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tournament-date,
+.tournament-views {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.btn-view {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border: none;
+  padding: 10px 25px;
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  margin-top: auto;
+}
+
+.btn-view:hover {
+  background: linear-gradient(45deg, #ffad00, #ffc107);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Mensagem de acesso */
+.access-message {
+  display: none;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+}
+
+/* ============================================
+   RESPONSIVO
+   ============================================ */
+
+@media (max-width: 900px) {
+  .tournament-types,
+  .manage-tournaments {
+    padding: 30px 15px;
+  }
+
+  .tournament-types h3,
+  .manage-tournaments h3 {
+    font-size: 1.8rem;
+  }
+
+  .types-grid,
+  .tournaments-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tournament-type-card,
+  .tournament-card {
+    padding: 20px;
+    min-height: 280px;
+  }
+
+  .type-icon {
+    font-size: 3rem;
+  }
+
+  .create-icon {
+    font-size: 4rem;
+  }
+
+  .tournament-type-card h4,
+  .tournament-card h4 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tournament-types h3,
+  .manage-tournaments h3 {
+    font-size: 1.6rem;
+  }
+
+  .tournament-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .btn-create,
+  .btn-view {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

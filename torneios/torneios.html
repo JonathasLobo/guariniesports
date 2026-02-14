@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Torneios Guarini e-sport - Sistema de gerenciamento de torneios" />
+  <title>Torneios - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="torneios.css" />
+
+  <!-- Adsense tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262085354518962"
+       crossorigin="anonymous"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-84NHN394WF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-84NHN394WF');
+  </script>
+</head>
+
+<body>
+  <a id="topo"></a>
+  
+  <header>
+    <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Logo Central -->
+      <div class="logo-center">
+        <a href="../index.html" aria-label="Início">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <!-- Navegação Desktop - Direita -->
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra de busca de perfis -->
+  <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
+  </div>
+
+  <main>
+    <h2>🏆 Tournaments</h2>
+
+   <!-- SEÇÃO: Tipos de Torneio -->
+<section class="tournament-types">
+  <h3>Tournament Types</h3>
+  
+  <div class="types-grid">
+    <!-- Group Stage + Knockout -->
+    <article class="tournament-type-card" data-type="group-knockout" style="cursor: pointer;">
+      <div class="type-icon">🏅</div>
+      <h4>Group Stage + Knockout</h4>
+      <p class="type-description">
+        Teams compete in groups, top teams advance to knockout stage
+      </p>
+      <div class="type-info">
+        <span>📊 Groups → 🏆 Finals</span>
+      </div>
+    </article>
+
+    <!-- Slot vazio para futuros tipos -->
+    <article class="tournament-type-card disabled">
+      <div class="type-icon">⏳</div>
+      <h4>Coming Soon</h4>
+      <p class="type-description">
+        New tournament formats will be added here
+      </p>
+      <div class="type-info">
+        <span>📜 Stay tuned!</span>
+      </div>
+    </article>
+
+    <!-- Slot vazio para futuros tipos -->
+    <article class="tournament-type-card disabled">
+      <div class="type-icon">⏳</div>
+      <h4>Coming Soon</h4>
+      <p class="type-description">
+        New tournament formats will be added here
+      </p>
+      <div class="type-info">
+        <span>📜 Stay tuned!</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- SEÇÃO: Criar Novo Torneio (oculta inicialmente) -->
+<section class="manage-tournaments" id="manageTournamentsSection" style="display: none;">
+  <h3>Manage Tournaments: <span id="selectedTournamentType" style="color: #4ade80;"></span></h3>
+  
+  <div class="tournaments-grid" id="tournamentsGrid">
+    <!-- Card: Criar Novo -->
+    <article class="tournament-card create-new" id="createNewCard">
+      <div class="create-icon">
+        <span>➕</span>
+      </div>
+      <h4>Create New Tournament</h4>
+      <p class="create-description">Start organizing a new tournament</p>
+      <button type="button" class="btn-create" id="btnCreateTournament">
+        Create
+      </button>
+      <div id="createTournamentMessage" class="access-message"></div>
+    </article>
+
+    <!-- Torneios em andamento aparecerão aqui dinamicamente -->
+  </div>
+</section>
+
+    <p style="text-align:center; margin-top: 2rem;">
+      <a href="../index.html" class="btn-comprar">Back to Home</a>
+    </p>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-actions">
+        <button id="installBtn" class="btn-install">📱 Install App</button>
+        
+        <div class="language-selector">
+          <button class="language-btn" id="languageBtn">
+            <span class="flag flag-us"></span>
+            <span id="currentLang">English</span>
+            <span>▼</span>
+          </button>
+          <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option" data-lang="pt" data-flag="flag-br" data-name="Português">
+              <span class="flag flag-br"></span>
+              <span>Português</span>
+            </div>
+            <div class="language-option" data-lang="en" data-flag="flag-us" data-name="English">
+              <span class="flag flag-us"></span>
+              <span>English</span>
+            </div>
+            <div class="language-option" data-lang="ja" data-flag="flag-jp" data-name="日本語">
+              <span class="flag flag-jp"></span>
+              <span>日本語</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <p>&copy; © 2019 Guarini E-sport. All rights reserved.</p>
+        <p><a href="https://linktr.ee/guariniesports" target="_blank">Follow us on social media!</a></p>
+        <p>Created by: Lobo & Shad</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase e Autenticação -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc,
+      collection, 
+      query, 
+      where, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+      authDomain: "site-grn.firebaseapp.com",
+      projectId: "site-grn",
+      storageBucket: "site-grn.firebasestorage.app",
+      messagingSenderId: "27613322806",
+      appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+      measurementId: "G-84NHN394WF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ========================================
+    // ELEMENTOS DO DOM
+    // ========================================
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+    const profileSearchBtn = document.getElementById('profileSearchBtn');
+    const profileSearchInput = document.getElementById('profileSearchInput');
+    const profileSearchResults = document.getElementById('profileSearchResults');
+    const btnCreateTournament = document.getElementById('btnCreateTournament');
+    const createTournamentMessage = document.getElementById('createTournamentMessage');
+
+    // ========================================
+    // MENU DROPDOWN DO USUÁRIO
+    // ========================================
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+
+    // ========================================
+    // BUSCA DE PERFIL
+    // ========================================
+    async function buscarPerfil() {
+      const playerId = profileSearchInput.value.trim().toUpperCase();
+      
+      if (!playerId || playerId.length < 5 || playerId.length > 7) {
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      try {
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+        profileSearchResults.classList.add('show');
+        
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("playerId", "==", playerId));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+          return;
+        }
+        
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userId = userDoc.id;
+        
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+            <div style="flex: 1;">
+              <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+                ✅ Player found!
+              </div>
+              <div style="color: #fff; font-size: 13px;">
+                ${userData.displayName || 'Anonymous'}
+              </div>
+              <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+                ID: ${userData.playerId}
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; text-align: center;">
+            <button 
+              onclick="window.location.href='../perfil/perfil-view.html?uid=${userId}'" 
+              style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+            >
+              👤 View Profile
+            </button>
+          </div>
+        `;
+      } catch (error) {
+        console.error('❌ Erro ao buscar perfil:', error);
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-no-results" style="color: #ff6b6b;">
+            ❌ Search error
+          </div>
+        `;
+      }
+    }
+
+    profileSearchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileSearchInput.classList.toggle('active');
+      if (profileSearchInput.classList.contains('active')) {
+        profileSearchInput.focus();
+      } else {
+        profileSearchInput.value = '';
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    profileSearchInput.addEventListener('input', async (e) => {
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (e.target.value.length > 7) {
+        e.target.value = e.target.value.slice(0, 7);
+      }
+      if (e.target.value.length >= 5 && e.target.value.length <= 7) {
+        await buscarPerfil();
+      } else {
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.profile-search-container')) {
+        profileSearchInput.classList.remove('active');
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // ========================================
+    // AUTENTICAÇÃO E CONTROLE DE ACESSO
+    // ========================================
+    let currentUser = null;
+    let userRole = null;
+
+    async function updateUI(user) {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let displayName = user.displayName || user.email.split('@')[0];
+          let avatarPath = '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.displayName) displayName = userData.displayName;
+            if (userData.avatar) avatarPath = userData.avatar;
+            userRole = userData.role;
+          }
+          
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${displayName}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = (e) => { e.preventDefault(); handleLogout(); };
+          perfilLink.style.display = 'block';
+          
+          currentUser = user;
+          setupTournamentAccess();
+          
+        } catch (error) {
+          console.error('❌ Erro ao carregar dados:', error);
+        }
+      } else {
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = (e) => { e.preventDefault(); handleLogin(); };
+        perfilLink.style.display = 'none';
+        
+        currentUser = null;
+        userRole = null;
+        setupTournamentAccess();
+      }
+    }
+
+    function handleLogin() {
+      sessionStorage.setItem('redirectAfterLogin', 'torneios/torneios.html');
+      window.location.href = '../login/login.html';
+    }
+
+    async function handleLogout() {
+      if (confirm('Deseja realmente fazer logout?')) {
+        try {
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout.');
+        }
+      }
+    }
+
+    // ========================================
+    // CONTROLE DE ACESSO AO CRIAR TORNEIO
+    // ========================================
+    function setupTournamentAccess() {
+      if (!currentUser) {
+        btnCreateTournament.onclick = () => {
+          createTournamentMessage.textContent = '❌ You must be logged in to create tournaments';
+          createTournamentMessage.style.display = 'block';
+          createTournamentMessage.style.color = '#ff6b6b';
+          setTimeout(() => {
+            createTournamentMessage.style.display = 'none';
+          }, 3000);
+        };
+      } else if (userRole === 'creator' || userRole === 'admin') {
+        btnCreateTournament.onclick = () => {
+          window.location.href = 'criar-torneio.html';
+        };
+        createTournamentMessage.style.display = 'none';
+      } else {
+        btnCreateTournament.onclick = () => {
+          createTournamentMessage.textContent = '❌ Only creators and admins can create tournaments';
+          createTournamentMessage.style.display = 'block';
+          createTournamentMessage.style.color = '#ff6b6b';
+          setTimeout(() => {
+            createTournamentMessage.style.display = 'none';
+          }, 3000);
+        };
+      }
+    }
+
+// ========================================
+// CARREGAR TORNEIOS EM ANDAMENTO
+// ========================================
+async function loadActiveTournaments(tournamentType = null) {
+  try {
+    const tournamentsRef = collection(db, "tournaments");
+    let q = tournamentsRef;
+    
+    // Se um tipo foi especificado, filtrar
+    if (tournamentType) {
+      q = query(tournamentsRef, where("type", "==", tournamentType));
+    }
+    
+    const querySnapshot = await getDocs(q);
+    
+    const tournamentsGrid = document.getElementById('tournamentsGrid');
+    
+    // Remover torneios antigos, mas manter o card de criar
+    const existingCards = tournamentsGrid.querySelectorAll('.tournament-card:not(.create-new)');
+    existingCards.forEach(card => card.remove());
+    
+    // Remover mensagens vazias antigas
+    const oldMessages = tournamentsGrid.querySelectorAll('p:not(.create-description)');
+    oldMessages.forEach(msg => msg.remove());
+    
+    if (querySnapshot.empty) {
+      const emptyMessage = document.createElement('p');
+      emptyMessage.style.gridColumn = '1 / -1';
+      emptyMessage.style.textAlign = 'center';
+      emptyMessage.style.color = '#aaa';
+      emptyMessage.style.padding = '20px';
+      emptyMessage.textContent = 'No tournaments of this type yet';
+      tournamentsGrid.appendChild(emptyMessage);
+    } else {
+      querySnapshot.forEach((doc) => {
+        const tournament = doc.data();
+        const tournamentCard = createTournamentCard(doc.id, tournament);
+        tournamentsGrid.appendChild(tournamentCard);
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Erro ao carregar torneios:', error);
+  }
+}
+
+    function createTournamentCard(id, tournament) {
+      const card = document.createElement('article');
+      card.className = 'tournament-card';
+      card.innerHTML = `
+        <div class="tournament-logo">
+          <img src="${tournament.logoUrl || '../img-site/placeholder.png'}" alt="${tournament.name}">
+        </div>
+        <h4>${tournament.name}</h4>
+        <p class="tournament-date">📅 ${tournament.startDate || 'TBD'}</p>
+        <p class="tournament-views">👁️ ${tournament.views || 0} views</p>
+        <button type="button" class="btn-view" onclick="window.location.href='torneio-view.html?id=${id}'">
+          View
+        </button>
+      `;
+      return card;
+    }
+
+    // ========================================
+// SELEÇÃO DE TIPO DE TORNEIO
+// ========================================
+let selectedTournamentType = null;
+
+document.querySelectorAll('.tournament-type-card:not(.disabled)').forEach(card => {
+  card.addEventListener('click', function() {
+    const type = this.dataset.type;
+    if (!type) return;
+    
+    // Remover seleção de outros cards
+    document.querySelectorAll('.tournament-type-card').forEach(c => {
+      c.style.borderColor = 'transparent';
+    });
+    
+    // Destacar card selecionado
+    this.style.borderColor = '#ffad00';
+    
+    // Atualizar tipo selecionado
+    selectedTournamentType = type;
+    document.getElementById('selectedTournamentType').textContent = 'Group Stage + Knockout';
+    
+    // Mostrar seção de gerenciamento
+    document.getElementById('manageTournamentsSection').style.display = 'block';
+    
+    // Scroll suave até a seção
+    document.getElementById('manageTournamentsSection').scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+    
+    // Recarregar torneios deste tipo
+    loadActiveTournaments(type);
+  });
+});
+
+    // ========================================
+    // INICIALIZAÇÃO
+    // ========================================
+    onAuthStateChanged(auth, async (user) => {
+      await updateUI(user);
+      await loadActiveTournaments();
+    });
+  </script>
+</body>
+</html>

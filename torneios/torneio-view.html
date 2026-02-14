@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tournament View - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="torneio-view.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <!-- Navegação Desktop - Esquerda -->
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Logo Central -->
+      <div class="logo-center">
+        <a href="../index.html">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <!-- Navegação Desktop - Direita -->
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Menu dropdown do usuário -->
+  <div class="user-menu-container">
+    <button class="user-menu-toggle" id="userMenuToggle" aria-label="Menu do usuário">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-header" id="userDropdownHeader">
+        <span>Hello, visitor!</span>
+      </div>
+      <ul class="user-dropdown-list">
+        <li><a href="../perfil/perfil.html" id="perfilLink">Profile</a></li>
+        <li><a href="../loja/loja.html">Shop</a></li>
+        <li><a href="../sobre/sobre.html">About</a></li>
+        <li><a href="../groups/groups.html">Games</a></li>
+        <li><a href="../contato/contato.html">Contact</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra de busca de perfis -->
+  <div class="profile-search-container">
+    <div class="profile-search-wrapper">
+      <input 
+        type="text" 
+        id="profileSearchInput" 
+        class="profile-search-input" 
+        placeholder="Search Player ID..."
+        maxlength="7"
+      >
+      <button class="profile-search-btn" id="profileSearchBtn" title="Search Profile">
+        🔍
+      </button>
+    </div>
+    <div class="profile-search-results" id="profileSearchResults"></div>
+  </div>
+
+  <main>
+    <!-- Loading -->
+    <div id="loadingContainer" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading tournament...</p>
+    </div>
+
+    <!-- Container do Torneio -->
+    <div id="tournamentContainer" class="tournament-view-container" style="display: none;">
+      
+      <!-- Cabeçalho do Torneio -->
+      <div class="tournament-header">
+        <div class="tournament-logo-large">
+          <img id="tournamentLogo" src="" alt="Tournament Logo">
+        </div>
+        <div class="tournament-header-info">
+          <h1 id="tournamentName"></h1>
+          <p class="tournament-dates">
+            <span>📅</span>
+            <span id="tournamentDates"></span>
+          </p>
+          <p class="tournament-description" id="tournamentDescription"></p>
+          <div class="tournament-actions">
+            <button class="btn-download-rules" id="btnDownloadRules">
+              📄 Download Rules
+            </button>
+            <span class="tournament-views" id="tournamentViews">
+              👁️ 0 views
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sistema de Abas -->
+      <div class="tournament-tabs">
+        <button class="tab-btn active" data-tab="groupStage">
+          🏆 Group Stage
+        </button>
+        <button class="tab-btn" data-tab="matches">
+          ⚽ Matches
+        </button>
+        <button class="tab-btn" data-tab="rankings">
+          📊 Rankings
+        </button>
+        <button class="tab-btn" data-tab="info">
+          ℹ️ Info
+        </button>
+      </div>
+
+      <!-- Conteúdo das Abas -->
+      <div class="tab-content">
+        
+        <!-- ABA: Group Stage -->
+        <div class="tab-pane active" id="tabGroupStage">
+          <h2>Group Stage</h2>
+          <div class="groups-display" id="groupsDisplay">
+            <!-- Grupos serão renderizados aqui -->
+          </div>
+          <!-- Botão Generate Knockout (apenas admin/creator) -->
+          <div id="knockoutGenerateContainer" class="knockout-generate-container" style="display: none;">
+            <button class="btn-generate-knockout" id="btnGenerateKnockout" disabled>
+              🏆 Generate Knockout Stage
+            </button>
+            <p class="knockout-status-message" id="knockoutStatusMessage">
+              ⏳ Waiting for all group stage matches to complete...
+            </p>
+          </div>
+
+          <!-- Bracket de Eliminatórias -->
+          <div id="knockoutBracket" class="knockout-bracket" style="display: none;">
+            <div class="knockout-bracket-header">
+              <h3>🏆 Knockout Stage Bracket</h3>
+            </div>
+            
+            <div class="bracket-container">
+              <!-- Lado Esquerdo (Grupos A-D) -->
+              <div class="bracket-side bracket-left">
+                <div class="bracket-round round-of-16">
+                  <div class="bracket-title">Round of 16</div>
+                  <div class="bracket-matches" id="leftRound16"></div>
+                </div>
+                
+                <div class="bracket-round quarterfinals">
+                  <div class="bracket-title">Quarterfinals</div>
+                  <div class="bracket-matches" id="leftQuarters"></div>
+                </div>
+                
+                <div class="bracket-round semifinals">
+                  <div class="bracket-title">Semifinals</div>
+                  <div class="bracket-matches" id="leftSemi"></div>
+                </div>
+              </div>
+              
+              <!-- Centro (Final) -->
+              <div class="bracket-center">
+                <div class="bracket-round final">
+                  <div class="bracket-title">Final</div>
+                  <div class="bracket-matches" id="finalMatch"></div>
+                </div>
+                
+                <div class="champion-container" id="championContainer">
+                  <div class="champion-trophy">🏆</div>
+                  <div class="champion-name" id="championName">TBD</div>
+                </div>
+              </div>
+              
+              <!-- Lado Direito (Grupos E-H) -->
+              <div class="bracket-side bracket-right">
+                <div class="bracket-round round-of-16">
+                  <div class="bracket-title">Round of 16</div>
+                  <div class="bracket-matches" id="rightRound16"></div>
+                </div>
+                
+                <div class="bracket-round quarterfinals">
+                  <div class="bracket-title">Quarterfinals</div>
+                  <div class="bracket-matches" id="rightQuarters"></div>
+                </div>
+                
+                <div class="bracket-round semifinals">
+                  <div class="bracket-title">Semifinals</div>
+                  <div class="bracket-matches" id="rightSemi"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABA: Matches -->
+        <div class="tab-pane" id="tabMatches">
+          <h2>Matches Schedule</h2>
+          
+          <!-- Filtro de Grupos -->
+          <div class="matches-filter">
+            <button class="filter-btn active" data-group="all">All Groups</button>
+            <button class="filter-btn" data-group="A">Group A</button>
+            <button class="filter-btn" data-group="B">Group B</button>
+            <button class="filter-btn" data-group="C">Group C</button>
+            <button class="filter-btn" data-group="D">Group D</button>
+            <button class="filter-btn" data-group="E">Group E</button>
+            <button class="filter-btn" data-group="F">Group F</button>
+            <button class="filter-btn" data-group="G">Group G</button>
+            <button class="filter-btn" data-group="H">Group H</button>
+            <button class="filter-btn" data-group="knockout">🏆 Knockout</button>
+          </div>
+
+          <!-- Container de Partidas -->
+          <div class="matches-container" id="matchesContainer">
+            <!-- Partidas serão renderizadas aqui -->
+          </div>
+        </div>
+
+        <!-- ABA: Rankings -->
+        <div class="tab-pane" id="tabRankings">
+          <h2>Tournament Rankings</h2>
+          
+          <!-- Abas Principais de Rankings -->
+          <div class="rankings-tabs" id="rankingsTabs">
+            <!-- Abas principais serão renderizadas dinamicamente -->
+          </div>
+
+          <!-- Sub-Abas de Categorias -->
+          <div id="rankingsSubTabs">
+            <!-- Sub-abas serão renderizadas dinamicamente -->
+          </div>
+
+          <!-- Conteúdo dos Rankings -->
+          <div class="rankings-content" id="rankingsContent">
+            <!-- Rankings serão renderizados aqui -->
+          </div>
+        </div>
+
+        <!-- ABA: Info -->
+        <div class="tab-pane" id="tabInfo">
+          <h2>Tournament Information</h2>
+          <div class="info-grid" id="infoGrid">
+            <!-- Informações serão renderizadas aqui -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 🆕 Botão Report Final Statistics -->
+      <div id="tournamentReportContainer" class="report-button-container" style="display: none; text-align: center; margin-top: 30px; margin-bottom: 20px;">
+        <button class="btn-generate-report" id="btnGenerateReport" style="background: linear-gradient(45deg, #4ade80, #22c55e); border: none; padding: 15px 30px; border-radius: 8px; color: #000; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);">
+          📊 View Final Tournament Report
+        </button>
+      </div>
+
+      <!-- Botão Voltar -->
+      <div style="text-align: center; margin-top: 40px;">
+        <button class="btn-back" onclick="window.location.href='torneios.html'">
+          ← Back to Tournaments
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Erro -->
+    <div id="errorContainer" class="error-container" style="display: none;">
+      <p>❌ Tournament not found</p>
+      <button class="btn-back" onclick="window.location.href='torneios.html'">
+        ← Back to Tournaments
+      </button>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2019 Guarini E-sport. All rights reserved.</p>
+  </footer>
+
+  <!-- ========================================
+       SCRIPTS DE AUTENTICAÇÃO E BUSCA
+       ======================================== -->
+  <script type="module">
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc,
+      collection, 
+      query, 
+      where, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    // Usar a mesma instância do Firebase já inicializada
+    import { app } from './torneio-view.js';
+    
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ========================================
+    // ELEMENTOS DO DOM - MENU USUÁRIO
+    // ========================================
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdown = document.getElementById('userDropdown');
+    const userDropdownHeader = document.getElementById('userDropdownHeader');
+    const authLink = document.getElementById('authLink');
+    const perfilLink = document.getElementById('perfilLink');
+
+    // ========================================
+    // ELEMENTOS DO DOM - BUSCA DE PERFIL
+    // ========================================
+    const profileSearchBtn = document.getElementById('profileSearchBtn');
+    const profileSearchInput = document.getElementById('profileSearchInput');
+    const profileSearchResults = document.getElementById('profileSearchResults');
+
+    // ========================================
+    // MENU DROPDOWN DO USUÁRIO
+    // ========================================
+    
+    // Toggle do menu dropdown
+    userMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      userDropdown.classList.toggle('show');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!userMenuToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      }
+    });
+
+    // Fechar dropdown ao clicar em um link
+    userDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        userMenuToggle.classList.remove('active');
+        userDropdown.classList.remove('show');
+      });
+    });
+
+    // ========================================
+    // BUSCA DE PERFIL - COM BUSCA AUTOMÁTICA
+    // ========================================
+
+    // Função para buscar perfil
+    async function buscarPerfil() {
+      const playerId = profileSearchInput.value.trim().toUpperCase();
+      
+      if (!playerId) {
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      if (playerId.length < 5 || playerId.length > 7) {
+        profileSearchResults.classList.remove('show');
+        return;
+      }
+      
+      try {
+        // Mostrar loading
+        profileSearchResults.innerHTML = '<div class="profile-search-no-results">🔍 Searching...</div>';
+        profileSearchResults.classList.add('show');
+        
+        console.log('🔍 Buscando Player ID:', playerId);
+        
+        // Buscar usuário com esse Player ID
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("playerId", "==", playerId));
+        
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          console.log('❌ Nenhum usuário encontrado com Player ID:', playerId);
+          profileSearchResults.innerHTML = '<div class="profile-search-no-results">❌ Player not found</div>';
+          return;
+        }
+        
+        // Pegar o primeiro resultado (Player ID é único)
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userId = userDoc.id;
+        
+        console.log('✅ Usuário encontrado:', {
+          userId: userId,
+          playerId: userData.playerId,
+          displayName: userData.displayName
+        });
+        
+        // Mostrar resultado encontrado
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-result-item" style="background: rgba(255, 173, 0, 0.1); cursor: default;">
+            <div style="flex: 1;">
+              <div style="color: #ffad00; font-weight: bold; margin-bottom: 5px;">
+                ✅ Player found!
+              </div>
+              <div style="color: #fff; font-size: 13px;">
+                ${userData.displayName || 'Anonymous'}
+              </div>
+              <div style="color: #aaa; font-size: 11px; margin-top: 3px;">
+                ID: ${userData.playerId}
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; text-align: center;">
+            <button 
+              onclick="window.location.href='../perfil/perfil-view.html?uid=${userId}'" 
+              style="background: linear-gradient(45deg, #ff7500, #ffad00); border: none; padding: 10px 20px; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s ease;"
+              onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(255, 173, 0, 0.5)'"
+              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+            >
+              👤 View Profile
+            </button>
+          </div>
+        `;
+        
+      } catch (error) {
+        console.error('❌ Erro ao buscar perfil:', error);
+        profileSearchResults.innerHTML = `
+          <div class="profile-search-no-results" style="color: #ff6b6b;">
+            ❌ Search error<br>
+            <small style="font-size: 11px; color: #aaa; margin-top: 5px; display: block;">
+              ${error.message}
+            </small>
+          </div>
+        `;
+      }
+    }
+
+    // Toggle da barra de busca
+    profileSearchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('🖱️ Botão de busca clicado');
+      profileSearchInput.classList.toggle('active');
+      
+      if (profileSearchInput.classList.contains('active')) {
+        console.log('✅ Input ativado');
+        profileSearchInput.focus();
+      } else {
+        console.log('❌ Input desativado');
+        profileSearchInput.value = '';
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // Buscar ao pressionar Enter
+    profileSearchInput.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        console.log('⌨️ Enter pressionado');
+        await buscarPerfil();
+      }
+    });
+
+    // Validação do input e BUSCA AUTOMÁTICA ao digitar
+    profileSearchInput.addEventListener('input', async (e) => {
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (e.target.value.length > 7) {
+        e.target.value = e.target.value.slice(0, 7);
+      }
+      
+      if (e.target.value.length >= 5 && e.target.value.length <= 7) { 
+        console.log('🎯 Caracteres suficientes - buscando automaticamente...');
+        await buscarPerfil();
+      } else {
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // Fechar ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.profile-search-container')) {
+        profileSearchInput.classList.remove('active');
+        profileSearchResults.classList.remove('show');
+      }
+    });
+
+    // ========================================
+    // AUTENTICAÇÃO DO USUÁRIO
+    // ========================================
+    
+    // Função para atualizar a interface com base no estado do usuário
+    async function updateUI(user) {
+      if (user) {
+        try {
+          // Buscar dados do Firestore
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let displayName = user.displayName || user.email.split('@')[0];
+          let avatarPath = '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+          
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.displayName) {
+              displayName = userData.displayName;
+            }
+            if (userData.avatar) {
+              avatarPath = userData.avatar;
+            }
+          }
+          
+          // Atualizar interface
+          userDropdownHeader.innerHTML = `
+            <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${displayName}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+          
+          console.log('✅ Usuário logado:', user.email);
+          
+        } catch (error) {
+          console.error('❌ Erro ao carregar dados do usuário:', error);
+          userDropdownHeader.innerHTML = `
+            <img src="../estatisticas-shad/images/backgrounds/pikachu-left-bg.png" alt="Avatar" class="dropdown-avatar">
+            <span>Olá, ${user.email.split('@')[0]}!</span>
+          `;
+          authLink.textContent = 'Logout';
+          authLink.onclick = function(e) {
+            e.preventDefault();
+            handleLogout();
+          };
+          perfilLink.style.display = 'block';
+        }
+      } else {
+        // Usuário não está logado
+        userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
+        authLink.textContent = 'Login';
+        authLink.onclick = function(e) {
+          e.preventDefault();
+          handleLogin();
+        };
+        perfilLink.style.display = 'none';
+        
+        console.log('Usuário não logado');
+      }
+    }
+
+    // Função para fazer login
+    function handleLogin() {
+      window.location.href = '../login/login.html';
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      const confirmar = confirm('Deseja realmente fazer logout?');
+      if (confirmar) {
+        try {
+          localStorage.removeItem('userDisplayName');
+          localStorage.removeItem('userAvatar');
+          
+          await signOut(auth);
+          alert('Logout realizado com sucesso!');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        }
+      }
+    }
+
+    // Monitorar mudanças no estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      updateUI(user);
+    });
+
+    // ========================================
+    // AJUSTAR POSIÇÃO DO BOTÃO DE BUSCA NO MOBILE
+    // ========================================
+    function adjustSearchButtonPosition() {
+      const searchContainer = document.querySelector('.profile-search-container');
+      const header = document.querySelector('header');
+      const body = document.body;
+      
+      if (window.innerWidth <= 768) {
+        if (searchContainer && header && searchContainer.parentElement !== header) {
+          header.appendChild(searchContainer);
+        }
+      } else {
+        if (searchContainer && body && searchContainer.parentElement !== body) {
+          body.appendChild(searchContainer);
+        }
+      }
+    }
+    
+    adjustSearchButtonPosition();
+    window.addEventListener('resize', adjustSearchButtonPosition);
+  </script>
+
+  <script type="module" src="../util.js"></script>
+  <script type="module" src="torneio-view.js"></script>
+</body>
+</html>

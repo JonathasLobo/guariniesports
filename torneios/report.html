@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tournament Report - Guarini e-sport</title>
+  <link rel="icon" href="../img-site/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="report.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-wrapper">
+      <nav class="nav-group left-nav">
+        <ul>
+          <li><a href="../loja/loja.html">Shop</a></li>
+          <li><a href="../sobre/sobre.html">About</a></li>
+        </ul>
+      </nav>
+      
+      <div class="logo-center">
+        <a href="../index.html">
+          <img src="../img-site/grn-logo.png" alt="Guarini e-sport" class="header-logo">
+        </a>
+      </div>
+
+      <nav class="nav-group right-nav">
+        <ul>
+          <li><a href="../groups/groups.html">Games</a></li>
+          <li><a href="../contato/contato.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Loading -->
+    <div id="loadingContainer" class="loading-container">
+      <div class="spinner"></div>
+      <p>Generating tournament report...</p>
+    </div>
+
+    <!-- Container do Relatório -->
+    <div id="reportContainer" class="report-container" style="display: none;">
+      
+      <!-- Cabeçalho do Relatório -->
+      <div class="report-header">
+        <div class="report-trophy">🏆</div>
+        <h1 id="tournamentName">Tournament Final Report</h1>
+        <p class="report-subtitle" id="tournamentDates"></p>
+      </div>
+
+      <!-- Campeão -->
+      <div class="champion-section" id="championSection">
+        <div class="champion-card">
+          <div class="champion-crown">👑</div>
+          <div class="champion-logo" id="championLogo">
+            <img src="" alt="Champion">
+          </div>
+          <h2 class="champion-name" id="championName">Champion Name</h2>
+          <p class="champion-record" id="championRecord">0-0 (0% WR)</p>
+        </div>
+      </div>
+
+      <!-- Tabs de Estatísticas -->
+      <div class="report-tabs">
+        <button class="report-tab-btn active" data-tab="leaders">
+          ⭐ Statistical Leaders
+        </button>
+        <button class="report-tab-btn" data-tab="averages">
+          📊 Player Averages
+        </button>
+        <button class="report-tab-btn" data-tab="pokemon">
+          🎮 Pokémon Stats
+        </button>
+        <button class="report-tab-btn" data-tab="teams">
+          👥 Team Performance
+        </button>
+        <button class="report-tab-btn" data-tab="allstar">
+          ⭐ All-Star Team
+        </button>
+      </div>
+
+      <!-- Conteúdo das Tabs -->
+      <div class="report-content">
+        
+        <!-- TAB: Statistical Leaders -->
+        <div class="report-tab-pane active" id="tabLeaders">
+          <h2>⭐ Statistical Leaders</h2>
+          <div class="leaders-grid" id="leadersGrid"></div>
+        </div>
+
+        <!-- TAB: Player Averages -->
+        <div class="report-tab-pane" id="tabAverages">
+          <h2>📊 Player Averages (Min. 3 games)</h2>
+          <div class="averages-container" id="averagesContainer"></div>
+        </div>
+
+        <!-- TAB: Pokémon Stats -->
+        <div class="report-tab-pane" id="tabPokemon">
+          <h2>🎮 Pokémon Statistics</h2>
+          <div class="pokemon-report-grid" id="pokemonReportGrid"></div>
+        </div>
+
+        <!-- TAB: Team Performance -->
+        <div class="report-tab-pane" id="tabTeams">
+          <h2>👥 Team Performance</h2>
+          <div class="teams-report-grid" id="teamsReportGrid"></div>
+        </div>
+
+        <!-- TAB: All-Star Team -->
+        <div class="report-tab-pane" id="tabAllstar">
+          <h2>⭐ Tournament All-Star Team</h2>
+          <p class="allstar-subtitle">Best players by lane based on average performance</p>
+          <div class="allstar-formation" id="allstarFormation"></div>
+        </div>
+
+      </div>
+
+      <!-- Botão Voltar -->
+      <div style="text-align: center; margin: 60px 0 40px;">
+        <button class="btn-back" id="btnBack">
+          ← Back to Tournament
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Erro -->
+    <div id="errorContainer" class="error-container" style="display: none;">
+      <p>❌ Tournament not found or report unavailable</p>
+      <button class="btn-back" onclick="window.history.back()">
+        ← Go Back
+      </button>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2019 Guarini E-sport. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="report.js"></script>
+</body>
+</html>

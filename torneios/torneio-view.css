@@ -1,0 +1,1895 @@
+/* ============================================
+   TAMANHO PADRÃƒO PARA TODAS AS ABAS
+   ============================================ */
+
+main {
+  padding: 20px;
+  max-width: 2000px;
+  margin: 0 auto;
+  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 200px);
+}
+
+.tournament-view-container {
+  max-width: 1800px;
+  margin: 40px auto;
+  padding: 20px;
+  width: 100%;
+}
+
+
+.tab-pane {
+  display: none;
+  width: 100%;
+  min-height: 600px; /* Garante altura consistente */
+}
+
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-pane h2 {
+  color: #ffad00;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* ============================================
+   LOADING E ERRO
+   ============================================ */
+
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 173, 0, 0.3);
+  border-top-color: #ffad00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RANKINGS - ABAS PRINCIPAIS
+   ============================================ */
+
+.tournament-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+  padding-bottom: 0;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 15px 30px;
+  color: #aaa;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.1);
+}
+
+.tab-btn.active {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.2);
+  border-bottom-color: #ffad00;
+}
+
+.rankings-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.2);
+}
+
+.ranking-main-tab-btn {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  padding: 15px 30px;
+  color: #aaa;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ranking-main-tab-btn:hover {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.2);
+}
+
+.ranking-main-tab-btn.active {
+  color: #000;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+#rankingsSubTabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.ranking-tab-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  padding: 12px 25px;
+  color: #aaa;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ranking-tab-btn:hover {
+  color: #ffad00;
+  background: rgba(255, 173, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.ranking-tab-btn.active {
+  color: #000;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+/* ============================================
+   CABEÃ‡ALHO DA LISTA DE RANKING COM BUSCA
+   ============================================ */
+
+.ranking-list-header {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.3) !important; /* FORÃ‡AR LARANJA */
+  text-align: center;
+}
+
+.ranking-list-header h3 {
+  font-size: 2rem;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  color: #ffad00 !important; /* FORÃ‡AR LARANJA */
+}
+
+.ranking-subtitle {
+  color: #aaa;
+  font-size: 1rem;
+  margin: 0 0 20px 0;
+}
+
+.ranking-search-container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.ranking-search-input {
+  width: 100%;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.ranking-search-input:focus {
+  outline: none;
+  border-color: #ffad00;
+  box-shadow: 0 0 15px rgba(255, 173, 0, 0.3);
+}
+
+.ranking-search-input::placeholder {
+  color: #888;
+}
+
+/* ============================================
+   LISTA DE RANKING
+   ============================================ */
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.ranking-item {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  display: grid;
+  grid-template-columns: 80px 80px 1fr auto auto;
+  gap: 20px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.ranking-item:hover {
+  border-color: #ffad00;
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.3);
+}
+
+.ranking-item.gold-medal {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1));
+  border-color: #ffd700;
+  box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.ranking-item.silver-medal {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(169, 169, 169, 0.1));
+  border-color: #c0c0c0;
+  box-shadow: 0 5px 20px rgba(192, 192, 192, 0.3);
+}
+
+.ranking-item.bronze-medal {
+  background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(184, 115, 51, 0.1));
+  border-color: #cd7f32;
+  box-shadow: 0 5px 20px rgba(205, 127, 50, 0.3);
+}
+
+.ranking-position {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffad00;
+  text-align: center;
+  min-width: 80px;
+}
+
+.gold-medal .ranking-position {
+  color: #ffd700;
+  font-size: 3rem;
+}
+
+.silver-medal .ranking-position {
+  color: #c0c0c0;
+  font-size: 3rem;
+}
+
+.bronze-medal .ranking-position {
+  color: #cd7f32;
+  font-size: 3rem;
+}
+
+.ranking-pokemon-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 2px solid #ffad00;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.ranking-pokemon-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ranking-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ranking-player-name {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.ranking-player-pokemon {
+  color: #ffad00;
+  font-size: 1rem;
+  text-transform: capitalize;
+}
+
+.ranking-match-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}
+
+.ranking-match-id {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid #8b5cf6;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #a78bfa;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ranking-group {
+  background: rgba(255, 173, 0, 0.2);
+  border: 1px solid #ffad00;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #ffad00;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ranking-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffad00;
+  text-align: right;
+  min-width: 120px;
+}
+
+.gold-medal .ranking-value {
+  font-size: 3rem;
+}
+
+/* ============================================
+   BOTÃƒO LOAD MORE
+   ============================================ */
+
+.load-more-container {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.btn-load-more {
+  background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+  border: none;
+  padding: 15px 40px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.btn-load-more:hover {
+  background: linear-gradient(45deg, #a78bfa, #c4b5fd);
+  box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   ESTATÃSTICAS DE POKÃ‰MON
+   ============================================ */
+
+.pokemon-stats-header {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  text-align: center;
+}
+
+.pokemon-stats-header h3 {
+  font-size: 2rem;
+  color: #ffad00;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+/* Filtros de Role para PokÃ©mon - MESMO LAYOUT QUE PLAYERS */
+.pokemon-role-filters {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start; /* Alinhado Ã  esquerda */
+  flex-wrap: wrap;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  border: none;
+}
+
+.pokemon-role-filter {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 173, 0, 0.3); /* LARANJA PADRÃƒO */
+  padding: 12px 25px;
+  color: #aaa;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pokemon-role-filter:hover {
+  color: #ffad00;
+  border-color: #ffad00; /* LARANJA PADRÃƒO */
+  background: rgba(255, 173, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.pokemon-role-filter.active {
+  color: #000;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00; /* LARANJA PADRÃƒO */
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+.pokemon-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.pokemon-stat-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pokemon-stat-card:hover {
+  border-color: #ffad00;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(255, 173, 0, 0.3);
+}
+
+.pokemon-stat-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #ffad00;
+  overflow: hidden;
+  margin-bottom: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.pokemon-stat-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pokemon-stat-name {
+  color: #ffad00;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+}
+
+.pokemon-stat-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pokemon-stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 173, 0, 0.1);
+}
+
+.stat-label {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.stat-value.pickrate {
+  color: #60a5fa;
+}
+
+.stat-value.winrate {
+  color: #4ade80;
+}
+
+.stat-value.bans {
+  color: #ff6b6b;
+}
+
+/* ============================================
+   ESTATÃSTICAS DE TIMES
+   ============================================ */
+
+.team-stats-header {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  text-align: center;
+}
+
+.team-stats-header h3 {
+  font-size: 2rem;
+  color: #ffad00;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.team-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.team-stat-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  display: grid;
+  grid-template-columns: 80px 80px 1fr auto auto;
+  gap: 20px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.team-stat-card:hover {
+  border-color: #ffad00;
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.3);
+}
+
+.team-stat-position {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffad00;
+  text-align: center;
+  min-width: 80px;
+}
+
+.team-stat-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.team-stat-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.team-stat-name {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.team-stat-record {
+  color: #aaa;
+  font-size: 1rem;
+}
+
+.team-stat-winrate {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #4ade80;
+  text-align: right;
+  min-width: 120px;
+}
+
+/* ============================================
+   MENSAGENS SEM DADOS
+   ============================================ */
+
+.no-data-message {
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+}
+
+.no-data-message p {
+  color: #aaa;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+/* ============================================
+   CABEÃ‡ALHO DO TORNEIO
+   ============================================ */
+
+.tournament-header {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 40px;
+  margin-bottom: 40px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.tournament-logo-large {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ffad00;
+  flex-shrink: 0;
+  box-shadow: 0 8px 25px rgba(255, 173, 0, 0.4);
+}
+
+.tournament-logo-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tournament-header-info {
+  flex: 1;
+}
+
+.tournament-header-info h1 {
+  color: #ffad00;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.tournament-dates {
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tournament-description {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.tournament-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.btn-download-rules {
+  background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+  border: none;
+  padding: 12px 25px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-download-rules:hover {
+  background: linear-gradient(45deg, #a78bfa, #c4b5fd);
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.tournament-views {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.btn-back {
+  background: linear-gradient(45deg, #6b6b6b, #8b8b8b);
+  border: none;
+  padding: 15px 40px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-back:hover {
+  background: linear-gradient(45deg, #8b8b8b, #ababab);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   GRUPOS - GROUP STAGE
+   ============================================ */
+
+.groups-display {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.groups-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.group-standings {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.group-standings:hover {
+  border-color: #ffad00;
+  box-shadow: 0 8px 25px rgba(255, 173, 0, 0.3);
+  transform: translateY(-5px);
+}
+
+.group-standings-header {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  padding: 15px;
+  text-align: center;
+}
+
+.group-standings-header h3 {
+  color: #000;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-table thead tr {
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.standings-table th {
+  padding: 12px 10px;
+  color: #ffad00;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.standings-table th:first-child {
+  text-align: center;
+  width: 50px;
+}
+
+.standings-table th:nth-child(2) {
+  text-align: left;
+}
+
+.standings-table tbody tr {
+  border-bottom: 1px solid rgba(255, 173, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.standings-table tbody tr:hover {
+  background: rgba(255, 173, 0, 0.1);
+}
+
+.standings-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.standings-table td {
+  padding: 15px 10px;
+  color: #fff;
+}
+
+.pos-cell {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffad00;
+}
+
+.team-cell {
+  text-align: left;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-logo-mini {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.team-logo-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stat-cell {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.stat-cell.wins {
+  color: #4ade80;
+}
+
+.stat-cell.losses {
+  color: #ff6b6b;
+}
+
+.stat-cell.points {
+  color: #ffad00;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   ABA DE MATCHES
+   ============================================ */
+
+.matches-filter {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+}
+
+.filter-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  padding: 10px 20px;
+  color: #aaa;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.filter-btn:hover {
+  color: #ffad00;
+  border-color: #ffad00;
+  background: rgba(255, 173, 0, 0.1);
+}
+
+.filter-btn.active {
+  color: #000;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border-color: #ffad00;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.4);
+}
+
+.matches-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.group-matches-section {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  padding: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.group-matches-header {
+  text-align: center;
+  color: #ffad00;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.match-card {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid rgba(255, 173, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.match-card:hover {
+  border-color: #ffad00;
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 173, 0, 0.2);
+}
+
+.match-id {
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.match-format {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid #8b5cf6;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #a78bfa;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.match-team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.match-team.winner {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.match-team-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 1.5rem;
+}
+
+.match-team-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.match-team-info {
+  flex: 1;
+}
+
+.match-team-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.match-team-players {
+  color: #aaa;
+  font-size: 0.75rem;
+}
+
+.match-vs {
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 0 10px;
+}
+
+.match-score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.team-score {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 50px;
+  text-align: center;
+}
+
+.team-score.winner-score {
+  color: #4ade80;
+}
+
+.score-separator {
+  color: #ffad00;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.match-status {
+  text-align: center;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.match-status.pending {
+  background: rgba(170, 170, 170, 0.2);
+  border: 1px solid #aaa;
+  color: #ddd;
+}
+
+.match-status.ongoing {
+  background: rgba(255, 173, 0, 0.2);
+  border: 1px solid #ffad00;
+  color: #ffad00;
+}
+
+.match-status.completed {
+  background: rgba(74, 222, 128, 0.2);
+  border: 1px solid #4ade80;
+  color: #4ade80;
+}
+
+.btn-view-details {
+  width: 100%;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  border: none;
+  padding: 12px 20px;
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-view-details:hover {
+  background: linear-gradient(45deg, #ffad00, #ffc107);
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+.no-matches-message {
+  text-align: center;
+  color: #aaa;
+  padding: 60px 20px;
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   ABA DE INFORMAÃ‡Ã•ES
+   ============================================ */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 10px;
+  padding: 25px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  border-color: #ffad00;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 173, 0, 0.3);
+}
+
+.info-card h4 {
+  color: #ffad00;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.info-card p {
+  color: #ddd;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVO
+   ============================================ */
+
+@media (max-width: 1400px) {
+  .groups-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .ranking-item {
+    grid-template-columns: 60px 70px 1fr auto;
+    gap: 15px;
+  }
+
+  .team-stat-card {
+    grid-template-columns: 60px 70px 1fr auto;
+  }
+
+  .ranking-value,
+  .team-stat-winrate {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid rgba(255, 173, 0, 0.2);
+  }
+
+  .pokemon-stats-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .matches-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .matches-filter {
+    gap: 8px;
+    padding: 15px;
+  }
+  
+  .filter-btn {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tournament-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .tournament-logo-large {
+    width: 150px;
+    height: 150px;
+  }
+
+  .tournament-header-info h1 {
+    font-size: 2rem;
+  }
+
+  .tournament-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-download-rules {
+    width: 100%;
+  }
+
+  .groups-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tournament-tabs {
+    gap: 5px;
+  }
+
+  .tab-btn {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+
+  .ranking-item,
+  .team-stat-card {
+    grid-template-columns: 50px 60px 1fr;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .ranking-position,
+  .team-stat-position {
+    font-size: 1.5rem;
+    min-width: 50px;
+  }
+
+  .ranking-pokemon-img,
+  .team-stat-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ranking-player-name,
+  .team-stat-name {
+    font-size: 1.1rem;
+  }
+
+  .ranking-match-info {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 173, 0, 0.2);
+  }
+
+  .ranking-value,
+  .team-stat-winrate {
+    font-size: 2rem;
+  }
+
+  .pokemon-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .match-teams {
+    flex-direction: column;
+  }
+  
+  .match-vs {
+    transform: rotate(90deg);
+    padding: 10px 0;
+  }
+  
+  .match-team-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .match-team-name {
+    font-size: 0.9rem;
+  }
+
+  .ranking-main-tab-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .ranking-tab-btn {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ranking-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .ranking-pokemon-img {
+    margin: 0 auto;
+  }
+
+  .ranking-player-info {
+    align-items: center;
+  }
+
+  .ranking-match-info {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .team-stat-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .team-stat-logo {
+    margin: 0 auto;
+  }
+
+  .team-stat-info {
+    align-items: center;
+  }
+}
+
+/* ============================================
+   KNOCKOUT STAGE - BOTÃƒO E BRACKET
+   ============================================ */
+
+/* Container do BotÃ£o Generate Knockout */
+.knockout-generate-container {
+  text-align: center;
+  margin: 40px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 15px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+}
+
+.btn-generate-knockout {
+  background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+  border: none;
+  padding: 18px 50px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-generate-knockout:hover:not(:disabled) {
+  background: linear-gradient(45deg, #a78bfa, #c4b5fd);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+  transform: translateY(-3px);
+}
+
+.btn-generate-knockout:disabled {
+  background: linear-gradient(45deg, #6b6b6b, #8b8b8b);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.knockout-status-message {
+  margin-top: 15px;
+  color: #aaa;
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+/* Destaque para Times Classificados */
+.standings-table tbody tr.qualified {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1)) !important;
+  border-left: 4px solid #ffd700;
+}
+
+.standings-table tbody tr.qualified .pos-cell {
+  color: #ffd700 !important;
+}
+
+/* ============================================
+   BRACKET DE ELIMINATÃ“RIAS - LAYOUT SIMÃ‰TRICO
+   ============================================ */
+
+.knockout-bracket {
+  margin-top: 40px;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  padding: 30px 20px;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(40, 40, 40, 0.95));
+  border-radius: 15px;
+  border: 3px solid #ffad00;
+  box-shadow: 0 10px 50px rgba(255, 173, 0, 0.3);
+  overflow-x: auto;
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.knockout-bracket-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid rgba(255, 173, 0, 0.5);
+}
+
+.knockout-bracket-header h3 {
+  color: #ffad00;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Container ajustado - LARGURA TOTAL */
+.bracket-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 800px;
+  padding: 20px 10px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Lados do Bracket - SIMÃ‰TRICO */
+.bracket-side {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex: 1;
+}
+
+.bracket-left {
+  flex-direction: row; /* R16 â†’ Quarters â†’ Semis */
+  justify-content: flex-start;
+}
+
+.bracket-right {
+  flex-direction: row-reverse; /* Semis â†’ Quarters â†’ R16 */
+  justify-content: flex-start;
+}
+
+/* Rounds */
+.bracket-round {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 240px;
+}
+
+.bracket-title {
+  text-align: center;
+  color: #ffad00;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  padding: 8px 15px;
+  background: rgba(255, 173, 0, 0.1);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  white-space: nowrap;
+}
+
+.bracket-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+}
+
+/* EspaÃ§amento especÃ­fico para cada rodada */
+.bracket-round.round-of-16 .bracket-matches {
+  gap: 25px;
+}
+
+.bracket-round.quarterfinals .bracket-matches {
+  gap: 80px;
+}
+
+.bracket-round.semifinals .bracket-matches {
+  gap: 190px;
+}
+
+/* Centro - Final e CampeÃ£o */
+.bracket-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px 10px;
+  min-width: 280px;
+  flex-shrink: 0;
+}
+
+.bracket-round.final {
+  min-width: 280px;
+}
+
+/* Match Cards no Bracket */
+.bracket-match {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(50, 50, 50, 0.8));
+  border-radius: 12px;
+  border: 2px solid rgba(255, 173, 0, 0.3);
+  padding: 15px;
+  min-width: 280px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.bracket-match:hover {
+  border-color: #ffad00;
+  box-shadow: 0 5px 20px rgba(255, 173, 0, 0.4);
+  transform: scale(1.03);
+}
+
+.bracket-match.completed {
+  border-color: #4ade80;
+}
+
+.bracket-match-id {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(139, 92, 246, 0.9);
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.bracket-team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.bracket-team:last-child {
+  margin-bottom: 0;
+}
+
+.bracket-team.winner {
+  background: rgba(74, 222, 128, 0.2);
+  border: 2px solid #4ade80;
+}
+
+.bracket-team.loser {
+  opacity: 0.5;
+}
+
+.bracket-team-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.bracket-team-logo {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid #ffad00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.bracket-team-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bracket-team-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.bracket-team-score {
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 1.2rem;
+  min-width: 30px;
+  text-align: right;
+}
+
+.bracket-team.winner .bracket-team-score {
+  color: #4ade80;
+  font-size: 1.4rem;
+}
+
+.bracket-match-vs {
+  text-align: center;
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 5px 0;
+}
+
+/* TBD (To Be Determined) */
+.bracket-team.tbd {
+  opacity: 0.6;
+}
+
+.bracket-team.tbd .bracket-team-name {
+  color: #888;
+  font-style: italic;
+}
+
+/* Centro - Final e CampeÃ£o */
+.bracket-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+.bracket-round.final {
+  min-width: 320px;
+}
+
+.champion-container {
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1));
+  border-radius: 15px;
+  border: 3px solid #ffd700;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+}
+
+.champion-trophy {
+  font-size: 5rem;
+  margin-bottom: 15px;
+  animation: championPulse 2s ease-in-out infinite;
+}
+
+@keyframes championPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.champion-name {
+  color: #ffd700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* BotÃ£o View Details no Bracket */
+.bracket-match-details {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 173, 0, 0.2);
+}
+
+.btn-bracket-details {
+  width: 100%;
+  background: rgba(255, 173, 0, 0.2);
+  border: 1px solid rgba(255, 173, 0, 0.4);
+  padding: 8px 15px;
+  color: #ffad00;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.btn-bracket-details:hover {
+  background: rgba(255, 173, 0, 0.3);
+  border-color: #ffad00;
+  transform: translateY(-2px);
+}
+
+/* Conectores (Linhas entre matches) */
+.bracket-connector {
+  width: 40px;
+  height: 2px;
+  background: rgba(255, 173, 0, 0.3);
+  position: relative;
+}
+
+/* ============================================
+   RESPONSIVO PARA BRACKET
+   ============================================ */
+
+@media (max-width: 1400px) {
+  .bracket-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .bracket-side {
+    width: 100%;
+  }
+  
+  .bracket-left,
+  .bracket-right {
+    align-items: center;
+  }
+  
+  .bracket-center {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .knockout-bracket {
+    padding: 20px 10px;
+  }
+  
+  .knockout-bracket-header h3 {
+    font-size: 1.8rem;
+  }
+  
+  .bracket-match {
+    min-width: 100%;
+  }
+  
+  .bracket-title {
+    font-size: 1rem;
+    padding: 8px 15px;
+  }
+  
+  .btn-generate-knockout {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ============================================
+   BOTÃO REPORT FINAL STATISTICS
+   ============================================ */
+
+.report-button-container {
+  text-align: center;
+  margin: 60px auto 40px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 139, 250, 0.1));
+  border-radius: 20px;
+  border: 3px solid rgba(139, 92, 246, 0.5);
+  box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+}
+
+.btn-generate-report {
+  background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+  border: none;
+  padding: 20px 60px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+.btn-generate-report:hover {
+  background: linear-gradient(45deg, #a78bfa, #c4b5fd);
+  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.btn-generate-report:active {
+  transform: translateY(-1px) scale(1.02);
+}

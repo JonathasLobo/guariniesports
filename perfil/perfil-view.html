@@ -105,9 +105,28 @@
             <p class="perfil-player-id-display" id="playerIdDisplay">-</p>
           </div>
         </div>
+
+        <!-- Team Container (NO LUGAR de Last Views) -->
+        <div class="perfil-team-view-container" id="perfilTeamViewContainer">
+          <h4>⚔️ Team</h4>
+          
+          <div class="team-view-display" id="teamViewDisplay">
+            <div class="team-view-logo" id="teamViewLogo">
+              <img src="" alt="Team Logo">
+            </div>
+            <div class="team-view-info">
+              <p class="team-view-name" id="teamViewName">-</p>
+              <p class="team-view-id" id="teamViewId">ID: -</p>
+            </div>
+          </div>
+          
+          <button class="btn-view-team-profile" id="btnViewTeamProfile">
+            👁️ View Team
+          </button>
+        </div>
       </div>  
 
-      <!-- Área de builds (somente visualização) -->
+      <!-- Área para builds (somente visualização) -->
       <section class="perfil-section">
         <h2>Saved Builds</h2>
         
@@ -888,7 +907,8 @@ function createBuildCard(build, isOwnProfile = false) {
     }
   }
 
-  // Carregar dados do usuário (SEM EXIBIR EMAIL)
+// Carregar dados do usuário (SEM EXIBIR EMAIL)
+// Carregar dados do usuário (SEM EXIBIR EMAIL)
   async function carregarDadosUsuario() {
     try {
       const userDocRef = doc(db, "usuarios", userId);
@@ -932,6 +952,9 @@ function createBuildCard(build, isOwnProfile = false) {
         await registrarVisualizacao(userId, currentUser.uid);
       }
       
+      // ✅ CARREGAR TEAM DO USUÁRIO
+      await carregarTeamUsuario(userId);
+      
       // Carregar builds
       await carregarBuildsUsuario(userId);
       await carregarRibbonsUsuario(userId);
@@ -940,6 +963,73 @@ function createBuildCard(build, isOwnProfile = false) {
       console.error('❌ Error loading user:', error);
       alert('❌ Error loading profile');
       window.location.href = '../index.html';
+    }
+  }
+
+  // ========================================
+  // CARREGAR TEAM DO USUÁRIO (perfil-view.html)
+  // ========================================
+  async function carregarTeamUsuario(uid) {
+    try {
+      console.log('⚔️ Carregando team do usuário:', uid);
+      
+      const perfilTeamViewContainer = document.getElementById('perfilTeamViewContainer');
+      const teamViewLogo = document.getElementById('teamViewLogo');
+      const teamViewName = document.getElementById('teamViewName');
+      const teamViewId = document.getElementById('teamViewId');
+      const btnViewTeamProfile = document.getElementById('btnViewTeamProfile');
+      
+      const userDocRef = doc(db, "usuarios", uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (!userDocSnap.exists() || !userDocSnap.data().teamId) {
+        console.log('ℹ️ Usuário não possui team');
+        perfilTeamViewContainer.style.display = 'none';
+        return;
+      }
+      
+      const teamId = userDocSnap.data().teamId;
+      console.log('🔍 Buscando team:', teamId);
+      
+      const teamDocRef = doc(db, "teams", teamId);
+      const teamDocSnap = await getDoc(teamDocRef);
+      
+      if (!teamDocSnap.exists()) {
+        console.log('❌ Team não encontrado');
+        perfilTeamViewContainer.style.display = 'none';
+        return;
+      }
+      
+      const teamData = teamDocSnap.data();
+      console.log('✅ Team encontrado:', teamData);
+      
+      // Atualizar interface
+      teamViewLogo.querySelector('img').src = teamData.logo;
+      teamViewName.textContent = teamData.teamName;
+      
+      // Exibir país com bandeira
+      const countryFlag = teamData.countryFlag || 'flag-us';
+      const countryDisplay = teamData.countryName || 'Unknown';
+      
+      teamViewId.innerHTML = `
+        <span class="flag ${countryFlag}"></span>
+        <span>${countryDisplay} • ID: ${teamData.teamId}</span>
+      `;
+      
+     // Mostrar container
+      perfilTeamViewContainer.style.display = 'block';
+      
+      // ✅ ADICIONAR AQUI - Configurar botão View Team
+      btnViewTeamProfile.onclick = () => {
+        window.location.href = `../teams/team-view.html?teamId=${teamData.teamId}`;
+      };
+      
+      console.log('✅ Team exibido com sucesso');
+      
+    } catch (error) {
+      console.error('❌ Erro ao carregar team:', error);
+      const perfilTeamViewContainer = document.getElementById('perfilTeamViewContainer');
+      perfilTeamViewContainer.style.display = 'none';
     }
   }
 
