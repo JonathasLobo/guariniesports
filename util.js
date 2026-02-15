@@ -76,6 +76,7 @@ const pokemonBaseImages = {
     sableye: 'sableye-left-bg',
     scizor: 'scizor-left-bg',
     scyther: 'scyther-left-bg',
+    sirfetch: 'sirfetch-left-bg',
     slowbro: 'slowbro-left-bg',
     snorlax: 'snorlax-left-bg',
 	suicune: 'suicune-left-bg',
@@ -165,6 +166,7 @@ const pokemonRoles = {
     sableye: 'Support',
     scizor: 'All Rounder',
     scyther: 'Speedster',
+    sirfetch: 'All Rounder',
     slowbro: 'Defender',
     snorlax: 'Defender',
 	suicune: 'All Rounder',
@@ -254,6 +256,7 @@ const pokemonLanes = {
     sableye: 'Top',
     scizor: 'Top',
     scyther: 'Jungle',
+    sirfetch: 'Top',
     slowbro: 'Bot',
     snorlax: 'Bot',
 	suicune: 'Top',
@@ -343,6 +346,7 @@ const pokemonBasedType  = {
     sableye: 'ATK',
     scizor: 'ATK',
     scyther: 'ATK',
+    sirfetch: 'ATK',
     slowbro: 'SpATK',
     snorlax: 'ATK',
 	suicune: 'SpATK',
@@ -789,6 +793,12 @@ const pokemonSkills = {
 		"scythers21": "Double Hit",
 		"scythers22": "Swords Dance"
     },
+    "sirfetch": {
+		"s11": "Leaf Blade",
+		"s12": "Fury Cutter",
+		"s21": "Detect",
+		"s22": "Brutal Swing"
+    },
     "slowbro": {
 		"s11": "Scald",
 		"s12": "Surf",
@@ -1083,6 +1093,7 @@ const defaultHeldItems = {
 	rapidash: ['wiseglasses','shellbell','choicespecs'],
     sableye: ['expshare','floatstone','razorclaw'],
     scizor: ['muscleband','attackweight','razorclaw'],
+    sirfetch: ['muscleband','attackweight','razorclaw'],
     slowbro: ['buddybarrier','expshare','focusband'],
     snorlax: ['focusband','expshare','buddybarrier'],
 	suicune: ['slickspoon','spatkspecs','expshare'],
@@ -2072,6 +2083,20 @@ const baseStats = {
 		"Speed": 4250,
 		"CritDmg": 0,
 	},
+  "sirfetch": {
+		"HP": 7800,
+		"ATK": 460,
+		"DEF": 500,
+		"SpATK": 116,
+		"SpDEF": 470,
+		"CritRate": 20,
+		"CDR": 0,
+		"AtkSPD": 40,
+		"HPRegen": 20,
+		"EnergyRate": 0,
+		"Speed": 4300,
+		"CritDmg": 0,
+	},
 	"slowbro": {
 		"HP": 8900,
 		"ATK": 292,
@@ -2411,6 +2436,7 @@ const pokemonKillsRate = {
 	"rapidash": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 2 }, media: { min: 2.1, max: 4 }, acima: { min: 5, max: Infinity } },
 	"scizor": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
+  "sirfetch": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"slowbro": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"snorlax": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"suicune": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 7 }, acima: { min: 7.1, max: Infinity } },
@@ -2499,6 +2525,7 @@ const pokemonAssistRate = {
 	"rapidash": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 5 }, media: { min: 5.1, max: 8 }, acima: { min: 8.1, max: Infinity } },
 	"scizor": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
+  "sirfetch": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
 	"slowbro": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"snorlax": { inferior: { min: 0, max: 4 }, media: { min: 4.1, max: 6 }, acima: { min: 6.1, max: Infinity } },
 	"suicune": { inferior: { min: 0, max: 3 }, media: { min: 3.1, max: 5 }, acima: { min: 5.1, max: Infinity } },
@@ -2587,6 +2614,7 @@ const pokemonDamageDoneRate = {
 	"rapidash": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"scizor": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
+  "sirfetch": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
 	"slowbro": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"snorlax": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"suicune": { inferior: { min: 0, max: 47000 }, media: { min: 40001, max: 73000 }, acima: { min: 73001, max: Infinity } },
@@ -2675,6 +2703,7 @@ const pokemonDamageTakenRate = {
 	"rapidash": { inferior: { min: 70001, max: Infinity }, media: { min: 45000, max: 70000 }, acima: { min: 0, max: 44999 } },
 	"sableye": { inferior: { min: 60001, max: Infinity }, media: { min: 35000, max: 60000 }, acima: { min: 0, max: 34999 } },
 	"scizor": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
+  "sirfetch": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
 	"slowbro": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"snorlax": { inferior: { min: 0, max: 50000 }, media: { min: 50001, max: 80000 }, acima: { min: 80001, max: Infinity } },
 	"suicune": { inferior: { min: 0, max: 45000 }, media: { min: 45001, max: 75000 }, acima: { min: 75001, max: Infinity } },
@@ -2763,6 +2792,7 @@ const pokemonDamageHealedRate = {
 	"rapidash": { inferior: { min: 0, max: 8000 }, media: { min: 8001, max: 14000 }, acima: { min: 14001, max: Infinity } },
 	"sableye": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
 	"scizor": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
+  "sirfetch": { inferior: { min: 0, max: 10000 }, media: { min: 10001, max: 15000 }, acima: { min: 15001, max: Infinity } },
 	"slowbro": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"snorlax": { inferior: { min: 0, max: 30000 }, media: { min: 30001, max: 60000 }, acima: { min: 60001, max: Infinity } },
 	"suicune": { inferior: { min: 0, max: 20000 }, media: { min: 20001, max: 50000 }, acima: { min: 50001, max: Infinity } },
@@ -2851,6 +2881,7 @@ const pokemonTierListUDB = {
 	rapidash: 'B',
     sableye: 'B+',
     scizor: 'A+',
+    sirfetch: 'TBD',
     slowbro: 'B+',
     snorlax: 'S',
 	suicune: 'S',
@@ -4107,6 +4138,24 @@ const levelStats = {
     15: { HP: 6800, ATK: 630, DEF: 360, SpATK: 115, SpDEF: 200, CritRate: 10 , CDR: 20 , Lifesteal: 0 , AtkSPD: 30.00 , Speed: 4250 },
   },
 
+  "sirfetch": {
+    1: { HP: 3300, ATK: 140, DEF: 80, SpATK: 20, SpDEF: 70, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
+    2: { HP: 3460, ATK: 151, DEF: 95, SpATK: 23, SpDEF: 84, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 11.07 , Speed: 3700 },
+    3: { HP: 3636, ATK: 164, DEF: 111, SpATK: 27, SpDEF: 100, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 12.24 , Speed: 3700 },
+    4: { HP: 3830, ATK: 178, DEF: 129, SpATK: 31, SpDEF: 117, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 13.53 , Speed: 3700 },
+    5: { HP: 4043, ATK: 193, DEF: 149, SpATK: 36, SpDEF: 136, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 14.95 , Speed: 3850 },
+    6: { HP: 4277, ATK: 210, DEF: 171, SpATK: 41, SpDEF: 157, CritRate: 10 , CDR: 0 , Lifesteal: 5 , AtkSPD: 16.51 , Speed: 3850 },
+    7: { HP: 4535, ATK: 228, DEF: 195, SpATK: 46, SpDEF: 180, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 18.23 , Speed: 4000 },
+    8: { HP: 4819, ATK: 248, DEF: 222, SpATK: 52, SpDEF: 205, CritRate: 10 , CDR: 0 , Lifesteal: 10 , AtkSPD: 20.12 , Speed: 4000 },
+    9: { HP: 5132, ATK: 270, DEF: 251, SpATK: 59, SpDEF: 233, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 22.21 , Speed: 4150 },
+    10: { HP: 5477, ATK: 294, DEF: 283, SpATK: 66, SpDEF: 264, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 24.51 , Speed: 4150 },
+    11: { HP: 5857, ATK: 321, DEF: 319, SpATK: 74, SpDEF: 298, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 27.04 , Speed: 4300 },
+    12: { HP: 6275, ATK: 351, DEF: 358, SpATK: 83, SpDEF: 335, CritRate: 20 , CDR: 0 , Lifesteal: 15 , AtkSPD: 29.83 , Speed: 4300 },
+    13: { HP: 6735, ATK: 384, DEF: 401, SpATK: 93, SpDEF: 376, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 32.9 , Speed: 4300 },
+    14: { HP: 7242, ATK: 420, DEF: 448, SpATK: 104, SpDEF: 421, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 36.28 , Speed: 4300 },
+    15: { HP: 7800, ATK: 460, DEF: 500, SpATK: 116, SpDEF: 470, CritRate: 20 , CDR: 0 , Lifesteal: 20 , AtkSPD: 40.00 , Speed: 4300 },
+  },
+
     "slowbro": {
     1: { HP: 3225, ATK: 150, DEF: 70, SpATK: 50, SpDEF: 60, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.00 , Speed: 3700 },
     2: { HP: 3361, ATK: 153, DEF: 79, SpATK: 58, SpDEF: 68, CritRate: 0 , CDR: 0 , Lifesteal: 0 , AtkSPD: 10.44 , Speed: 3700 },
@@ -5311,6 +5360,19 @@ const pokemonRatings = {
     Smite: 3,
     Sweep: 2
   },
+  sirfetch: {
+    Attack: 4,
+    Endure: 3,
+    Mobility: 3,
+    Score: 2,
+    Support: 1,
+    Invade: 1,
+    Farm: 3.5,
+    Gank: 3,
+    CC: 3,
+    Smite: 3,
+    Sweep: 2
+  },
   slowbro: {
     Attack: 1.5,
     Endure: 4,
@@ -5605,6 +5667,7 @@ const pokemonRoutesEffectiveness = {
   sableye: { top: 60, jungle: 0, bot: 40 },
   scizor: { top: 25, jungle: 70, bot: 5 },
   scyther: { top: 25, jungle: 70, bot: 5 },
+  sirfetch: { top: 50, jungle: 30, bot: 20 },
   slowbro: { top: 30, jungle: 0, bot: 70 },
   snorlax: { top: 20, jungle: 0, bot: 80 },
   suicune: { top: 65, jungle: 10, bot: 25 },
@@ -17631,6 +17694,186 @@ const skillDamage = {
 	}
   },
 
+    "sirfetch": {
+      "passive": {
+          name: "Steadfast",
+          description: "Gains Tenacity while shielded and builds critical-hit rate with hits. As Farfetchd, critical hits grant bonus EXP and deal 160% damage.",
+          buff: {
+            HindRed: 50,
+            CritRate: 25
+          },
+          formulas: [
+          ]
+        },
+	"atkboosted": {
+	  name: "Basic Attack",
+    buff:{},
+      formulas: [
+        {
+          label: "Damage - Basic",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 0,
+          type: "physical"
+        }
+      ]
+	},
+    "s11": {
+      name: "Leaf Blade",
+      cooldown: 6,
+      buff: {
+      },
+      formulas: [
+        {
+          label: "Damage - Jab",
+          formula: (ATK, Level) => 2 * ATK + 12 * (Level - 1) + 240,
+          type: "physical"
+        },
+        {
+          label: "Damage - Slash",
+          formula: (ATK, Level) => 2.5 * ATK + 15 * (Level - 1) + 300,
+          type: "physical"
+        },
+        {
+          label: "Damage - Jab Skill Plus",
+          formula: (ATK, Level) => 2.3 * ATK + 14 * (Level - 1) + 276,
+          type: "physical"
+        },
+        {
+          label: "Damage - Slash Skill Plus",
+          formula: (ATK, Level) => 2.91 * ATK + 16 * (Level - 1) + 345,
+          type: "physical"
+        },
+      ]
+    },
+    "s12": {
+      name: "Fury Cutter",
+      cooldown: 6,
+      buff: {
+        ATK: "6%"
+      },
+      effects: ["Stun"],
+      formulas: [
+	    {
+          label: "Damage - Flurry (6x)",
+          formula: (ATK, Level) => 0.72 * ATK + 0 * (Level - 1) + 122,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final",
+          formula: (ATK, Level) => 1.08 * ATK + 0 * (Level - 1) + 183,
+          type: "physical"
+        },
+        {
+          label: "Damage - Flurry (6x) Skill Plus",
+          formula: (ATK, Level) => 0.83 * ATK + 0 * (Level - 1) + 140,
+          type: "physical"
+        },
+        {
+          label: "Damage - Final Skill Plus",
+          formula: (ATK, Level) => 1.245 * ATK + 0 * (Level - 1) + 210,
+          type: "physical"
+        },
+        
+      ]
+    },
+    "s21": {
+      name: "Detect",
+      cooldown: 7,
+      buff: {
+        DmgTaken: 30,
+        otherSkillsCooldownReduction: {
+        "s11": "50%",
+        "s12": "50%"
+      },
+      },
+      effects: ["Impervius"],
+      debuffs: {
+        Speed: 50
+      },
+      debuffLabels: {
+        Speed: "(DEBUFF) MoveSpeed Reduction"
+      },
+      selfBuffPlus: {
+        levelRequired: 13,
+        buffs: {
+          CooldownFlat: 1
+        }
+      },
+      formulas: [
+        {
+          label: "Damage",
+          formula: (ATK, Level) => 1.1 * ATK + 6 * (Level - 1) + 230,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 5 * ATK + 0 * (Level - 1) + 300,
+          type: "physical"
+        },
+      ]
+    },
+    
+    "s22": {
+		name: "Brutal Swing",
+    cooldown: 7,
+    buff: {},
+    debuffs: {
+      Speed: 70
+    },
+    debuffLabels: {
+      Speed: "(DEBUFF) MoveSpeed Reduction"
+    },
+    formulas: [
+        {
+          label: "Damage - Throw",
+          formula: (ATK, Level) => 0.9 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Damage - Slam",
+          formula: (ATK, Level) => 0.9 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Shield",
+          formula: (ATK, Level) => 3.5 * ATK + 0 * (Level - 1) + 180,
+          type: "physical"
+        },
+        {
+          label: "Shield Skill Plus",
+          formula: (ATK, Level) => 4.55 * ATK + 0 * (Level - 1) + 234,
+          type: "physical"
+        },
+      ]
+    },
+	
+	"ult": {
+		name: "Lunging Leek Nova Blast",
+    cooldown: 89,
+    buff: {},
+    buffPlus: {
+      levelRequired: 9,
+      effects: ["Unstoppable", "Stun"],
+      buffs: {
+        Speed: "30%",
+        CDR: 30,
+        Shield: 20
+      },
+    },
+		formulas: [
+        {
+          label: "Damage - Charge (5x)",
+          formula: (ATK, Level) => 1 * ATK + 0 * (Level - 1) + 200,
+          type: "physical"
+        },
+        {
+          label: "Damage - Explosion",
+          formula: (ATK, Level) => 2 * ATK + 0 * (Level - 1) + 400,
+          type: "physical"
+        },
+	 ]
+	}
+  },
+
   	"slowbro": {
       "passive": {
           name: "Oblivious",
@@ -21309,6 +21552,10 @@ const skillDamage = {
   },
   scyther: {
     default: "Default"
+  },
+  sirfetch: {
+    default: "Default",
+    skin1: "Gardening Style"
   },
   slowbro: {
     default: "Default",

@@ -1705,7 +1705,8 @@ const updatePokemonImage = () => {
   "Blind": { icon: "🕶️", label: "Blind" },
   "Poison": { icon: "🩻", label: "Poison" },
   "Fear": { icon: "😱", label: "Fear" },
-  "Copfusion": { icon: "😵‍💫", label: "Confusion" },
+  "Confusion": { icon: "😵‍💫", label: "Confusion" },
+  "Impervius": { icon: "🪖", label: "Impervius"}
 };
 
 const STAT_EFFECT_CONFIG = {
@@ -1917,6 +1918,7 @@ const STAT_EFFECT_CONFIG = {
     "umbreon": ["s11"],
     "urshifu": ["s11", "s12"],
     "zeraora": ["s12"],
+    "sirfetch": ["s11", "s12"]
   };
   // Mapa de Pokémon com itens fixos
   const pokemonFixedItems = {
