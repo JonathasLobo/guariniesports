@@ -1,0 +1,1299 @@
+{
+  "data": "14-02-2026",
+  "taxaVitoria": [
+    {
+      "ranking": 1,
+      "nome": "Mega Gyarados",
+      "taxa": 56.33
+    },
+    {
+      "ranking": 2,
+      "nome": "Mega Charizard Y",
+      "taxa": 55.66
+    },
+    {
+      "ranking": 3,
+      "nome": "Gyarados",
+      "taxa": 52.67
+    },
+    {
+      "ranking": 4,
+      "nome": "Mega Lucario",
+      "taxa": 52.61
+    },
+    {
+      "ranking": 5,
+      "nome": "Psyduck",
+      "taxa": 52.41
+    },
+    {
+      "ranking": 6,
+      "nome": "Tyranitar",
+      "taxa": 52.38
+    },
+    {
+      "ranking": 7,
+      "nome": "Mewtwo",
+      "taxa": 52.28
+    },
+    {
+      "ranking": 8,
+      "nome": "Blastoise",
+      "taxa": 52.12
+    },
+    {
+      "ranking": 9,
+      "nome": "Meowth",
+      "taxa": 51.98
+    },
+    {
+      "ranking": 10,
+      "nome": "Vaporeon",
+      "taxa": 51.98
+    },
+    {
+      "ranking": 11,
+      "nome": "Mr. Mime",
+      "taxa": 51.82
+    },
+    {
+      "ranking": 12,
+      "nome": "Greedent",
+      "taxa": 51.71
+    },
+    {
+      "ranking": 13,
+      "nome": "Gengar",
+      "taxa": 51.65
+    },
+    {
+      "ranking": 14,
+      "nome": "Ceruledge",
+      "taxa": 51.4
+    },
+    {
+      "ranking": 15,
+      "nome": "Decidueye",
+      "taxa": 51.38
+    },
+    {
+      "ranking": 16,
+      "nome": "Mimikyu",
+      "taxa": 51.3
+    },
+    {
+      "ranking": 17,
+      "nome": "Dodrio",
+      "taxa": 50.92
+    },
+    {
+      "ranking": 18,
+      "nome": "Ho-Oh",
+      "taxa": 50.69
+    },
+    {
+      "ranking": 19,
+      "nome": "Alcremie",
+      "taxa": 50.53
+    },
+    {
+      "ranking": 20,
+      "nome": "Tsareena",
+      "taxa": 50.43
+    },
+    {
+      "ranking": 21,
+      "nome": "Blaziken",
+      "taxa": 50.37
+    },
+    {
+      "ranking": 22,
+      "nome": "Machamp",
+      "taxa": 50.33
+    },
+    {
+      "ranking": 23,
+      "nome": "Garchomp",
+      "taxa": 50.33
+    },
+    {
+      "ranking": 24,
+      "nome": "Inteleon",
+      "taxa": 50.32
+    },
+    {
+      "ranking": 25,
+      "nome": "Delphox",
+      "taxa": 50.31
+    },
+    {
+      "ranking": 26,
+      "nome": "Empoleon",
+      "taxa": 50.28
+    },
+    {
+      "ranking": 27,
+      "nome": "Pawmot",
+      "taxa": 50.2
+    },
+    {
+      "ranking": 28,
+      "nome": "Scizor",
+      "taxa": 50.12
+    },
+    {
+      "ranking": 29,
+      "nome": "Latias",
+      "taxa": 49.98
+    },
+    {
+      "ranking": 30,
+      "nome": "Galarian Rapidash",
+      "taxa": 49.94
+    },
+    {
+      "ranking": 31,
+      "nome": "Miraidon",
+      "taxa": 49.93
+    },
+    {
+      "ranking": 32,
+      "nome": "Darkrai",
+      "taxa": 49.82
+    },
+    {
+      "ranking": 33,
+      "nome": "Mega Charizard X",
+      "taxa": 49.81
+    },
+    {
+      "ranking": 34,
+      "nome": "Gardevoir",
+      "taxa": 49.8
+    },
+    {
+      "ranking": 35,
+      "nome": "Wigglytuff",
+      "taxa": 49.75
+    },
+    {
+      "ranking": 36,
+      "nome": "Duraludon",
+      "taxa": 49.74
+    },
+    {
+      "ranking": 37,
+      "nome": "Mew",
+      "taxa": 49.72
+    },
+    {
+      "ranking": 38,
+      "nome": "Hoopa",
+      "taxa": 49.67
+    },
+    {
+      "ranking": 39,
+      "nome": "Dhelmise",
+      "taxa": 49.67
+    },
+    {
+      "ranking": 40,
+      "nome": "Urshifu",
+      "taxa": 49.56
+    },
+    {
+      "ranking": 41,
+      "nome": "Charizard",
+      "taxa": 49.48
+    },
+    {
+      "ranking": 42,
+      "nome": "Armarouge",
+      "taxa": 49.43
+    },
+    {
+      "ranking": 43,
+      "nome": "Snorlax",
+      "taxa": 49.35
+    },
+    {
+      "ranking": 44,
+      "nome": "Dragonite",
+      "taxa": 49.34
+    },
+    {
+      "ranking": 45,
+      "nome": "Zacian",
+      "taxa": 49.32
+    },
+    {
+      "ranking": 46,
+      "nome": "Trevenant",
+      "taxa": 49.3
+    },
+    {
+      "ranking": 47,
+      "nome": "Metagross",
+      "taxa": 49.29
+    },
+    {
+      "ranking": 48,
+      "nome": "Latios",
+      "taxa": 49.28
+    },
+    {
+      "ranking": 49,
+      "nome": "Eldegoss",
+      "taxa": 49.27
+    },
+    {
+      "ranking": 50,
+      "nome": "Espeon",
+      "taxa": 49.25
+    },
+    {
+      "ranking": 51,
+      "nome": "Greninja",
+      "taxa": 49.14
+    },
+    {
+      "ranking": 52,
+      "nome": "Talonflame",
+      "taxa": 48.97
+    },
+    {
+      "ranking": 53,
+      "nome": "Crustle",
+      "taxa": 48.96
+    },
+    {
+      "ranking": 54,
+      "nome": "Lucario",
+      "taxa": 48.67
+    },
+    {
+      "ranking": 55,
+      "nome": "Cinderace",
+      "taxa": 48.66
+    },
+    {
+      "ranking": 56,
+      "nome": "Alolan Raichu",
+      "taxa": 48.65
+    },
+    {
+      "ranking": 57,
+      "nome": "Leafeon",
+      "taxa": 48.54
+    },
+    {
+      "ranking": 58,
+      "nome": "Glaceon",
+      "taxa": 48.44
+    },
+    {
+      "ranking": 59,
+      "nome": "Umbreon",
+      "taxa": 48.37
+    },
+    {
+      "ranking": 60,
+      "nome": "Mamoswine",
+      "taxa": 48.37
+    },
+    {
+      "ranking": 61,
+      "nome": "Meowscarada",
+      "taxa": 48.33
+    },
+    {
+      "ranking": 62,
+      "nome": "Lapras",
+      "taxa": 48.3
+    },
+    {
+      "ranking": 63,
+      "nome": "Slowbro",
+      "taxa": 48.27
+    },
+    {
+      "ranking": 64,
+      "nome": "Venusaur",
+      "taxa": 48.12
+    },
+    {
+      "ranking": 65,
+      "nome": "Chandelure",
+      "taxa": 48.11
+    },
+    {
+      "ranking": 66,
+      "nome": "Pikachu",
+      "taxa": 48.07
+    },
+    {
+      "ranking": 67,
+      "nome": "Dragapult",
+      "taxa": 48.04
+    },
+    {
+      "ranking": 68,
+      "nome": "Blissey",
+      "taxa": 48
+    },
+    {
+      "ranking": 69,
+      "nome": "Tinkaton",
+      "taxa": 47.92
+    },
+    {
+      "ranking": 70,
+      "nome": "Suicune",
+      "taxa": 47.91
+    },
+    {
+      "ranking": 71,
+      "nome": "Mewtwo",
+      "taxa": 47.81
+    },
+    {
+      "ranking": 72,
+      "nome": "Aegislash",
+      "taxa": 47.72
+    },
+    {
+      "ranking": 73,
+      "nome": "Sirfetch",
+      "taxa": 47.67
+    },
+    {
+      "ranking": 74,
+      "nome": "Goodra",
+      "taxa": 47.43
+    },
+    {
+      "ranking": 75,
+      "nome": "Zeraora",
+      "taxa": 47.31
+    },
+    {
+      "ranking": 76,
+      "nome": "Alolan Ninetales",
+      "taxa": 47.28
+    },
+    {
+      "ranking": 77,
+      "nome": "Sylveon",
+      "taxa": 47.18
+    },
+    {
+      "ranking": 78,
+      "nome": "Buzzwole",
+      "taxa": 47.1
+    },
+    {
+      "ranking": 79,
+      "nome": "Absol",
+      "taxa": 47.1
+    },
+    {
+      "ranking": 80,
+      "nome": "Cramorant",
+      "taxa": 46.94
+    },
+    {
+      "ranking": 81,
+      "nome": "Falinks",
+      "taxa": 46.78
+    },
+    {
+      "ranking": 82,
+      "nome": "Clefable",
+      "taxa": 46.59
+    },
+    {
+      "ranking": 83,
+      "nome": "Azumarill",
+      "taxa": 46.43
+    },
+    {
+      "ranking": 84,
+      "nome": "Zoroark",
+      "taxa": 45.97
+    },
+    {
+      "ranking": 85,
+      "nome": "Comfey",
+      "taxa": 45.88
+    },
+    {
+      "ranking": 86,
+      "nome": "Sableye",
+      "taxa": 45.78
+    }
+  ],
+  "taxaSelecao": [
+    {
+      "ranking": 1,
+      "nome": "Blastoise",
+      "taxa": 44.24
+    },
+    {
+      "ranking": 2,
+      "nome": "Ceruledge",
+      "taxa": 37.96
+    },
+    {
+      "ranking": 3,
+      "nome": "Vaporeon",
+      "taxa": 37.52
+    },
+    {
+      "ranking": 4,
+      "nome": "Decidueye",
+      "taxa": 29.94
+    },
+    {
+      "ranking": 5,
+      "nome": "Mimikyu",
+      "taxa": 25.25
+    },
+    {
+      "ranking": 6,
+      "nome": "Scizor",
+      "taxa": 23.4
+    },
+    {
+      "ranking": 7,
+      "nome": "Meowth",
+      "taxa": 22.91
+    },
+    {
+      "ranking": 8,
+      "nome": "Psyduck",
+      "taxa": 22.7
+    },
+    {
+      "ranking": 9,
+      "nome": "Mega Charizard Y",
+      "taxa": 22.01
+    },
+    {
+      "ranking": 10,
+      "nome": "Mewtwo",
+      "taxa": 21.64
+    },
+    {
+      "ranking": 11,
+      "nome": "Espeon",
+      "taxa": 21.15
+    },
+    {
+      "ranking": 12,
+      "nome": "Darkrai",
+      "taxa": 20.53
+    },
+    {
+      "ranking": 13,
+      "nome": "Slowbro",
+      "taxa": 20.06
+    },
+    {
+      "ranking": 14,
+      "nome": "Inteleon",
+      "taxa": 19.27
+    },
+    {
+      "ranking": 15,
+      "nome": "Greninja",
+      "taxa": 18.62
+    },
+    {
+      "ranking": 16,
+      "nome": "Cinderace",
+      "taxa": 18.09
+    },
+    {
+      "ranking": 17,
+      "nome": "Mega Lucario",
+      "taxa": 17.34
+    },
+    {
+      "ranking": 18,
+      "nome": "Glaceon",
+      "taxa": 17.27
+    },
+    {
+      "ranking": 19,
+      "nome": "Talonflame",
+      "taxa": 16.8
+    },
+    {
+      "ranking": 20,
+      "nome": "Pikachu",
+      "taxa": 16.55
+    },
+    {
+      "ranking": 21,
+      "nome": "Umbreon",
+      "taxa": 16.31
+    },
+    {
+      "ranking": 22,
+      "nome": "Gengar",
+      "taxa": 16.02
+    },
+    {
+      "ranking": 23,
+      "nome": "Snorlax",
+      "taxa": 15.13
+    },
+    {
+      "ranking": 24,
+      "nome": "Mamoswine",
+      "taxa": 15.07
+    },
+    {
+      "ranking": 25,
+      "nome": "Mega Gyarados",
+      "taxa": 14.67
+    },
+    {
+      "ranking": 26,
+      "nome": "Machamp",
+      "taxa": 14.56
+    },
+    {
+      "ranking": 27,
+      "nome": "Buzzwole",
+      "taxa": 14.54
+    },
+    {
+      "ranking": 28,
+      "nome": "Venusaur",
+      "taxa": 13.56
+    },
+    {
+      "ranking": 29,
+      "nome": "Trevenant",
+      "taxa": 13.33
+    },
+    {
+      "ranking": 30,
+      "nome": "Comfey",
+      "taxa": 13.19
+    },
+    {
+      "ranking": 31,
+      "nome": "Blissey",
+      "taxa": 12.44
+    },
+    {
+      "ranking": 32,
+      "nome": "Mega Charizard X",
+      "taxa": 12.15
+    },
+    {
+      "ranking": 33,
+      "nome": "Clefable",
+      "taxa": 12.01
+    },
+    {
+      "ranking": 34,
+      "nome": "Suicune",
+      "taxa": 11.69
+    },
+    {
+      "ranking": 35,
+      "nome": "Gardevoir",
+      "taxa": 10.95
+    },
+    {
+      "ranking": 36,
+      "nome": "Blaziken",
+      "taxa": 10.85
+    },
+    {
+      "ranking": 37,
+      "nome": "Delphox",
+      "taxa": 10.66
+    },
+    {
+      "ranking": 38,
+      "nome": "Zeraora",
+      "taxa": 10.06
+    },
+    {
+      "ranking": 39,
+      "nome": "Alcremie",
+      "taxa": 9.86
+    },
+    {
+      "ranking": 40,
+      "nome": "Leafeon",
+      "taxa": 9.6
+    },
+    {
+      "ranking": 41,
+      "nome": "Mew",
+      "taxa": 9.55
+    },
+    {
+      "ranking": 42,
+      "nome": "Mr. Mime",
+      "taxa": 9.41
+    },
+    {
+      "ranking": 43,
+      "nome": "Galarian Rapidash",
+      "taxa": 9.31
+    },
+    {
+      "ranking": 44,
+      "nome": "Lapras",
+      "taxa": 9.22
+    },
+    {
+      "ranking": 45,
+      "nome": "Alolan Ninetales",
+      "taxa": 8.71
+    },
+    {
+      "ranking": 46,
+      "nome": "Latias",
+      "taxa": 8.55
+    },
+    {
+      "ranking": 47,
+      "nome": "Crustle",
+      "taxa": 8.43
+    },
+    {
+      "ranking": 48,
+      "nome": "Latios",
+      "taxa": 8.16
+    },
+    {
+      "ranking": 49,
+      "nome": "Alolan Raichu",
+      "taxa": 8.01
+    },
+    {
+      "ranking": 50,
+      "nome": "Garchomp",
+      "taxa": 7.75
+    },
+    {
+      "ranking": 51,
+      "nome": "Charizard",
+      "taxa": 7.66
+    },
+    {
+      "ranking": 52,
+      "nome": "Wigglytuff",
+      "taxa": 7.62
+    },
+    {
+      "ranking": 53,
+      "nome": "Sylveon",
+      "taxa": 7.55
+    },
+    {
+      "ranking": 54,
+      "nome": "Eldegoss",
+      "taxa": 7.53
+    },
+    {
+      "ranking": 55,
+      "nome": "Lucario",
+      "taxa": 7.52
+    },
+    {
+      "ranking": 56,
+      "nome": "Mewtwo",
+      "taxa": 7.16
+    },
+    {
+      "ranking": 57,
+      "nome": "Zoroark",
+      "taxa": 7.1
+    },
+    {
+      "ranking": 58,
+      "nome": "Absol",
+      "taxa": 7.06
+    },
+    {
+      "ranking": 59,
+      "nome": "Empoleon",
+      "taxa": 6.71
+    },
+    {
+      "ranking": 60,
+      "nome": "Miraidon",
+      "taxa": 6.44
+    },
+    {
+      "ranking": 61,
+      "nome": "Tinkaton",
+      "taxa": 6.38
+    },
+    {
+      "ranking": 62,
+      "nome": "Sirfetch",
+      "taxa": 6.18
+    },
+    {
+      "ranking": 63,
+      "nome": "Hoopa",
+      "taxa": 5.91
+    },
+    {
+      "ranking": 64,
+      "nome": "Zacian",
+      "taxa": 5.89
+    },
+    {
+      "ranking": 65,
+      "nome": "Sableye",
+      "taxa": 5.6
+    },
+    {
+      "ranking": 66,
+      "nome": "Aegislash",
+      "taxa": 5.5
+    },
+    {
+      "ranking": 67,
+      "nome": "Gyarados",
+      "taxa": 5.35
+    },
+    {
+      "ranking": 68,
+      "nome": "Tsareena",
+      "taxa": 5.31
+    },
+    {
+      "ranking": 69,
+      "nome": "Dragapult",
+      "taxa": 5.26
+    },
+    {
+      "ranking": 70,
+      "nome": "Meowscarada",
+      "taxa": 5.16
+    },
+    {
+      "ranking": 71,
+      "nome": "Azumarill",
+      "taxa": 4.91
+    },
+    {
+      "ranking": 72,
+      "nome": "Ho-Oh",
+      "taxa": 4.79
+    },
+    {
+      "ranking": 73,
+      "nome": "Pawmot",
+      "taxa": 4.28
+    },
+    {
+      "ranking": 74,
+      "nome": "Dodrio",
+      "taxa": 4.23
+    },
+    {
+      "ranking": 75,
+      "nome": "Dhelmise",
+      "taxa": 4.09
+    },
+    {
+      "ranking": 76,
+      "nome": "Goodra",
+      "taxa": 4.05
+    },
+    {
+      "ranking": 77,
+      "nome": "Urshifu",
+      "taxa": 3.74
+    },
+    {
+      "ranking": 78,
+      "nome": "Armarouge",
+      "taxa": 3.59
+    },
+    {
+      "ranking": 79,
+      "nome": "Metagross",
+      "taxa": 3.58
+    },
+    {
+      "ranking": 80,
+      "nome": "Dragonite",
+      "taxa": 3.26
+    },
+    {
+      "ranking": 81,
+      "nome": "Tyranitar",
+      "taxa": 2.88
+    },
+    {
+      "ranking": 82,
+      "nome": "Chandelure",
+      "taxa": 2.84
+    },
+    {
+      "ranking": 83,
+      "nome": "Greedent",
+      "taxa": 2.71
+    },
+    {
+      "ranking": 84,
+      "nome": "Cramorant",
+      "taxa": 2.1
+    },
+    {
+      "ranking": 85,
+      "nome": "Duraludon",
+      "taxa": 1.36
+    },
+    {
+      "ranking": 86,
+      "nome": "Falinks",
+      "taxa": 1.06
+    }
+  ],
+  "taxaBanimento": [
+    {
+      "ranking": 1,
+      "nome": "Meowth",
+      "taxa": 114.98
+    },
+    {
+      "ranking": 2,
+      "nome": "Mega Charizard Y",
+      "taxa": 114.28
+    },
+    {
+      "ranking": 3,
+      "nome": "Blastoise",
+      "taxa": 87.94
+    },
+    {
+      "ranking": 4,
+      "nome": "Mega Gyarados",
+      "taxa": 49.67
+    },
+    {
+      "ranking": 5,
+      "nome": "Darkrai",
+      "taxa": 37.54
+    },
+    {
+      "ranking": 6,
+      "nome": "Mega Charizard X",
+      "taxa": 24.56
+    },
+    {
+      "ranking": 7,
+      "nome": "Mega Lucario",
+      "taxa": 17.83
+    },
+    {
+      "ranking": 8,
+      "nome": "Sirfetch",
+      "taxa": 15.33
+    },
+    {
+      "ranking": 9,
+      "nome": "Vaporeon",
+      "taxa": 14.82
+    },
+    {
+      "ranking": 10,
+      "nome": "Ceruledge",
+      "taxa": 10.93
+    },
+    {
+      "ranking": 11,
+      "nome": "Mimikyu",
+      "taxa": 9.87
+    },
+    {
+      "ranking": 12,
+      "nome": "Clefable",
+      "taxa": 7.65
+    },
+    {
+      "ranking": 13,
+      "nome": "Glaceon",
+      "taxa": 7.29
+    },
+    {
+      "ranking": 14,
+      "nome": "Psyduck",
+      "taxa": 7.08
+    },
+    {
+      "ranking": 15,
+      "nome": "Gengar",
+      "taxa": 6.02
+    },
+    {
+      "ranking": 16,
+      "nome": "Scizor",
+      "taxa": 4.57
+    },
+    {
+      "ranking": 17,
+      "nome": "Comfey",
+      "taxa": 3.22
+    },
+    {
+      "ranking": 18,
+      "nome": "Mewtwo",
+      "taxa": 2.95
+    },
+    {
+      "ranking": 19,
+      "nome": "Suicune",
+      "taxa": 2.8
+    },
+    {
+      "ranking": 20,
+      "nome": "Galarian Rapidash",
+      "taxa": 2.79
+    },
+    {
+      "ranking": 21,
+      "nome": "Charizard",
+      "taxa": 2.59
+    },
+    {
+      "ranking": 22,
+      "nome": "Decidueye",
+      "taxa": 2.35
+    },
+    {
+      "ranking": 23,
+      "nome": "Slowbro",
+      "taxa": 1.9
+    },
+    {
+      "ranking": 24,
+      "nome": "Sableye",
+      "taxa": 1.84
+    },
+    {
+      "ranking": 25,
+      "nome": "Umbreon",
+      "taxa": 1.81
+    },
+    {
+      "ranking": 26,
+      "nome": "Blissey",
+      "taxa": 1.74
+    },
+    {
+      "ranking": 27,
+      "nome": "Buzzwole",
+      "taxa": 1.66
+    },
+    {
+      "ranking": 28,
+      "nome": "Wigglytuff",
+      "taxa": 1.62
+    },
+    {
+      "ranking": 29,
+      "nome": "Pikachu",
+      "taxa": 1.6
+    },
+    {
+      "ranking": 30,
+      "nome": "Talonflame",
+      "taxa": 1.55
+    },
+    {
+      "ranking": 31,
+      "nome": "Alolan Raichu",
+      "taxa": 1.46
+    },
+    {
+      "ranking": 32,
+      "nome": "Machamp",
+      "taxa": 1.16
+    },
+    {
+      "ranking": 33,
+      "nome": "Inteleon",
+      "taxa": 1.14
+    },
+    {
+      "ranking": 34,
+      "nome": "Zoroark",
+      "taxa": 1.11
+    },
+    {
+      "ranking": 35,
+      "nome": "Mewtwo",
+      "taxa": 0.95
+    },
+    {
+      "ranking": 36,
+      "nome": "Venusaur",
+      "taxa": 0.94
+    },
+    {
+      "ranking": 37,
+      "nome": "Leafeon",
+      "taxa": 0.82
+    },
+    {
+      "ranking": 38,
+      "nome": "Greninja",
+      "taxa": 0.82
+    },
+    {
+      "ranking": 39,
+      "nome": "Zeraora",
+      "taxa": 0.77
+    },
+    {
+      "ranking": 40,
+      "nome": "Dodrio",
+      "taxa": 0.74
+    },
+    {
+      "ranking": 41,
+      "nome": "Alolan Ninetales",
+      "taxa": 0.72
+    },
+    {
+      "ranking": 42,
+      "nome": "Cinderace",
+      "taxa": 0.71
+    },
+    {
+      "ranking": 43,
+      "nome": "Espeon",
+      "taxa": 0.64
+    },
+    {
+      "ranking": 44,
+      "nome": "Blaziken",
+      "taxa": 0.61
+    },
+    {
+      "ranking": 45,
+      "nome": "Trevenant",
+      "taxa": 0.6
+    },
+    {
+      "ranking": 46,
+      "nome": "Mr. Mime",
+      "taxa": 0.55
+    },
+    {
+      "ranking": 47,
+      "nome": "Gardevoir",
+      "taxa": 0.53
+    },
+    {
+      "ranking": 48,
+      "nome": "Lapras",
+      "taxa": 0.5
+    },
+    {
+      "ranking": 49,
+      "nome": "Snorlax",
+      "taxa": 0.47
+    },
+    {
+      "ranking": 50,
+      "nome": "Ho-Oh",
+      "taxa": 0.46
+    },
+    {
+      "ranking": 51,
+      "nome": "Meowscarada",
+      "taxa": 0.45
+    },
+    {
+      "ranking": 52,
+      "nome": "Delphox",
+      "taxa": 0.44
+    },
+    {
+      "ranking": 53,
+      "nome": "Mew",
+      "taxa": 0.41
+    },
+    {
+      "ranking": 54,
+      "nome": "Latias",
+      "taxa": 0.39
+    },
+    {
+      "ranking": 55,
+      "nome": "Garchomp",
+      "taxa": 0.39
+    },
+    {
+      "ranking": 56,
+      "nome": "Latios",
+      "taxa": 0.37
+    },
+    {
+      "ranking": 57,
+      "nome": "Dhelmise",
+      "taxa": 0.37
+    },
+    {
+      "ranking": 58,
+      "nome": "Pawmot",
+      "taxa": 0.36
+    },
+    {
+      "ranking": 59,
+      "nome": "Miraidon",
+      "taxa": 0.36
+    },
+    {
+      "ranking": 60,
+      "nome": "Zacian",
+      "taxa": 0.35
+    },
+    {
+      "ranking": 61,
+      "nome": "Tinkaton",
+      "taxa": 0.33
+    },
+    {
+      "ranking": 62,
+      "nome": "Lucario",
+      "taxa": 0.33
+    },
+    {
+      "ranking": 63,
+      "nome": "Absol",
+      "taxa": 0.32
+    },
+    {
+      "ranking": 64,
+      "nome": "Aegislash",
+      "taxa": 0.31
+    },
+    {
+      "ranking": 65,
+      "nome": "Mamoswine",
+      "taxa": 0.31
+    },
+    {
+      "ranking": 66,
+      "nome": "Azumarill",
+      "taxa": 0.3
+    },
+    {
+      "ranking": 67,
+      "nome": "Empoleon",
+      "taxa": 0.3
+    },
+    {
+      "ranking": 68,
+      "nome": "Gyarados",
+      "taxa": 0.29
+    },
+    {
+      "ranking": 69,
+      "nome": "Dragapult",
+      "taxa": 0.28
+    },
+    {
+      "ranking": 70,
+      "nome": "Hoopa",
+      "taxa": 0.28
+    },
+    {
+      "ranking": 71,
+      "nome": "Dragonite",
+      "taxa": 0.24
+    },
+    {
+      "ranking": 72,
+      "nome": "Crustle",
+      "taxa": 0.24
+    },
+    {
+      "ranking": 73,
+      "nome": "Urshifu",
+      "taxa": 0.23
+    },
+    {
+      "ranking": 74,
+      "nome": "Alcremie",
+      "taxa": 0.23
+    },
+    {
+      "ranking": 75,
+      "nome": "Sylveon",
+      "taxa": 0.23
+    },
+    {
+      "ranking": 76,
+      "nome": "Greedent",
+      "taxa": 0.22
+    },
+    {
+      "ranking": 77,
+      "nome": "Tyranitar",
+      "taxa": 0.21
+    },
+    {
+      "ranking": 78,
+      "nome": "Goodra",
+      "taxa": 0.21
+    },
+    {
+      "ranking": 79,
+      "nome": "Tsareena",
+      "taxa": 0.2
+    },
+    {
+      "ranking": 80,
+      "nome": "Metagross",
+      "taxa": 0.19
+    },
+    {
+      "ranking": 81,
+      "nome": "Falinks",
+      "taxa": 0.15
+    },
+    {
+      "ranking": 82,
+      "nome": "Eldegoss",
+      "taxa": 0.14
+    },
+    {
+      "ranking": 83,
+      "nome": "Duraludon",
+      "taxa": 0.14
+    },
+    {
+      "ranking": 84,
+      "nome": "Chandelure",
+      "taxa": 0.12
+    },
+    {
+      "ranking": 85,
+      "nome": "Cramorant",
+      "taxa": 0.11
+    },
+    {
+      "ranking": 86,
+      "nome": "Armarouge",
+      "taxa": 0.11
+    }
+  ]
+}

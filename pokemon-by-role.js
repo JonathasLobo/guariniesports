@@ -84,8 +84,8 @@ function normalizeForImage(name) {
 // Carregar dados do meta
 async function loadMetaData() {
   try {
-    console.log('🔍 Buscando arquivo meta29-12-2025.json...');
-    const response = await fetch('./meta29-12-2025.json');
+    console.log('🔍 Buscando arquivo meta14-02-2026.json...');
+    const response = await fetch('./meta14-02-2026.json');
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
