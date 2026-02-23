@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encontre o Tapete Mágico!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
+
+  :root {
+    --sky1: #1a1a6e;
+    --sky2: #0d4f8c;
+    --sky3: #1b7fc4;
+    --star: #fff9c4;
+    --gold: #ffd700;
+    --moon: #fff8dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 40%, var(--sky3) 100%);
+    min-height: 100vh;
+    overflow: hidden;
+    cursor: crosshair;
+    user-select: none;
+  }
+
+  /* Stars background */
+  #stars-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    background: var(--star);
+    border-radius: 50%;
+    animation: twinkle var(--dur, 2s) ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.4); }
+  }
+
+  /* Moon */
+  .moon {
+    position: fixed;
+    top: 40px;
+    right: 80px;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle at 35% 35%, #fffde7, #f9d84a);
+    border-radius: 50%;
+    box-shadow: 0 0 40px 15px rgba(255, 220, 80, 0.3);
+    z-index: 1;
+    animation: moonGlow 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes moonGlow {
+    from { box-shadow: 0 0 40px 15px rgba(255, 220, 80, 0.3); }
+    to { box-shadow: 0 0 70px 30px rgba(255, 220, 80, 0.5); }
+  }
+
+  /* Clouds */
+  .cloud {
+    position: fixed;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(2px);
+    z-index: 1;
+    pointer-events: none;
+    animation: drift linear infinite;
+  }
+
+  @keyframes drift {
+    from { transform: translateX(-200px); }
+    to { transform: translateX(calc(100vw + 200px)); }
+  }
+
+  /* HUD */
+  #hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 28px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  #hud h1 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--gold);
+    font-size: 1.5rem;
+    text-shadow: 0 0 20px rgba(255,215,0,0.6);
+    letter-spacing: 1px;
+  }
+
+  .hud-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+  }
+
+  .hud-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.7;
+  }
+
+  .hud-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+  }
+
+  #timer-bar-wrap {
+    position: fixed;
+    top: 68px; left: 0; right: 0;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    z-index: 99;
+  }
+
+  #timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ff6b35);
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(255,107,53,0.8);
+  }
+
+  /* Game area */
+  #game-area {
+    position: fixed;
+    inset: 72px 0 0 0;
+    z-index: 10;
+  }
+
+  /* Carpet */
+  #carpet {
+    position: absolute;
+    width: 110px;
+    height: 90px;
+    cursor: pointer;
+    z-index: 20;
+    transition: opacity 0.3s;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    animation: carpetFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes carpetFloat {
+    0%   { transform: translateY(0px) rotate(var(--rot-a, -2deg)); }
+    50%  { transform: translateY(var(--float-h, -8px)) rotate(var(--rot-b, 2deg)); }
+    100% { transform: translateY(0px) rotate(var(--rot-a, -2deg)); }
+  }
+
+  /* Both real and decoy glow on hover */
+  .carpet-piece:hover {
+    filter: drop-shadow(0 6px 28px rgba(255,215,0,0.9)) brightness(1.25) !important;
+  }
+
+  /* Carpet image fills container */
+  .carpet-piece img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  /* Cursor inversion overlay when cursed */
+  body.cursor-inverted { cursor: none !important; }
+  #fake-cursor {
+    position: fixed;
+    width: 20px; height: 20px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M0 0 L0 16 L4 12 L7 19 L9 17 L6 10 L11 10 Z' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E") no-repeat center/contain;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    transform: rotate(180deg);
+  }
+
+  /* Curse warning */
+  .curse-warning {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: #ff2222;
+    text-shadow: 0 0 30px rgba(255,0,0,0.8), 2px 2px 0 #000;
+    pointer-events: none;
+    z-index: 300;
+    animation: curseAnim 0.5s ease-out forwards;
+    white-space: nowrap;
+  }
+
+  @keyframes curseAnim {
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    40%  { opacity: 1; transform: translate(-50%, -60%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -80%) scale(1); }
+  }
+
+  .decoy {
+    position: absolute;
+    border-radius: 4px;
+    animation: decoyDrift ease-in-out infinite alternate;
+  }
+
+  @keyframes decoyDrift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-6px); }
+  }
+
+  /* Click ripple */
+  .ripple {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255,100,100,0.8);
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 200;
+    animation: rippleOut 0.5s ease-out forwards;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes rippleOut {
+    from { width: 10px; height: 10px; opacity: 1; }
+    to { width: 80px; height: 80px; opacity: 0; }
+  }
+
+  /* Found flash */
+  .found-flash {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,215,0,0.4), transparent 70%);
+    z-index: 150;
+    pointer-events: none;
+    animation: flashOut 0.6s ease-out forwards;
+  }
+
+  @keyframes flashOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* Score popup */
+  .score-popup {
+    position: fixed;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(255,215,0,0.8), 2px 2px 0 rgba(0,0,0,0.5);
+    pointer-events: none;
+    z-index: 200;
+    animation: popUp 1s ease-out forwards;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes popUp {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    50% { opacity: 1; transform: translate(-50%, -80%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -150%) scale(1); }
+  }
+
+  /* Overlay screens */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 15, 60, 0.92);
+    backdrop-filter: blur(12px);
+  }
+
+  /* ---- Start Screen: side by side ---- */
+  #start-screen {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+
+  .start-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 50px;
+    flex: 0 0 420px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .start-right {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 30px 36px;
+    flex: 0 0 380px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+
+  .start-right h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    color: var(--gold);
+    text-shadow: 0 0 16px rgba(255,215,0,0.5);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .start-right .subtitle {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.35);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 820px){
+    #start-screen { flex-direction: column; overflow-y: auto; }
+    .start-left { flex: none; padding: 24px 20px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .start-right { flex: none; padding: 20px; max-height: 50vh; }
+  }
+
+  .overlay h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3rem;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(255,215,0,0.7);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .overlay p {
+    color: rgba(255,255,255,0.8);
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 340px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+
+  .overlay .big-emoji {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 14px;
+    animation: bounce 1s ease-in-out infinite alternate;
+    object-fit: contain;
+    filter: drop-shadow(0 0 30px rgba(255,180,0,0.5));
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-16px); }
+  }
+
+  /* Result phrase */
+  #go-phrase {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    font-style: italic;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .btn {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffd700, #ff9f00);
+    color: #1a0a00;
+    box-shadow: 0 6px 30px rgba(255,160,0,0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 40px rgba(255,160,0,0.7);
+  }
+
+  .btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .stats-grid {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 28px;
+  }
+
+  .stat-box {
+    text-align: center;
+  }
+
+  .stat-box .val {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: var(--gold);
+  }
+
+  .stat-box .lbl {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ---- Records Screen ---- */
+  #records-screen {
+    padding: 30px 20px;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  #records-screen h2 {
+    font-size: 2.2rem;
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }
+
+  .records-subtitle {
+    font-size: 0.8rem !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45) !important;
+    margin-bottom: 20px !important;
+  }
+
+  #leaderboard {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .record-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 12px 16px;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s ease both;
+  }
+
+  .record-row.highlight {
+    border-color: rgba(255,215,0,0.5);
+    background: rgba(255,215,0,0.08);
+    box-shadow: 0 0 20px rgba(255,215,0,0.15);
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .record-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(255,215,0,0.12), transparent);
+    border-radius: 14px;
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+  }
+
+  .record-rank {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .rank-1 { color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+  .rank-2 { color: #c0c0c0; text-shadow: 0 0 10px rgba(200,200,200,0.6); }
+  .rank-3 { color: #cd7f32; text-shadow: 0 0 10px rgba(205,127,50,0.6); }
+  .rank-other { color: rgba(255,255,255,0.4); font-size: 1rem; }
+
+  .record-info {
+    flex: 1;
+    position: relative;
+  }
+
+  .record-name {
+    font-weight: 900;
+    font-size: 1rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+
+  .record-meta {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .record-score-col {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .record-carpets {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    text-align: right;
+    position: relative;
+  }
+
+  .empty-records {
+    color: rgba(255,255,255,0.3);
+    font-size: 1rem;
+    text-align: center;
+    padding: 30px 0;
+    font-style: italic;
+  }
+
+  /* Name input modal */
+  #name-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 8, 40, 0.88);
+    backdrop-filter: blur(16px);
+  }
+
+  .name-modal-box {
+    background: rgba(20,25,80,0.95);
+    border: 1px solid rgba(255,215,0,0.25);
+    border-radius: 24px;
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    max-width: 340px;
+    width: 90%;
+    animation: modalPop 0.3s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .name-modal-box h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--gold);
+    text-align: center;
+    text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  }
+
+  .score-reveal {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(255,215,0,0.7);
+    line-height: 1;
+  }
+
+  .score-reveal span {
+    color: var(--gold);
+  }
+
+  .name-modal-box p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  #player-name-input {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: 2px solid rgba(255,215,0,0.4);
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: text;
+  }
+
+  #player-name-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(255,215,0,0.3);
+  }
+
+  #player-name-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-secondary {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    padding: 11px 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    transition: background 0.15s;
+    flex: 1;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+
+  .btn-records {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffd700, #ff9f00);
+    color: #1a0a00;
+    transition: transform 0.15s, box-shadow 0.15s;
+    flex: 2;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px rgba(255,160,0,0.4);
+  }
+
+  .btn-records:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(255,160,0,0.6); }
+
+  .records-btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Level badge */
+  #level-badge {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 20px;
+    padding: 6px 20px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    z-index: 50;
+    letter-spacing: 1px;
+  }
+
+  #level-badge span { color: var(--gold); font-weight: 900; }
+
+  /* Instruction hint */
+  #hint {
+    position: fixed;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.4);
+    font-size: 0.75rem;
+    z-index: 50;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="fake-cursor"></div>
+<div id="stars-container"></div>
+<div class="moon"></div>
+
+<div id="hud">
+  <h1>🌙 Tapete Mágico</h1>
+  <div class="hud-stat">
+    <div class="hud-label">Pontos</div>
+    <div class="hud-value" id="score-display">0</div>
+  </div>
+  <div class="hud-stat">
+    <div class="hud-label">Tempo</div>
+    <div class="hud-value" id="time-display">30</div>
+  </div>
+  <div class="hud-stat">
+    <div class="hud-label">Encontrados</div>
+    <div class="hud-value" id="found-display">0</div>
+  </div>
+</div>
+
+<div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+<div id="game-area"></div>
+<div id="hint">Clique no tapete mágico voador!</div>
+<div id="level-badge">Nível <span id="level-text">1</span></div>
+
+<!-- Start Screen -->
+<div class="overlay" id="start-screen">
+  <!-- LEFT: game info -->
+  <div class="start-left">
+    <img src="./img1.png" class="big-emoji" alt="Tapete Mágico">
+    <h2>Encontre o<br>Tapete Mágico!</h2>
+    <p style="font-size:1.1rem; color:#ffd700; font-weight:900; margin-bottom:6px;">Ajude Tiago a encontrar seu tapete fujão!</p>
+    <p style="margin-bottom:20px;">O tapete do Tiago fugiu pelo céu noturno e não quer ser pego! Clique nele antes que o tempo acabe. Cuidado com os tapetes falsos — eles custam pontos e amaldiçoam seu mouse! 🌙</p>
+    <button class="btn" onclick="startGame()">✨ Começar Aventura</button>
+  </div>
+  <!-- RIGHT: live ranking -->
+  <div class="start-right">
+    <h3>🏆 Hall da Fama</h3>
+    <p class="subtitle">Melhores Jogadores</p>
+    <div id="leaderboard-start"></div>
+    <button class="btn-secondary" style="margin-top:12px;padding:9px 20px;border-radius:50px;font-size:0.9rem;" onclick="showRecords(null)">Ver ranking completo →</button>
+  </div>
+</div>
+
+<!-- Game Over Screen -->
+<div class="overlay" id="gameover-screen" style="display:none">
+  <img src="./img1.png" class="big-emoji" id="go-emoji" alt="Resultado">
+  <h2 id="go-title">Fim de Jogo!</h2>
+  <div id="go-phrase"></div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="val" id="go-score">0</div>
+      <div class="lbl">Pontos</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="go-found">0</div>
+      <div class="lbl">Tapetes</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="go-level">1</div>
+      <div class="lbl">Nível</div>
+    </div>
+  </div>
+  <button class="btn" onclick="startGame()">🔄 Jogar Novamente</button>
+  <button class="btn-secondary" style="margin-top:10px;padding:10px 30px;border-radius:50px;" onclick="document.getElementById('gameover-screen').style.display='none';showNameModal(lastGameScore,lastGameFound,lastGameLevel)">🏆 Salvar no Ranking</button>
+</div>
+
+<!-- Name Input Modal (shown after game over) -->
+<div id="name-modal" style="display:none">
+  <div class="name-modal-box">
+    <h3>🎉 Partida Encerrada!</h3>
+    <div class="score-reveal">🪄 <span id="modal-score">0</span></div>
+    <p>Digite seu nome para salvar sua pontuação no ranking!</p>
+    <input id="player-name-input" type="text" maxlength="20" placeholder="Seu nome aqui..." autocomplete="off" spellcheck="false">
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="skipSave()">Pular</button>
+      <button class="btn-records" onclick="saveAndShowRecords()">🏆 Salvar & Ver Ranking</button>
+    </div>
+  </div>
+</div>
+
+<!-- Records Screen -->
+<div class="overlay" id="records-screen" style="display:none">
+  <h2>🏆 Hall da Fama</h2>
+  <p class="records-subtitle">Tapetes Capturados pelo Céu</p>
+  <div id="leaderboard"></div>
+  <div class="records-btn-row">
+    <button class="btn" onclick="showStart()">🏠 Início</button>
+    <button class="btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;" onclick="clearRecords()">🗑️ Limpar</button>
+  </div>
+</div>
+
+<script>
+// ---- Stars ----
+(function(){
+  const c = document.getElementById('stars-container');
+  for(let i=0;i<120;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*3+1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${1.5+Math.random()*3}s;
+      animation-delay:${Math.random()*3}s;
+    `;
+    c.appendChild(s);
+  }
+})();
+
+// ---- Clouds ----
+(function(){
+  const clouds = [
+    {top:15, w:200, h:60, dur:40, delay:0},
+    {top:30, w:140, h:45, dur:55, delay:-15},
+    {top:50, w:180, h:55, dur:48, delay:-8},
+    {top:65, w:120, h:40, dur:62, delay:-25},
+    {top:80, w:220, h:65, dur:35, delay:-5},
+  ];
+  clouds.forEach(cl => {
+    const d = document.createElement('div');
+    d.className = 'cloud';
+    d.style.cssText = `
+      top:${cl.top}%; width:${cl.w}px; height:${cl.h}px;
+      animation-duration:${cl.dur}s;
+      animation-delay:${cl.delay}s;
+      border-radius:${cl.h}px;
+    `;
+    document.body.appendChild(d);
+  });
+})();
+
+// ---- Carpet Image ----
+function carpetHTML(isDecoy=false, hue=0){
+  return `<img src="./img2.png" style="width:100%;height:100%;object-fit:contain;" alt="tapete">`;
+}
+
+// ---- Sound Engine (Web Audio API) ----
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+let ambienceNodes = null;
+
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new AudioCtx();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playSuccess(){
+  const ctx = getAudioCtx();
+  const t = ctx.currentTime;
+  [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, t + i*0.08);
+    gain.gain.setValueAtTime(0, t + i*0.08);
+    gain.gain.linearRampToValueAtTime(0.18, t + i*0.08 + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i*0.08 + 0.35);
+    osc.start(t + i*0.08);
+    osc.stop(t + i*0.08 + 0.4);
+  });
+  const shimmer = ctx.createOscillator();
+  const shimGain = ctx.createGain();
+  shimmer.connect(shimGain); shimGain.connect(ctx.destination);
+  shimmer.type = 'triangle';
+  shimmer.frequency.setValueAtTime(2093, t + 0.3);
+  shimmer.frequency.exponentialRampToValueAtTime(4186, t + 0.6);
+  shimGain.gain.setValueAtTime(0.08, t + 0.3);
+  shimGain.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+  shimmer.start(t + 0.3); shimmer.stop(t + 0.7);
+}
+
+function playWrong(){
+  const ctx = getAudioCtx();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(300, t);
+  osc.frequency.exponentialRampToValueAtTime(80, t + 0.3);
+  gain.gain.setValueAtTime(0.15, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+  osc.start(t); osc.stop(t + 0.4);
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.connect(gain2); gain2.connect(ctx.destination);
+  osc2.type = 'square';
+  osc2.frequency.setValueAtTime(150, t);
+  osc2.frequency.exponentialRampToValueAtTime(60, t + 0.25);
+  gain2.gain.setValueAtTime(0.08, t);
+  gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+  osc2.start(t); osc2.stop(t + 0.3);
+}
+
+function startAmbience(){
+  const ctx = getAudioCtx();
+  if(ambienceNodes){ stopAmbience(); }
+  ambienceNodes = [];
+  const padFreqs = [130.81, 164.81, 196, 261.63];
+  padFreqs.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.15 + i*0.05;
+    lfoGain.gain.value = 0.015;
+    gain.gain.value = 0.018;
+    osc.start(); lfo.start();
+    ambienceNodes.push(osc, gain, lfo, lfoGain);
+  });
+  function twinkle(){
+    if(!ambienceNodes) return;
+    const ctx2 = getAudioCtx();
+    const t = ctx2.currentTime;
+    const noteFreqs = [1046.5, 1318.5, 1567.98, 2093, 880, 1174.66];
+    const freq = noteFreqs[Math.floor(Math.random()*noteFreqs.length)];
+    const osc = ctx2.createOscillator();
+    const gain = ctx2.createGain();
+    osc.connect(gain); gain.connect(ctx2.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.04, t + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+    osc.start(t); osc.stop(t + 1.3);
+    const delay = 1000 + Math.random()*2500;
+    const tid = setTimeout(twinkle, delay);
+    ambienceNodes.push({stop: () => clearTimeout(tid)});
+  }
+  twinkle();
+}
+
+function stopAmbience(){
+  if(!ambienceNodes) return;
+  ambienceNodes.forEach(n => {
+    try { if(n.stop) n.stop(); } catch(e){}
+    try { if(n.disconnect) n.disconnect(); } catch(e){}
+  });
+  ambienceNodes = null;
+}
+
+function playGameOver(){
+  stopAmbience();
+  const ctx = getAudioCtx();
+  const t = ctx.currentTime;
+  [523.25, 466.16, 415.30, 349.23].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.12, t + i*0.22);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i*0.22 + 0.4);
+    osc.start(t + i*0.22); osc.stop(t + i*0.22 + 0.5);
+  });
+}
+
+// ---- Game State ----
+let score = 0, found = 0, level = 1, timeLeft = 30;
+let gameInterval = null;
+let carpetEl = null, decoys = [];
+let isRunning = false;
+
+const gameArea = document.getElementById('game-area');
+const scoreDisplay = document.getElementById('score-display');
+const timeDisplay = document.getElementById('time-display');
+const foundDisplay = document.getElementById('found-display');
+const timerBar = document.getElementById('timer-bar');
+const levelText = document.getElementById('level-text');
+
+function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function levelConfig(){
+  return {
+    timeLimit: Math.max(15, 30 - (level-1)*2),
+    numDecoys: Math.min(14, 5 + (level-1)*2),
+    moveInterval: Math.max(500, 1800 - (level-1)*150),
+    carpetOpacity: Math.max(0.5, 1 - (level-1)*0.06),
+    pointsPerCatch: 10 + (level-1)*5,
+  };
+}
+
+function getValidPos(w, h){
+  const areaW = window.innerWidth;
+  const areaH = window.innerHeight - 72;
+  return {
+    x: rand(10, areaW - w - 10),
+    y: rand(10, areaH - h - 10),
+  };
+}
+
+// Each carpet (real + decoys) has its own movement loop
+let allCarpets = []; // { el, interval, isReal }
+
+function randomFloatStyle(){
+  const h = -(5 + Math.random() * 10);
+  const ra = (-3 + Math.random() * 3).toFixed(1);
+  const rb = (Math.random() * 4).toFixed(1);
+  const dur = (2 + Math.random() * 2).toFixed(2);
+  const delay = -(Math.random() * 3).toFixed(2);
+  return `--rot-a:${ra}deg; --rot-b:${rb}deg; --float-h:${h}px; animation-duration:${dur}s; animation-delay:${delay}s;`;
+}
+
+// ---- Cursor Inversion ----
+let cursed = false;
+let curseTimeout = null;
+const fakeCursor = document.getElementById('fake-cursor');
+
+// Mirror real mouse position to fake cursor (inverted relative to center)
+document.addEventListener('mousemove', (e) => {
+  if(!cursed) return;
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const mirrorX = cx - (e.clientX - cx);
+  const mirrorY = cy - (e.clientY - cy);
+  fakeCursor.style.left = mirrorX + 'px';
+  fakeCursor.style.top  = mirrorY + 'px';
+});
+
+function activateCurse(){
+  if(curseTimeout) clearTimeout(curseTimeout);
+  cursed = true;
+  document.body.classList.add('cursor-inverted');
+  fakeCursor.style.display = 'block';
+
+  const warn = document.createElement('div');
+  warn.className = 'curse-warning';
+  warn.textContent = '🌀 Mouse Amaldiçoado! -5s -20pts';
+  document.body.appendChild(warn);
+  setTimeout(() => warn.remove(), 1200);
+
+  curseTimeout = setTimeout(() => {
+    cursed = false;
+    document.body.classList.remove('cursor-inverted');
+    fakeCursor.style.display = 'none';
+    curseTimeout = null;
+  }, 3000);
+}
+
+function spawnCarpetEl(isReal){
+  const el = document.createElement('div');
+  // All carpets get carpet-piece class for unified hover CSS
+  el.className = isReal ? 'carpet-piece' : 'carpet-piece decoy';
+  if(isReal) el.id = 'carpet';
+  el.innerHTML = carpetHTML();
+  el.style.position = 'absolute';
+  el.style.width = '110px';
+  el.style.height = '90px';
+  el.style.cursor = 'pointer';
+  el.style.animation = 'carpetFloat ease-in-out infinite';
+  el.style.cssText += randomFloatStyle();
+  el.style.filter = 'drop-shadow(0 6px 18px rgba(0,0,0,0.6))';
+  el.style.transition = 'left 0.7s cubic-bezier(.4,0,.2,1), top 0.7s cubic-bezier(.4,0,.2,1)';
+  el.style.pointerEvents = 'auto';
+
+  const pos = getValidPos(110, 90);
+  el.style.left = pos.x + 'px';
+  el.style.top  = pos.y + 'px';
+  el.style.zIndex = rand(15, 25);
+
+  if(isReal){
+    el.addEventListener('click', catchCarpet);
+  } else {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrongClick(e.clientX, e.clientY);
+    });
+  }
+
+  gameArea.appendChild(el);
+  return el;
+}
+
+function startCarpetMovement(entry){
+  const cfg = levelConfig();
+  // Stagger start so they don't all move at the same time
+  const stagger = rand(0, cfg.moveInterval);
+  const tid = setTimeout(() => {
+    if(!isRunning) return;
+    moveOneCarpet(entry);
+    entry.interval = setInterval(() => {
+      if(!isRunning) return;
+      moveOneCarpet(entry);
+    }, cfg.moveInterval + rand(-300, 300));
+  }, stagger);
+  entry.initTimeout = tid;
+}
+
+function moveOneCarpet(entry){
+  const pos = getValidPos(110, 90);
+  entry.el.style.left = pos.x + 'px';
+  entry.el.style.top  = pos.y + 'px';
+  // Randomly shuffle z-index on each move → sometimes covers the real one
+  entry.el.style.zIndex = rand(15, 25);
+}
+
+function stopAllCarpetMovement(){
+  allCarpets.forEach(c => {
+    clearTimeout(c.initTimeout);
+    clearInterval(c.interval);
+  });
+}
+
+function clearAllCarpets(){
+  stopAllCarpetMovement();
+  allCarpets.forEach(c => c.el.remove());
+  allCarpets = [];
+  carpetEl = null;
+  decoys = [];
+}
+
+function placeCarpet(){
+  if(!isRunning) return;
+  const cfg = levelConfig();
+
+  const el = spawnCarpetEl(true);
+  el.style.opacity = cfg.carpetOpacity;
+  carpetEl = el;
+
+  const entry = { el, isReal: true, interval: null, initTimeout: null };
+  allCarpets.push(entry);
+  startCarpetMovement(entry);
+}
+
+function placeDecoys(){
+  if(!isRunning) return;
+  const cfg = levelConfig();
+
+  for(let i = 0; i < cfg.numDecoys; i++){
+    const el = spawnCarpetEl(false);
+    el.style.opacity = cfg.carpetOpacity;
+    decoys.push(el);
+
+    const entry = { el, isReal: false, interval: null, initTimeout: null };
+    allCarpets.push(entry);
+    startCarpetMovement(entry);
+  }
+}
+
+// kept for compat (no longer used directly)
+function moveCarpet(){}
+
+function catchCarpet(e){
+  if(!isRunning) return;
+  e.stopPropagation();
+  playSuccess();
+  const cfg = levelConfig();
+  score += cfg.pointsPerCatch + Math.ceil(timeLeft);
+  found++;
+
+  scoreDisplay.textContent = score;
+  foundDisplay.textContent = found;
+
+  // Flash
+  const flash = document.createElement('div');
+  flash.className = 'found-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 600);
+
+  // Score popup
+  const pop = document.createElement('div');
+  pop.className = 'score-popup';
+  pop.textContent = '+' + (cfg.pointsPerCatch + Math.ceil(timeLeft));
+  pop.style.left = e.clientX + 'px';
+  pop.style.top = e.clientY + 'px';
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 1000);
+
+  // Level up every 5 catches
+  if(found % 5 === 0){
+    level++;
+    levelText.textContent = level;
+    timeLeft = Math.min(timeLeft + 5, levelConfig().timeLimit);
+  }
+
+  // Respawn all carpets fresh
+  clearAllCarpets();
+  placeCarpet();
+  placeDecoys();
+}
+
+function wrongClick(cx, cy){
+  playWrong();
+  score = score - 20;  // Can go negative!
+  timeLeft = Math.max(0, timeLeft - 5);
+  scoreDisplay.textContent = score;
+
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.left = cx + 'px';
+  ripple.style.top = cy + 'px';
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+
+  // Penalty popup
+  const pen = document.createElement('div');
+  pen.className = 'score-popup';
+  pen.style.color = '#ff2222';
+  pen.style.textShadow = '0 0 20px rgba(255,0,0,0.9), 2px 2px 0 rgba(0,0,0,0.5)';
+  pen.textContent = '-20pts -5s';
+  pen.style.left = cx + 'px';
+  pen.style.top = cy + 'px';
+  document.body.appendChild(pen);
+  setTimeout(() => pen.remove(), 900);
+
+  // Activate cursor inversion curse for 3 seconds
+  activateCurse();
+}
+
+function startGame(){
+  // Reset
+  score = 0; found = 0; level = 1; timeLeft = 30;
+  isRunning = true;
+  scoreDisplay.textContent = 0;
+  foundDisplay.textContent = 0;
+  timeDisplay.textContent = 30;
+  timerBar.style.width = '100%';
+  levelText.textContent = 1;
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('gameover-screen').style.display = 'none';
+  document.getElementById('records-screen').style.display = 'none';
+  document.getElementById('name-modal').style.display = 'none';
+
+  // Clear area
+  gameArea.innerHTML = '';
+  clearAllCarpets();
+
+  placeCarpet();
+  placeDecoys();
+  startAmbience();
+
+  // Timer only — movement handled per-carpet
+  if(gameInterval) clearInterval(gameInterval);
+  const totalTime = levelConfig().timeLimit;
+  gameInterval = setInterval(() => {
+    timeLeft -= 0.1;
+    timeDisplay.textContent = Math.ceil(timeLeft);
+    timerBar.style.width = ((timeLeft / totalTime) * 100) + '%';
+
+    if(timeLeft <= 0){
+      endGame();
+    }
+  }, 100);
+}
+
+// ---- Result Phrases ----
+function getResultPhrase(sc, fd){
+  if(sc < -100) return { title:'💀 Lendário do Fracasso!', phrase:'Você conseguiu pontuação negativa de '+sc+' pontos. Isso é quase um talento especial para errar. Tá precisando de uns parabéns por isso?', filter:'grayscale(0.7) hue-rotate(200deg)' };
+  if(sc < 0)    return { title:'😬 Que Vexame...', phrase:'Pontuação NEGATIVA! '+sc+' pontos. Vai lavar uma louça, ajuda mais do que isso aqui.', filter:'grayscale(0.5) brightness(0.7)' };
+  if(sc === 0 && fd === 0) return { title:'🫥 Invisível?', phrase:'Zero tapetes, zero pontos. Você jogou? Porque eu não vi nada acontecer aqui não.', filter:'grayscale(0.6)' };
+  if(sc < 50)   return { title:'😂 Tentativa Corajosa', phrase:'"Joguei e errei, logo existo." Filosofia válida, resultado horrível. Conseguiu '+fd+' tapete(s) com '+sc+' pontos.', filter:'grayscale(0.3) brightness(0.8)' };
+  if(sc < 150)  return { title:'😐 Medíocre, mas ok', phrase:'Com '+sc+' pontos, você claramente existe. Não brilhou, não afundou. Uma conquista média para uma vida média.', filter:'grayscale(0.15)' };
+  if(sc < 300)  return { title:'🙂 Passável', phrase:sc+' pontos. Não é ruim, não é bom. É tipo aquele feijão que sua mãe faz na correria — serve.', filter:'none' };
+  if(sc < 500)  return { title:'👍 Tá indo!', phrase:'Olha, '+sc+' pontos! Você já encontrou o tapete '+fd+' vez(es). Tá pegando o jeito. Ainda tem muito a melhorar, mas pelo menos parece que tem esperança.', filter:'none' };
+  if(sc < 750)  return { title:'🔥 Quase bom!', phrase:sc+' pontos! Não vou mentir, fiquei impressionado. Quase. Continua tentando que um dia você chega lá.', filter:'hue-rotate(0deg) saturate(1.2)' };
+  if(sc < 1000) return { title:'⭐ Muito Bom!', phrase:'Caramba, '+sc+' pontos! Você realmente jogou bem. O Tiago ficaria orgulhoso do tapete tendo sido achado '+fd+' vez(es).', filter:'drop-shadow(0 0 20px rgba(255,215,0,0.7)) saturate(1.3)' };
+  if(sc < 1500) return { title:'🌟 Impressionante!', phrase:sc+' pontos! Você é bom nisso de verdade. O tapete do Tiago não tem nenhuma chance contra você. Respeito total.', filter:'drop-shadow(0 0 30px rgba(255,215,0,0.9)) saturate(1.5)' };
+  return { title:'🏆 LENDA ABSOLUTA!', phrase:sc+' pontos!!! '+fd+' tapetes capturados! Você é literalmente o escolhido. O tapete não tem pra onde correr. Anthropic precisa te contratar pra caçar bugs.', filter:'drop-shadow(0 0 40px rgba(255,215,0,1)) saturate(2) brightness(1.2)' };
+}
+
+function endGame(){
+  isRunning = false;
+  clearInterval(gameInterval);
+  stopAllCarpetMovement();
+  cursed = false;
+  document.body.classList.remove('cursor-inverted');
+  fakeCursor.style.display = 'none';
+  if(curseTimeout){ clearTimeout(curseTimeout); curseTimeout = null; }
+  playGameOver();
+
+  const screen = document.getElementById('gameover-screen');
+  screen.style.display = 'flex';
+
+  document.getElementById('go-score').textContent = score;
+  document.getElementById('go-found').textContent = found;
+  document.getElementById('go-level').textContent = level;
+
+  const result = getResultPhrase(score, found);
+  document.getElementById('go-title').textContent = result.title;
+  document.getElementById('go-phrase').textContent = result.phrase;
+  document.getElementById('go-emoji').style.filter = result.filter;
+
+  setTimeout(() => {
+    screen.style.display = 'none';
+    showNameModal(score, found, level);
+  }, 2200);
+}
+
+// ---- Supabase Config — edite aqui! ----
+const SUPABASE_URL   = 'https://xtnetgrcudllzapdaidg.supabase.co';       // ex: https://abcdef.supabase.co
+const SUPABASE_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0bmV0Z3JjdWRsbHphcGRhaWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MTYxNzUsImV4cCI6MjA4NzM5MjE3NX0.VLu0gBc96WMRwApCTKFNt8XImBt0b2lz5WIW6ZhIYUM';  // chave anon pública
+const SUPABASE_TABLE = 'tapete_magico_scores';     // nome da tabela
+
+const RECORDS_KEY = 'tapete_magico_records';
+let lastGameScore = 0, lastGameFound = 0, lastGameLevel = 0;
+let lastSavedName = '';
+
+// ---- Supabase helpers ----
+async function supabaseInsert(record){
+  if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return false;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(record)
+    });
+    return res.ok;
+  } catch(e){ console.warn('Supabase insert error:', e); return false; }
+}
+
+async function supabaseFetch(){
+  if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return null;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&order=score.desc&limit=10`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ console.warn('Supabase fetch error:', e); return null; }
+}
+
+// ---- Local fallback ----
+function getLocalRecords(){
+  try { return JSON.parse(localStorage.getItem(RECORDS_KEY)) || []; }
+  catch(e){ return []; }
+}
+
+function saveLocalRecord(rec){
+  const records = getLocalRecords();
+  records.push(rec);
+  records.sort((a,b) => b.score - a.score);
+  localStorage.setItem(RECORDS_KEY, JSON.stringify(records.slice(0, 10)));
+}
+
+async function saveRecord(name, sc, fd, lv){
+  const rec = {
+    name: name.trim() || 'Anônimo',
+    score: sc, found: fd, level: lv,
+    date: new Date().toLocaleDateString('pt-BR'),
+    created_at: new Date().toISOString()
+  };
+  saveLocalRecord(rec);
+  const ok = await supabaseInsert(rec);
+  if(!ok) console.log('Supabase não configurado — salvo apenas localmente.');
+}
+
+async function getRecords(){
+  const remote = await supabaseFetch();
+  if(remote && remote.length > 0) return remote;
+  return getLocalRecords();
+}
+
+function clearRecords(){
+  if(confirm('Tem certeza que quer apagar todos os recordes locais? 😱')){
+    localStorage.removeItem(RECORDS_KEY);
+    buildRows([], document.getElementById('leaderboard'), null, false);
+    renderMiniLeaderboard();
+  }
+}
+
+// ---- Render helpers ----
+function buildRows(records, lb, highlightName, compact){
+  lb.innerHTML = '';
+  if(!records || records.length === 0){
+    lb.innerHTML = '<p class="empty-records">Nenhum recorde ainda...<br>Seja o primeiro! 🌙</p>';
+    return;
+  }
+  const positiveScores = records.filter(r => r.score > 0);
+  const maxScore = positiveScores.length > 0 ? positiveScores[0].score : 1;
+  const medals = ['🥇','🥈','🥉'];
+
+  records.forEach((r, i) => {
+    const isHL = highlightName && r.name === highlightName && r.score === lastGameScore;
+    const pct = r.score > 0 ? Math.max(8, Math.round((r.score / maxScore) * 100)) : 4;
+    const row = document.createElement('div');
+    row.className = 'record-row' + (isHL ? ' highlight' : '');
+    row.style.animationDelay = (i * 0.07) + 's';
+    const rankClass = i < 3 ? `rank-${i+1}` : 'rank-other';
+    const rankDisplay = i < 3 ? medals[i] : `${i+1}º`;
+    const scoreColor = r.score < 0 ? '#ff5555' : 'var(--gold)';
+    const meta = compact ? `${r.found || 0} tapetes` : `Nível ${r.level||1} · ${r.found||0} tapetes · ${r.date||''}`;
+    row.innerHTML = `
+      <div class="record-bar" style="width:0%"></div>
+      <div class="record-rank ${rankClass}">${rankDisplay}</div>
+      <div class="record-info">
+        <div class="record-name">${escapeHTML(r.name)}${isHL ? ' <span style="color:var(--gold);font-size:0.65rem;">← você!</span>' : ''}</div>
+        ${compact ? '' : `<div class="record-meta">${meta}</div>`}
+      </div>
+      <div style="text-align:right">
+        <div class="record-score-col" style="color:${scoreColor}">${r.score}</div>
+        <div class="record-carpets">pts</div>
+      </div>`;
+    lb.appendChild(row);
+    requestAnimationFrame(() => setTimeout(() => {
+      const bar = row.querySelector('.record-bar');
+      if(bar) bar.style.width = pct + '%';
+    }, 80 + i * 60));
+  });
+}
+
+async function renderLeaderboard(lb, highlightName){
+  lb.innerHTML = '<p class="empty-records">Carregando...</p>';
+  const records = await getRecords();
+  buildRows(records, lb, highlightName, false);
+}
+
+async function renderMiniLeaderboard(){
+  const lb = document.getElementById('leaderboard-start');
+  if(!lb) return;
+  lb.innerHTML = '<p class="empty-records" style="font-size:0.8rem;padding:10px 0;">Carregando...</p>';
+  const records = await getRecords();
+  buildRows(records.slice(0, 5), lb, null, true);
+}
+
+function escapeHTML(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showNameModal(sc, fd, lv){
+  lastGameScore = sc; lastGameFound = fd; lastGameLevel = lv;
+  document.getElementById('modal-score').textContent = sc;
+  document.getElementById('player-name-input').value = lastSavedName || '';
+  document.getElementById('name-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('player-name-input').focus(), 100);
+}
+
+async function saveAndShowRecords(){
+  const name = document.getElementById('player-name-input').value.trim() || 'Anônimo';
+  lastSavedName = name;
+  await saveRecord(name, lastGameScore, lastGameFound, lastGameLevel);
+  document.getElementById('name-modal').style.display = 'none';
+  document.getElementById('gameover-screen').style.display = 'none';
+  showRecords(name);
+}
+
+function skipSave(){
+  document.getElementById('name-modal').style.display = 'none';
+  showRecords(null);
+}
+
+function showRecords(highlightName){
+  document.getElementById('records-screen').style.display = 'flex';
+  document.getElementById('gameover-screen').style.display = 'none';
+  document.getElementById('start-screen').style.display = 'none';
+  renderLeaderboard(document.getElementById('leaderboard'), highlightName);
+}
+
+function showStart(){
+  document.getElementById('records-screen').style.display = 'none';
+  document.getElementById('start-screen').style.display = 'flex';
+  renderMiniLeaderboard();
+}
+
+// Load mini leaderboard on first render
+renderMiniLeaderboard();
+
+document.getElementById('player-name-input').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') saveAndShowRecords();
+});
+
+// Wrong click on empty sky — no penalty
+document.getElementById('game-area').addEventListener('click', (e) => {
+  if(!isRunning) return;
+  if(e.target === gameArea){
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    ripple.style.borderColor = 'rgba(255,255,255,0.25)';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  }
+});
+</script>
+</body>
+</html>

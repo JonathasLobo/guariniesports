@@ -161,6 +161,15 @@ function googleTranslateElementInit() {
       </article>
 
       <!-- Slot vazio para futura Comunidade -->
+      <article class="ferramenta">
+        <img src="../img-site/tapete.png" alt="Build Maker" />
+        <h3>Games Tupixel</h3>
+        <p class="descricao">Check out our games</p>
+        <button type="button" class="btn-comprar" id="quizBtn">Open</button>
+        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>
+
+      <!-- Slot vazio para futura Comunidade -->
       <article class="ferramenta" style="opacity: 0.3;">
         <img src="../img-site/embreve.png" alt="Em Breve" />
         <h3>Coming Soon</h3>
@@ -522,7 +531,7 @@ function googleTranslateElementInit() {
   }
 
   function setupQuizAccess() {
-    quizBtn.onclick = () => window.location.href = 'quiz.html';
+    quizBtn.onclick = () => window.location.href = '../jogos/jogo-do-tapete/tapete-magico.html';
     quizAccessMessage.style.display = 'none';
   }
 
