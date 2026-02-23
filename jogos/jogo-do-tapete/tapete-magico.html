@@ -795,7 +795,7 @@
       <div class="lbl">Nível</div>
     </div>
   </div>
-  <button class="btn" onclick="startGame()">🔄 Jogar Novamente</button>
+  <button class="btn" onclick="showNameModal(lastGameScore,lastGameFound,lastGameLevel)">🔄 Salvar e Jogar Novamente</button>
   <button class="btn-secondary" style="margin-top:10px;padding:10px 30px;border-radius:50px;" onclick="document.getElementById('gameover-screen').style.display='none';showNameModal(lastGameScore,lastGameFound,lastGameLevel)">🏆 Salvar no Ranking</button>
 </div>
 
@@ -1443,6 +1443,9 @@ function endGame(){
   document.getElementById('go-found').textContent = found;
   document.getElementById('go-level').textContent = level;
 
+  lastGameScore = score;
+  lastGameFound = found;
+  lastGameLevel = level;
   const result = getResultPhrase(score, found);
   document.getElementById('go-title').textContent = result.title;
   document.getElementById('go-phrase').textContent = result.phrase;
@@ -1595,7 +1598,6 @@ function showNameModal(sc, fd, lv){
   document.getElementById('modal-score').textContent = sc;
   document.getElementById('player-name-input').value = lastSavedName || '';
   document.getElementById('name-modal').style.display = 'flex';
-  document.getElementById('gameover-screen').style.display = 'flex';
   setTimeout(() => document.getElementById('player-name-input').focus(), 100);
 }
 
@@ -1627,7 +1629,7 @@ function showStart(){
 }
 
 // Load mini leaderboard on first render
-renderMiniLeaderboard();
+window.addEventListener('load', () => renderMiniLeaderboard());
 
 document.getElementById('player-name-input').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') saveAndShowRecords();
