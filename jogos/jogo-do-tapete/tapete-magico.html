@@ -159,6 +159,16 @@
     animation: carpetFloat 3s ease-in-out infinite;
   }
 
+@keyframes borderPulse {
+    0%, 85%, 100% { box-shadow: 0 0 0px 0px rgba(255,215,0,0); }
+    90%           { box-shadow: 0 0 8px 3px rgba(255,215,0,0.25); }
+  }
+
+  .carpet-real-glow {
+    border-radius: 8px;
+    animation: carpetFloat ease-in-out infinite, borderPulse 7s ease-in-out infinite !important;
+  }
+
   @keyframes carpetFloat {
     0%   { transform: translateY(0px) rotate(var(--rot-a, -2deg)); }
     50%  { transform: translateY(var(--float-h, -8px)) rotate(var(--rot-b, 2deg)); }
@@ -896,6 +906,34 @@ function playSuccess(){
   shimmer.start(t + 0.3); shimmer.stop(t + 0.7);
 }
 
+function playLampSuccess(){
+  const ctx = getAudioCtx();
+  const t = ctx.currentTime;
+  // Som mágico mais grave e encantado
+  [261.63, 329.63, 392, 523.25, 659.25].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, t + i*0.1);
+    gain.gain.setValueAtTime(0, t + i*0.1);
+    gain.gain.linearRampToValueAtTime(0.2, t + i*0.1 + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i*0.1 + 0.5);
+    osc.start(t + i*0.1);
+    osc.stop(t + i*0.1 + 0.6);
+  });
+  // Vibrato final
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(880, t + 0.5);
+  osc.frequency.linearRampToValueAtTime(1200, t + 1.0);
+  gain.gain.setValueAtTime(0.12, t + 0.5);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  osc.start(t + 0.5); osc.stop(t + 1.2);
+}
+
 function playWrong(){
   const ctx = getAudioCtx();
   const t = ctx.currentTime;
@@ -1090,6 +1128,8 @@ function spawnCarpetEl(isReal){
   el.style.top  = pos.y + 'px';
   el.style.zIndex = rand(15, 25);
 
+if(isReal) el.classList.add('carpet-real-glow');
+
   if(isReal){
     el.addEventListener('click', catchCarpet);
   } else {
@@ -1175,7 +1215,7 @@ function moveCarpet(){}
 function catchCarpet(e){
   if(!isRunning) return;
   e.stopPropagation();
-  playSuccess();
+  lampPowerActive ? playLampSuccess() : playSuccess();
   const cfg = levelConfig();
   score += cfg.pointsPerCatch + Math.ceil(timeLeft);
   found++;
@@ -1239,6 +1279,90 @@ function wrongClick(cx, cy){
   activateCurse();
 }
 
+// ---- Lâmpada Mágica ----
+let lampActive = false;
+let lampTimeout = null;
+let lampPowerActive = false;
+
+function spawnLamp(){
+  if(!isRunning || lampActive) return;
+  lampActive = true;
+
+  const lamp = document.createElement('img');
+  lamp.src = './lamp.png'; // troque pelo nome do seu arquivo
+  lamp.id = 'magic-lamp';
+  lamp.style.cssText = `
+    position:fixed; width:80px; height:80px; object-fit:contain;
+    cursor:pointer; z-index:300; pointer-events:auto;
+    filter:drop-shadow(0 0 14px rgba(255,200,0,0.8));
+    animation:carpetFloat 2s ease-in-out infinite;
+    left:${rand(80, window.innerWidth-120)}px;
+    top:${rand(80, window.innerHeight-120)}px;
+    transition:opacity 0.4s;
+  `;
+
+  // Pisca antes de sumir
+  const disappearIn = 6000;
+  const warnAt = disappearIn - 1500;
+  const warnTimer = setTimeout(() => {
+    lamp.style.opacity = '0.3';
+  }, warnAt);
+
+  const removeTimer = setTimeout(() => {
+    lamp.remove();
+    lampActive = false;
+  }, disappearIn);
+
+  lamp.addEventListener('click', () => {
+    clearTimeout(warnTimer);
+    clearTimeout(removeTimer);
+    lamp.remove();
+    lampActive = false;
+    activateLampPower();
+  });
+
+  document.body.appendChild(lamp);
+}
+
+function activateLampPower(){
+  playSuccess();
+  const duration = 5000; // 5 segundos de ajuda
+
+  // Deixa o tapete real MUITO visível
+  lampPowerActive = true;
+  const realEl = document.getElementById('carpet');
+  if(realEl){
+    realEl.style.boxShadow = '0 0 35px 14px rgba(255,215,0,0.95)';
+    realEl.style.zIndex = '999';
+    realEl.style.outline = '3px solid rgba(255,215,0,0.9)';
+    realEl.style.borderRadius = '8px';
+  }
+
+  // Aviso na tela
+  const warn = document.createElement('div');
+  warn.style.cssText = `
+    position:fixed; top:80px; left:50%; transform:translateX(-50%);
+    font-family:'Fredoka One',cursive; font-size:1.1rem;
+    color:#ffd700; background:rgba(0,0,0,0.5); border-radius:30px;
+    padding:8px 22px; z-index:400; pointer-events:none;
+    border:1px solid rgba(255,215,0,0.4);
+    text-shadow: 0 0 12px rgba(255,215,0,0.8);
+  `;
+  warn.textContent = '✨ Tapete revelado por 5s!';
+  document.body.appendChild(warn);
+
+  setTimeout(() => {
+    warn.remove();
+    lampPowerActive = false;
+    const realEl = document.getElementById('carpet');
+    if(realEl){
+      realEl.style.boxShadow = '';
+      realEl.style.outline = '';
+      realEl.style.zIndex = rand(15, 25);
+    }
+  }, duration);
+}
+
 function startGame(){
   // Reset
   score = 0; found = 0; level = 1; timeLeft = 30;
@@ -1261,6 +1385,13 @@ function startGame(){
   placeCarpet();
   placeDecoys();
   startAmbience();
+
+// Lâmpada aparece a cada 20-35 segundos
+  lampActive = false;
+  if(lampTimeout) clearInterval(lampTimeout);
+  lampTimeout = setInterval(() => {
+    if(isRunning) spawnLamp();
+  }, rand(20000, 35000));
 
   // Timer only — movement handled per-carpet
   if(gameInterval) clearInterval(gameInterval);
@@ -1299,6 +1430,10 @@ function endGame(){
   document.body.classList.remove('cursor-inverted');
   fakeCursor.style.display = 'none';
   if(curseTimeout){ clearTimeout(curseTimeout); curseTimeout = null; }
+  if(lampTimeout){ clearInterval(lampTimeout); lampTimeout = null; }
+  const oldLamp = document.getElementById('magic-lamp');
+  if(oldLamp) oldLamp.remove();
+  lampActive = false;
   playGameOver();
 
   const screen = document.getElementById('gameover-screen');
@@ -1316,7 +1451,7 @@ function endGame(){
   setTimeout(() => {
     screen.style.display = 'none';
     showNameModal(score, found, level);
-  }, 2200);
+  }, 99999999);
 }
 
 // ---- Supabase Config — edite aqui! ----
@@ -1350,7 +1485,7 @@ async function supabaseFetch(){
   if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return null;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&order=score.desc&limit=10`,
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&order=score.desc&limit=100`,
       { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
     );
     if(!res.ok) return null;
@@ -1368,7 +1503,7 @@ function saveLocalRecord(rec){
   const records = getLocalRecords();
   records.push(rec);
   records.sort((a,b) => b.score - a.score);
-  localStorage.setItem(RECORDS_KEY, JSON.stringify(records.slice(0, 10)));
+  localStorage.setItem(RECORDS_KEY, JSON.stringify(records.slice(0, 100)));
 }
 
 async function saveRecord(name, sc, fd, lv){
@@ -1460,6 +1595,7 @@ function showNameModal(sc, fd, lv){
   document.getElementById('modal-score').textContent = sc;
   document.getElementById('player-name-input').value = lastSavedName || '';
   document.getElementById('name-modal').style.display = 'flex';
+  document.getElementById('gameover-screen').style.display = 'flex';
   setTimeout(() => document.getElementById('player-name-input').focus(), 100);
 }
 
