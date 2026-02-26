@@ -162,10 +162,19 @@ function googleTranslateElementInit() {
 
       <!-- Slot vazio para futura Comunidade -->
       <article class="ferramenta">
-        <img src="../img-site/tapete.png" alt="Build Maker" />
+        <img src="../img-site/tapete.png" alt="Game Tapete" />
         <h3>Games Tupixel</h3>
         <p class="descricao">Check out our games</p>
         <button type="button" class="btn-comprar" id="quizBtn">Open</button>
+        <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
+      </article>
+
+      <!-- Slot vazio para futura Comunidade -->
+      <article class="ferramenta">
+        <img src="../img-site/bingo.png" alt="Bingo Game" />
+        <h3>Bingo Announcement</h3>
+        <p class="descricao">Choose your bingo</p>
+        <button type="button" class="btn-comprar" id="bingoBtn">Open</button>
         <div id="buildAccessMessage" style="color: red; margin-top: 10px; display: none;"></div>
       </article>
 
@@ -290,12 +299,14 @@ function googleTranslateElementInit() {
   const analiseBtn = document.getElementById("analiseBtn");
   const buildBtn = document.getElementById("buildBtn");
   const quizBtn = document.getElementById("quizBtn");
+  const bingoBtn = document.getElementById("bingoBtn");
   const calcAccessMessage = document.getElementById("calcAccessMessage");
   const statAccessMessage = document.getElementById("statAccessMessage");
   const calcWinrateMessage = document.getElementById("calcWinrateMessage");
   const analiseAccessMessage = document.getElementById("analiseAccessMessage");
   const buildAccessMessage = document.getElementById("buildAccessMessage");
   const quizAccessMessage = document.getElementById("quizAccessMessage");
+  const bingoAccessMessage = document.getElementById("bingoAccessMessage");
 
   // ========================================
   // MENU DROPDOWN DO USUÁRIO
@@ -535,6 +546,11 @@ function googleTranslateElementInit() {
     quizAccessMessage.style.display = 'none';
   }
 
+  function setupBingoAccess() {
+    bingoBtn.onclick = () => window.location.href = '../jogos/bingo/bingo.html';
+    bingoAccessMessage.style.display = 'none';
+  }
+
   async function checkStatsPermissions(user) {
     if (!user) {
       setupRestrictedStatsAccess("Faça login para acessar esta ferramenta");
@@ -585,6 +601,7 @@ function googleTranslateElementInit() {
     await updateUI(user);
     setupBuildAccess();
     setupQuizAccess();
+    setupBingoAccess();
     
     await checkStatsPermissions(user);
   });
