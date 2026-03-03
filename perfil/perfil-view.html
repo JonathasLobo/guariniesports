@@ -985,6 +985,31 @@ async function carregarBuildsUsuario(uid) {
     if (window.initRatingEvents && !isOwnProfile) {
       console.log('🎯 Inicializando eventos de avaliação...');
       window.initRatingEvents(uid, db);
+
+      // ── Missão diária: avaliar build ─────────────────────────
+      // Escuta 'ratingSubmitted' disparado pelo build-rating.js
+      // APOS o updateDoc ser confirmado no Firebase.
+      // Registramos uma vez por sessao para evitar duplicatas.
+      if (!window._ratingMissionHookRegistered) {
+        window._ratingMissionHookRegistered = true;
+        document.addEventListener('ratingSubmitted', function(e) {
+          console.log('[PokeMission] ratingSubmitted recebido:', e.detail);
+          // Estrategia 1: boss-raid ja esta carregado nesta pagina
+          if (typeof window.missaoDiariaCompleta === 'function') {
+            window.missaoDiariaCompleta('avaliar_build');
+            console.log('[PokeMission] missaoDiariaCompleta chamada diretamente');
+            return;
+          }
+          // Estrategia 2: salvar em localStorage para o boss-raid consumir
+          // na proxima vez que a pagina com boss-raid for carregada
+          try {
+            localStorage.setItem('bossraid_pending_mission', 'avaliar_build');
+            console.log('[PokeMission] missao salva no localStorage para consumo posterior');
+          } catch(err) {
+            window._pendingMission = 'avaliar_build'; // fallback
+          }
+        }, { once: true });
+      }
     }
     
     console.log('✅ Builds loaded:', builds.length);
@@ -1008,10 +1033,12 @@ async function carregarBuildsUsuario(uid) {
   const menuToggle = document.querySelector('.menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
 
-  menuToggle.addEventListener('click', function() {
-    this.classList.toggle('ativo');
-    mobileMenu.classList.toggle('ativo');
-  });
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('ativo');
+      mobileMenu.classList.toggle('ativo');
+    });
+  }
 
   const mobileLinks = document.querySelectorAll('.mobile-menu a');
   mobileLinks.forEach(link => {

@@ -257,6 +257,26 @@ async function submitRating(profileUserId, buildId, rating, container, db) {
     });
     
     console.log('✅ Voto salvo com sucesso!');
+
+    // ── Notificar outros módulos do site (ex: boss-raid) ──────
+    // Disparar CustomEvent no document após o save confirmado.
+    // Qualquer módulo pode escutar: document.addEventListener('ratingSubmitted', ...)
+    // Também expor via window.onRatingSaved como alternativa direta.
+    document.dispatchEvent(new CustomEvent('ratingSubmitted', {
+      detail: { profileUserId, buildId, rating, voterId: currentUser.uid }
+    }));
+    if (typeof window.onRatingSaved === 'function') {
+      window.onRatingSaved({ profileUserId, buildId, rating, voterId: currentUser.uid });
+    }
+    // Fallback: se o listener de ratingSubmitted nao estiver registrado ainda,
+    // salvar diretamente no localStorage para o boss-raid consumir depois.
+    // O perfil-view limpa esse valor se conseguir processar via CustomEvent.
+    if (typeof window.missaoDiariaCompleta === 'function') {
+      // boss-raid esta na mesma pagina — chamar diretamente
+      window.missaoDiariaCompleta('avaliar_build');
+    } else {
+      try { localStorage.setItem('bossraid_pending_mission', 'avaliar_build'); } catch(e) {}
+    }
     
     // Atualizar UI
     container.setAttribute('data-current-vote', rating);

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Pre-Battle — Pokémon UNITE</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0a10;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .pb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(0,0,0,0.7);
+      border-bottom: 2px solid #ff4500;
+      flex-shrink: 0;
+    }
+    .pb-header-title { font-size: 1.1rem; font-weight: 800; color: #ff9500; text-transform: uppercase; letter-spacing: 1px; }
+    .pb-room-id {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,117,0,0.1); border: 1.5px solid rgba(255,117,0,0.4);
+      border-radius: 8px; padding: 6px 14px; font-size: 0.82rem; color: #aaa;
+    }
+    .pb-room-id-val { color: #ffad00; font-weight: 800; font-size: 1.1rem; letter-spacing: 3px; }
+    .pb-copy-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px; color: #ccc; padding: 3px 10px; font-size: 0.68rem;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .pb-copy-btn:hover { background: rgba(255,255,255,0.18); }
+    .pb-status-label { font-size: 0.75rem; color: #555; }
+
+    /* ── Timer bar ── */
+    .pb-timer-bar {
+      text-align: center; padding: 7px;
+      background: rgba(255,69,0,0.07); border-bottom: 1px solid rgba(255,69,0,0.18);
+      font-size: 0.8rem; color: #ff9500; flex-shrink: 0;
+    }
+    .pb-timer-bar b { font-size: 1rem; color: #ff4500; }
+    .pb-timer-bar.urgente { background: rgba(255,0,0,0.12) !important; color: #ff4444 !important; }
+
+    /* ── Main ── */
+    .pb-main {
+      flex: 1; display: flex; flex-direction: column; gap: 14px;
+      padding: 16px 20px 0;
+      max-width: 1400px; width: 100%; margin: 0 auto;
+    }
+
+    /* ── Arena row ── */
+    .pb-arena {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 16px; align-items: start;
+    }
+
+    /* ── Boss card ── */
+    .pb-boss-card {
+      background: linear-gradient(160deg, rgba(40,10,10,0.97), rgba(15,5,5,0.99));
+      border: 2px solid #ff4500; border-radius: 16px;
+      padding: 22px 18px; text-align: center;
+      box-shadow: 0 0 50px rgba(255,69,0,0.22), inset 0 0 60px rgba(0,0,0,0.5);
+      position: relative; overflow: hidden;
+    }
+    .pb-boss-card::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse at 50% 25%, rgba(255,69,0,0.13), transparent 65%);
+      pointer-events: none;
+    }
+    .pb-boss-gif {
+      width: 150px; height: auto;
+      filter: drop-shadow(0 0 22px rgba(255,100,0,0.75));
+      animation: pb-float 3s ease-in-out infinite; position: relative;
+    }
+    @keyframes pb-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)} }
+    .pb-boss-name { font-size:1.55rem; font-weight:900; color:#ff6b00; text-shadow:0 0 20px rgba(255,107,0,0.5); margin:10px 0 5px; letter-spacing:1px; }
+    .pb-boss-hp { font-size:0.78rem; color:#999; margin-bottom:9px; }
+    .pb-boss-hp b { color:#ff5555; }
+    .pb-boss-types { display:flex; gap:6px; justify-content:center; margin-bottom:9px; flex-wrap:wrap; }
+    .pb-type-badge { padding:3px 10px; border-radius:12px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+    .pb-boss-diff { font-size:0.72rem; color:#777; }
+    .pb-diff-stars { color:#ff9500; }
+
+    /* ── Players grid ── */
+    .pb-players-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:11px; }
+
+    /* ── Player card ── */
+    .pb-player-card {
+      background: rgba(14,14,26,0.97); border: 2px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 13px 11px;
+      display: flex; flex-direction: column; gap: 9px;
+      position: relative; transition: border-color 0.3s; min-height: 330px;
+    }
+    .pb-player-card.is-me { border-color: rgba(255,117,0,0.45); }
+    .pb-player-card.ready { border-color: rgba(46,204,113,0.55); box-shadow: 0 0 20px rgba(46,204,113,0.1); }
+    .pb-player-card.empty { opacity:0.35; border-style:dashed; border-color:rgba(255,255,255,0.09); }
+
+    .pb-player-header { display:flex; align-items:center; gap:8px; }
+    .pb-player-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.1); flex-shrink:0; }
+    .pb-player-nick { font-size:0.78rem; font-weight:700; color:#eee; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pb-player-tag { font-size:0.58rem; color:#ff9500; font-weight:600; }
+    .pb-empty-label { font-size:0.78rem; color:#333; text-align:center; margin:auto; }
+
+    .pb-poke-area {
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      background:rgba(255,255,255,0.02); border-radius:10px; padding:8px;
+      cursor:pointer; border:1px solid rgba(255,255,255,0.04); transition:background 0.15s;
+    }
+    .pb-poke-area:hover { background:rgba(255,117,0,0.07); }
+    .pb-poke-area.no-click { cursor:default; }
+    .pb-poke-area.no-click:hover { background:rgba(255,255,255,0.02); }
+    .pb-poke-img { width:60px; height:60px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+    .pb-poke-name { font-size:0.7rem; font-weight:700; color:#ddd; }
+    .pb-poke-lvl { font-size:0.58rem; color:#777; }
+    .pb-poke-hint { font-size:0.54rem; color:#ff9500; opacity:0.7; }
+
+    .pb-bag-area { display:flex; flex-direction:column; gap:4px; }
+    .pb-bag-title { font-size:0.58rem; color:#555; text-transform:uppercase; font-weight:700; letter-spacing:0.5px; }
+    .pb-bag-items { display:flex; flex-wrap:wrap; gap:3px; }
+    .pb-bag-item { display:flex; align-items:center; gap:3px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:4px; padding:2px 6px; font-size:0.58rem; color:#aaa; }
+    .pb-bag-item img { width:13px; height:13px; object-fit:contain; }
+    .pb-bag-empty { font-size:0.58rem; color:#333; }
+
+    .pb-ready-wrap { margin-top:auto; }
+    .pb-ready-btn {
+      width:100%; padding:8px 0; border:2px solid rgba(46,204,113,0.4);
+      border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer;
+      letter-spacing:0.5px; transition:transform 0.12s, filter 0.12s, background 0.2s;
+      background:rgba(46,204,113,0.1); color:#2ecc71;
+    }
+    .pb-ready-btn:hover:not(:disabled):not(.is-ready) { transform:scale(1.03); filter:brightness(1.2); }
+    .pb-ready-btn:disabled { opacity:0.45; cursor:not-allowed; }
+    .pb-ready-btn.is-ready { background:rgba(46,204,113,0.22); border-color:#2ecc71; color:#5dfca0; }
+
+    .pb-ready-badge {
+      position:absolute; top:9px; right:9px;
+      background:#2ecc71; color:#071a0f; font-size:0.55rem; font-weight:900;
+      padding:2px 7px; border-radius:7px; letter-spacing:0.5px; text-transform:uppercase;
+    }
+
+    /* ── Countdown overlay ── */
+    .pb-cd-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.9);
+      display:none; flex-direction:column; align-items:center; justify-content:center; z-index:9999;
+    }
+    .pb-cd-overlay.show { display:flex; }
+    .pb-cd-num {
+      font-size:7rem; font-weight:900; color:#ff4500;
+      text-shadow:0 0 60px rgba(255,69,0,0.9);
+      animation:cd-pulse 0.9s ease-in-out infinite; line-height:1;
+    }
+    @keyframes cd-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+    .pb-cd-label { font-size:0.95rem; color:#ff9500; margin-top:16px; font-weight:700; letter-spacing:1px; }
+
+    /* ── Pokemon chooser modal ── */
+    .pb-modal-bg {
+      position:fixed; inset:0; background:rgba(0,0,0,0.78);
+      display:none; align-items:center; justify-content:center; z-index:9998;
+    }
+    .pb-modal-bg.show { display:flex; }
+    .pb-modal {
+      background:#111122; border:2px solid rgba(255,117,0,0.38);
+      border-radius:16px; padding:22px; max-width:480px; width:95%; max-height:80vh; overflow-y:auto;
+    }
+    .pb-modal h3 { font-size:0.88rem; color:#ff9500; margin-bottom:14px; font-weight:800; text-transform:uppercase; }
+    .pb-poke-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+    .pb-poke-opt {
+      background:rgba(255,255,255,0.03); border:1.5px solid rgba(255,255,255,0.07);
+      border-radius:10px; padding:12px 8px; text-align:center; cursor:pointer;
+      transition:border-color 0.15s, background 0.15s;
+    }
+    .pb-poke-opt:hover { border-color:rgba(255,117,0,0.5); background:rgba(255,117,0,0.06); }
+    .pb-poke-opt.sel { border-color:#ff9500; background:rgba(255,117,0,0.1); }
+    .pb-poke-opt img { width:54px; height:54px; object-fit:contain; image-rendering:pixelated; }
+    .pb-poke-opt p { font-size:0.66rem; color:#ccc; margin-top:4px; font-weight:600; }
+    .pb-modal-cancel {
+      margin-top:14px; width:100%; padding:8px;
+      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+      border-radius:8px; color:#888; cursor:pointer; font-size:0.75rem; transition:background 0.15s;
+    }
+    .pb-modal-cancel:hover { background:rgba(255,255,255,0.1); }
+
+    /* ── Chat ── */
+    .pb-chat-wrap { padding:0 20px 16px; max-width:1400px; width:100%; margin:0 auto; }
+    .pb-chat-box { background:rgba(7,7,17,0.97); border:1px solid rgba(255,255,255,0.05); border-radius:13px; overflow:hidden; }
+    .pb-chat-hdr {
+      padding:7px 14px; border-bottom:1px solid rgba(255,255,255,0.04);
+      font-size:0.66rem; color:#444; text-transform:uppercase; font-weight:700; letter-spacing:0.5px;
+      display:flex; align-items:center; gap:7px;
+    }
+    .pb-chat-dot { width:6px; height:6px; background:#2ecc71; border-radius:50%; flex-shrink:0; }
+    .pb-chat-msgs {
+      height:100px; overflow-y:auto; padding:8px 14px;
+      display:flex; flex-direction:column; gap:3px;
+      scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent;
+    }
+    .pb-chat-msg { font-size:0.68rem; color:#bbb; line-height:1.4; }
+    .pb-chat-nick { color:#ff9500; font-weight:700; }
+    .pb-chat-mine-nick { color:#ffcf7f; font-weight:700; }
+    .pb-chat-sys { color:#444; font-style:italic; }
+    .pb-chat-input-row { display:flex; border-top:1px solid rgba(255,255,255,0.04); }
+    .pb-chat-input { flex:1; background:transparent; border:none; outline:none; padding:9px 14px; font-size:0.74rem; color:#ddd; }
+    .pb-chat-send { padding:0 16px; background:rgba(255,117,0,0.14); border:none; border-left:1px solid rgba(255,255,255,0.04); color:#ff9500; font-size:0.74rem; font-weight:700; cursor:pointer; transition:background 0.15s; }
+    .pb-chat-send:hover { background:rgba(255,117,0,0.28); }
+
+    /* ── Loading ── */
+    .pb-loading { display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; gap:14px; color:#ff9500; font-size:0.88rem; }
+    .pb-spinner { width:34px; height:34px; border:3px solid rgba(255,117,0,0.15); border-top-color:#ff9500; border-radius:50%; animation:spin 0.9s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── Type colors ── */
+    .t-fire{background:#F08030;color:#fff} .t-water{background:#6890F0;color:#fff}
+    .t-grass{background:#78C850;color:#fff} .t-normal{background:#A8A878;color:#fff}
+    .t-flying{background:#A890F0;color:#fff} .t-psychic{background:#F85888;color:#fff}
+    .t-ghost{background:#705898;color:#fff} .t-dark{background:#705848;color:#fff}
+    .t-steel{background:#B8B8D0;color:#333} .t-fighting{background:#C03028;color:#fff}
+    .t-ground{background:#E0C068;color:#333} .t-rock{background:#B8A038;color:#fff}
+    .t-bug{background:#A8B820;color:#fff} .t-poison{background:#A040A0;color:#fff}
+    .t-electric{background:#F8D030;color:#333} .t-ice{background:#98D8D8;color:#333}
+    .t-dragon{background:#7038F8;color:#fff} .t-fairy{background:#EE99AC;color:#333}
+
+    @media(max-width:900px){ .pb-arena{grid-template-columns:1fr} .pb-players-grid{grid-template-columns:repeat(2,1fr)} }
+    @media(max-width:520px){ .pb-players-grid{grid-template-columns:1fr 1fr} }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="pbLoading" class="pb-loading">
+  <div class="pb-spinner"></div>
+  <span id="pbLoadingMsg">Setting up battle room...</span>
+</div>
+
+<!-- App (hidden until ready) -->
+<div id="pbApp" style="display:none;flex-direction:column;flex:1;">
+
+  <div class="pb-header">
+    <div class="pb-header-title">⚔️ Pre-Battle Lobby</div>
+    <div class="pb-room-id" id="pbRoomIdRow" style="display:none">
+      Room ID: <span class="pb-room-id-val" id="pbRoomIdVal">—</span>
+      <button class="pb-copy-btn" id="pbCopyBtn">Copy</button>
+    </div>
+    <div class="pb-status-label" id="pbStatusLbl">Waiting for players...</div>
+  </div>
+
+  <div class="pb-timer-bar" id="pbTimerBar">
+    Waiting for players — battle starts in <b id="pbTimerVal">2:00</b>
+  </div>
+
+  <div class="pb-main">
+    <div class="pb-arena">
+      <!-- Boss -->
+      <div class="pb-boss-card">
+        <img id="pbBossGif" class="pb-boss-gif" src="" alt="Boss" onerror="this.style.opacity=0.3">
+        <div class="pb-boss-name" id="pbBossName">—</div>
+        <div class="pb-boss-hp">HP: <b id="pbBossHp">—</b></div>
+        <div class="pb-boss-types" id="pbBossTypes"></div>
+        <div class="pb-boss-diff" id="pbBossDiff"></div>
+      </div>
+      <!-- Players -->
+      <div class="pb-players-grid" id="pbPlayersGrid"></div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="pb-chat-wrap">
+    <div class="pb-chat-box">
+      <div class="pb-chat-hdr"><div class="pb-chat-dot"></div>Pre-Battle Chat</div>
+      <div class="pb-chat-msgs" id="pbChatMsgs"></div>
+      <div class="pb-chat-input-row">
+        <input class="pb-chat-input" id="pbChatInput" placeholder="Type a message..." maxlength="120">
+        <button class="pb-chat-send" id="pbChatSend">Send</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Pokemon chooser modal -->
+<div class="pb-modal-bg" id="pbPokeModal">
+  <div class="pb-modal">
+    <h3>Choose your Pokémon</h3>
+    <div class="pb-poke-opts" id="pbPokeOpts"></div>
+    <button class="pb-modal-cancel" id="pbModalCancel">Cancel</button>
+  </div>
+</div>
+
+<!-- Countdown overlay -->
+<div class="pb-cd-overlay" id="pbCdOverlay">
+  <div class="pb-cd-num" id="pbCdNum">10</div>
+  <div class="pb-cd-label">Battle starting!</div>
+</div>
+
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update, onValue, push }
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import { getFirestore, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+  authDomain: "site-grn.firebaseapp.com",
+  projectId: "site-grn",
+  storageBucket: "site-grn.firebasestorage.app",
+  messagingSenderId: "27613322806",
+  appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+  measurementId: "G-84NHN394WF",
+  databaseURL: "https://site-grn-default-rtdb.firebaseio.com"
+};
+const fbApp = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+const auth  = getAuth(fbApp);
+const rdb   = getDatabase(fbApp);
+const fsdb  = getFirestore(fbApp);
+
+// ── Estado ───────────────────────────────────────────────────
+let _uid          = null;
+let _userData     = null;   // { displayName, avatar, raidTeam, raidBag }
+let _salaId       = null;
+let _bossData     = null;
+let _timerMain    = null;
+let _timerCD      = null;
+let _tempoInicio  = null;
+let _transitioning = false;
+let _meuPokSlot   = 0;
+const MAX_PLAYERS  = 4;
+const SALA_DURACAO = 2 * 60 * 1000; // 2 min
+
+// ── Helpers ──────────────────────────────────────────────────
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+
+function gerarId() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:6}, () => c[Math.floor(Math.random()*c.length)]).join('');
+}
+
+const BOSS_TIPOS = {
+  Staryu:['water'], Mawile:['steel','fairy'], Gengar:['ghost','poison'],
+  Dragonite:['dragon','flying'], Mewtwo:['psychic'], Charizard:['fire','flying'],
+};
+function getBossTipos(nome) { return BOSS_TIPOS[nome] || ['normal']; }
+function getDiff(hp) {
+  if (hp>=3000) return {s:'★★★★★',l:'Legendary'};
+  if (hp>=2200) return {s:'★★★★',l:'Very Hard'};
+  if (hp>=1700) return {s:'★★★',l:'Hard'};
+  if (hp>=1200) return {s:'★★',l:'Normal'};
+  return {s:'★',l:'Easy'};
+}
+const ITEM_NAMES = {
+  pokebola:'Poké Ball',great_ball:'Great Ball',ultra_ball:'Ultra Ball',
+  potion:'Potion',super_potion:'Super Pot.',hyper_potion:'Hyper Pot.',
+  max_potion:'Max Pot.',revive:'Revive',max_revive:'Max Revive',full_restore:'Full Rest.'
+};
+const ITEM_ORDER = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore'];
+function getBagItems(bag) {
+  if (!bag) return [];
+  return ITEM_ORDER.filter(k=>(bag[k]||0)>0).map(k=>({key:k,nome:ITEM_NAMES[k]||k,qty:bag[k]}));
+}
+
+// ── Auth + init ──────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href = '../perfil/perfil.html'; return; }
+  _uid = user.uid;
+
+  document.getElementById('pbLoadingMsg').textContent = 'Loading your data...';
+
+  try {
+    const snap = await getDoc(doc(fsdb,'usuarios',_uid));
+    _userData = snap.exists() ? snap.data() : {};
+  } catch(e) { _userData = {}; }
+
+  let bossSnap = null;
+  try { bossSnap = JSON.parse(sessionStorage.getItem('boss_ativo_snap')||'null'); } catch(e) {}
+  _bossData = bossSnap;
+
+  const action = sessionStorage.getItem('boss_sala_action') || 'create';
+  const joinId = sessionStorage.getItem('boss_sala_join_id') || '';
+  sessionStorage.removeItem('boss_sala_action');
+  sessionStorage.removeItem('boss_sala_join_id');
+
+  if (action === 'join' && joinId) {
+    await entrarNaSala(joinId.toUpperCase());
+  } else {
+    await criarSala();
+  }
+});
+
+// ── Criar sala ───────────────────────────────────────────────
+async function criarSala() {
+  let salaId, tentativas = 0;
+  do {
+    salaId = gerarId();
+    const snap = await get(ref(rdb, `boss_salas/${salaId}`));
+    if (!snap.exists()) break;
+  } while (++tentativas < 8);
+
+  _salaId      = salaId;
+  _tempoInicio = Date.now();
+
+  const boss = _bossData?.boss || { nome:'Boss', hp:1500, gif:'/boss/img-bosses/Staryu.gif' };
+
+  await set(ref(rdb, `boss_salas/${salaId}`), {
+    salaId,
+    criadaEm:  _tempoInicio,
+    expiraEm:  _tempoInicio + SALA_DURACAO,
+    estado:    'aguardando',
+    criadoPor: _uid,
+    boss,
+  });
+
+  await registrarPlayer();
+  iniciarUI();
+}
+
+// ── Entrar em sala existente ─────────────────────────────────
+async function entrarNaSala(salaId) {
+  const salaRef = ref(rdb, `boss_salas/${salaId}`);
+  const snap    = await get(salaRef);
+
+  if (!snap.exists()) {
+    document.getElementById('pbLoadingMsg').textContent = `Room "${salaId}" not found.`;
+    setTimeout(() => { window.location.href='/index.html'; }, 2000);
+    return;
+  }
+
+  const sala = snap.val();
+  if (sala.estado === 'batalha') {
+    document.getElementById('pbLoadingMsg').textContent = 'This battle already started!';
+    setTimeout(() => { window.location.href='/index.html'; }, 2000);
+    return;
+  }
+
+  const players = sala.players ? Object.keys(sala.players) : [];
+  if (players.length >= MAX_PLAYERS && !players.includes(_uid)) {
+    document.getElementById('pbLoadingMsg').textContent = 'Room is full (4/4).';
+    setTimeout(() => { window.location.href='/index.html'; }, 2000);
+    return;
+  }
+
+  _salaId      = salaId;
+  _tempoInicio = sala.criadaEm;
+  _bossData    = { boss: sala.boss };
+
+  await registrarPlayer();
+  iniciarUI();
+}
+
+// ── Registrar player na sala ─────────────────────────────────
+async function registrarPlayer() {
+  const team = _userData?.raidTeam || [];
+  const poke = team[_meuPokSlot] || team[0] || null;
+
+  await set(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), {
+    uid:         _uid,
+    nick:        _userData?.displayName || 'Anonymous',
+    avatar:      _userData?.avatar || '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png',
+    pokemon:     poke?.pokemon || null,
+    pokemonSlot: _meuPokSlot,
+    nivel:       poke?.nivel   || 1,
+    bag:         _userData?.raidBag || {},
+    ready:       false,
+    entrou:      Date.now(),
+  });
+
+  // Limpar ao sair (best-effort)
+  window.addEventListener('beforeunload', () => {
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('DELETE', `https://site-grn-default-rtdb.firebaseio.com/boss_salas/${_salaId}/players/${_uid}.json`, false);
+      xhr.send();
+    } catch(e) {}
+  });
+}
+
+// ── UI ───────────────────────────────────────────────────────
+function iniciarUI() {
+  document.getElementById('pbLoading').style.display = 'none';
+  document.getElementById('pbApp').style.display     = 'flex';
+
+  document.getElementById('pbRoomIdRow').style.display = 'flex';
+  document.getElementById('pbRoomIdVal').textContent   = _salaId;
+  document.getElementById('pbCopyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(_salaId).then(() => {
+      const btn = document.getElementById('pbCopyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  });
+
+  renderBossCard();
+  iniciarTimerPrincipal();
+
+  // Listeners RT
+  onValue(ref(rdb, `boss_salas/${_salaId}/players`), snap => {
+    renderPlayers(snap.val() || {});
+    checarReadyAll(snap.val() || {});
+  });
+
+  onValue(ref(rdb, `boss_salas/${_salaId}/estado`), snap => {
+    const estado = snap.val();
+    if (estado === 'iniciando' && !_transitioning) iniciarContagem();
+    if (estado === 'batalha'   && !_transitioning) irParaBatalha();
+  });
+
+  escutarChat();
+
+  // Chat send
+  const input = document.getElementById('pbChatInput');
+  document.getElementById('pbChatSend').addEventListener('click', enviarChat);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') enviarChat(); });
+
+  // Modal cancel
+  document.getElementById('pbModalCancel').addEventListener('click', () => {
+    document.getElementById('pbPokeModal').classList.remove('show');
+  });
+
+  // Mensagem de entrada
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:'system', nick:'System',
+    msg: `${_userData?.displayName||'A player'} joined the room.`,
+    ts: Date.now(), system: true,
+  });
+}
+
+// ── Boss card ────────────────────────────────────────────────
+function renderBossCard() {
+  const boss = _bossData?.boss || { nome:'Boss', hp:1500, gif:'' };
+  document.getElementById('pbBossGif').src = boss.gif || '';
+  document.getElementById('pbBossName').textContent = boss.nome || 'Boss';
+  document.getElementById('pbBossHp').textContent   = (boss.hp||0).toLocaleString();
+
+  const tipos = getBossTipos(boss.nome);
+  document.getElementById('pbBossTypes').innerHTML = tipos.map(t =>
+    `<span class="pb-type-badge t-${t}">${cap(t)}</span>`
+  ).join('');
+
+  const diff = getDiff(boss.hp||1500);
+  document.getElementById('pbBossDiff').innerHTML = `<span class="pb-diff-stars">${diff.s}</span> ${diff.l}`;
+}
+
+// ── Players ──────────────────────────────────────────────────
+function renderPlayers(players) {
+  const grid = document.getElementById('pbPlayersGrid');
+  const uids = Object.keys(players).sort((a,b) => (players[a].entrou||0)-(players[b].entrou||0));
+
+  let html = '';
+  for (let i = 0; i < MAX_PLAYERS; i++) {
+    const uid = uids[i];
+    html += uid ? cardHTML(uid, players[uid], i) : emptySlotHTML(i);
+  }
+  grid.innerHTML = html;
+
+  // Events para MEU card
+  const myIdx = uids.indexOf(_uid);
+  if (myIdx !== -1) {
+    const myCard = grid.querySelector(`[data-slot="${myIdx}"]`);
+    if (myCard) {
+      myCard.querySelector('.pb-ready-btn')?.addEventListener('click', () => toggleReady(players[_uid]));
+      myCard.querySelector('.pb-poke-area')?.addEventListener('click', abrirTrocaPoke);
+    }
+  }
+}
+
+function cardHTML(uid, p, i) {
+  const isMe     = uid === _uid;
+  const bagItems = getBagItems(p.bag);
+  const bagHTML  = bagItems.length
+    ? bagItems.map(it=>`<div class="pb-bag-item">
+        <img src="../boss/img-items/${it.key}.png" onerror="this.style.display='none'">
+        ${it.nome} ×${it.qty}
+      </div>`).join('')
+    : '<span class="pb-bag-empty">Empty</span>';
+
+  return `
+  <div class="pb-player-card ${isMe?'is-me':''} ${p.ready?'ready':''}" data-uid="${uid}" data-slot="${i}">
+    ${p.ready ? '<div class="pb-ready-badge">✔ READY</div>' : ''}
+    <div class="pb-player-header">
+      <img class="pb-player-avatar" src="${p.avatar||''}" alt="${p.nick}"
+           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+      <div>
+        <div class="pb-player-nick">${p.nick}</div>
+        <div class="pb-player-tag">${isMe?'You':'Player '+(i+1)}</div>
+      </div>
+    </div>
+    <div class="pb-poke-area ${isMe?'':'no-click'}">
+      <img class="pb-poke-img"
+           src="${p.pokemon?`../perfil/img-pokeicon/${p.pokemon}.png`:'../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'}"
+           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+      <div class="pb-poke-name">${p.pokemon?cap(p.pokemon):'No Pokémon'}</div>
+      <div class="pb-poke-lvl">Lv. ${p.nivel||1}</div>
+      ${isMe?'<div class="pb-poke-hint">Tap to change</div>':''}
+    </div>
+    <div class="pb-bag-area">
+      <div class="pb-bag-title">Bag</div>
+      <div class="pb-bag-items">${bagHTML}</div>
+    </div>
+    <div class="pb-ready-wrap">
+      <button class="pb-ready-btn ${p.ready?'is-ready':''}" ${isMe?'':'disabled'}>
+        ${p.ready?'Ready ✔':(isMe?'Not Ready':'Waiting...')}
+      </button>
+    </div>
+  </div>`;
+}
+
+function emptySlotHTML(i) {
+  return `<div class="pb-player-card empty" data-slot="${i}">
+    <div class="pb-empty-label">Waiting for player...</div>
+  </div>`;
+}
+
+// ── Ready ────────────────────────────────────────────────────
+async function toggleReady(myData) {
+  await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { ready: !myData.ready });
+}
+
+async function checarReadyAll(players) {
+  const uids = Object.keys(players);
+  if (!uids.length) return;
+  const todos = uids.every(u => players[u].ready);
+  if (!todos) return;
+
+  // Só o criador da sala seta 'iniciando' (evita race)
+  const snap = await get(ref(rdb, `boss_salas/${_salaId}`));
+  if (!snap.exists()) return;
+  const sala = snap.val();
+  if (sala.estado !== 'aguardando') return;
+  if (sala.criadoPor === _uid) {
+    await update(ref(rdb, `boss_salas/${_salaId}`), { estado: 'iniciando' });
+    push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+      uid:'system', nick:'System',
+      msg:'All players ready! Battle starting in 10 seconds...',
+      ts:Date.now(), system:true,
+    });
+  }
+}
+
+// ── Timer principal ──────────────────────────────────────────
+function iniciarTimerPrincipal() {
+  const bar   = document.getElementById('pbTimerBar');
+  const valEl = document.getElementById('pbTimerVal');
+  const expira = _tempoInicio + SALA_DURACAO;
+
+  _timerMain = setInterval(async () => {
+    const diff = expira - Date.now();
+    if (diff <= 0) {
+      clearInterval(_timerMain);
+      if (!_transitioning) await forcarInicio('Time\'s up! Starting the battle...');
+      return;
+    }
+    const min = Math.floor(diff/60000);
+    const sec = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+    valEl.textContent = `${min}:${sec}`;
+    if (diff < 30000) bar.classList.add('urgente');
+  }, 1000);
+}
+
+async function forcarInicio(msg) {
+  const snap = await get(ref(rdb, `boss_salas/${_salaId}`));
+  if (!snap.exists()) return;
+  const sala = snap.val();
+  if (sala.estado !== 'aguardando') return;
+  if (sala.criadoPor === _uid) {
+    await update(ref(rdb, `boss_salas/${_salaId}`), { estado: 'iniciando' });
+    push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+      uid:'system', nick:'System', msg, ts:Date.now(), system:true,
+    });
+  }
+}
+
+// ── Countdown 10s ────────────────────────────────────────────
+function iniciarContagem() {
+  if (_transitioning) return;
+  _transitioning = true;
+  clearInterval(_timerMain);
+
+  const overlay = document.getElementById('pbCdOverlay');
+  const numEl   = document.getElementById('pbCdNum');
+  overlay.classList.add('show');
+  let n = 10;
+  numEl.textContent = n;
+
+  _timerCD = setInterval(() => {
+    n--;
+    numEl.textContent = n;
+    if (n <= 0) { clearInterval(_timerCD); irParaBatalha(); }
+  }, 1000);
+}
+
+function irParaBatalha() {
+  sessionStorage.setItem('boss_sala_id', _salaId);
+  sessionStorage.setItem('boss_ativo_snap', sessionStorage.getItem('boss_ativo_snap')||'{}');
+  window.location.href = `/boss/battle.html?sala=${_salaId}`;
+}
+
+// ── Troca de pokemon ─────────────────────────────────────────
+function abrirTrocaPoke() {
+  const team = _userData?.raidTeam || [];
+  if (!team.length) {
+    alert('No Pokémon in your team. Set up your team in the Boss Raid section first.');
+    return;
+  }
+  const cont = document.getElementById('pbPokeOpts');
+  cont.innerHTML = team.map((sl, i) => `
+    <div class="pb-poke-opt ${i===_meuPokSlot?'sel':''}" data-idx="${i}">
+      <img src="../perfil/img-pokeicon/${sl.pokemon}.png" alt="${cap(sl.pokemon)}"
+           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+      <p>${cap(sl.pokemon)}</p>
+      <p style="font-size:0.56rem;color:#555">Lv.${sl.nivel||1}</p>
+    </div>`).join('');
+
+  // listeners
+  cont.querySelectorAll('.pb-poke-opt').forEach(el => {
+    el.addEventListener('click', async () => {
+      const idx = parseInt(el.dataset.idx);
+      const sl  = team[idx];
+      if (!sl) return;
+      _meuPokSlot = idx;
+      document.getElementById('pbPokeModal').classList.remove('show');
+      await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), {
+        pokemon: sl.pokemon, pokemonSlot: idx, nivel: sl.nivel||1,
+      });
+    });
+  });
+
+  document.getElementById('pbPokeModal').classList.add('show');
+}
+
+// ── Chat ─────────────────────────────────────────────────────
+function enviarChat() {
+  const input = document.getElementById('pbChatInput');
+  const txt   = input.value.trim();
+  if (!txt) return;
+  input.value = '';
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:  _uid,
+    nick: _userData?.displayName || 'Anonymous',
+    msg:  txt,
+    ts:   Date.now(),
+    system: false,
+  });
+}
+
+function escutarChat() {
+  onValue(ref(rdb, `boss_salas/${_salaId}/chat`), snap => {
+    if (!snap.exists()) return;
+    const msgs = Object.values(snap.val()).sort((a,b) => (a.ts||0)-(b.ts||0));
+    const cont = document.getElementById('pbChatMsgs');
+    cont.innerHTML = msgs.map(m => {
+      if (m.system) return `<div class="pb-chat-msg"><span class="pb-chat-sys">— ${m.msg} —</span></div>`;
+      const nickCls = m.uid === _uid ? 'pb-chat-mine-nick' : 'pb-chat-nick';
+      return `<div class="pb-chat-msg"><span class="${nickCls}">${m.nick}:</span> ${m.msg}</div>`;
+    }).join('');
+    cont.scrollTop = cont.scrollHeight;
+  });
+}
+</script>
+</body>
+</html>

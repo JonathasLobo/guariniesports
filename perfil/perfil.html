@@ -8,6 +8,7 @@
   <link rel="icon" href="../img-site/favicon.png" type="image/png">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
+  <link rel="stylesheet" href="./boss-raid-status.css">
   <meta name="theme-color" content="#ffad00">
 </head>
 
@@ -163,6 +164,21 @@
           </div>
       </div>  
 
+      <!-- ⚔️ BOSS RAID SECTION -->
+      <section class="perfil-section">
+        <h2>Boss Raid</h2>
+        <div class="perfil-content raid-content" id="bossRaidContainer">
+          <!-- Estado deslogado: visível por padrão, substituído pelo JS ao logar -->
+          <div class="raid-deslogado" id="raidDeslogado">
+            <div class="raid-deslogado-inner">
+              <span class="raid-deslogado-icon">⚔️</span>
+              <p class="raid-deslogado-texto">Click to play</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- FIM BOSS RAID SECTION -->
+
       <!-- Área para builds salvas -->
       <section class="perfil-section">
         <h2>Saved Builds</h2>
@@ -284,6 +300,7 @@
 
   // Importar funções do perfil.js
   import { initRibbons } from './perfil.js';
+  import { initBossRaid } from './boss-raid.js';
   
   // ⭐ Importar sistema de avaliação
   import { createRatingViewOnly } from './build-rating.js';
@@ -1472,6 +1489,9 @@ async function updateUI(user) {
       await carregarBuildsUsuario(user.uid);
       await carregarPlayerId(user.uid);
       await carregarUltimasVisualizacoes(user.uid);
+      // Inicializar sistema Boss Raid
+      const raidUserData = userDocSnap.exists() ? userDocSnap.data() : {};
+      await initBossRaid(user.uid, db, raidUserData);
       
     } catch (error) {
       console.error('❌ Erro ao carregar dados do usuário:', error);

@@ -2141,3 +2141,362 @@
     font-size: 14px;
   }
 }
+/* ============================================================
+   BOSS RAID SYSTEM — segue padrão visual do site
+   ============================================================ */
+
+/* Container geral — igual ao .perfil-content mas com toque de vermelho */
+.raid-content {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estado deslogado */
+.raid-deslogado { width: 100%; text-align: center; }
+.raid-deslogado-inner {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 30px;
+  border: 2px dashed rgba(255, 117, 0, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.raid-deslogado-inner:hover {
+  border-color: #ff7500;
+  background: rgba(255, 117, 0, 0.05);
+}
+.raid-deslogado-icon { font-size: 2rem; }
+.raid-deslogado-texto {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ---- INÍCIO DO JOGO ---- */
+.raid-inicio {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+.raid-inicio-icon { font-size: 2.5rem; }
+.raid-inicio-titulo {
+  color: #ffad00;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+.raid-inicio-desc {
+  color: #aaa;
+  font-size: 0.88rem;
+  text-align: center;
+  max-width: 420px;
+  line-height: 1.6;
+  margin: 0;
+}
+.raid-inicio-botoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-raid-jogar {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 117, 0, 0.3);
+}
+.btn-raid-jogar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 117, 0, 0.5);
+}
+
+.btn-raid-instrucoes {
+  background: rgba(255, 117, 0, 0.1);
+  color: #ffad00;
+  border: 2px solid rgba(255, 117, 0, 0.4);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-raid-instrucoes:hover {
+  background: rgba(255, 117, 0, 0.2);
+  border-color: #ff7500;
+}
+
+/* ---- MODAL DE INSTRUÇÕES ---- */
+.raid-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.raid-modal-overlay.show { display: flex; }
+
+.raid-modal-content {
+  background: rgba(26, 26, 26, 0.98);
+  border: 3px solid #ff7500;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  color: #ccc;
+  animation: slideDown 0.3s ease;
+  box-shadow: 0 8px 25px rgba(255, 117, 0, 0.3);
+}
+.raid-modal-content h3 {
+  color: #ffad00;
+  font-size: 1.3rem;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 117, 0, 0.3);
+}
+.raid-instrucoes-content {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #ccc;
+}
+.raid-instrucoes-content ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+.raid-instrucoes-content li { margin-bottom: 4px; }
+.raid-instrucoes-content strong { color: #ffad00; }
+
+.raid-modal-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: rgba(255, 0, 0, 0.3);
+  border: 2px solid #ff0000;
+  color: #fff;
+  font-size: 18px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.raid-modal-close:hover { background: rgba(255, 0, 0, 0.6); }
+
+.btn-raid-fechar-modal {
+  margin-top: 20px;
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+.btn-raid-fechar-modal:hover { opacity: 0.9; transform: scale(1.02); }
+
+/* ---- ESCOLHA DE POKÉMON — POKÉBOLAS ---- */
+.raid-escolha {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+.raid-escolha-titulo { color: #ffad00; font-size: 1.1rem; font-weight: 700; margin: 0; }
+.raid-escolha-desc { color: #aaa; font-size: 0.85rem; text-align: center; margin: 0; }
+
+.raid-pokebolas-container {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.raid-pokebola-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 110px;
+}
+.raid-pokebola-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.raid-pokebola {
+  width: 90px; height: 90px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 117, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(255, 117, 0, 0.2);
+}
+.raid-pokebola:hover {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 6px 20px rgba(255, 117, 0, 0.5);
+}
+.raid-pokebola img { width: 100%; height: 100%; object-fit: cover; }
+.raid-pokebola.abrindo { animation: pokebola-abrir 0.4s ease forwards; }
+@keyframes pokebola-abrir {
+  0%   { transform: scale(1) rotate(0deg); opacity: 1; }
+  50%  { transform: scale(1.3) rotate(20deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(40deg); opacity: 0; }
+}
+
+/* Borda colorida por grupo */
+#pokebola-pokebola1 { border-color: #4CAF50; box-shadow: 0 4px 15px rgba(76,175,80,0.3); }
+#pokebola-pokebola2 { border-color: #FF5722; box-shadow: 0 4px 15px rgba(255,87,34,0.3); }
+#pokebola-pokebola3 { border-color: #2196F3; box-shadow: 0 4px 15px rgba(33,150,243,0.3); }
+
+.raid-pokebola-tipo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Pokémon revelado */
+.raid-pokemon-revelado {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.raid-pokemon-revelado.aparecendo { display: flex !important; }
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.raid-pokemon-img {
+  width: 90px; height: 90px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 117, 0, 0.5);
+  background: rgba(255, 117, 0, 0.05);
+  animation: aparecer 0.4s ease;
+}
+.raid-pokemon-nome {
+  color: #ffad00;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 0;
+}
+.btn-escolher-pokemon {
+  background: linear-gradient(45deg, #ff7500, #ffad00);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.btn-escolher-pokemon:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(255,117,0,0.4); }
+
+.raid-aviso-permanente {
+  color: #ff9800;
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+  padding: 8px 16px;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 8px;
+}
+
+/* ---- MY TEAM ---- */
+.raid-myteam {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.raid-myteam-titulo { color: #ffad00; font-size: 1.1rem; font-weight: 700; margin: 0; }
+.raid-myteam-desc { color: #aaa; font-size: 0.82rem; margin: 0; }
+
+.raid-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.raid-slot {
+  background: rgba(255, 117, 0, 0.05);
+  border: 2px solid rgba(255, 117, 0, 0.2);
+  border-radius: 10px;
+  padding: 12px 6px 8px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.raid-slot.ocupado {
+  border-color: rgba(255, 117, 0, 0.5);
+  box-shadow: 0 3px 10px rgba(255, 117, 0, 0.15);
+}
+.raid-slot.ocupado:hover {
+  border-color: #ff7500;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 117, 0, 0.3);
+}
+.raid-slot.vazio { border-style: dashed; opacity: 0.5; }
+
+.raid-slot-numero {
+  position: absolute;
+  top: 4px; left: 7px;
+  font-size: 0.65rem;
+  color: #888;
+  font-weight: 600;
+}
+.raid-slot-img {
+  width: 80px; height: 80px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 117, 0, 0.4);
+  background: rgba(255, 117, 0, 0.05);
+}
+.raid-slot-nome {
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin: 4px 0 2px;
+}
+.raid-slot-nivel { color: #ffad00; font-size: 0.68rem; margin: 0; }
+.raid-slot-vazio-icon { font-size: 1.6rem; color: #444; margin: 8px 0 4px; }
+.raid-slot-vazio-texto { color: #555; font-size: 0.7rem; margin: 0; }
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .raid-slots-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .raid-pokebolas-container { gap: 16px; }
+  .raid-pokebola { width: 75px; height: 75px; }
+  .raid-slots-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .raid-slot-img { width: 46px; height: 46px; }
+}
