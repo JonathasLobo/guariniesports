@@ -718,7 +718,8 @@ let _bossStages   = { atk:0, def:0, spa:0, spd:0, spe:0 };
 // Stages dos players por uid (ex: debuffs aplicados pelo boss)
 let _playerStages = {};  // { uid: { atk:0, def:0, spe:0, ... } }
 // Status conditions do boss: { sleep: turnosRestantes, confusion: bool }
-let _bossStatus   = { sleep:0, confusion:false };
+let _bossStatus      = { sleep:0, confusion:false };
+let _bossStandbySlot = null; // pokémon capturado em standby (time cheio)
 
 // helpers
 const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
@@ -2361,6 +2362,7 @@ function pararCaptureTimer(){
 // DROPS — recompensas individuais pós-raid
 // ══════════════════════════════════════════════════════════════
 async function mostrarDrops(){
+  _bossStandbySlot = null; // resetar — será definido abaixo apenas se time cheio
   if (_dropsShown) return;
   _dropsShown = true;
 
