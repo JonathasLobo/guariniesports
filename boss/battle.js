@@ -30,6 +30,17 @@ const fsdb  = getFirestore(fbApp);
 // MOVES_DB — usado no painel de golpes (PP incluído)
 // ══════════════════════════════════════════════════════════════
 const MOVES_DB = {
+  growl:         {name:'Growl',        type:'normal',   cat:'status',   power:null,acc:100,pp:40, eff:'debuff',stat:'atk',stages:-1},
+  defense_curl:  {name:'Defense Curl', type:'normal',   cat:'status',   power:null,acc:null,pp:40,eff:'buff',  stat:'def',stages:1 },
+  rollout:       {name:'Rollout',      type:'rock',     cat:'physical', power:30,  acc:90, pp:20},
+  round:         {name:'Round',        type:'normal',   cat:'special',  power:60,  acc:100,pp:15},
+  double_kick:   {name:'Double Kick',  type:'fighting', cat:'physical', power:30,  acc:100,pp:30},
+  take_down:     {name:'Take Down',    type:'normal',   cat:'physical', power:90,  acc:85, pp:20},
+  charm:         {name:'Charm',        type:'fairy',    cat:'status',   power:null,acc:100,pp:20,eff:'debuff',stat:'atk',stages:-2},
+  bulk_up:       {name:'Bulk Up',      type:'fighting', cat:'status',   power:null,acc:null,pp:20,eff:'buff',  stat:'atk',stages:1 },
+  double_edge:   {name:'Double-Edge',  type:'normal',   cat:'physical', power:120, acc:100,pp:15},
+  swagger:       {name:'Swagger',      type:'normal',   cat:'status',   power:null,acc:85, pp:15,eff:'buff',   stat:'atk',stages:2 },
+  headbutt:      {name:'Headbutt',     type:'normal',   cat:'physical', power:70,  acc:100,pp:15},
   tackle:       {name:'Tackle',        type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
   scratch:      {name:'Scratch',       type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
   pound:        {name:'Pound',         type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
@@ -446,6 +457,7 @@ const LEARNSETS_BATTLE = {
   sobble:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'bind'],[12,'water_pulse'],[16,'tearful_look'],[20,'acrobatics'],[24,'sucker_punch'],[28,'surf'],[32,'liquidation'],[36,'snipe_shot'],[40,'hydro_pump'],[44,'bounce']],
   quaxly:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'wing_attack'],[12,'quick_attack'],[16,'water_pulse'],[20,'aerial_ace'],[24,'aqua_jet'],[28,'acrobatics'],[32,'liquidation'],[36,'double_hit'],[40,'hydro_pump'],[44,'brave_bird']],
   caterpie:   [[1,'tackle'],[1,'string_shot'],[5,'bug_bite']],
+  wooloo:     [[1,'tackle'],[1,'growl'],[4,'defense_curl'],[8,'rollout'],[12,'round'],[16,'double_kick'],[20,'take_down'],[24,'charm'],[28,'bulk_up'],[32,'double_edge'],[36,'swagger'],[40,'headbutt']],
   weedle:     [[1,'poison_sting'],[1,'string_shot']],
   kakuna:     [[1,'harden'],[7,'poison_sting']],
   beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
@@ -467,6 +479,7 @@ const EVOLUTION_CHAIN_BATTLE = {
   squirtle:    { evolvesTo: 'wartortle',    levelReq: 16 },
   wartortle:   { evolvesTo: 'blastoise',    levelReq: 36 },
   caterpie:    { evolvesTo: 'metapod',      levelReq: 7  },
+  wooloo:      { evolvesTo: 'dubwool',      levelReq: 24 },
   metapod:     { evolvesTo: 'butterfree',   levelReq: 10 },
   chikorita:   { evolvesTo: 'bayleef',      levelReq: 16 },
   bayleef:     { evolvesTo: 'meganium',     levelReq: 32 },
@@ -721,6 +734,84 @@ let _playerStages = {};  // { uid: { atk:0, def:0, spe:0, ... } }
 let _bossStatus      = { sleep:0, confusion:false };
 let _bossStandbySlot = null; // pokémon capturado em standby (time cheio)
 
+// ══════════════════════════════════════════════════════════════
+// ABILITIES PASSIVAS
+// Aplicadas sobre as stats base do player antes de calcular dano.
+// Algumas (torrent/blaze/overgrow/swarm) dependem do HP atual
+// e são aplicadas direto no calcDano via modificador de dano.
+// ══════════════════════════════════════════════════════════════
+
+// Modificador de stat pré-combate (Run Away, Static, etc.)
+function applyAbilityPassive(stats, ability) {
+  if (!stats || !ability) return stats;
+  const s = { ...stats };
+  switch (ability) {
+    // ── Run Away: +2% Speed ──────────────────────────────────
+    case 'run_away':
+      s.spe = Math.max(1, Math.round(s.spe * 1.02));
+      break;
+    // ── Speed Boost: +5% Speed ──────────────────────────────
+    case 'speed_boost':
+      s.spe = Math.max(1, Math.round(s.spe * 1.05));
+      break;
+    // ── Huge Power / Pure Power: dobra o Atk físico ─────────
+    case 'huge_power': case 'pure_power':
+      s.atk = Math.max(1, Math.round(s.atk * 2));
+      break;
+    // ── Hustle: +50% Atk, -20% Acc (Acc não é stat, ignorar aqui) ──
+    case 'hustle':
+      s.atk = Math.max(1, Math.round(s.atk * 1.5));
+      break;
+    // ── Intimidate: não modifica stats do dono ──────────────
+    // (efeito no oponente — aplicado em applyAbilityOnBossEntry)
+  }
+  return s;
+}
+
+// Modificador de dano ofensivo (depende de HP — Torrent/Blaze/Overgrow/Swarm)
+// hpAtual e hpMax são os valores do pokémon atacante
+function applyAbilityDmgMod(baseDmg, ability, moveType, hpAtual, hpMax) {
+  if (!ability || !baseDmg) return baseDmg;
+  const hpPct = hpMax > 0 ? hpAtual / hpMax : 1;
+  switch (ability) {
+    // ── Torrent: +50% dano water quando HP ≤ 1/3 ──────────
+    case 'torrent':
+      if (moveType === 'water' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
+      break;
+    // ── Blaze: +50% dano fire quando HP ≤ 1/3 ─────────────
+    case 'blaze':
+      if (moveType === 'fire' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
+      break;
+    // ── Overgrow: +50% dano grass quando HP ≤ 1/3 ─────────
+    case 'overgrow':
+      if (moveType === 'grass' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
+      break;
+    // ── Swarm: +50% dano bug quando HP ≤ 1/3 ──────────────
+    case 'swarm':
+      if (moveType === 'bug' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
+      break;
+    // ── Iron Fist: +20% dano em golpes de soco ─────────────
+    // (tackle, headbutt, double_kick, etc. — physical normal/fighting)
+    case 'iron_fist':
+      if (['normal','fighting'].includes(moveType)) return Math.floor(baseDmg * 1.2);
+      break;
+    // ── Sheer Force: +30% dano em golpes com efeito secundário ─
+    // Simplificado: aplica a todos os golpes especiais
+    case 'sheer_force':
+      return Math.floor(baseDmg * 1.3);
+    // ── Protean / Libero: STAB em todos os golpes ───────────
+    // (o STAB já é calculado em calcDano — aqui garantimos que
+    //  o modificador final já vem com o bônus aplicado)
+    case 'protean': case 'libero':
+      // Forçar STAB multiplicando por 1.5 e dividindo pelo STAB base (1.0)
+      // Só se o tipo do golpe for diferente dos tipos do pokémon
+      // (se já tiver STAB, não aplica duplo)
+      // Nota: tratado diretamente no ataque do player (ver adiante)
+      break;
+  }
+  return baseDmg;
+}
+
 // helpers
 const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
 
@@ -876,6 +967,7 @@ onAuthStateChanged(auth, async user => {
       playersState[uid] = {
         uid, nick: p.nick, avatar: p.avatar,
         pokemon: p.pokemon, nivel: p.nivel||1,
+        shiny: p.shiny === true,
         hpMax: 100, hp: 100,  // recalculado por atualizarHPPlayer()
         fainted: false, actedThisTurn: false, ppAtual: {},
       };
@@ -902,6 +994,7 @@ onAuthStateChanged(auth, async user => {
       await set(ref(rdb, `boss_salas/${salaId}/battle/players/${_uid}`), {
         uid: _uid, nick: p.nick, avatar: p.avatar,
         pokemon: p.pokemon, nivel: p.nivel||1,
+        shiny: p.shiny === true,
         hpMax: 100, hp: 100,
         fainted: false, actedThisTurn: false, ppAtual: {},
       });
@@ -1016,11 +1109,23 @@ async function atualizarHPPlayer(){
 
   await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
     hpMax, hp: hpAtual, pokemon: pokeName, nivel: pokemonSlot.nivel||1,
+    shiny: pokemonSlot.shiny === true,
     ivs: pokemonSlot.ivs||{}, evs: pokemonSlot.evs||{},
     nature: pokemonSlot.nature||'Hardy',
     golpes,
     ppAtual: ppInicial,
+    ability: pokemonSlot.ability || null,
   });
+
+  // ── Intimidate: aplica -1 Atk no boss ao entrar ──────────────────────────
+  if (pokemonSlot.ability === 'intimidate') {
+    const bsNow = _battleSnap;
+    if (bsNow && !bsNow.bossFainted) {
+      applyBossStage('atk', -1);
+      await update(_battleRef, { [`bossStages/atk`]: (_bossStages.atk || 0) });
+      await logAction(`⬇️ Intimidate! ${cap(pokeName)}'s presence lowered the Boss's Attack!`);
+    }
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1227,7 +1332,7 @@ function renderPlayers(bs){
     const pct       = p.hpMax > 0 ? Math.max(0, p.hp / p.hpMax * 100) : 0;
     const barCls    = pct > 50 ? '' : pct > 20 ? 'yellow' : 'red';
     const fainted   = p.fainted || p.hp <= 0;
-    const imgSrc    = p.pokemon ? `../perfil/img-pokeicon/${p.pokemon}.png` : '';
+    const imgSrc    = p.pokemon ? (p.shiny ? `../perfil/img-shiny/${p.pokemon}.png` : `../perfil/img-pokeicon/${p.pokemon}.png`) : '';
 
     // Efeito escada: cada player desloca +18px para a direita por índice
     // (i=0 = mais à frente/topo, i=1 um pouco atrás, etc.)
@@ -1238,7 +1343,7 @@ function renderPlayers(bs){
       <img class="player-poke-img ${fainted?'fainted':''}"
            id="pimg-${uid}"
            src="${sanitize(imgSrc)}"
-           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'"
+           onerror="this.src='../perfil/img-pokeicon/${sanitize(p.pokemon)}.png'"
            alt="${sanitize(p.pokemon)}">
       <div class="player-info">
         <div class="player-nick">${isMe?'You':sanitize(p.nick)}</div>
@@ -1310,10 +1415,11 @@ function atualizarBotoes(bs){
   const captureQIdx_a  = bs_atualizar?.captureQueueIdx || 0;
   const myCaptureTurn = capture_fase && captureQueue_a[captureQIdx_a] === _uid;
 
-  document.getElementById('btnFight').disabled = !myTurn || _capturePhase;
-  document.getElementById('btnBag').disabled   = myCaptureTurn ? false : !myTurn;
-  // Pass disponível durante captura para pular a vez
-  document.getElementById('btnPass').disabled  = myCaptureTurn ? false : !myTurn;
+  // Durante o turno do boss, bloquear TODOS os botões de todos os players
+  const bossAtuando = _bossAttacking;
+  document.getElementById('btnFight').disabled = bossAtuando || !myTurn || _capturePhase;
+  document.getElementById('btnBag').disabled   = bossAtuando || (myCaptureTurn ? false : !myTurn);
+  document.getElementById('btnPass').disabled  = bossAtuando || (myCaptureTurn ? false : !myTurn);
 
   if (!myTurn){
     setSubPanel(null);
@@ -1647,7 +1753,10 @@ window.btUsarGolpe = async function(idx, moveKey){
     return;
   }
 
-  const myStats  = calcStats(me.pokemon, me.ivs, me.nivel||1, me.nature||'Hardy', me.evs);
+  const myStats  = applyAbilityPassive(
+    calcStats(me.pokemon, me.ivs, me.nivel||1, me.nature||'Hardy', me.evs),
+    me.ability
+  );
   // Aplicar stages do player (buffs/debuffs acumulados)
   const myAtkEff = getEffStat(
     move.cat === 'physical' ? myStats.atk : myStats.spa,
@@ -1664,7 +1773,14 @@ window.btUsarGolpe = async function(idx, moveKey){
   const bossStatsEff = { ..._bossStats, def: move.cat==='physical'?bossDefEff:_bossStats.def, spd: move.cat==='special'?bossDefEff:_bossStats.spd };
   const res      = calcDano(myStatsEff, bossStatsEff, move, pokeTipos, bossTipos, me.nivel||1);
 
-  const dano     = Math.min(res.dmg, bossHp); // não vai abaixo de 0
+  // Aplicar modificador de ability (Torrent/Blaze/Overgrow/Swarm/Iron Fist etc.)
+  // Protean/Libero: forçar STAB se o tipo do golpe não for do pokémon
+  let dmgAbility = applyAbilityDmgMod(res.dmg, me.ability, move.type, me.hp, me.hpMax);
+  if ((me.ability === 'protean' || me.ability === 'libero') && res.stab === 1.0) {
+    dmgAbility = Math.floor(dmgAbility * 1.5); // STAB em tudo
+  }
+
+  const dano     = Math.min(dmgAbility, bossHp); // não vai abaixo de 0
   const newBossHp= Math.max(0, bossHp - dano);
 
   // Float de dano
@@ -1889,6 +2005,9 @@ async function arremessarPokebola(itemKey, info){
 // ══════════════════════════════════════════════════════════════
 async function bossAtaca(){
   _bossAttacking = true;
+  // Desabilitar botões imediatamente — não esperar pelo próximo onValue
+  const _bsNow = _battleSnap;
+  if (_bsNow) atualizarBotoes(_bsNow);
   const bannerEl = document.getElementById('turnBanner');
   if (bannerEl){ bannerEl.textContent = '🔴 Boss is attacking...'; bannerEl.classList.add('boss-turn'); }
 
@@ -2139,6 +2258,9 @@ async function bossAtaca(){
   }
   _bossAttacking = false;
   document.getElementById('turnBanner')?.classList.remove('boss-turn');
+  // Reabilitar botões assim que o boss termina
+  const _bsEnd = _battleSnap;
+  if (_bsEnd) atualizarBotoes(_bsEnd);
 }
 
 // ══════════════════════════════════════════════════════════════

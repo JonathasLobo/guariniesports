@@ -39,7 +39,8 @@ const BOSS_CONFIG = {
     'sobre/sobre.html',
     'index.html',
     'contato/contato.html',
-    'loja/loja.html'
+    'loja/loja.html',
+    'groups/groups.html'
   ],
 
   bosses: [
@@ -72,6 +73,23 @@ const BOSS_CONFIG = {
           effect:'debuff', stat:'spe', stages:-1 },
         { name:'Harden',      type:'normal', cat:'status',   power:null,acc:null,target:'self',
           effect:'buff', stat:'def', stages:1 },
+      ],
+      catchRate: 255,
+    },
+
+    {
+      nome:      'Wooloo',
+      sprite:    '/boss/img-bosses/wooloo.png',
+      tipos:     ['normal'],
+      baseStats: { hp:10, atk:5, def:5, spa:5, spd:5, spe:5 },
+      nivel:     10,
+      golpes: [
+        { name:'Tackle',       type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
+        { name:'Growl',        type:'normal', cat:'status',   power:null,acc:100, target:'all',
+          effect:'debuff', stat:'atk', stages:-1 },
+        { name:'Defense Curl', type:'normal', cat:'status',   power:null,acc:null,target:'self',
+          effect:'buff', stat:'def', stages:1 },
+        { name:'Rollout',      type:'rock',   cat:'physical', power:30,  acc:90,  target:'single' },
       ],
       catchRate: 255,
     },

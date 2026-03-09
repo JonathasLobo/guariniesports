@@ -633,6 +633,7 @@ async function registrarPlayer() {
     pokemon:     poke?.pokemon || null,
     pokemonSlot: _meuPokSlot,
     nivel:       poke?.nivel   || 1,
+    shiny:       poke?.shiny === true,
     bag:         _userData?.raidBag || {},
     ready:       false,
     entrou:      Date.now(),
@@ -777,7 +778,7 @@ function renderPlayers(players) {
 
 function getPokeSprite(pokemonKey, isShiny) {
   if (!pokemonKey) return '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
-  if (isShiny) return `../boss/img-shiny/${pokemonKey}.png`;
+  if (isShiny) return `../perfil/img-shiny/${pokemonKey}.png`;
   return `../perfil/img-pokeicon/${pokemonKey}.png`;
 }
 

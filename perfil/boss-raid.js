@@ -33,6 +33,7 @@ const BASE_STATS = {
   fuecoco:    { hp:67,  atk:45, def:59,  spa:63, spd:40,  spe:36  },
   // --- Bug ---
   caterpie:  { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
+  wooloo:    { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
   weedle:    { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
   // --- Water ---
   squirtle:  { hp:44,  atk:48,  def:65, spa:50,  spd:64, spe:43  },
@@ -99,6 +100,7 @@ const POKEMON_TIPOS = {
   popplio:    ['water'],          sobble:     ['water'],    quaxly:     ['water'],
   pikachu:    ['electric'],
   caterpie:   ['bug'],
+  wooloo:     ['normal'],
   weedle:     ['bug','poison'],
 };
 
@@ -280,6 +282,7 @@ const EVOLUTION_CHAIN = {
   // ── Linha Caterpie (Bug) ──────────────────────────────────
   // Caterpie → Metapod (L7) → Butterfree (L10)
   caterpie:   { evolvesTo: 'metapod',    levelReq: 7,  loyaltyReq: 50  },
+  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 50  },
   metapod:    { evolvesTo: 'butterfree', levelReq: 10, loyaltyReq: 50  },
 
   // ── Linha Weedle (Bug/Poison) ─────────────────────────────
@@ -451,6 +454,7 @@ const EVOLUTION_TIPOS = {
   // Caterpie line — Butterfree ganha flying
   metapod:     ['bug'],
   butterfree:  ['bug','flying'],
+  dubwool:     ['normal'],
   // Weedle line — mantém bug/poison até Beedrill
   kakuna:      ['bug','poison'],
   beedrill:    ['bug','poison'],
@@ -544,6 +548,7 @@ const BASE_STATS_EVO = {
   // Caterpie line
   metapod:     { hp:50,  atk:20,  def:55,  spa:25,  spd:25,  spe:30  },
   butterfree:  { hp:60,  atk:45,  def:50,  spa:90,  spd:80,  spe:70  },
+  dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
@@ -583,6 +588,7 @@ const POKEDEX_NUM_EVO = {
   quaxwell:913, quaquaval:914,
   // Caterpie line
   metapod:11,  butterfree:12,
+  wooloo:831,  dubwool:832,
 };
 
 
@@ -614,6 +620,7 @@ const CATCH_RATE = {
   brionne:45, primarina:45, drizzile:45, inteleon:45,
   quaxwell:45, quaquaval:45,
   caterpie:255, metapod:120, butterfree:45,
+  wooloo:255, dubwool:127,
   weedle:255, kakuna:120, beedrill:45,
   pikachu:190,
 };
@@ -678,6 +685,17 @@ function renderTipoBadges(tipos) {
 // ============================================================
 const MOVES_DB = {
   // NORMAL
+  growl:         { name:'Growl',        type:'normal',   category:'status',   power:null, accuracy:100, pp:40,  desc:'Lowers foe Atk by 1.',          eff:'debuff', stat:'atk', stages:-1 },
+  defense_curl:  { name:'Defense Curl', type:'normal',   category:'status',   power:null, accuracy:null,pp:40,  desc:'Raises user Def by 1.',          eff:'buff',   stat:'def', stages:1  },
+  rollout:       { name:'Rollout',      type:'rock',     category:'physical', power:30,   accuracy:90,  pp:20,  desc:'Rock roll that hits 5 turns.'    },
+  round:         { name:'Round',        type:'normal',   category:'special',  power:60,   accuracy:100, pp:15,  desc:'Sing in unison for big damage.'  },
+  double_kick:   { name:'Double Kick',  type:'fighting', category:'physical', power:30,   accuracy:100, pp:30,  desc:'Two kicks in rapid succession.'  },
+  take_down:     { name:'Take Down',    type:'normal',   category:'physical', power:90,   accuracy:85,  pp:20,  desc:'Reckless charge with recoil.'    },
+  charm:         { name:'Charm',        type:'fairy',    category:'status',   power:null, accuracy:100, pp:20,  desc:'Lowers foe Atk by 2.',          eff:'debuff', stat:'atk', stages:-2 },
+  bulk_up:       { name:'Bulk Up',      type:'fighting', category:'status',   power:null, accuracy:null,pp:20,  desc:'Raises Atk and Def by 1.',       eff:'buff',   stat:'atk', stages:1  },
+  double_edge:   { name:'Double-Edge',  type:'normal',   category:'physical', power:120,  accuracy:100, pp:15,  desc:'Powerful charge with recoil.'    },
+  swagger:       { name:'Swagger',      type:'normal',   category:'status',   power:null, accuracy:85,  pp:15,  desc:'Confuses foe and raises its Atk.',eff:'buff',   stat:'atk', stages:2  },
+  headbutt:      { name:'Headbutt',     type:'normal',   category:'physical', power:70,   accuracy:100, pp:15,  desc:'May cause flinching.'            },
   tackle:         { name:'Tackle',         type:'normal',   category:'physical', power:40,  accuracy:100, pp:35, desc:'A full-body charge.' },
   scratch:        { name:'Scratch',        type:'normal',   category:'physical', power:40,  accuracy:100, pp:35, desc:'Hard claws rake the foe.' },
   pound:          { name:'Pound',          type:'normal',   category:'physical', power:40,  accuracy:100, pp:35, desc:'Pounds with arms or tail.' },
@@ -960,6 +978,7 @@ const LEARNSETS = {
   quaxly:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'wing_attack'],[12,'quick_attack'],[16,'water_pulse'],[20,'aerial_ace'],[24,'aqua_jet'],[28,'acrobatics'],[32,'liquidation'],[36,'double_hit'],[40,'hydro_pump'],[44,'brave_bird']],
   // ── Bug line ─────────────────────────────────────────────
   caterpie:   [[1,'tackle'],[1,'string_shot'],[5,'bug_bite']],
+  wooloo:     [[1,'tackle'],[1,'growl'],[4,'defense_curl'],[8,'rollout'],[12,'round'],[16,'double_kick'],[20,'take_down'],[24,'charm'],[28,'bulk_up'],[32,'double_edge'],[36,'swagger'],[40,'headbutt']],
   weedle:     [[1,'poison_sting'],[1,'string_shot']],
   kakuna:     [[1,'harden'],[7,'poison_sting']],
   beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
@@ -1120,6 +1139,7 @@ const POKEMON_ABILITIES = {
   pikachu:     { normal: ['static'],             hidden: 'lightning_rod' },
   // Bug starters
   caterpie:    { normal: ['shield_dust','run_away'], hidden: 'run_away'      },
+  wooloo:      { normal: ['fluffy','run_away'],       hidden: 'bulletproof'  },
   weedle:      { normal: ['run_away'],                    hidden: 'sniper'        },
 };
 
@@ -1128,7 +1148,7 @@ function gerarAbility(pokemon) {
   // Consulta EVOLUTION_ABILITIES primeiro (formas evoluídas), depois POKEMON_ABILITIES
   const entry = EVOLUTION_ABILITIES[pokemon] || POKEMON_ABILITIES[pokemon];
   if (!entry) return 'overgrow';
-  if (Math.random() < 0.002 && entry.hidden) return entry.hidden; // 0.2% hidden ability
+  if (Math.random() < 0.0005 && entry.hidden) return entry.hidden; // 0.05% hidden ability
   const normais = entry.normal;
   return normais[Math.floor(Math.random() * normais.length)];
 }
@@ -1365,7 +1385,7 @@ function gerarNatureAleatoria() {
 const MISSOES_CONFIG = {
   missao_teste: {
     label:     'Daily Login Bonus',
-    lealdade:  10,
+    lealdade:  5,
     descricao: 'Claim your daily loyalty bonus. Press Done! to collect.',
     tipo:      'manual',
     icone:     '[+]',
@@ -1373,7 +1393,7 @@ const MISSOES_CONFIG = {
   },
   avaliar_build: {
     label:     'Evaluate a player build',
-    lealdade:  15,
+    lealdade:  5,
     descricao: 'Rate a build on another player profile.',
     tipo:      'cross',
     icone:     '[*]',
@@ -1382,7 +1402,7 @@ const MISSOES_CONFIG = {
   },
   criar_build: {
     label:     'Create and save a build',
-    lealdade:  20,
+    lealdade:  5,
     descricao: 'Create a new Pokemon UNITE build.',
     tipo:      'cross',
     icone:     '[B]',
@@ -1398,7 +1418,7 @@ const MISSOES_CONFIG = {
   // ── Missões de navegação (cross-page) ──────────────────────
   voltar_home: {
     label:     'Visit the About page',
-    lealdade:  10,
+    lealdade:  5,
     descricao: 'Go to the About page and click "Back to Home".',
     tipo:      'cross',
     icone:     '[H]',
@@ -1407,7 +1427,7 @@ const MISSOES_CONFIG = {
   },
   contato_form: {
     label:     'Contact us',
-    lealdade:  10,
+    lealdade:  5,
     descricao: 'Go to Contact page and click "Go to Form".',
     tipo:      'cross',
     icone:     '[C]',
@@ -1416,7 +1436,7 @@ const MISSOES_CONFIG = {
   },
   tapete_aventura: {
     label:     'Start an Adventure',
-    lealdade:  15,
+    lealdade:  5,
     descricao: 'Play the Magic Carpet game and click "Começar Aventura".',
     tipo:      'cross',
     icone:     '[T]',
@@ -1425,7 +1445,7 @@ const MISSOES_CONFIG = {
   },
   recent_builds: {
     label:     'Browse Recent Builds',
-    lealdade:  10,
+    lealdade:  5,
     descricao: 'On the Home page, click the "Recent Builds" button.',
     tipo:      'cross',
     icone:     '[R]',
@@ -1434,7 +1454,7 @@ const MISSOES_CONFIG = {
   },
   copiar_link: {
     label:     'Share your profile',
-    lealdade:  10,
+    lealdade:  5,
     descricao: 'On your profile page, click "Copy Link".',
     tipo:      'cross',
     icone:     '[P]',
