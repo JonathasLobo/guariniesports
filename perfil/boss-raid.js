@@ -31,6 +31,9 @@ const BASE_STATS = {
   litten:    { hp:45,  atk:65, def:40,  spa:60, spd:40,  spe:70  },
   scorbunny:    { hp:50,  atk:71, def:40,  spa:40, spd:40,  spe:69  },
   fuecoco:    { hp:67,  atk:45, def:59,  spa:63, spd:40,  spe:36  },
+  // --- Bug ---
+  caterpie:  { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
+  weedle:    { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
   // --- Water ---
   squirtle:  { hp:44,  atk:48,  def:65, spa:50,  spd:64, spe:43  },
   totodile:   { hp:50,  atk:65,  def:64,  spa:44, spd:48,  spe:43 },
@@ -95,6 +98,8 @@ const POKEMON_TIPOS = {
   piplup:     ['water'],          oshawott:   ['water'],    froakie:    ['water'],
   popplio:    ['water'],          sobble:     ['water'],    quaxly:     ['water'],
   pikachu:    ['electric'],
+  caterpie:   ['bug'],
+  weedle:     ['bug','poison'],
 };
 
 // Cor de cada tipo
@@ -115,6 +120,9 @@ const POKEDEX_NUM = {
   squirtle:7,  totodile:158, mudkip:258,
   piplup:393,  oshawott:501, froakie:656,
   popplio:728, sobble:816,   quaxly:912,
+  // Bug
+  caterpie:10,
+  weedle:13, kakuna:14, beedrill:15,
 };
 
 // ============================================================
@@ -268,6 +276,16 @@ const EVOLUTION_CHAIN = {
   // Quaxly → Quaxwell (L16) → Quaquaval (L36)
   quaxly:     { evolvesTo: 'quaxwell',   levelReq: 16, loyaltyReq: 255 },
   quaxwell:   { evolvesTo: 'quaquaval',  levelReq: 36, loyaltyReq: 255 },
+
+  // ── Linha Caterpie (Bug) ──────────────────────────────────
+  // Caterpie → Metapod (L7) → Butterfree (L10)
+  caterpie:   { evolvesTo: 'metapod',    levelReq: 7,  loyaltyReq: 50  },
+  metapod:    { evolvesTo: 'butterfree', levelReq: 10, loyaltyReq: 50  },
+
+  // ── Linha Weedle (Bug/Poison) ─────────────────────────────
+  // Weedle → Kakuna (L7) → Beedrill (L10)
+  weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
+  kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
 };
 
 // ============================================================
@@ -278,6 +296,14 @@ const EVOLUTION_CHAIN = {
 // Se a forma evoluída não tiver entrada aqui, herda a do estágio anterior.
 // ============================================================
 const EVOLUTION_ABILITIES = {
+  // ── Linha Caterpie (Bug) ──────────────────────────────────
+  // ATENÇÃO: Metapod não tem hidden ability — a flag noHidden:true indica
+  // que esta forma não tem hidden, mas a linhagem hidden CONTINUA para butterfree.
+  metapod:     { normal: ['shed_skin'],           hidden: null, noHidden: true  },
+  butterfree:  { normal: ['compound_eyes'],       hidden: 'tinted_lens'         },
+  // Weedle line
+  kakuna:      { normal: ['shed_skin'],           hidden: null, noHidden: true  },  // sem hidden, linhagem continua
+  beedrill:    { normal: ['swarm'],               hidden: 'sniper'              },
   // ── Linha Bulbasaur ───────────────────────────────────────
   ivysaur:     { normal: ['overgrow'],           hidden: 'chlorophyll'   },
   venusaur:    { normal: ['overgrow','thick_fat'],hidden: 'chlorophyll'   },
@@ -422,6 +448,12 @@ const EVOLUTION_TIPOS = {
   drizzile:    ['water'],          inteleon:    ['water'],
   // Quaxly line — ganha fighting
   quaxwell:    ['water','fighting'],quaquaval:  ['water','fighting'],
+  // Caterpie line — Butterfree ganha flying
+  metapod:     ['bug'],
+  butterfree:  ['bug','flying'],
+  // Weedle line — mantém bug/poison até Beedrill
+  kakuna:      ['bug','poison'],
+  beedrill:    ['bug','poison'],
 };
 
 // ============================================================
@@ -509,6 +541,12 @@ const BASE_STATS_EVO = {
   // Quaxly line
   quaxwell:    { hp:70,  atk:78,  def:60,  spa:65,  spd:60,  spe:65  },
   quaquaval:   { hp:85,  atk:120, def:80,  spa:85,  spd:75,  spe:85  },
+  // Caterpie line
+  metapod:     { hp:50,  atk:20,  def:55,  spa:25,  spd:25,  spe:30  },
+  butterfree:  { hp:60,  atk:45,  def:50,  spa:90,  spd:80,  spe:70  },
+  // Weedle line
+  kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
+  beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
 };
 
 // ============================================================
@@ -543,9 +581,42 @@ const POKEDEX_NUM_EVO = {
   brionne:729, primarina:730,
   drizzile:817, inteleon:818,
   quaxwell:913, quaquaval:914,
+  // Caterpie line
+  metapod:11,  butterfree:12,
 };
 
 
+
+// ============================================================
+// CATCH RATE por pokémon (% com Poké Ball padrão)
+// Formas base. Evoluídas geralmente são menores.
+// ============================================================
+const CATCH_RATE = {
+  bulbasaur:45, chikorita:45, treecko:45, turtwig:45, snivy:45,
+  chespin:45, rowlet:45, grookey:45, sprigatito:45,
+  ivysaur:45, venusaur:45, bayleef:45, meganium:45,
+  grovyle:45, sceptile:45, grotle:45, torterra:45,
+  servine:45, serperior:45, quilladin:45, chesnaught:45,
+  dartrix:45, decidueye:45, thwackey:45, rillaboom:45,
+  floragato:45, meowscarada:45,
+  charmander:45, cyndaquil:45, torchic:45, chimchar:45,
+  tepig:45, fennekin:45, litten:45, scorbunny:45, fuecoco:45,
+  charmeleon:45, charizard:45, quilava:45, typhlosion:45,
+  combusken:45, blaziken:45, monferno:45, infernape:45,
+  pignite:45, emboar:45, braixen:45, delphox:45,
+  torracat:45, incineroar:45, raboot:45, cinderace:45,
+  crocalor:45, skeledirge:45,
+  squirtle:45, totodile:45, mudkip:45, piplup:45,
+  oshawott:45, froakie:45, popplio:45, sobble:45, quaxly:45,
+  wartortle:45, blastoise:45, croconaw:45, feraligatr:45,
+  marshtomp:45, swampert:45, prinplup:45, empoleon:45,
+  dewott:45, samurott:45, frogadier:45, greninja:45,
+  brionne:45, primarina:45, drizzile:45, inteleon:45,
+  quaxwell:45, quaquaval:45,
+  caterpie:255, metapod:120, butterfree:45,
+  weedle:255, kakuna:120, beedrill:45,
+  pikachu:190,
+};
 const TIPO_CORES = {
   normal:'#A8A878', fire:'#F08030',   water:'#6890F0',  electric:'#F8D030',
   grass:'#78C850',  ice:'#98D8D8',    fighting:'#C03028',poison:'#A040A0',
@@ -804,7 +875,57 @@ const MOVES_DB = {
   astonish:       { name:'Astonish',       type:'ghost',    category:'physical', power:30,  accuracy:100, pp:15, desc:'May cause flinching.' },
   headbutt:       { name:'Headbutt',       type:'normal',   category:'physical', power:70,  accuracy:100, pp:15, desc:'May flinch.' },
   bind:           { name:'Bind',           type:'normal',   category:'physical', power:15,  accuracy:85,  pp:20, desc:'Squeezes foe for 4-5 turns.' },
+  // ── Bug extras (Caterpie / Butterfree line) ───────────────
+  bug_buzz:     { name:'Bug Buzz',     type:'bug',      category:'special',  power:90,  accuracy:100, pp:10, desc:'Emits a harsh buzz. May lower Sp.Def.' },
+  silver_wind:  { name:'Silver Wind',  type:'bug',      category:'special',  power:60,  accuracy:100, pp:5,  desc:'May raise all user stats.' },
+  quiver_dance: { name:'Quiver Dance', type:'bug',      category:'status',   power:null,accuracy:null,pp:20, desc:'Raises Sp.Atk, Sp.Def and Speed.' },
+  harden:       { name:'Harden',       type:'normal',   category:'status',   power:null,accuracy:null,pp:30, desc:'Raises user\'s Defense by 1.' },
+  sleep_powder: { name:'Sleep Powder', type:'grass',    category:'status',   power:null,accuracy:75,  pp:15, desc:'May put the foe to sleep.' },
+  gust:         { name:'Gust',         type:'flying',   category:'special',  power:40,  accuracy:100, pp:35, desc:'Whips up a gusty wind.' },
+  stun_spore:   { name:'Stun Spore',   type:'grass',    category:'status',   power:null,accuracy:75,  pp:30, desc:'May paralyze the opponent.' },
+  supersonic:   { name:'Supersonic',   type:'normal',   category:'status',   power:null,accuracy:55,  pp:20, desc:'Emits ultrasonic waves to confuse.' },
+  tailwind:     { name:'Tailwind',     type:'flying',   category:'status',   power:null,accuracy:null,pp:15, desc:'Doubles Speed for 4 turns.' },
+  safeguard:    { name:'Safeguard',    type:'normal',   category:'status',   power:null,accuracy:null,pp:25, desc:'Protects from status for 5 turns.' },
+  whirlwind:    { name:'Whirlwind',    type:'normal',   category:'status',   power:null,accuracy:null,pp:20, desc:'Blows away foe and ends battle.' },
+  // ── Bug / Caterpie line ──
+  // Bug/Poison moves — Weedle line
+  poison_sting: {name:'Poison Sting',  type:'poison',  category:'physical',power:15,   accuracy:100, pp:35, desc:'Stings the foe. May poison.'},
+  twineedle:    {name:'Twineedle',     type:'bug',     category:'physical',power:25,   accuracy:100, pp:20, desc:'Hits foe twice in a row.'},
+  fury_attack:  {name:'Fury Attack',  type:'normal',  category:'physical',power:15,   accuracy:85,  pp:20, desc:'Jabs foe 2-5 times.'},
+  poison_jab:   {name:'Poison Jab',   type:'poison',  category:'physical',power:80,   accuracy:100, pp:20, desc:'A hard jab that may poison.'},
+  agility:      {name:'Agility',      type:'psychic', category:'status',  power:null, accuracy:null, pp:30, desc:'Relaxes the body to raise Speed sharply.', eff:'buff', stat:'spe', stages:2},
+  pin_missile:  {name:'Pin Missile',  type:'bug',     category:'physical',power:25,   accuracy:95,  pp:20, desc:'Sharp pins are fired 2-5 times.'},
+  x_scissor:    {name:'X-Scissor',    type:'bug',     category:'physical',power:80,   accuracy:100, pp:15, desc:'Slashes the foe with crossed scythes.'},
+  string_shot:   {name:'String Shot',   type:'bug',     category:'status', power:null, accuracy:95,  pp:40,  desc:"Lowers foe's Speed.", eff:'deboss', stat:'spe', stages:-1},
+  bug_bite:      {name:'Bug Bite',      type:'bug',     category:'physical',power:60,  accuracy:100, pp:20},
+  harden:        {name:'Harden',        type:'normal',  category:'status', power:null, accuracy:null, pp:30,  desc:'Raises own Defense.', eff:'buff', stat:'def', stages:1},
+  // ── Water extras ──
+  bubble:        {name:'Bubble',        type:'water',   category:'special', power:40,  accuracy:100, pp:30},
+  rapid_spin:    {name:'Rapid Spin',    type:'normal',  category:'physical',power:50,  accuracy:100, pp:40},
+  skull_bash:    {name:'Skull Bash',    type:'normal',  category:'physical',power:130, accuracy:100, pp:10},
+  aqua_tail:     {name:'Aqua Tail',     type:'water',   category:'physical',power:90,  accuracy:90,  pp:10},
+  aqua_jet:      {name:'Aqua Jet',      type:'water',   category:'physical',power:40,  accuracy:100, pp:20},
+  water_pulse:   {name:'Water Pulse',   type:'water',   category:'special', power:60,  accuracy:100, pp:20},
+  rain_dance:    {name:'Rain Dance',    type:'water',   category:'status',  power:null,accuracy:null, pp:5},
+  hydro_pump:    {name:'Hydro Pump',    type:'water',   category:'special', power:110, accuracy:80,  pp:5},
+  // ── Fire extras ──
+  ember:         {name:'Ember',         type:'fire',    category:'special', power:40,  accuracy:100, pp:25},
+  flame_charge:  {name:'Flame Charge',  type:'fire',    category:'physical',power:50,  accuracy:100, pp:20},
+  flamethrower:  {name:'Flamethrower',  type:'fire',    category:'special', power:90,  accuracy:100, pp:15},
+  fire_blast:    {name:'Fire Blast',    type:'fire',    category:'special', power:110, accuracy:85,  pp:5},
+  flare_blitz:   {name:'Flare Blitz',   type:'fire',    category:'physical',power:120, accuracy:100, pp:15},
+  // ── Grass extras ──
+  absorb:        {name:'Absorb',        type:'grass',   category:'special', power:20,  accuracy:100, pp:25},
+  razor_leaf:    {name:'Razor Leaf',    type:'grass',   category:'physical',power:55,  accuracy:95,  pp:25},
+  mega_drain:    {name:'Mega Drain',    type:'grass',   category:'special', power:40,  accuracy:100, pp:15},
+  leech_seed:    {name:'Leech Seed',    type:'grass',   category:'status',  power:null,accuracy:90,  pp:10},
+  synthesis:     {name:'Synthesis',     type:'grass',   category:'status',  power:null,accuracy:null, pp:5},
+  giga_drain:    {name:'Giga Drain',    type:'grass',   category:'special', power:75,  accuracy:100, pp:10},
+  leaf_storm:    {name:'Leaf Storm',    type:'grass',   category:'special', power:130, accuracy:90,  pp:5},
+  wood_hammer:   {name:'Wood Hammer',   type:'grass',   category:'physical',power:120, accuracy:100, pp:15},
+
 };
+;
 
 // ============================================================
 // LEARNSETS por nível — [ [level, 'move_key'], ... ]
@@ -837,13 +958,41 @@ const LEARNSETS = {
   popplio:    [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'disarming_voice'],[11,'baby_doll_eyes'],[15,'aqua_jet'],[18,'encore'],[22,'bubble_beam'],[25,'sing'],[29,'double_slap'],[32,'hyper_voice'],[36,'moonblast'],[39,'captivate'],[43,'hydro_pump'],[46,'misty_terrain']],
   sobble:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'bind'],[12,'water_pulse'],[16,'tearful_look'],[20,'acrobatics'],[24,'sucker_punch'],[28,'surf'],[32,'liquidation'],[36,'snipe_shot'],[40,'hydro_pump'],[44,'bounce']],
   quaxly:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'wing_attack'],[12,'quick_attack'],[16,'water_pulse'],[20,'aerial_ace'],[24,'aqua_jet'],[28,'acrobatics'],[32,'liquidation'],[36,'double_hit'],[40,'hydro_pump'],[44,'brave_bird']],
+  // ── Bug line ─────────────────────────────────────────────
+  caterpie:   [[1,'tackle'],[1,'string_shot'],[5,'bug_bite']],
+  weedle:     [[1,'poison_sting'],[1,'string_shot']],
+  kakuna:     [[1,'harden'],[7,'poison_sting']],
+  beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
+  metapod:    [[1,'harden']],
+  butterfree: [[1,'confusion'],[1,'sleep_powder'],[10,'gust'],[12,'stun_spore'],[14,'psybeam'],[16,'silver_wind'],[18,'supersonic'],[21,'tailwind'],[24,'safeguard'],[27,'whirlwind'],[30,'psychic_move'],[33,'bug_buzz'],[36,'quiver_dance']],
 };
 
 // Retorna os golpes disponíveis até um nível (últimos 4)
 function inicializarGolpes(pokemon, nivel) {
-  const ls = LEARNSETS[pokemon] || [];
-  const disponiveis = ls.filter(([lvl]) => lvl <= nivel).map(([,key]) => key);
-  return disponiveis.slice(-4);
+  // Construir cadeia de formas anteriores para herdar golpes
+  const encontrarAntecessor = (poke) => {
+    for (const [base, data] of Object.entries(EVOLUTION_CHAIN)) {
+      if (data.evolvesTo === poke) return base;
+    }
+    return null;
+  };
+  const cadeia = [pokemon];
+  let ant = encontrarAntecessor(pokemon);
+  while (ant) { cadeia.unshift(ant); ant = encontrarAntecessor(ant); }
+
+  // Acumular golpes de todas as formas anteriores + atual
+  let golpesAcumulados = [];
+  for (const forma of cadeia) {
+    const isAtual = forma === pokemon;
+    let nivelLimite = isAtual ? nivel : (EVOLUTION_CHAIN[forma]?.levelReq || 100);
+    const ls = LEARNSETS[forma] || [];
+    const novos = ls
+      .filter(([lvl]) => lvl <= nivelLimite)
+      .map(([,key]) => key)
+      .filter(k => !golpesAcumulados.includes(k));
+    golpesAcumulados.push(...novos);
+  }
+  return golpesAcumulados.slice(-4);
 }
 
 // Verifica se aprende golpe num nível exato
@@ -947,6 +1096,9 @@ const POKEMON_ABILITIES = {
   quaxly:      { normal: ['torrent'],            hidden: 'moxie'         },
   // fallback
   pikachu:     { normal: ['static'],             hidden: 'lightning_rod' },
+  // Bug starters
+  caterpie:    { normal: ['shield_dust','run_away'], hidden: 'run_away'      },
+  weedle:      { normal: ['run_away'],                    hidden: 'sniper'        },
 };
 
 // Sorteia a ability do pokémon — 5% hidden, resto dividido entre as normais
@@ -954,7 +1106,7 @@ function gerarAbility(pokemon) {
   // Consulta EVOLUTION_ABILITIES primeiro (formas evoluídas), depois POKEMON_ABILITIES
   const entry = EVOLUTION_ABILITIES[pokemon] || POKEMON_ABILITIES[pokemon];
   if (!entry) return 'overgrow';
-  if (Math.random() < 0.05 && entry.hidden) return entry.hidden;
+  if (Math.random() < 0.01 && entry.hidden) return entry.hidden;
   const normais = entry.normal;
   return normais[Math.floor(Math.random() * normais.length)];
 }
@@ -979,9 +1131,21 @@ const ITEMS_DB = {
   revive:        { name:'Revive',        img:'../boss/img-items/revive.png',        category:'revive', usableIn:'both',   desc:'Revives a fainted Pokemon, restoring half of its max HP.', effect:{ type:'revive', value:0.5 } },
   max_revive:    { name:'Max Revive',    img:'../boss/img-items/max_revive.png',    category:'revive', usableIn:'both',   desc:'Revives a fainted Pokemon, fully restoring its HP.',       effect:{ type:'revive', value:1.0 } },
   full_restore:  { name:'Full Restore',  img:'../boss/img-items/full_restore.png',  category:'heal',   usableIn:'both',   desc:'Fully restores HP and heals all status conditions.',       effect:{ type:'fullrestore' } },
+  ether:         { name:'Ether',         img:'../boss/img-items/ether.png',         category:'pp',     usableIn:'both',   desc:'Restores 20 PP of a chosen move. Select a Pokemon, then choose the move.',  effect:{ type:'restorepp', value:20 } },
 };
-const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore'];
-const BAG_ITENS_INICIAIS = { pokebola: 5, potion: 5, revive: 1 };
+const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether'];
+// ──────────────────────────────────────────────────────────────
+// BAG INICIAL — itens que todo novo jogador recebe ao começar
+// Para editar: altere as quantidades abaixo ou adicione novas chaves.
+// Chaves válidas: pokebola, great_ball, ultra_ball, potion, super_potion,
+//                hyper_potion, max_potion, revive, max_revive, full_restore, ether
+// ──────────────────────────────────────────────────────────────
+const BAG_ITENS_INICIAIS = {
+  pokebola:  5,   // Poké Balls
+  potion:    5,   // Potions (+20 HP)
+  revive:    1,   // Revives (metade do HP)
+  ether:     1,   // Ether (restaura 20 PP)
+};
 
 async function salvarBag(bag) {
   const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
@@ -1007,7 +1171,41 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
   if (ef?.type === 'revive'      && fainted)                     { novoHP = Math.max(1, Math.floor(hpMax * ef.value)); ok = true; }
   if (ef?.type === 'fullrestore' && (hpAtual < hpMax || fainted)){ novoHP = hpMax; ok = true; }
 
-  if (!ok) { alert('Cannot use this item on ' + capitalizar(slot.pokemon) + ' right now.'); return; }
+  // Ether: +20 PP em UM golpe escolhido — seleção de golpe fica em abrirUsarItem/abrirEtherMoveSelect
+  // Esta função é chamada DEPOIS que o usuário escolheu pokemon E golpe
+  // moveAlvo é passado via argumento extra quando chamado pelo seletor de golpe
+  if (ef?.type === 'restorepp') {
+    // Se moveAlvo não foi passado, redirecionar para seletor de golpe
+    if (!arguments[2]) {
+      abrirEtherMoveSelect(itemKey, slotIdx);
+      return;
+    }
+    const moveAlvo = arguments[2]; // chave do golpe a restaurar
+    const move = MOVES_DB[moveAlvo];
+    if (!move) return;
+    const ppMax = move.pp || 10;
+    const ppAntes = slot.ppAtual?.[moveAlvo] !== undefined ? slot.ppAtual[moveAlvo] : ppMax;
+    if (ppAntes >= ppMax) { mostrarToastSimples('❌ PP already full for ' + move.name + '!'); return; }
+    const ppDepois = Math.min(ppMax, ppAntes + (item.effect?.value || 20));
+    const novoPP = { ...(slot.ppAtual || {}), [moveAlvo]: ppDepois };
+    bag[itemKey] = (bag[itemKey] || 0) - 1;
+    if (bag[itemKey] <= 0) delete bag[itemKey];
+    const novoTeamPP = team.map((s, i) => i === slotIdx ? { ...s, ppAtual: novoPP } : s);
+    try {
+      const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+      await updateDoc(doc(_db, 'usuarios', _userId), {
+        raidBag:  JSON.parse(JSON.stringify(bag)),
+        raidTeam: JSON.parse(JSON.stringify(novoTeamPP)),
+      });
+      _userData.raidBag  = bag;
+      _userData.raidTeam = novoTeamPP;
+      renderizarBossRaid();
+      mostrarToastSimples('✨ Ether used! +' + (item.effect?.value||20) + ' PP restored to ' + move.name + ' for ' + capitalizar(slot.pokemon) + '!');
+    } catch(e) { console.error('[BossRaid] Ether error:', e); }
+    return;
+  }
+
+  if (!ok) { mostrarToastSimples('❌ Cannot use on ' + capitalizar(slot.pokemon) + ' right now.'); return; }
 
   bag[itemKey] = (bag[itemKey] || 0) - 1;
   if (bag[itemKey] <= 0) delete bag[itemKey];
@@ -1022,7 +1220,9 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
     _userData.raidBag  = bag;
     _userData.raidTeam = novoTeam;
     renderizarBossRaid();
-    alert(item.name + ' used! ' + capitalizar(slot.pokemon) + ': ' + novoHP + '/' + hpMax + ' HP');
+    const isRevive = item.effect?.type === 'revive';
+    const emoji = isRevive ? '💊' : '🧪';
+    mostrarToastSimples(emoji + ' ' + item.name + ' used on ' + capitalizar(slot.pokemon) + '! ' + novoHP + '/' + hpMax + ' HP');
   } catch(e) { console.error('[BossRaid] Erro ao usar item:', e); }
 }
 
@@ -1135,7 +1335,7 @@ function gerarNatureAleatoria() {
 // ============================================================
 // ============================================================
 // MISSOES DIARIAS - 2 ativas por dia
-// Para trocar: edite MISSOES_ATIVAS com as 2 chaves desejadas.
+// Rotação automática: edite MISSOES_POOL_ROTACAO para trocar o conjunto de missões.
 // Tipo 'manual'  = usuario clica Done! no widget
 // Tipo 'cross'   = completada em outra pagina via localStorage
 // Tipo 'auto'    = completada via window.missaoDiariaCompleta()
@@ -1147,6 +1347,7 @@ const MISSOES_CONFIG = {
     descricao: 'Claim your daily loyalty bonus. Press Done! to collect.',
     tipo:      'manual',
     icone:     '[+]',
+    itens:     { potion: 1, revive: 1, ether: 1 },  // recompensa diária
   },
   avaliar_build: {
     label:     'Evaluate a player build',
@@ -1155,6 +1356,7 @@ const MISSOES_CONFIG = {
     tipo:      'cross',
     icone:     '[*]',
     instrucao: "Go to another player's profile and click any star on their builds.",
+    itens:     { potion: 1, revive: 1, ether: 1 },
   },
   criar_build: {
     label:     'Create and save a build',
@@ -1171,10 +1373,77 @@ const MISSOES_CONFIG = {
     tipo:      'auto',
     icone:     '[R]',
   },
+  // ── Missões de navegação (cross-page) ──────────────────────
+  voltar_home: {
+    label:     'Visit the About page',
+    lealdade:  10,
+    descricao: 'Go to the About page and click "Back to Home".',
+    tipo:      'cross',
+    icone:     '[H]',
+    instrucao: 'Open the About page and click the "Back to Home" button.',
+    itens:     { potion: 1, revive: 1, ether: 1 },
+  },
+  contato_form: {
+    label:     'Contact us',
+    lealdade:  10,
+    descricao: 'Go to Contact page and click "Go to Form".',
+    tipo:      'cross',
+    icone:     '[C]',
+    instrucao: 'Open the Contact page and click the "Go to Form" button.',
+    itens:     { potion: 1, revive: 1, ether: 1 },
+  },
+  tapete_aventura: {
+    label:     'Start an Adventure',
+    lealdade:  15,
+    descricao: 'Play the Magic Carpet game and click "Começar Aventura".',
+    tipo:      'cross',
+    icone:     '[T]',
+    instrucao: 'Go to the Magic Carpet game and click "Começar Aventura".',
+    itens:     { potion: 1, revive: 1, ether: 1 },
+  },
+  recent_builds: {
+    label:     'Browse Recent Builds',
+    lealdade:  10,
+    descricao: 'On the Home page, click the "Recent Builds" button.',
+    tipo:      'cross',
+    icone:     '[R]',
+    instrucao: 'Go to the Home page and click the "Recent Builds" button.',
+    itens:     { potion: 1, revive: 1, ether: 1 },
+  },
+  copiar_link: {
+    label:     'Share your profile',
+    lealdade:  10,
+    descricao: 'On your profile page, click "Copy Link".',
+    tipo:      'cross',
+    icone:     '[P]',
+    instrucao: 'Go to your profile page and click the "Copy Link" button.',
+    itens:     { potion: 1, revive: 1, ether: 1 },
+  },
 };
 
 // As 2 missoes exibidas hoje — editar para trocar o par diario
-const MISSOES_ATIVAS = ['missao_teste', 'avaliar_build'];
+// Pool de missões que rotacionam diariamente na segunda posição
+// missao_teste é sempre fixa na primeira posição (login bonus)
+const MISSOES_POOL_ROTACAO = [
+  'avaliar_build',
+  'voltar_home',
+  'contato_form',
+  'tapete_aventura',
+  'recent_builds',
+  'copiar_link',
+];
+// Missão por slot: cada slot recebe uma missão diferente mas determinística (dia+slot)
+// Slot 1 no dia 66 → índice (66+1) % 6 = 1 (voltar_home)
+// Slot 2 no dia 66 → índice (66+2) % 6 = 2 (contato_form) ... etc.
+function getMissaoDoSlot(slotNum) {
+  const hoje   = new Date();
+  const inicio = new Date(hoje.getFullYear(), 0, 0);
+  const diaDoAno = Math.floor((hoje - inicio) / 86400000);
+  const idx = (diaDoAno + (slotNum || 1)) % MISSOES_POOL_ROTACAO.length;
+  return MISSOES_POOL_ROTACAO[idx];
+}
+// MISSOES_ATIVAS ainda existe para compatibilidade (usa slot 1 como base)
+const MISSOES_ATIVAS = ['missao_teste', getMissaoDoSlot(1)];
 
 // ── Data de hoje como chave ──────────────────────────────────────────
 function hojeKey() {
@@ -1182,8 +1451,12 @@ function hojeKey() {
 }
 
 // ── Verifica se missao foi feita hoje ─────────────────────────────
-function missaoFeitaHoje(missaoKey) {
-  return (_userData?.missoesDiarias || {})[missaoKey] === hojeKey();
+// missaoFeitaHoje agora é por slot: cada pokemon tem tracking independente
+// Chave: "missaoKey_slotN" — ex: "avaliar_build_slot2"
+function missaoFeitaHoje(missaoKey, slotTarget) {
+  const slot = slotTarget || getQuestAtiva()?.slotTarget || 1;
+  const key = missaoKey + '_slot' + slot;
+  return (_userData?.missoesDiarias || {})[key] === hojeKey();
 }
 
 // ── Credita lealdade e marca missao como feita ───────────────────
@@ -1192,7 +1465,7 @@ function missaoFeitaHoje(missaoKey) {
 async function completarMissaoDiaria(missaoKey, slotTarget) {
   if (!_userId || !_userData) return;
 
-  if (missaoFeitaHoje(missaoKey)) {
+  if (missaoFeitaHoje(missaoKey, slotTarget)) {
     mostrarToast('Already done today!', (_userData?.raidTeam?.[0]?.pokemon || ''), false);
     return;
   }
@@ -1210,16 +1483,29 @@ async function completarMissaoDiaria(missaoKey, slotTarget) {
   });
 
   const missoesDiarias = Object.assign({}, _userData.missoesDiarias || {});
-  missoesDiarias[missaoKey] = hojeKey();
+  // Chave per-slot: permite que a mesma missão seja feita em pokémons diferentes no mesmo dia
+  const missaoDiariaKey = missaoKey + '_slot' + alvoSlot;
+  missoesDiarias[missaoDiariaKey] = hojeKey();
+
+  // Creditar itens se a missão tiver recompensa de itens
+  const novaBag = Object.assign({}, _userData.raidBag || {});
+  const itensConfig = config.itens || {};
+  Object.entries(itensConfig).forEach(([itemKey, qty]) => {
+    novaBag[itemKey] = (novaBag[itemKey] || 0) + qty;
+  });
+  const temItens = Object.keys(itensConfig).length > 0;
 
   try {
     const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
-    await updateDoc(doc(_db, 'usuarios', _userId), {
+    const updatePayload = {
       raidTeam:       JSON.parse(JSON.stringify(novoTeam)),
       missoesDiarias: missoesDiarias,
-    });
+    };
+    if (temItens) updatePayload.raidBag = JSON.parse(JSON.stringify(novaBag));
+    await updateDoc(doc(_db, 'usuarios', _userId), updatePayload);
     _userData.raidTeam       = novoTeam;
     _userData.missoesDiarias = missoesDiarias;
+    if (temItens) _userData.raidBag = novaBag;
 
     console.log('[BossRaid] Missao completa:', missaoKey, '+' + config.lealdade + ' loyalty -> slot', alvoSlot);
 
@@ -1228,7 +1514,12 @@ async function completarMissaoDiaria(missaoKey, slotTarget) {
 
     // Toast de confirmacao
     const alvo = novoTeam.find(s => s.slot === alvoSlot);
-    mostrarToast('+' + config.lealdade + ' Loyalty to ' + capitalizar(alvo?.pokemon || ''), config.label, true);
+    let toastSub = config.label;
+    if (temItens) {
+      const itensStr = Object.entries(itensConfig).map(([k,v]) => `+${v} ${capitalizar(k)}`).join(', ');
+      toastSub = config.label + ' · ' + itensStr;
+    }
+    mostrarToast('+' + config.lealdade + ' Loyalty to ' + capitalizar(alvo?.pokemon || ''), toastSub, true);
 
     // Badge de evolucao se elegivel
     novoTeam.forEach(s => { if (podeEvoluir(s)) sugerirEvolucao(s); });
@@ -1255,6 +1546,16 @@ function mostrarToast(titulo, subtitulo, sucesso) {
   document.body.appendChild(t);
   setTimeout(() => t.classList.add('show'), 50);
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3500);
+}
+
+// Toast simples — uma linha, sem subtítulo, para feedback de item usado
+function mostrarToastSimples(msg, tipo) {
+  const t = document.createElement('div');
+  t.className = 'raid-missao-toast toast-simples' + (tipo === 'ok' ? ' toast-ok' : tipo === 'erro' ? ' toast-erro' : ' toast-info');
+  t.innerHTML = '<b class="toast-titulo">' + msg + '</b>';
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 30);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 2800);
 }
 
 // ============================================================
@@ -1284,8 +1585,8 @@ function iniciarQuest(missaoKey, slotTarget) {
   const config = MISSOES_CONFIG[missaoKey];
   if (!config) return;
 
-  if (missaoFeitaHoje(missaoKey)) {
-    mostrarToast('Already completed today!', config.label, false);
+  if (missaoFeitaHoje(missaoKey, slotTarget)) {
+    mostrarToast('Already completed today for this Pokémon!', config.label, false);
     return;
   }
 
@@ -1317,7 +1618,7 @@ function renderQuestWidget() {
   const quest = getQuestAtiva();
   if (!quest) return;
 
-  const jaFeita = missaoFeitaHoje(quest.missaoKey);
+  const jaFeita = missaoFeitaHoje(quest.missaoKey, quest.slotTarget);
 
   // Nome do pokemon que receberá a lealdade
   const team   = _userData?.raidTeam || [];
@@ -1378,6 +1679,27 @@ function inicializarQuestWidget() {
 // Expor globalmente para outros modulos (perfil-view, build-rating, etc.)
 window.missaoDiariaCompleta = completarMissaoDiaria;
 window.iniciarQuestRaid     = iniciarQuest;
+// Expor quest ativa para scripts cross-page (ex: sobre.html, contato.html)
+// Uso: window.completarMissaoCrossPage('missaoKey') — lê slotTarget do localStorage
+window.completarMissaoCrossPage = function(missaoKey) {
+  try {
+    const pendRaw = localStorage.getItem('bossraid_quest_ativa');
+    if (pendRaw) {
+      const quest = JSON.parse(pendRaw);
+      if (quest && quest.missaoKey === missaoKey) {
+        completarMissaoDiaria(missaoKey, quest.slotTarget || 1);
+        return;
+      }
+    }
+  } catch(e) {}
+  completarMissaoDiaria(missaoKey, 1);
+};
+// Salvar pending com slotTarget para retorno cross-page
+window.salvarMissaoPendente = function(missaoKey, slotTarget) {
+  try {
+    localStorage.setItem('bossraid_pending_mission', JSON.stringify({ missaoKey, slotTarget: slotTarget || 1 }));
+  } catch(e) {}
+};
 
 
 export async function initBossRaid(userId, db, userData) {
@@ -1390,19 +1712,75 @@ export async function initBossRaid(userId, db, userData) {
   inicializarQuestWidget();
   // Consumir missao pendente salva em localStorage
   // (disparada em outra pagina, ex: perfil-view, antes do boss-raid carregar)
+  // GUARD: 'completar_raid' (tipo:auto) NÃO pode ser consumida por este caminho —
+  // ela deve ser disparada explicitamente via window.missaoDiariaCompleta() por quem
+  // sabe que a raid foi vencida. Isso evita que voltar para a home após qualquer
+  // batalha acione a missão indevidamente.
   try {
-    const pendKey = localStorage.getItem('bossraid_pending_mission');
-    if (pendKey && MISSOES_CONFIG[pendKey]) {
-      localStorage.removeItem('bossraid_pending_mission');
-      console.log('[BossRaid] Consumindo missao pendente do localStorage:', pendKey);
-      setTimeout(() => completarMissaoDiaria(pendKey), 600);
+    const pendRaw = localStorage.getItem('bossraid_pending_mission');
+    if (pendRaw) {
+      // suporte tanto ao formato antigo (string) quanto novo (JSON {missaoKey, slotTarget})
+      let pendKey, pendSlot;
+      try {
+        const parsed = JSON.parse(pendRaw);
+        if (typeof parsed === 'object' && parsed.missaoKey) {
+          pendKey  = parsed.missaoKey;
+          pendSlot = parsed.slotTarget || 1;
+        } else {
+          pendKey  = parsed;          // string pura (formato antigo)
+          pendSlot = 1;
+        }
+      } catch(e) {
+        pendKey  = pendRaw;           // string literal sem JSON
+        pendSlot = 1;
+      }
+      if (pendKey && MISSOES_CONFIG[pendKey] && pendKey !== 'completar_raid') {
+        localStorage.removeItem('bossraid_pending_mission');
+        console.log('[BossRaid] Consumindo missao pendente do localStorage:', pendKey, 'slot:', pendSlot);
+        setTimeout(() => completarMissaoDiaria(pendKey, pendSlot), 600);
+      }
     }
   } catch(e) {}
-  if (window._pendingMission) {
-    const key = window._pendingMission;
+  if (window._pendingMission && window._pendingMission !== 'completar_raid') {
+    let pk, ps;
+    if (typeof window._pendingMission === 'object') {
+      pk = window._pendingMission.missaoKey;
+      ps = window._pendingMission.slotTarget || 1;
+    } else {
+      pk = window._pendingMission;
+      ps = 1;
+    }
     window._pendingMission = null;
-    setTimeout(() => completarMissaoDiaria(key), 600);
+    if (pk) setTimeout(() => completarMissaoDiaria(pk, ps), 600);
   }
+}
+
+// ── Toast de confirmação (substitui confirm() nativo) ───────────────
+// Retorna Promise<boolean>
+function mostrarConfirmacaoToast(titulo, subtitulo) {
+  return new Promise((resolve) => {
+    document.getElementById('raidConfirmToast')?.remove();
+    const el = document.createElement('div');
+    el.id = 'raidConfirmToast';
+    el.className = 'raid-confirm-toast';
+    el.innerHTML =
+      '<div class="rct-titulo">' + titulo + '</div>'
+      + (subtitulo ? '<div class="rct-sub">' + subtitulo + '</div>' : '')
+      + '<div class="rct-btns">'
+      + '<button class="rct-btn rct-cancel" id="rctCancel">Cancel</button>'
+      + '<button class="rct-btn rct-confirm" id="rctConfirm">Release</button>'
+      + '</div>';
+    document.body.appendChild(el);
+    // Animar entrada
+    requestAnimationFrame(() => el.classList.add('rct-show'));
+    function fechar(val) {
+      el.classList.remove('rct-show');
+      setTimeout(() => el.remove(), 220);
+      resolve(val);
+    }
+    document.getElementById('rctConfirm').addEventListener('click', () => fechar(true));
+    document.getElementById('rctCancel').addEventListener('click',  () => fechar(false));
+  });
 }
 
 // ============================================================
@@ -1557,6 +1935,7 @@ async function confirmarEscolha(pokemon) {
     const ability = gerarAbility(pokemon);
 
     // IVs explicitamente campo a campo — evita perda de valores 0 na serialização
+    const isShiny = Math.random() < 0.01; // 1% de chance
     const novoSlot = {
       slot:     1,
       pokemon:  pokemon,
@@ -1565,6 +1944,7 @@ async function confirmarEscolha(pokemon) {
       lealdade: 0,
       nature:   nature,
       ability:  ability,
+      shiny:    isShiny,
       addedAt:  new Date().toISOString(),
       golpes: inicializarGolpes(pokemon, 1),
       evs:    { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
@@ -1613,12 +1993,35 @@ function renderMyTeam(container, raidTeam) {
         ${slots.map((slot, i) => slot ? `
           <div class="raid-slot ocupado" data-slot="${i}" title="Click to view ${capitalizar(slot.pokemon)}">
             <span class="raid-slot-numero">${i + 1}</span>
-            <img src="../perfil/img-pokeicon/${slot.pokemon}.png"
+            <img src="${slot.shiny ? `../perfil/img-shiny/${slot.pokemon}.png` : `../perfil/img-pokeicon/${slot.pokemon}.png`}"
                  alt="${slot.pokemon}" class="raid-slot-img"
-                 onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+                 onerror="this.src='../perfil/img-pokeicon/${slot.pokemon}.png'"
+                 data-shiny="${slot.shiny ? '1' : '0'}">
+            ${slot.shiny ? '<span class="shiny-badge">✨ Shiny</span>' : ''}
             <p class="raid-slot-nome">${capitalizar(slot.pokemon)}</p>
             <div class="raid-slot-tipos">${renderTipoBadges(EVOLUTION_TIPOS[slot.pokemon]||POKEMON_TIPOS[slot.pokemon]||['normal'])}</div>
             <p class="raid-slot-nivel">Lv. ${slot.nivel}</p>
+            ${(() => {
+              // Calcular HP max e atual inline para o card
+              const _bs  = BASE_STATS_EVO[slot.pokemon] || BASE_STATS[slot.pokemon] || { hp:45 };
+              const _iv  = typeof slot.ivs?.hp === 'number' ? slot.ivs.hp : 15;
+              const _ev  = typeof slot.evs?.hp === 'number' ? slot.evs.hp : 0;
+              const _lvl = slot.nivel || 1;
+              const hpMx = Math.floor((2 * _bs.hp + _iv + Math.floor(_ev/4)) * _lvl / 100 + _lvl + 10);
+              const hpAt = typeof slot.hpAtual === 'number' && slot.hpAtual > 0
+                ? Math.min(slot.hpAtual, hpMx)
+                : slot.hpPct !== undefined
+                  ? Math.max(1, Math.floor(hpMx * slot.hpPct))
+                  : hpMx;
+              const pct = hpMx > 0 ? Math.max(0, hpAt / hpMx * 100) : 100;
+              const cls = pct > 50 ? 'hp-ok' : pct > 20 ? 'hp-low' : 'hp-critical';
+              return `<div class="raid-slot-hpbar-wrap" title="${hpAt}/${hpMx} HP">
+                <span class="raid-slot-hp-txt">${hpAt}/${hpMx} HP</span>
+                <div class="raid-slot-hpbar">
+                  <div class="raid-slot-hpbar-fill ${cls}" style="width:${pct.toFixed(1)}%"></div>
+                </div>
+              </div>`;
+            })()}
             <div class="raid-slot-xpbar" title="XP: ${slot.xp||0}/${xpParaNivel(slot.nivel+1)}">
               <div class="raid-slot-xpbar-fill"
                    style="width:${Math.min(100,Math.floor(((slot.xp||0)/xpParaNivel(slot.nivel+1))*100))}%"></div>
@@ -1737,7 +2140,7 @@ function abrirPokedex() {
 
     if (visto) {
       cards.push(
-        '<div class="pdx-card pdx-capturado" title="#' + numStr + ' ' + nome + '">'
+        '<div class="pdx-card pdx-capturado" title="#' + numStr + ' ' + nome + '" data-key="' + key + '">'
         + '<span class="pdx-num">#' + numStr + '</span>'
         + '<img src="../perfil/img-pokeicon/' + key + '.png" class="pdx-img" loading="lazy">'
         + '<span class="pdx-nome">' + nome + '</span>'
@@ -1763,6 +2166,254 @@ function abrirPokedex() {
 
   grid.innerHTML = cards.join('');
   modal.classList.add('show');
+
+  // Click em card revelado → abre detalhe
+  grid.querySelectorAll('.pdx-card.pdx-capturado').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => {
+      const key = card.dataset.key;
+      if (key) abrirPokedexDetalhe(key, registrados);
+    });
+  });
+}
+
+
+// ============================================================
+// POKÉDEX — Modal de detalhe de um pokémon revelado
+// ============================================================
+function abrirPokedexDetalhe(key, registrados) {
+  // Remove modal anterior se existir
+  document.getElementById('pdxDetalheModal')?.remove();
+
+  const nome     = key.charAt(0).toUpperCase() + key.slice(1);
+  const pdxNum   = POKEDEX_NUM[key] || POKEDEX_NUM_EVO[key] || '?';
+  const numStr   = String(pdxNum).padStart(4, '0');
+  const tipos    = EVOLUTION_TIPOS[key] || POKEMON_TIPOS[key] || ['normal'];
+  const bs       = BASE_STATS_EVO[key] || BASE_STATS[key] || {};
+  const catchPct = CATCH_RATE[key] || 45;
+  const abilEntry= EVOLUTION_ABILITIES[key] || POKEMON_ABILITIES[key] || {};
+  const learnset = LEARNSETS[key] || [];
+
+  // Verifica se o jogador tem versão shiny deste pokémon no time
+  const temShiny = (_userData?.raidTeam || []).some(s => s?.pokemon === key && s?.shiny);
+
+  // ── Stat bars ───────────────────────────────────────────────
+  const STAT_MAX = { hp:255, atk:180, def:180, spa:180, spd:180, spe:180 };
+  const STAT_BAR_COLORS = {
+    hp:  '#f04040',
+    atk: '#f08030',
+    def: '#f0d040',
+    spa: '#6890f0',
+    spd: '#78c850',
+    spe: '#f85888',
+  };
+  const STAT_LABEL = { hp:'HP', atk:'Attack', def:'Defense', spa:'Sp. Atk', spd:'Sp. Def', spe:'Speed' };
+  const total = Object.values(bs).reduce((a,b) => a + b, 0);
+
+  function statBar(stat) {
+    const val  = bs[stat] || 0;
+    const pct  = Math.min(100, Math.round(val / STAT_MAX[stat] * 100));
+    const col  = STAT_BAR_COLORS[stat];
+    return `<div class="pdx-stat-row">
+      <span class="pdx-stat-label">${STAT_LABEL[stat]}</span>
+      <span class="pdx-stat-val">${val}</span>
+      <div class="pdx-stat-bar-bg">
+        <div class="pdx-stat-bar-fill" style="width:${pct}%;background:${col}"></div>
+      </div>
+    </div>`;
+  }
+
+  // ── Evolution chain ─────────────────────────────────────────
+  // Encontrar raiz da cadeia
+  function getRaiz(k) {
+    for (const [base, data] of Object.entries(EVOLUTION_CHAIN)) {
+      if (data.evolvesTo === k) return getRaiz(base);
+    }
+    return k;
+  }
+  function getCadeia(k) {
+    const arr = [k];
+    let cur = k;
+    while (EVOLUTION_CHAIN[cur]) { cur = EVOLUTION_CHAIN[cur].evolvesTo; arr.push(cur); }
+    return arr;
+  }
+  const raiz   = getRaiz(key);
+  const cadeia = getCadeia(raiz);
+
+  function evoCardHTML(evoKey, idx) {
+    const evoNome = evoKey.charAt(0).toUpperCase() + evoKey.slice(1);
+    const revealed = registrados && registrados.has(evoKey);
+    const isAtual  = evoKey === key;
+    const imgCls   = revealed ? '' : 'pdx-silhueta';
+    const nomeTxt  = revealed ? evoNome : '???';
+    const levelTxt = idx > 0 ? (() => {
+      // Encontrar levelReq: a partir da forma anterior na cadeia
+      const anterior = cadeia[idx - 1];
+      return EVOLUTION_CHAIN[anterior]?.levelReq ? `Lv.${EVOLUTION_CHAIN[anterior].levelReq}` : '';
+    })() : '';
+
+    return `<div class="pdx-evo-step ${isAtual ? 'pdx-evo-atual' : ''}">
+      ${idx > 0 ? `<div class="pdx-evo-arrow"><span>${levelTxt}</span>→</div>` : ''}
+      <div class="pdx-evo-card">
+        <img src="../perfil/img-pokeicon/${evoKey}.png" class="pdx-img ${imgCls}" style="width:44px;height:44px">
+        <span class="pdx-evo-nome">${nomeTxt}</span>
+      </div>
+    </div>`;
+  }
+
+  // ── Abilities ───────────────────────────────────────────────
+  function abilityRowHTML(abilKey, isHidden) {
+    const data = getAbilityData(abilKey);
+    return `<div class="pdx-ability-row ${isHidden ? 'pdx-ability-hidden' : ''}">
+      <span class="pdx-ability-nome">${data.name}${isHidden ? ' <span class="pdx-ha-tag">HA</span>' : ''}</span>
+      <span class="pdx-ability-desc">${data.desc}</span>
+    </div>`;
+  }
+
+  const abilitiasHTML = [
+    ...(abilEntry.normal || []).map(a => abilityRowHTML(a, false)),
+    ...(abilEntry.hidden && !abilEntry.noHidden ? [abilityRowHTML(abilEntry.hidden, true)] : []),
+  ].join('');
+
+  // ── Learnset ────────────────────────────────────────────────
+  const learnRows = learnset.map(([lvl, moveKey]) => {
+    const mv = MOVES_DB[moveKey];
+    if (!mv) return '';
+    const cor = TIPO_CORES[mv.type] || '#888';
+    const catIcon = mv.category === 'physical' ? '⚔️' : mv.category === 'special' ? '✨' : '🔵';
+    return `<div class="pdx-move-row">
+      <span class="pdx-move-lvl">Lv.${lvl}</span>
+      <span class="pdx-move-name">${mv.name}</span>
+      <span class="pdx-move-type" style="background:${cor}">${mv.type.toUpperCase()}</span>
+      <span class="pdx-move-cat">${catIcon}</span>
+      <span class="pdx-move-pow">${mv.power || '—'}</span>
+      <span class="pdx-move-acc">${mv.accuracy ? mv.accuracy+'%' : '—'}</span>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  // ── Catch rate visual ───────────────────────────────────────
+  const catchPct5 = Math.min(100, catchPct);
+  const catchColor = catchPct >= 200 ? '#78c850' : catchPct >= 100 ? '#f0d040' : catchPct >= 45 ? '#f08030' : '#f04040';
+  const catchLabel = catchPct >= 200 ? 'Easy' : catchPct >= 100 ? 'Common' : catchPct >= 45 ? 'Uncommon' : 'Rare';
+
+  // ── Assemble modal ──────────────────────────────────────────
+  const overlay = document.createElement('div');
+  overlay.id = 'pdxDetalheModal';
+  overlay.className = 'pdx-detalhe-overlay';
+  overlay.innerHTML = `
+    <div class="pdx-detalhe-box">
+      <button class="pdx-detalhe-close" id="pdxDetalheClose">✕</button>
+
+      <!-- Header -->
+      <div class="pdx-detalhe-header">
+        <div class="pdx-detalhe-sprite-wrap">
+          <img id="pdxDetalheImg" src="../perfil/img-pokeicon/${key}.png" class="pdx-detalhe-sprite" alt="${nome}">
+          ${temShiny ? '<span class="pdx-shiny-glow"></span>' : ''}
+        </div>
+        <div class="pdx-detalhe-info">
+          <span class="pdx-detalhe-num">#${numStr}</span>
+          <h2 class="pdx-detalhe-nome">${nome}</h2>
+          <div class="pdx-detalhe-tipos">${renderTipoBadges(tipos)}</div>
+          ${temShiny ? '<button class="pdx-shiny-btn" id="pdxShinyToggle">✨ Show Shiny</button>' : ''}
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="pdx-detalhe-tabs">
+        <button class="pdx-tab active" data-tab="stats">📊 Stats</button>
+        <button class="pdx-tab" data-tab="moves">⚔️ Moves</button>
+        <button class="pdx-tab" data-tab="abilities">✨ Abilities</button>
+        <button class="pdx-tab" data-tab="evo">🔮 Evolution</button>
+      </div>
+
+      <!-- Tab: Stats -->
+      <div class="pdx-detalhe-panel active" data-panel="stats">
+        <div class="pdx-stat-section">
+          ${['hp','atk','def','spa','spd','spe'].map(statBar).join('')}
+          <div class="pdx-stat-total">
+            <span>Total</span><strong>${total}</strong>
+          </div>
+        </div>
+        <div class="pdx-catch-section">
+          <span class="pdx-catch-label">Catch Rate</span>
+          <div class="pdx-catch-bar-bg">
+            <div class="pdx-catch-bar-fill" style="width:${catchPct5}%;background:${catchColor}"></div>
+          </div>
+          <span class="pdx-catch-val" style="color:${catchColor}">${catchLabel} (${catchPct}/255)</span>
+        </div>
+      </div>
+
+      <!-- Tab: Moves -->
+      <div class="pdx-detalhe-panel" data-panel="moves">
+        <div class="pdx-move-header">
+          <span>Lv</span><span>Name</span><span>Type</span><span>Cat</span><span>Pow</span><span>Acc</span>
+        </div>
+        <div class="pdx-move-list">${learnRows || '<p class="pdx-empty">No moves registered.</p>'}</div>
+      </div>
+
+      <!-- Tab: Abilities -->
+      <div class="pdx-detalhe-panel" data-panel="abilities">
+        <div class="pdx-ability-list">${abilitiasHTML || '<p class="pdx-empty">No abilities registered.</p>'}</div>
+      </div>
+
+      <!-- Tab: Evolution -->
+      <div class="pdx-detalhe-panel" data-panel="evo">
+        <div class="pdx-evo-chain">
+          ${cadeia.map((k, i) => evoCardHTML(k, i)).join('')}
+        </div>
+        ${cadeia.length === 1 ? '<p class="pdx-empty" style="margin-top:12px">This Pokémon does not evolve.</p>' : ''}
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('show'));
+
+  // Close
+  overlay.querySelector('#pdxDetalheClose').addEventListener('click', () => {
+    overlay.classList.remove('show');
+    setTimeout(() => overlay.remove(), 250);
+  });
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('show');
+      setTimeout(() => overlay.remove(), 250);
+    }
+  });
+
+  // Tab switching
+  overlay.querySelectorAll('.pdx-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      overlay.querySelectorAll('.pdx-tab').forEach(b => b.classList.remove('active'));
+      overlay.querySelectorAll('.pdx-detalhe-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      overlay.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add('active');
+    });
+  });
+
+  // Toggle shiny sprite
+  if (temShiny) {
+    const shinyBtn = overlay.querySelector('#pdxShinyToggle');
+    const spriteImg = overlay.querySelector('#pdxDetalheImg');
+    const glowEl    = overlay.querySelector('.pdx-shiny-glow');
+    let showingShiny = false;
+    shinyBtn?.addEventListener('click', () => {
+      showingShiny = !showingShiny;
+      if (showingShiny) {
+        spriteImg.src = `../perfil/img-shiny/${key}.png`;
+        spriteImg.onerror = () => { spriteImg.src = `../perfil/img-pokeicon/${key}.png`; };
+        shinyBtn.textContent = '🔙 Show Normal';
+        shinyBtn.classList.add('active');
+        glowEl?.classList.add('active');
+      } else {
+        spriteImg.src = `../perfil/img-pokeicon/${key}.png`;
+        spriteImg.onerror = null;
+        shinyBtn.textContent = '✨ Show Shiny';
+        shinyBtn.classList.remove('active');
+        glowEl?.classList.remove('active');
+      }
+    });
+  }
 }
 
 // ============================================================
@@ -1786,22 +2437,37 @@ function podeEvoluir(slot) {
 // Regras:
 //   1. Se o pokemon tinha hidden ability → nova forma recebe a hidden da nova forma
 //   2. Se tinha ability normal → sorteia entre as normais da nova forma
-function resolverAbilityEvo(abilityAtual, pokemonAtual, novaForma) {
+//
+// CASO ESPECIAL — linha Caterpie:
+//   Metapod não tem hidden ability (noHidden:true). Caterpie com hidden
+//   evolui para Metapod e recebe uma ability NORMAL, mas o slot recebe
+//   hiddenLineage:true para que Butterfree herde a hidden (tinted_lens).
+//
+// Retorna: { ability: string, hiddenLineage: bool }
+function resolverAbilityEvo(abilityAtual, pokemonAtual, novaForma, slotAtual) {
   // Descobre se a ability atual é hidden na forma ATUAL
-  const entryAtual = POKEMON_ABILITIES[pokemonAtual] || EVOLUTION_ABILITIES[pokemonAtual];
-  const eraHidden  = entryAtual && entryAtual.hidden === abilityAtual;
+  const entryAtual  = POKEMON_ABILITIES[pokemonAtual] || EVOLUTION_ABILITIES[pokemonAtual];
+  const eraHiddenDireto = entryAtual && entryAtual.hidden === abilityAtual;
+  // Herança via flag (ex: metapod com hiddenLineage=true → butterfree)
+  const eraHidden   = eraHiddenDireto || (slotAtual?.hiddenLineage === true);
 
   // Busca as abilities da nova forma (EVOLUTION_ABILITIES tem prioridade)
   const entryNova = EVOLUTION_ABILITIES[novaForma] || POKEMON_ABILITIES[novaForma];
-  if (!entryNova) return abilityAtual; // fallback: mantém a mesma
+  if (!entryNova) return { ability: abilityAtual, hiddenLineage: false };
 
   if (eraHidden) {
-    // Hidden permanente — recebe a hidden da nova forma
-    return entryNova.hidden || abilityAtual;
+    if (entryNova.noHidden) {
+      // Nova forma não tem hidden — usa normal MAS preserva flag de linhagem
+      const normais = entryNova.normal || [];
+      const novaAbility = normais[Math.floor(Math.random() * normais.length)] || abilityAtual;
+      return { ability: novaAbility, hiddenLineage: true };
+    }
+    // Nova forma tem hidden — recebe a hidden (linhagem satisfeita)
+    return { ability: entryNova.hidden || abilityAtual, hiddenLineage: false };
   } else {
     // Normal — sorteia entre as normais da nova forma
     const normais = entryNova.normal || ['overgrow'];
-    return normais[Math.floor(Math.random() * normais.length)];
+    return { ability: normais[Math.floor(Math.random() * normais.length)], hiddenLineage: false };
   }
 }
 
@@ -1817,7 +2483,10 @@ async function evoluirPokemon(slot) {
   }
 
   // ── Resolver nova ability ──────────────────────────────────
-  const novaAbility = resolverAbilityEvo(slot.ability, slot.pokemon, novaForma);
+  // resolverAbilityEvo retorna { ability, hiddenLineage }
+  const evoResult    = resolverAbilityEvo(slot.ability, slot.pokemon, novaForma, slot);
+  const novaAbility  = evoResult.ability;
+  const hiddenLineage = evoResult.hiddenLineage;
 
   // ── Registrar na Pokédex ───────────────────────────────────
   const pdxSet = new Set(_userData.pokedex || []);
@@ -1829,6 +2498,7 @@ async function evoluirPokemon(slot) {
     ...slot,                          // copia tudo (ivs, evs, evPoints, nature, golpes, xp...)
     pokemon:  novaForma,
     ability:  novaAbility,
+    hiddenLineage: hiddenLineage,     // flag de linhagem hidden (ex: metapod → butterfree)
     lealdade: 0,                      // reset — começa nova jornada de lealdade
     // Golpes: re-inicializa com os golpes da nova forma no nível atual
     // (na prática Pokémon mantém os golpes aprendidos; aqui re-derivamos
@@ -1913,11 +2583,17 @@ function renderMissoesNoModal(slot) {
   const hoje       = hojeKey();
   const questAtiva = getQuestAtiva();
 
-  const linhas = MISSOES_ATIVAS.map(key => {
+  // Missões ativas para ESTE slot: login bonus fixo + missão rotativa do slot
+  const missaoDesteSlot = getMissaoDoSlot(slot?.slot || 1);
+  const missoesDesteSlot = ['missao_teste', missaoDesteSlot];
+
+  const linhas = missoesDesteSlot.map(key => {
     const cfg    = MISSOES_CONFIG[key];
     if (!cfg) return '';
-    const feita  = feitas[key] === hoje;
-    const ativa  = questAtiva?.missaoKey === key;
+    // Chave per-slot: missão "feita" só conta para este pokemon (este slot)
+    const slotKey = key + '_slot' + (slot.slot || 1);
+    const feita  = feitas[slotKey] === hoje;
+    const ativa  = questAtiva?.missaoKey === key && questAtiva?.slotTarget === (slot.slot || 1);
     const icone  = cfg.icone || '★';
     const cls    = feita ? 'missao-feita' : ativa ? 'missao-ativa' : '';
     const btn    = feita
@@ -2022,6 +2698,14 @@ function renderLinhaEvolutiva(pokemonAtual) {
 
 // ── Checar evolução pendente ao abrir o modal de status ───
 // Exibe um botão "Evolve!" se as condições forem satisfeitas
+// Wrapper para marcar badge visual de evolução disponível no grid de slots
+// (funcionalidade futura — hoje apenas agenda uma re-render silenciosa)
+function sugerirEvolucao(slot) {
+  // Visual cue no card do slot: adicionar classe 'pode-evoluir'
+  const el = document.querySelector(`.raid-slot[data-slot="${slot.slot}"]`);
+  if (el) el.classList.add('pode-evoluir');
+}
+
 function checarBotaoEvolucao(slot, container) {
   const novaForma = podeEvoluir(slot);
   if (!novaForma) return;
@@ -2082,6 +2766,73 @@ function renderBagGrid(container) {
   });
 }
 
+// ── Ether: seletor de golpe após escolher o pokemon ─────────────
+function abrirEtherMoveSelect(itemKey, slotIdx) {
+  const team = _userData?.raidTeam || [];
+  const slot = team[slotIdx];
+  if (!slot) return;
+
+  // Remover modal anterior se existir
+  document.getElementById('etherMoveModal')?.remove();
+
+  const golpes = slot.golpes || [];
+  const ppAtual = slot.ppAtual || {};
+
+  const slotsHTML = golpes.map((gk, i) => {
+    const move = MOVES_DB[gk];
+    if (!move) return '';
+    const ppMax  = move.pp || 10;
+    const ppNow  = ppAtual[gk] !== undefined ? ppAtual[gk] : ppMax;
+    const cheio  = ppNow >= ppMax;
+    const pct    = Math.max(0, Math.round(ppNow / ppMax * 100));
+    const cor    = pct > 50 ? '#2ecc71' : pct > 20 ? '#f8d030' : '#e74c3c';
+    const TIPO_CORES_LOCAL = {
+      normal:'#aaa',water:'#6390f0',fire:'#ee8130',grass:'#7ac74c',
+      electric:'#f7d02c',ice:'#96d9d6',fighting:'#c22e28',poison:'#a33ea1',
+      ground:'#e2bf65',flying:'#a98ff3',psychic:'#f95587',bug:'#a6b91a',
+      rock:'#b6a136',ghost:'#735797',dragon:'#6f35fc',dark:'#705746',
+      steel:'#b7b7ce',fairy:'#d685ad'
+    };
+    const tipoCor = TIPO_CORES_LOCAL[move.type] || '#888';
+    return '<div class="ether-move-slot' + (cheio ? ' ether-full' : '') + '" data-move="' + gk + '" data-idx="' + i + '">'
+      + '<div class="ether-move-left">'
+      + '<span class="ether-move-type" style="background:' + tipoCor + '">' + (move.type||'?').toUpperCase() + '</span>'
+      + '<span class="ether-move-nome">' + move.name + '</span>'
+      + '</div>'
+      + '<div class="ether-move-pp">'
+      + '<div class="ether-pp-bar"><div class="ether-pp-fill" style="width:' + pct + '%;background:' + cor + '"></div></div>'
+      + '<span class="ether-pp-num" style="color:' + cor + '">' + ppNow + ' / ' + ppMax + ' PP</span>'
+      + (cheio ? '<span class="ether-full-tag">FULL</span>' : '<span class="ether-restore-tag">+20</span>')
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  const modal = document.createElement('div');
+  modal.id = 'etherMoveModal';
+  modal.className = 'ether-modal-overlay';
+  modal.innerHTML =
+    '<div class="ether-modal-box">'
+    + '<div class="ether-modal-header">'
+    + '<span class="ether-modal-titulo">Ether — Choose a Move</span>'
+    + '<span class="ether-modal-sub">Restores +20 PP to the selected move</span>'
+    + '</div>'
+    + '<div class="ether-move-lista">' + slotsHTML + '</div>'
+    + '<button class="ether-cancel-btn" id="etherCancelBtn">Cancel</button>'
+    + '</div>';
+  document.body.appendChild(modal);
+
+  document.getElementById('etherCancelBtn')?.addEventListener('click', () => modal.remove());
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+
+  modal.querySelectorAll('.ether-move-slot:not(.ether-full)').forEach(el => {
+    el.addEventListener('click', async () => {
+      modal.remove();
+      const moveKey = el.dataset.move;
+      await usarItemNoPokemon(itemKey, slotIdx, moveKey);
+    });
+  });
+}
+
 function abrirInfoItem(key) {
   const item  = ITEMS_DB[key];
   const modal = document.getElementById('raidItemModal');
@@ -2124,9 +2875,17 @@ function abrirUsarItem(key) {
         const pct     = Math.max(0, Math.min(100, Math.floor(hpAtual / st.hp * 100)));
         const col     = pct > 50 ? '#2ecc71' : pct > 20 ? '#f39c12' : '#e74c3c';
         const ef      = item.effect;
+        // Ether: pode usar se algum golpe tiver PP < max
+        const temPPGasto = (ef?.type === 'restorepp') && (s.golpes||[]).some(gk => {
+          const mv = MOVES_DB[gk];
+          if (!mv) return false;
+          const pp = s.ppAtual?.[gk] !== undefined ? s.ppAtual[gk] : mv.pp;
+          return pp < mv.pp;
+        });
         const canUse  = (ef?.type === 'heal' && !fainted && hpAtual < st.hp)
                      || (ef?.type === 'revive' && fainted)
-                     || (ef?.type === 'fullrestore' && (hpAtual < st.hp || fainted));
+                     || (ef?.type === 'fullrestore' && (hpAtual < st.hp || fainted))
+                     || temPPGasto;
         return '<div class="iusar-slot' + (canUse ? '' : ' nao-pode') + '" data-idx="' + i + '">'
           + '<img src="../perfil/img-pokeicon/' + s.pokemon + '.png" class="iusar-img">'
           + '<div class="iusar-info">'
@@ -2143,7 +2902,13 @@ function abrirUsarItem(key) {
   body.querySelectorAll('.iusar-slot:not(.nao-pode)').forEach(el => {
     el.addEventListener('click', async () => {
       modal.style.display = 'none';
-      await usarItemNoPokemon(key, parseInt(el.dataset.idx));
+      const slotIdx = parseInt(el.dataset.idx);
+      if (item.effect?.type === 'restorepp') {
+        // Ether: mostrar seletor de golpe antes de usar
+        abrirEtherMoveSelect(key, slotIdx);
+      } else {
+        await usarItemNoPokemon(key, slotIdx);
+      }
     });
   });
 }
@@ -2176,10 +2941,21 @@ function abrirModalStatus(slot) {
   const nature    = slot.nature   || 'Hardy';
   const nivel     = slot.nivel    || 1;
   const xpAtual   = slot.xp      || 0;
+
+  // HP atual: usar hpAtual (absoluto da última batalha), depois hpPct, depois HP cheio
+  const statsHp  = calcularStats(slot.pokemon, ivs, nivel, nature, evsSalvos);
+  const hpMaxC   = statsHp.hp;
+  const hpAtualC = typeof slot.hpAtual === 'number' && slot.hpAtual > 0
+    ? Math.min(slot.hpAtual, hpMaxC)          // valor absoluto salvo
+    : slot.hpPct !== undefined
+      ? Math.max(1, Math.floor(hpMaxC * slot.hpPct)) // percentual salvo
+      : hpMaxC; // HP cheio se nunca batalhou
   const xpProx    = xpParaNivel(nivel + 1);
   const pctXP     = Math.min(100, Math.floor((xpAtual / xpProx) * 100));
   const lealdade  = slot.lealdade || 0;
   const pctLeal   = Math.min(100, Math.floor((lealdade / 255) * 100));
+  const hpPctBar  = hpMaxC > 0 ? Math.max(0, hpAtualC / hpMaxC * 100) : 0;
+  const hpBarCls  = hpPctBar > 50 ? 'hp-ok' : hpPctBar > 20 ? 'hp-low' : 'hp-critical';
   // Se ability nao salva ainda, gera e persiste (fix reload bug)
   let ability = slot.ability || null;
   if (!ability) {
@@ -2198,15 +2974,24 @@ function abrirModalStatus(slot) {
     })();
   }
   const abilityData = getAbilityData(ability);
-  const hiddenKey   = (POKEMON_ABILITIES[slot.pokemon] || {}).hidden;
-  const isHidden    = ability === hiddenKey;
+  // Verificar hidden em POKEMON_ABILITIES e EVOLUTION_ABILITIES
+  const _entryAbil  = POKEMON_ABILITIES[slot.pokemon] || EVOLUTION_ABILITIES[slot.pokemon] || {};
+  const hiddenKey   = _entryAbil.hidden;
+  // isHidden: ability é a hidden desta forma (não considerar hiddenLineage aqui —
+  // hiddenLineage = ainda não resolvida, metapod tem ability normal temporariamente)
+  const isHidden    = hiddenKey && ability === hiddenKey && !_entryAbil.noHidden;
   const nat         = NATURES[nature] || { up: null, down: null };
   const stats       = calcularStats(slot.pokemon, ivs, nivel, nature, evsSalvos);
   const isNeutral   = !nat.up && !nat.down;
   // Para formas evoluídas, EVOLUTION_TIPOS tem prioridade
   const tipos = EVOLUTION_TIPOS[slot.pokemon] || POKEMON_TIPOS[slot.pokemon] || ['normal'];
   const { fraco, resiste, imune } = calcularEfetividades(tipos);
-  const golpes      = Array.isArray(slot.golpes) ? slot.golpes : inicializarGolpes(slot.pokemon, nivel);
+  const golpes      = (() => {
+    const raw = slot.golpes;
+    if (!Array.isArray(raw)) return inicializarGolpes(slot.pokemon, nivel);
+    // Normalizar: aceitar tanto string quanto objeto {move:'tackle',...}
+    return raw.map(g => typeof g === 'string' ? g : (g?.move || null)).filter(Boolean);
+  })();
 
   // ── Nature desc ─────────────────────────────────────────────
   let natureDesc = '';
@@ -2246,7 +3031,13 @@ function abrirModalStatus(slot) {
       const temPontos   = evPointsSalvos > 0;
       const podeAumentar = temPontos && pontosRestantes > 0 && evVal < 252 && totalTemp < 510;
       const podeDiminuir = evVal > evsSalvos[l.key];
-      const statAtual    = statComEv(l.key);
+      const statBase     = l.stat;   // valor sem EVs temp
+      const statAtual    = statComEv(l.key); // valor com EVs temp
+      const statDiff     = statAtual - statBase;
+      // Tag verde "+X" se houver ganho real vs. base salva
+      const statDiffTag  = statDiff > 0
+        ? '<span class="ev-stat-gain">+' + statDiff + '</span>'
+        : '';
       const minusBtn = podeDiminuir
         ? '<button class="ev-btn ev-btn-minus" data-key="' + l.key + '">−</button>'
         : '<span class="ev-btn-placeholder"></span>';
@@ -2255,7 +3046,7 @@ function abrirModalStatus(slot) {
         : '<span class="ev-btn-placeholder"></span>';
       return '<tr>'
         + '<td class="iv-col-label">' + l.label + '</td>'
-        + '<td class="iv-col-stat" data-key="' + l.key + '">' + statAtual + '</td>'
+        + '<td class="iv-col-stat" data-key="' + l.key + '">' + statAtual + statDiffTag + '</td>'
         + '<td class="iv-col-valor ' + ivCls + '">' + l.iv + '</td>'
         + '<td class="iv-col-nature">' + natTag + '</td>'
         + '<td class="ev-col ' + evCls + '">'
@@ -2298,7 +3089,14 @@ function abrirModalStatus(slot) {
       ? '<span class="golpe-power">PWR <b>' + move.power + '</b></span>'
       : '<span class="golpe-power status-move">Status</span>';
     const accTag  = '<span class="golpe-acc">ACC <b>' + (move.accuracy ? move.accuracy+'%' : '\u2014') + '</b></span>';
-    const ppTag   = '<span class="golpe-pp">PP <b>' + move.pp + '</b></span>';
+    // Mostrar PP atual/máximo — persistido em slot.ppAtual após batalhas
+    const ppMax   = move.pp || 10;
+    const ppAtual = slot.ppAtual ? (slot.ppAtual[key] !== undefined ? slot.ppAtual[key] : ppMax) : ppMax;
+    const ppGasto = ppMax - ppAtual;
+    const ppCls   = ppGasto > 0 ? 'pp-gasto' : '';
+    const ppTag   = ppGasto > 0
+      ? '<span class="golpe-pp ' + ppCls + '">PP <b>' + ppAtual + '/' + ppMax + '</b></span>'
+      : '<span class="golpe-pp">PP <b>' + ppMax + '</b></span>';
     const catTag  = move.category === 'physical'
       ? '<span class="golpe-cat-tag golpe-cat-physical">PHY</span>'
       : move.category === 'special'
@@ -2323,10 +3121,15 @@ function abrirModalStatus(slot) {
     // ══ COLUNA 1 — Pokémon + info base ══
     + '<div class="raid-col raid-col-info">'
     + '<div class="raid-status-header">'
-    + '<img src="../perfil/img-pokeicon/' + slot.pokemon + '.png" alt="' + slot.pokemon + '" class="raid-status-img" onerror="this.src=\'../estatisticas-shad/images/backgrounds/pikachu-left-bg.png\'">'
-    + '<h3 class="raid-status-nome">' + capitalizar(slot.pokemon) + '</h3>'
+    + '<img src="' + (slot.shiny ? '../perfil/img-shiny/'+slot.pokemon+'.png' : '../perfil/img-pokeicon/'+slot.pokemon+'.png') + '" alt="' + slot.pokemon + '" class="raid-status-img" onerror="this.src=\'../estatisticas-shad/images/backgrounds/pikachu-left-bg.png\'">'
+    + '<h3 class="raid-status-nome">' + capitalizar(slot.pokemon) + (slot.shiny ? ' <span style="color:#ffe033;font-size:0.8rem">✨</span>' : '') + '</h3>'
     + '<div class="raid-status-tipos">' + renderTipoBadges(tipos) + '</div>'
     + '<p class="raid-status-nivel">Level ' + nivel + '</p>'
+    + '</div>'
+    // HP atual
+    + '<div class="raid-status-barra-wrap">'
+    + '<div class="raid-status-barra-label"><span>❤️ HP</span><span>' + hpAtualC + ' / ' + hpMaxC + '</span></div>'
+    + '<div class="raid-status-barra"><div class="raid-status-barra-fill ' + hpBarCls + '" style="width:' + hpPctBar.toFixed(1) + '%"></div></div>'
     + '</div>'
     // Loyalty
     + '<div class="raid-status-barra-wrap">'
@@ -2374,6 +3177,11 @@ function abrirModalStatus(slot) {
     // ══ COLUNA 3 — Moves ══
     + '<div class="raid-col raid-col-moves">'
     + '<div class="raid-efet-titulo">Moves</div>'
+    + (slot.pendingMove ? (() => {
+        const pm = slot.pendingMove;
+        const pmName = pm.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase());
+        return '<div class="pending-move-banner">🎓 Waiting to learn <b>' + pmName + '</b>!<br><span style="font-size:0.65rem;color:#aaa">Start a battle to choose which move to replace.</span></div>';
+      })() : '')
     + '<div class="raid-golpes-grid">' + golpeCards + '</div>'
     // Daily Missions — abaixo dos golpes na col-3
     + renderMissoesNoModal(slot)
@@ -2386,6 +3194,42 @@ function abrirModalStatus(slot) {
   // Verificar e exibir botão de evolução se disponível
   const col1 = document.querySelector('#raidStatusBody .raid-col-info');
   if (col1) checarBotaoEvolucao(slot, col1);
+
+  // ── Botão DELETAR (apenas quando há 2+ pokémons) ────────────────
+  const teamAtual = _userData?.raidTeam || [];
+  if (teamAtual.length >= 2 && col1) {
+    const btnDel = document.createElement('button');
+    btnDel.className = 'release-btn';
+    btnDel.innerHTML = '🗑️ Release';
+    btnDel.title = 'Release this Pokémon (cannot be undone)';
+    btnDel.addEventListener('click', async () => {
+      // Usar modal de confirmação interno em vez do confirm() nativo
+      const confirmado = await mostrarConfirmacaoToast(
+        `Release ${capitalizar(slot.pokemon)}?`,
+        'This cannot be undone. Your team must have at least 1 Pokémon.'
+      );
+      if (!confirmado) return;
+      btnDel.disabled = true;
+      btnDel.textContent = 'Releasing...';
+      try {
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+        const novoTeam = (_userData.raidTeam || []).filter(s => s.slot !== slot.slot);
+        // Re-numerar slots: 1, 2, 3... em ordem
+        novoTeam.sort((a,b) => a.slot - b.slot);
+        novoTeam.forEach((s, i) => { s.slot = i + 1; });
+        await updateDoc(doc(_db, 'usuarios', _userId), { raidTeam: JSON.parse(JSON.stringify(novoTeam)) });
+        _userData.raidTeam = novoTeam;
+        document.getElementById('raidModalStatus')?.classList.remove('show');
+        renderizarBossRaid();
+        mostrarToast('Released ' + capitalizar(slot.pokemon), '👋', false);
+      } catch(err) {
+        console.error('[BossRaid] Erro ao liberar pokémon:', err);
+        btnDel.disabled = false;
+        btnDel.textContent = '🗑️ Release';
+      }
+    });
+    col1.appendChild(btnDel);
+  }
 
   // Listeners dos botoes Start de missao
   document.querySelectorAll('.missao-start-btn').forEach(btn => {
@@ -2426,14 +3270,14 @@ function abrirModalStatus(slot) {
         const totalSalvo = Object.values(evsSalvos).reduce((a,b)=>a+b,0);
         const totalTemp  = Object.values(evsTemp).reduce((a,b)=>a+b,0);
         if (evPointsSalvos - (totalTemp - totalSalvo) > 0 && evsTemp[key] < 252 && totalTemp < 510) {
-          evsTemp[key]++; atualizarEVUI();
+          evsTemp[key] = Math.min(252, evsTemp[key] + 1); atualizarEVUI();
         }
       });
     });
     document.querySelectorAll('.ev-btn-minus').forEach(btn => {
       btn.addEventListener('click', () => {
         const key = btn.dataset.key;
-        if (evsTemp[key] > evsSalvos[key]) { evsTemp[key]--; atualizarEVUI(); }
+        if (evsTemp[key] > evsSalvos[key]) { evsTemp[key] = Math.max(evsSalvos[key], evsTemp[key] - 1); atualizarEVUI(); }
       });
     });
   }

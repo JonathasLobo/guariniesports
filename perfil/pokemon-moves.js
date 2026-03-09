@@ -155,6 +155,17 @@ export const MOVES_DB = {
   string_shot:  { name:'String Shot',  type:'bug',      category:'status',   power:null,accuracy:95,  pp:40, desc:'Lowers foe\'s Speed by 2.' },
   bug_bite:     { name:'Bug Bite',     type:'bug',      category:'physical', power:60,  accuracy:100, pp:20, desc:'Bites the foe.' },
   x_scissor:    { name:'X-Scissor',    type:'bug',      category:'physical', power:80,  accuracy:100, pp:15, desc:'Slashes with two scythes.' },
+  bug_buzz:     { name:'Bug Buzz',     type:'bug',      category:'special',  power:90,  accuracy:100, pp:10, desc:'Emits a harsh buzz. May lower Sp.Def.' },
+  silver_wind:  { name:'Silver Wind',  type:'bug',      category:'special',  power:60,  accuracy:100, pp:5,  desc:'May raise all user stats.' },
+  quiver_dance: { name:'Quiver Dance', type:'bug',      category:'status',   power:null,accuracy:null,pp:20, desc:'Raises Sp.Atk, Sp.Def and Speed.' },
+  harden:       { name:'Harden',       type:'normal',   category:'status',   power:null,accuracy:null,pp:30, desc:'Raises user\'s Defense by 1.' },
+  sleep_powder: { name:'Sleep Powder', type:'grass',    category:'status',   power:null,accuracy:75,  pp:15, desc:'May put the foe to sleep.' },
+  gust:         { name:'Gust',         type:'flying',   category:'special',  power:40,  accuracy:100, pp:35, desc:'Whips up a gusty wind.' },
+  stun_spore:   { name:'Stun Spore',   type:'grass',    category:'status',   power:null,accuracy:75,  pp:30, desc:'May paralyze the opponent.' },
+  supersonic:   { name:'Supersonic',   type:'normal',   category:'status',   power:null,accuracy:55,  pp:20, desc:'Emits ultrasonic waves to confuse.' },
+  tailwind:     { name:'Tailwind',     type:'flying',   category:'status',   power:null,accuracy:null,pp:15, desc:'Doubles Speed for 4 turns.' },
+  safeguard:    { name:'Safeguard',    type:'normal',   category:'status',   power:null,accuracy:null,pp:25, desc:'Protects from status for 5 turns.' },
+  whirlwind:    { name:'Whirlwind',    type:'normal',   category:'status',   power:null,accuracy:null,pp:20, desc:'Blows away foe and ends battle.' },
 };
 
 // ============================================================
@@ -608,6 +619,30 @@ export const LEARNSETS = {
     [36, 'double_hit'],
     [40, 'hydro_pump'],
     [44, 'brave_bird'],
+  ],
+  // ── Bug line (Caterpie / Metapod / Butterfree) ───────────
+  caterpie:   [
+    [1,  'tackle'],
+    [1,  'string_shot'],
+    [5,  'bug_bite'],
+  ],
+  metapod: [
+    [1,  'harden'],
+  ],
+  butterfree: [
+    [1,  'confusion'],
+    [1,  'sleep_powder'],
+    [10, 'gust'],
+    [12, 'stun_spore'],
+    [14, 'psybeam'],
+    [16, 'silver_wind'],
+    [18, 'supersonic'],
+    [21, 'tailwind'],
+    [24, 'safeguard'],
+    [27, 'whirlwind'],
+    [30, 'psychic_move'],
+    [33, 'bug_buzz'],
+    [36, 'quiver_dance'],
   ],
 };
 

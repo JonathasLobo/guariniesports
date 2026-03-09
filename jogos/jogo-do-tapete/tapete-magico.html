@@ -1364,6 +1364,18 @@ function activateLampPower(){
 }
 
 function startGame(){
+  // ── Missão Boss Raid: tapete_aventura ──────────────────────
+  try {
+    var _qr = localStorage.getItem('bossraid_quest_ativa');
+    if (_qr) {
+      var _q = JSON.parse(_qr);
+      if (_q && _q.missaoKey === 'tapete_aventura') {
+        localStorage.setItem('bossraid_pending_mission',
+          JSON.stringify({ missaoKey: 'tapete_aventura', slotTarget: _q.slotTarget || 1 })
+        );
+      }
+    }
+  } catch(e) {}
   // Reset
   score = 0; found = 0; level = 1; timeLeft = 30;
   isRunning = true;

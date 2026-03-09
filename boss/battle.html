@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Battle!</title>
+  <link rel="stylesheet" href="./battle.css">
+</head>
+<body>
+
+<div id="btLoading">
+  <div class="bt-spinner"></div>
+  <span id="btLoadingMsg">Loading battle...</span>
+</div>
+
+<div id="btErro" style="display:none">
+  <div id="btErroIcon">💀</div>
+  <div id="btErroTitulo">Battle Not Found</div>
+  <div id="btErroMsg">This battle no longer exists or the boss has already been defeated.</div>
+  <a id="btErroLink" href="/index.html">← Return to Home</a>
+</div>
+
+<div id="arena">
+  <div id="battleBG"></div>
+
+  <!-- Turn indicator -->
+  <div id="turnBanner">Waiting...</div>
+  <div id="turnTimer" style="display:none">⏱ <span id="turnTimerVal">10</span>s</div>
+
+  <!-- Boss side -->
+  <div class="boss-side">
+    <div class="boss-sprite-wrap" id="bossSpriteWrap">
+      <img id="bossSprite" class="boss-sprite" src="" alt="Boss">
+    </div>
+    <div id="bossStatusIcons"></div>
+    <div class="boss-hp-bar-wrap">
+      <div class="boss-hp-label">
+        <span class="boss-name-tag" id="bossNameTag">—</span>
+        <span class="boss-hp-nums" id="bossHpNums">— / —</span>
+      </div>
+      <div class="boss-bar-bg">
+        <div class="boss-bar-fill" id="bossBarFill" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Players side -->
+  <div class="players-side" id="playersSide"></div>
+
+  <!-- HUD RPG -->
+  <div id="actionHUD">
+    <div id="msgBox"><div id="msgText" style="width:100%;display:flex;flex-direction:column;gap:2px"><span style="opacity:0.5;font-size:0.78rem">Preparing for battle...</span></div></div>
+    <div id="btnPanel">
+      <button class="bt-btn fight" id="btnFight"  onclick="btOpenFight()" disabled>⚔️ Fight</button>
+      <button class="bt-btn bag"   id="btnBag"    onclick="btOpenBag()"   disabled>🎒 Bag</button>
+      <button class="bt-btn pass"  id="btnPass"   onclick="btPass()"      disabled>➡️ Pass</button>
+    </div>
+    <div id="subPanel"></div>
+  </div>
+</div>
+
+<!-- Result overlay (vitória sem drops — mantido para derrota) -->
+<div id="resultOverlay">
+  <div id="resultIcon">🏆</div>
+  <div id="resultTitle" style="color:#ffad00">Victory!</div>
+  <div id="resultDesc">The boss has been defeated!</div>
+  <a id="resultBtn" href="/index.html">← Return to Home</a>
+  <div id="resultExtra" style="font-size:0.72rem;color:#666;margin-top:4px"></div>
+</div>
+
+<!-- Timer de captura (fase de arremesso) -->
+<div id="captureTimer"></div>
+
+<!-- Drops overlay — recompensas individuais pós-captura -->
+<div id="dropsOverlay">
+  <div class="drops-box">
+    <div class="drops-title">🎁 Raid Rewards</div>
+    <div class="drops-subtitle" id="dropsSubtitle">Battle complete!</div>
+    <div class="drops-grid" id="dropsGrid"></div>
+    <div class="drops-xp-bar-wrap">
+      <div class="drops-xp-label">
+        <span id="dropsPokeName">—</span>
+        <span id="dropsXPVal">+0 XP</span>
+      </div>
+      <div class="drops-xp-bg"><div class="drops-xp-fill" id="dropsXPFill" style="width:0%"></div></div>
+    </div>
+    <div class="drops-level-up" id="dropsLevelUp">⬆ LEVEL UP!</div>
+    <a class="drops-return-btn" href="/index.html">← Return to Home</a>
+  </div>
+</div>
+
+<script type="module" src="./battle.js"></script>
+</body>
+</html>

@@ -99,14 +99,31 @@ function sortearPagina(config) {
   return paginas[Math.floor(Math.random() * paginas.length)];
 }
 
+function sanitizarGolpes(golpes) {
+  // Firebase Realtime Database descarta campos com valor null.
+  // Substituímos null por false antes de gravar — o battle.js trata false == null.
+  return (golpes || []).map(g => {
+    const out = {};
+    for (const [k, v] of Object.entries(g)) {
+      out[k] = v === null ? false : v;
+    }
+    return out;
+  });
+}
+
+function sanitizarBoss(boss) {
+  if (!boss) return boss;
+  return { ...boss, golpes: sanitizarGolpes(boss.golpes) };
+}
+
 function sortearBoss(config) {
   if (FORCAR_BOSS_INDEX !== null) {
     const boss = config.bosses[FORCAR_BOSS_INDEX];
     console.log(`[BossScheduler] Usando boss forçado: ${boss.nome}`);
     FORCAR_BOSS_INDEX = null;
-    return boss;
+    return sanitizarBoss(boss);
   }
-  return config.bosses[Math.floor(Math.random() * config.bosses.length)];
+  return sanitizarBoss(config.bosses[Math.floor(Math.random() * config.bosses.length)]);
 }
 
 function gerarPosicao() {

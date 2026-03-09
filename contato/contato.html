@@ -105,7 +105,7 @@ function googleTranslateElementInit() {
     <p>Want to get in touch with Team Guariní E-sports? Fill out our form below:</p>
 
     <p style="text-align:center; margin: 2rem 0;">
-      <a href="https://forms.gle/EwrvixftrxC5iez4A" target="_blank" rel="noopener noreferrer" class="btn-comprar">Go to Form</a>
+      <a href="https://forms.gle/EwrvixftrxC5iez4A" target="_blank" rel="noopener noreferrer" class="btn-comprar" onclick="missaoContatoForm()">Go to Form</a>
     </p>
 
     <p>Or reach out to us directly on <a href="https://linktr.ee/guariniesports" target="_blank" rel="noopener noreferrer">social media</a>.</p>
@@ -514,6 +514,24 @@ function googleTranslateElementInit() {
       }
     });
   });
+</script>
+
+<script>
+// ── Missão Boss Raid: contato_form ────────────────────────────
+function missaoContatoForm() {
+  try {
+    var questRaw = localStorage.getItem('bossraid_quest_ativa');
+    if (questRaw) {
+      var quest = JSON.parse(questRaw);
+      if (quest && quest.missaoKey === 'contato_form') {
+        localStorage.setItem('bossraid_pending_mission',
+          JSON.stringify({ missaoKey: 'contato_form', slotTarget: quest.slotTarget || 1 })
+        );
+      }
+    }
+  } catch(e) {}
+  // Não faz return false nem preventDefault — deixa o link abrir normalmente
+}
 </script>
 </body>
 </html>

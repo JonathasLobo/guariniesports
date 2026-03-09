@@ -116,7 +116,7 @@ function googleTranslateElementInit() {
         <p>
           More than just competing, we aim to <strong>build a community</strong>, share knowledge, and inspire new talent. If you love esports, join us and be part of this journey!
         </p>
-        <a href="../index.html" class="btn-comprar">Back to Home</a>
+        <a href="../index.html" class="btn-comprar" onclick="missaoNavegacao('voltar_home')">Back to Home</a>
       </div>
       <div class="sobre-imagem">
         <img src="../img-site/staff.png" alt="Imagem representativa da Guariní e-sport" />
@@ -491,5 +491,22 @@ function googleTranslateElementInit() {
     });
   </script>
 
+
+<script>
+// ── Missão Boss Raid: voltar_home ──────────────────────────────
+function missaoNavegacao(missaoKey) {
+  try {
+    var questRaw = localStorage.getItem('bossraid_quest_ativa');
+    if (questRaw) {
+      var quest = JSON.parse(questRaw);
+      if (quest && quest.missaoKey === missaoKey) {
+        localStorage.setItem('bossraid_pending_mission',
+          JSON.stringify({ missaoKey: missaoKey, slotTarget: quest.slotTarget || 1 })
+        );
+      }
+    }
+  } catch(e) {}
+}
+</script>
 </body>
 </html>
