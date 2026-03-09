@@ -34,13 +34,12 @@ import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.c
 // ============================================================
 const BOSS_CONFIG = {
   anuncioMinutos: 1,        // antes de nascer  — produção: 60
-  duracaoMinutos: 1,        // quanto fica ativo — produção: 15
+  duracaoMinutos: 2,        // quanto fica ativo — produção: 15
   paginasPossiveis: [
     'sobre/sobre.html',
     'index.html',
     'contato/contato.html',
-    'loja/loja.html',
-    'groups/groups.html'
+    'loja/loja.html'
   ],
 
   bosses: [
@@ -81,7 +80,7 @@ const BOSS_CONFIG = {
       nome:      'Wooloo',
       sprite:    '/boss/img-bosses/wooloo.png',
       tipos:     ['normal'],
-      baseStats: { hp:10, atk:5, def:5, spa:5, spd:5, spe:5 },
+      baseStats: { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
       nivel:     10,
       golpes: [
         { name:'Tackle',       type:'normal', cat:'physical', power:40,  acc:100, target:'single' },

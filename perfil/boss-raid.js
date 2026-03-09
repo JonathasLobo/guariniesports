@@ -124,7 +124,8 @@ const POKEDEX_NUM = {
   popplio:728, sobble:816,   quaxly:912,
   // Bug
   caterpie:10,
-  weedle:13, kakuna:14, beedrill:15,
+  weedle:13,
+  wooloo:831
 };
 
 // ============================================================
@@ -282,13 +283,16 @@ const EVOLUTION_CHAIN = {
   // ── Linha Caterpie (Bug) ──────────────────────────────────
   // Caterpie → Metapod (L7) → Butterfree (L10)
   caterpie:   { evolvesTo: 'metapod',    levelReq: 7,  loyaltyReq: 50  },
-  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 50  },
   metapod:    { evolvesTo: 'butterfree', levelReq: 10, loyaltyReq: 50  },
 
   // ── Linha Weedle (Bug/Poison) ─────────────────────────────
   // Weedle → Kakuna (L7) → Beedrill (L10)
   weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
   kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
+
+  // ── Linha Wooloo (Normal) ─────────────────────────────
+  // Wooloo → Dubwool (L24))
+  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 255  },
 };
 
 // ============================================================
@@ -388,6 +392,8 @@ const EVOLUTION_ABILITIES = {
   // ── Linha Quaxly ──────────────────────────────────────────
   quaxwell:    { normal: ['torrent'],            hidden: 'moxie'         },
   quaquaval:   { normal: ['torrent'],            hidden: 'moxie'         },
+  // ── Linha Quaxly ──────────────────────────────────────────
+  dubwool:     { normal: ['fluffy','steadfast'], hidden: 'bulletproof'   },
 };
 
 // ============================================================
@@ -454,10 +460,11 @@ const EVOLUTION_TIPOS = {
   // Caterpie line — Butterfree ganha flying
   metapod:     ['bug'],
   butterfree:  ['bug','flying'],
-  dubwool:     ['normal'],
   // Weedle line — mantém bug/poison até Beedrill
   kakuna:      ['bug','poison'],
   beedrill:    ['bug','poison'],
+  // Woloo line
+  dubwool:     ['normal'],
 };
 
 // ============================================================
@@ -548,10 +555,11 @@ const BASE_STATS_EVO = {
   // Caterpie line
   metapod:     { hp:50,  atk:20,  def:55,  spa:25,  spd:25,  spe:30  },
   butterfree:  { hp:60,  atk:45,  def:50,  spa:90,  spd:80,  spe:70  },
-  dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
+  // Wooloo line
+  dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
 };
 
 // ============================================================
@@ -586,9 +594,9 @@ const POKEDEX_NUM_EVO = {
   brionne:729, primarina:730,
   drizzile:817, inteleon:818,
   quaxwell:913, quaquaval:914,
-  // Caterpie line
   metapod:11,  butterfree:12,
-  wooloo:831,  dubwool:832,
+  kakuna:14,  beedrill:15,
+  dubwool:832,
 };
 
 
