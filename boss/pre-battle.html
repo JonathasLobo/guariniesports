@@ -361,7 +361,7 @@
 <script type="module">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getDatabase, ref, set, get, update, onValue, push, onDisconnect, remove }
+import { getDatabase, ref, set, get, update, onValue, push, onDisconnect, remove, query, orderByChild }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 import { getFirestore, doc, getDoc }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
@@ -1154,9 +1154,13 @@ function enviarChat() {
 }
 
 function escutarChat() {
-  onValue(ref(rdb, `boss_salas/${_salaId}/chat`), snap => {
+  // orderByChild('ts') garante ordem cronológica garantida pelo servidor,
+  // evitando mensagens fora de sequência por clock skew entre clientes
+  const chatQuery = query(ref(rdb, `boss_salas/${_salaId}/chat`), orderByChild('ts'));
+  onValue(chatQuery, snap => {
     if (!snap.exists()) return;
-    const msgs = Object.values(snap.val()).sort((a,b) => (a.ts||0)-(b.ts||0));
+    const msgs = [];
+    snap.forEach(child => msgs.push(child.val())); // forEach já entrega na ordem do index
     const cont = document.getElementById('pbChatMsgs');
     cont.innerHTML = msgs.map(m => {
       if (m.system) return `<div class="pb-chat-msg"><span class="pb-chat-sys">— ${m.msg} —</span></div>`;

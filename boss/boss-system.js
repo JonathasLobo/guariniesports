@@ -6,7 +6,7 @@
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 // ============================================================
 // ⚙️ CONFIGURAÇÕES
@@ -240,11 +240,12 @@ function getPaginaAtual() {
 // Remove sprite e tarja imediatamente, sem condições
 // ============================================================
 function limparTudoBoss() {
+  if (_timerIntervalo)  { clearInterval(_timerIntervalo);  _timerIntervalo  = null; }
+  if (_watcherIntervalo){ clearInterval(_watcherIntervalo); _watcherIntervalo = null; }
   const sprite = document.getElementById('boss-sprite-flutuante');
   const tarja  = document.getElementById('boss-aviso-tarja');
   if (sprite) sprite.remove();
   if (tarja) {
-    if (tarja._intervalo) clearInterval(tarja._intervalo);
     tarja.style.display = 'none';
     tarja.innerHTML = '';
   }
@@ -253,6 +254,58 @@ function limparTudoBoss() {
 // ============================================================
 // LÓGICA DE EXIBIÇÃO
 // ============================================================
+// Guarda o intervalo do timer de contagem em escopo de módulo
+// para garantir que apenas 1 intervalo rode por vez, mesmo que
+// o onValue dispare múltiplas vezes (ex: múltiplos usuários conectando)
+let _timerIntervalo  = null;
+// Watcher de transição: verifica a cada segundo se chegou a hora de
+// mudar o estado (anunciando→ativo ou ativo→inativo) usando os
+// timestamps fixos já gravados no Firebase pelo scheduler.
+// Apenas o 1º cliente a chegar usa runTransaction — os demais são no-op.
+let _watcherIntervalo = null;
+
+function iniciarWatcherTransicao(data) {
+  // Cancelar watcher anterior se houver
+  if (_watcherIntervalo) { clearInterval(_watcherIntervalo); _watcherIntervalo = null; }
+
+  // Não há timestamps → nada a observar
+  if (!data || !data.nascimento || !data.expiracao) return;
+  // Boss já inativo → não instalar watcher
+  if (data.estado === 'inativo') return;
+
+  const bossRef = ref(db, 'boss_ativo');
+
+  _watcherIntervalo = setInterval(async () => {
+    const agora = Date.now();
+
+    // ── Transição anunciando → ativo ──────────────────────────────
+    if (data.estado === 'anunciando' && agora >= data.nascimento) {
+      clearInterval(_watcherIntervalo); _watcherIntervalo = null;
+      try {
+        await runTransaction(bossRef, (cur) => {
+          if (!cur || cur.estado !== 'anunciando') return; // outro cliente ganhou
+          return { ...cur, estado: 'ativo' };
+        });
+        console.log('[BossSystem] Watcher: boss nasceu!');
+      } catch(e) { /* outro cliente ganhou a corrida — ok */ }
+      return;
+    }
+
+    // ── Transição ativo → inativo ─────────────────────────────────
+    if (data.estado === 'ativo' && agora >= data.expiracao) {
+      clearInterval(_watcherIntervalo); _watcherIntervalo = null;
+      try {
+        await runTransaction(bossRef, (cur) => {
+          if (!cur || cur.estado !== 'ativo') return;
+          return { ...cur, estado: 'inativo' };
+        });
+        console.log('[BossSystem] Watcher: boss expirou!');
+      } catch(e) { /* outro cliente ganhou a corrida — ok */ }
+      return;
+    }
+  }, 1000); // verifica a cada 1 segundo — preciso e leve
+}
+
 function iniciarSistemaBoss() {
   const bossRef = ref(db, 'boss_ativo');
   onValue(bossRef, (snapshot) => {
@@ -277,10 +330,14 @@ function atualizarEstadoBoss(data) {
     return;
   }
 
+  // ---- WATCHER DE TRANSIÇÃO ----
+  // Instala um setInterval leve que compara Date.now() com os timestamps
+  // fixos do Firebase e dispara a transição de estado no momento exato,
+  // sem depender de setTimeout calculado no momento do carregamento da página.
+  iniciarWatcherTransicao(data);
+
   // ---- TARJA (apenas na index.html) ----
   if (paginaAtual === 'index.html' && tarja) {
-    if (tarja._intervalo) clearInterval(tarja._intervalo);
-
     if (data.estado === 'anunciando') {
       tarja.style.display = 'flex';
       tarja.className = 'boss-tarja boss-tarja-anunciando';
@@ -309,14 +366,20 @@ function atualizarEstadoBoss(data) {
 // Quando chega a zero: limpa tudo imediatamente no cliente
 // ============================================================
 function iniciarContagemRegressiva(timestampAlvo, container, tipo) {
-  if (container._intervalo) clearInterval(container._intervalo);
+  // Cancelar qualquer intervalo anterior (escopo de módulo, não DOM)
+  // Isso garante que múltiplos disparos do onValue não acumulem timers
+  if (_timerIntervalo) { clearInterval(_timerIntervalo); _timerIntervalo = null; }
+
+  // Salvar o timestamp alvo para verificar reset indevido
+  const _tsAlvo = timestampAlvo;
 
   function atualizar() {
-    const diff = timestampAlvo - Date.now();
+    const diff = _tsAlvo - Date.now();
 
-    // ✅ Chegou a zero — limpa tudo imediatamente, sem esperar Firebase
+    // Chegou a zero — limpa tudo imediatamente, sem esperar Firebase
     if (diff <= 0) {
-      clearInterval(container._intervalo);
+      clearInterval(_timerIntervalo);
+      _timerIntervalo = null;
       limparTudoBoss();
       return;
     }
@@ -331,7 +394,7 @@ function iniciarContagemRegressiva(timestampAlvo, container, tipo) {
   }
 
   atualizar();
-  container._intervalo = setInterval(atualizar, 1000);
+  _timerIntervalo = setInterval(atualizar, 1000);
 }
 
 // ============================================================

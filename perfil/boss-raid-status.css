@@ -1546,3 +1546,134 @@
   border-color: #ffe033;
   box-shadow: 0 0 10px rgba(255,220,40,0.25);
 }
+
+/* ── Setas de navegação entre pokémons no modal ─────────────── */
+.raid-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,117,0,0.12);
+  border: 2px solid rgba(255,117,0,0.35);
+  border-radius: 50%;
+  color: #ff7500;
+  font-size: 1.4rem;
+  font-weight: 700;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s;
+  z-index: 10;
+  line-height: 1;
+}
+.raid-nav-arrow:hover {
+  background: rgba(255,117,0,0.28);
+  border-color: #ff7500;
+  box-shadow: 0 0 12px rgba(255,117,0,0.35);
+}
+.raid-nav-left  { left: 10px; }
+.raid-nav-right { right: 10px; }
+
+/* ── Data de captura ────────────────────────────────────────── */
+.raid-captured-date {
+  margin-top: 10px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  border-top: 1px solid rgba(255,117,0,0.12);
+  padding-top: 8px;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STAND-BY — Pokémon em espera quando o time está cheio
+   ══════════════════════════════════════════════════════════ */
+.raid-standby-section {
+  margin-top: 16px;
+  background: rgba(255, 60, 60, 0.06);
+  border: 1.5px solid rgba(255, 60, 60, 0.35);
+  border-radius: 12px;
+  padding: 14px 16px;
+  animation: standby-pulse 2s ease-in-out infinite;
+}
+@keyframes standby-pulse {
+  0%, 100% { border-color: rgba(255, 60, 60, 0.35); }
+  50%       { border-color: rgba(255, 60, 60, 0.7); box-shadow: 0 0 12px rgba(255,60,60,0.15); }
+}
+.raid-standby-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.raid-standby-icon { font-size: 1.1rem; }
+.raid-standby-titulo {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ff6060;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.raid-standby-aviso {
+  margin-left: auto;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+}
+.standby-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(255,60,60,0.05);
+  border: 1px solid rgba(255,60,60,0.2);
+  transition: all 0.18s;
+}
+.standby-inner:hover {
+  background: rgba(255,60,60,0.12);
+  border-color: rgba(255,60,60,0.45);
+}
+.standby-img-wrap { position: relative; flex-shrink: 0; }
+.standby-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(255,60,60,0.3));
+}
+.standby-info { flex: 1; }
+.standby-nome {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px;
+  text-transform: capitalize;
+}
+.standby-tipos { margin-bottom: 4px; }
+.standby-nivel {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+.standby-timer-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 56px;
+}
+.standby-timer-label {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.standby-timer {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #ff7500;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
+}

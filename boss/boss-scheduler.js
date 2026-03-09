@@ -7,7 +7,7 @@
 
 import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import { getDatabase, ref, get, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 // ============================================================
 // ⚙️ INTERVALO ENTRE BOSSES
@@ -65,6 +65,7 @@ window.listarBosses = function() {
 window.resetarBoss = async function() {
   const bossRef = ref(db, 'boss_ativo');
   await update(bossRef, { estado: 'inativo' });
+  if (_aguardandoFimIntervalo) { clearInterval(_aguardandoFimIntervalo); _aguardandoFimIntervalo = null; }
   console.log('[BossScheduler] Boss resetado! Iniciando novo ciclo...');
   setTimeout(() => iniciarCiclo(), 500);
 };
@@ -136,6 +137,15 @@ function gerarPosicao() {
 // ============================================================
 // CICLO PRINCIPAL
 // ============================================================
+// ============================================================
+// CICLO PRINCIPAL
+// ------------------------------------------------------------
+// Responsabilidade ÚNICA: gravar os timestamps no Firebase.
+// As transições de estado (anunciando→ativo, ativo→inativo)
+// são feitas pelo watcher em boss-system.js, que roda em
+// TODOS os clientes e usa runTransaction para garantir que
+// apenas UM deles escreve — sem race condition.
+// ============================================================
 async function iniciarCiclo() {
   const config = getBossConfig();
   if (!config) {
@@ -149,97 +159,97 @@ async function iniciarCiclo() {
   // 🚀 Produção: troque a linha acima por:
   // const intervalo = sortearIntervalo();
 
-  console.log(`[BossScheduler] Novo ciclo em ${Math.round(intervalo / 1000)} segundos...`);
+  console.log(`[BossScheduler] Próximo boss em ${Math.round(intervalo / 1000)} segundos...`);
 
+  // Aguardar o intervalo via setTimeout — apenas para agendar o PRÓXIMO boss.
+  // NÃO há mais setTimeout aninhados para mudar estado: isso é papel do watcher.
   setTimeout(async () => {
-    const nascimento     = Date.now() + (config.anuncioMinutos * 60 * 1000);
-    const expiracao      = nascimento  + (config.duracaoMinutos  * 60 * 1000);
+    const agora      = Date.now();
+    const nascimento = agora + (config.anuncioMinutos * 60 * 1000);
+    const expiracao  = nascimento + (config.duracaoMinutos * 60 * 1000);
     const { posX, posY } = gerarPosicao();
 
     const novoBoss = {
       estado:     'anunciando',
       pagina:     sortearPagina(config),
-      nascimento: nascimento,
-      expiracao:  expiracao,
-      posX:       posX,
-      posY:       posY,
-      boss:       sortearBoss(config)
+      nascimento: nascimento,  // timestamp FIXO — não depende de quando o cliente carregou
+      expiracao:  expiracao,   // timestamp FIXO — calculado uma única vez aqui
+      posX,
+      posY,
+      boss: sortearBoss(config),
     };
 
+    // Usar transação para garantir que apenas 1 cliente cria o boss
+    // (evita duplicação se dois usuários estiverem na index.html ao mesmo tempo)
     const bossRef = ref(db, 'boss_ativo');
-    await set(bossRef, novoBoss);
-    console.log('[BossScheduler] Boss anunciado:', novoBoss);
-
-    const tempoAteNascer = nascimento - Date.now();
-    setTimeout(async () => {
-      await update(bossRef, { estado: 'ativo' });
-      console.log('[BossScheduler] Boss nasceu!');
-
-      const tempoAteExpirar = expiracao - Date.now();
-      setTimeout(async () => {
-        await update(bossRef, { estado: 'inativo' });
-        console.log('[BossScheduler] Boss expirou. Iniciando novo ciclo...');
-        iniciarCiclo();
-      }, tempoAteExpirar > 0 ? tempoAteExpirar : 0);
-
-    }, tempoAteNascer > 0 ? tempoAteNascer : 0);
+    try {
+      await runTransaction(bossRef, (cur) => {
+        const now = Date.now();
+        // Se outro cliente já criou um boss válido enquanto aguardávamos, abortar
+        if (cur && cur.expiracao > now &&
+            (cur.estado === 'ativo' || cur.estado === 'anunciando')) {
+          return; // abortar — não mudar nada
+        }
+        return novoBoss;
+      });
+      console.log('[BossScheduler] Boss anunciado com timestamps fixos:', {
+        nascimento: new Date(nascimento).toLocaleTimeString(),
+        expiracao:  new Date(expiracao).toLocaleTimeString(),
+      });
+    } catch(e) {
+      console.log('[BossScheduler] Outro cliente criou o boss primeiro — ok.');
+    }
+    // As transições de estado são responsabilidade do watcher em boss-system.js.
+    // Este scheduler NÃO agenda mais setTimeout para mudar anunciando→ativo→inativo.
 
   }, intervalo);
 }
 
 // ============================================================
 // VERIFICAÇÃO INICIAL
+// ------------------------------------------------------------
+// Verifica o estado atual do Firebase ao carregar.
+// Se não há boss ativo, inicia o ciclo para criar o próximo.
+// Se há boss em andamento, NÃO faz nada além de logar —
+// o watcher em boss-system.js já está cuidando das transições.
 // ============================================================
 async function verificarEAgendar() {
   const config = getBossConfig();
-  if (!config) {
-    setTimeout(verificarEAgendar, 1000);
-    return;
-  }
+  if (!config) { setTimeout(verificarEAgendar, 1000); return; }
 
   const bossRef  = ref(db, 'boss_ativo');
   const snapshot = await get(bossRef);
   const data     = snapshot.val();
   const agora    = Date.now();
 
-  const deveAgendar = !data
-    || data.estado === 'inativo'
-    || (data.estado === 'ativo'      && agora > data.expiracao)
-    || (data.estado === 'anunciando' && agora > data.expiracao);
-
-  if (deveAgendar) {
-    console.log('[BossScheduler] Nenhum boss ativo. Iniciando ciclo...');
-    iniciarCiclo();
+  // Boss válido em andamento — watcher do boss-system.js cuida do resto
+  if (data && data.expiracao > agora &&
+      (data.estado === 'ativo' || data.estado === 'anunciando')) {
+    console.log(`[BossScheduler] Boss em andamento (${data.estado}). Watcher ativo.`);
+    // Quando esse boss terminar, o watcher vai mudar para 'inativo',
+    // o onValue do boss-system.js vai disparar, e o scheduler precisa
+    // saber que deve criar o próximo ciclo. Para isso, observamos o Firebase:
+    _aguardarFimDoBossAtual(bossRef, data.expiracao);
     return;
   }
 
-  console.log('[BossScheduler] Boss em andamento. Reconectando ao ciclo atual...');
+  // Sem boss ativo ou expirado — iniciar novo ciclo
+  console.log('[BossScheduler] Nenhum boss ativo. Iniciando ciclo...');
+  iniciarCiclo();
+}
 
-  if (data.estado === 'anunciando') {
-    const tempoAteNascer  = data.nascimento - agora;
-    const tempoAteExpirar = data.expiracao  - agora;
-
-    setTimeout(async () => {
-      await update(bossRef, { estado: 'ativo' });
-      console.log('[BossScheduler] Boss nasceu! (reconectado)');
-
-      setTimeout(async () => {
-        await update(bossRef, { estado: 'inativo' });
-        console.log('[BossScheduler] Boss expirou. (reconectado) Novo ciclo...');
-        iniciarCiclo();
-      }, tempoAteExpirar > 0 ? tempoAteExpirar : 0);
-
-    }, tempoAteNascer > 0 ? tempoAteNascer : 0);
-
-  } else if (data.estado === 'ativo') {
-    const tempoAteExpirar = data.expiracao - agora;
-
-    setTimeout(async () => {
-      await update(bossRef, { estado: 'inativo' });
-      console.log('[BossScheduler] Boss expirou. (reconectado) Novo ciclo...');
+// Aguarda o boss atual terminar para iniciar o próximo ciclo.
+// Usa um setInterval simples baseado em timestamp — sem setTimeout relativo.
+let _aguardandoFimIntervalo = null;
+function _aguardarFimDoBossAtual(bossRef, expiracao) {
+  if (_aguardandoFimIntervalo) { clearInterval(_aguardandoFimIntervalo); }
+  _aguardandoFimIntervalo = setInterval(() => {
+    if (Date.now() >= expiracao) {
+      clearInterval(_aguardandoFimIntervalo); _aguardandoFimIntervalo = null;
+      console.log('[BossScheduler] Boss expirou. Iniciando próximo ciclo...');
       iniciarCiclo();
-    }, tempoAteExpirar > 0 ? tempoAteExpirar : 0);
-  }
+    }
+  }, 5000); // verifica a cada 5 segundos — leve e suficiente
 }
 
 // ============================================================

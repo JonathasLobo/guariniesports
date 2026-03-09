@@ -1630,6 +1630,17 @@ window.btUsarGolpe = async function(idx, moveKey){
       logExtra = ` ${cap(me.pokemon)}'s ${statNames[stat]||stat} rose${stages>1?' sharply':''}!`;
     }
 
+    // ── Decrementar PP do golpe de status ─────────────────────
+    const ppStatusSnap = me.ppAtual || {};
+    const ppStatusAntes = ppStatusSnap[moveKey] !== undefined
+      ? ppStatusSnap[moveKey]
+      : (getMoveLight(moveKey)?.pp || 10);
+    const ppStatusDepois = Math.max(0, ppStatusAntes - 1);
+    await update(_battleRef, {
+      [`players/${_uid}/ppAtual/${moveKey}`]: ppStatusDepois,
+    });
+    // ────────────────────────────────────────────────────────────
+
     await logAction(`${getNick()}'s ${cap(me.pokemon)} used ${move.name}!${logExtra}`);
     await avancarTurno();
     return;
@@ -2455,46 +2466,69 @@ async function mostrarDrops(){
     for (let i = 1; i <= 6; i++) { if (!slotsOcupados.has(i)) { proxSlot = i; break; } }
     const { calcStats: cs } = {}; // não importado diretamente
     // 1% de chance de ser shiny
-    const bossShiny = Math.random() < 0.01;
+    const bossShiny = Math.random() < 0.002; // 0.2% shiny
     // Criar slot básico para o boss capturado
+    // ── Golpes iniciais com mecânica dos 3 no nível 1 ──────────────
+    const _bossPokeKey  = _bossNome.toLowerCase();
+    const _bossLS       = LEARNSETS_BATTLE[_bossPokeKey] || [];
+    const _bossLv1Moves = _bossLS.filter(([lvl]) => lvl === 1).map(([,k]) => k);
+    let   _bossPendingMove = null;
+    let   _bossGolpesIniciais;
+    if (_bossLv1Moves.length >= 3) {
+      const shuffled       = [..._bossLv1Moves].sort(() => Math.random() - 0.5);
+      _bossPendingMove     = shuffled[2] || null;
+      _bossGolpesIniciais  = shuffled.slice(0, 2);
+    } else {
+      _bossGolpesIniciais  = golpesAteNivelBattle(_bossPokeKey, 1);
+      if (_bossGolpesIniciais.length === 0) {
+        _bossGolpesIniciais = (_bossData?.golpes||[]).slice(0,4)
+          .map(g => g.name?.toLowerCase().replace(/ /g,'_')).filter(Boolean);
+      }
+    }
     bossSlot = {
-      slot:     proxSlot,
-      pokemon:  _bossNome.toLowerCase(),
-      nivel:    1,   // sempre começa no nível 1 após captura
-      xp:       0,
-      lealdade: 0,    // capturado começa com lealdade 0
-      nature:   ['Hardy','Jolly','Adamant','Modest','Timid','Bold','Impish','Careful'][Math.floor(Math.random()*8)],
-      ability:  gerarAbilityBoss(_bossNome.toLowerCase()),
-      addedAt:  new Date().toISOString(),
-      // Golpes do learnset real (nível 1) — salvo como array de strings (chaves)
-      // O boss-raid.js lê golpes como strings e faz lookup no MOVES_DB local
-      golpes: (() => {
-        const pk = _bossNome.toLowerCase();
-        const keys = golpesAteNivelBattle(pk, 1);
-        if (keys.length > 0) return keys; // ['tackle', 'string_shot']
-        // Fallback: extrair nome como chave dos golpes NPC
-        return (_bossData?.golpes||[]).slice(0,4)
-          .map(g => g.name?.toLowerCase().replace(/ /g,'_'))
-          .filter(Boolean);
-      })(),
+      slot:        proxSlot,
+      pokemon:     _bossPokeKey,
+      nivel:       1,
+      xp:          0,
+      lealdade:    0,
+      nature:      ['Hardy','Jolly','Adamant','Modest','Timid','Bold','Impish','Careful'][Math.floor(Math.random()*8)],
+      ability:     gerarAbilityBoss(_bossPokeKey),
+      addedAt:     new Date().toISOString(),
+      capturedAt:  Date.now(),
+      pendingMove: _bossPendingMove,
+      golpes:      _bossGolpesIniciais,
       evs:      { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
       evPoints: 0,
       ivs:      { hp:Math.floor(Math.random()*32), atk:Math.floor(Math.random()*32), def:Math.floor(Math.random()*32), spa:Math.floor(Math.random()*32), spd:Math.floor(Math.random()*32), spe:Math.floor(Math.random()*32) },
       hpAtual:  null, // será calculado pelo perfil
       shiny:    bossShiny,
     };
-    // Inserir no próximo slot livre (não sobrescrever nada)
-    novoTeam.push(bossSlot);
-    novoTeam.sort((a,b) => a.slot - b.slot);
+    // Verificar se o time está cheio (6 pokémons)
+    const teamCheio = novoTeam.length >= 6;
+    if (teamCheio) {
+      // Time cheio: pokémon vai para stand-by por 2 minutos
+      bossSlot.expiraEm = Date.now() + 2 * 60 * 1000; // 2 min
+      delete bossSlot.slot; // não tem slot no time principal
+      _bossStandbySlot = bossSlot; // guardar para gravar abaixo
+    } else {
+      novoTeam.push(bossSlot);
+      novoTeam.sort((a,b) => a.slot - b.slot);
+      _bossStandbySlot = null;
+    }
   }
 
   // Gravar no Firestore
   try {
-    await updateDoc(doc(fsdb,'usuarios',_uid), {
+    const fsUpdate = {
       raidBag:  newBag,
       raidTeam: JSON.parse(JSON.stringify(novoTeam)),
       ...(caught ? { pokedex: arrayUnion(_bossNome.toLowerCase()) } : {}),
-    });
+    };
+    // Se há stand-by, gravar o slot pendente
+    if (typeof _bossStandbySlot !== 'undefined' && _bossStandbySlot) {
+      fsUpdate.raidStandby = JSON.parse(JSON.stringify(_bossStandbySlot));
+    }
+    await updateDoc(doc(fsdb,'usuarios',_uid), fsUpdate);
     if (_userData){ _userData.raidBag = newBag; _userData.raidTeam = novoTeam; }
   } catch(e){ console.error('[drops] Firestore error:', e); }
 
@@ -2509,8 +2543,11 @@ async function mostrarDrops(){
   const lvlUpEl  = document.getElementById('dropsLevelUp');
   if (!overlay) return;
 
+  const _teamEraCheia = typeof _bossStandbySlot !== 'undefined' && _bossStandbySlot !== null;
   subtitle.textContent = caught
-    ? `You caught ${cap(_bossNome)}! 🎉`
+    ? (_teamEraCheia
+        ? `You caught ${cap(_bossNome)}! ⏳ Team full — it's in stand-by for 2 min!`
+        : `You caught ${cap(_bossNome)}! 🎉`)
     : myResult === 'failed'
     ? `${cap(_bossNome)} broke free...`
     : 'Raid complete!';

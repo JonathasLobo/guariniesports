@@ -980,12 +980,34 @@ function inicializarGolpes(pokemon, nivel) {
   let ant = encontrarAntecessor(pokemon);
   while (ant) { cadeia.unshift(ant); ant = encontrarAntecessor(ant); }
 
-  // Acumular golpes de todas as formas anteriores + atual
+  // Resetar pending move a cada chamada
+  inicializarGolpes._pendingMove = null;
+
   let golpesAcumulados = [];
   for (const forma of cadeia) {
-    const isAtual = forma === pokemon;
-    let nivelLimite = isAtual ? nivel : (EVOLUTION_CHAIN[forma]?.levelReq || 100);
-    const ls = LEARNSETS[forma] || [];
+    const isAtual     = forma === pokemon;
+    const nivelLimite = isAtual ? nivel : (EVOLUTION_CHAIN[forma]?.levelReq || 100);
+    const ls          = LEARNSETS[forma] || [];
+
+    // ── Mecânica dos 3 golpes no nível 1 ──────────────────────────
+    // Pokémons com 3+ golpes no nivel 1 iniciam com 2 sorteados.
+    // O 3º fica pendente e é ensinado automaticamente no nível 2.
+    if (isAtual && nivel === 1) {
+      const movesNivel1 = ls.filter(([lvl]) => lvl === 1).map(([,key]) => key);
+      if (movesNivel1.length >= 3) {
+        const shuffled   = [...movesNivel1].sort(() => Math.random() - 0.5);
+        const escolhidos = shuffled.slice(0, 2);
+        const pendente   = shuffled[2];
+        inicializarGolpes._pendingMove = pendente;
+        // Golpes acima do nível 1 que também cabem no limite atual
+        const movesAcima = ls.filter(([lvl]) => lvl > 1 && lvl <= nivel).map(([,key]) => key);
+        const novos = [...escolhidos, ...movesAcima].filter(k => !golpesAcumulados.includes(k));
+        golpesAcumulados.push(...novos);
+        continue;
+      }
+    }
+
+    // ── Fluxo normal ──────────────────────────────────────────────
     const novos = ls
       .filter(([lvl]) => lvl <= nivelLimite)
       .map(([,key]) => key)
@@ -1106,7 +1128,7 @@ function gerarAbility(pokemon) {
   // Consulta EVOLUTION_ABILITIES primeiro (formas evoluídas), depois POKEMON_ABILITIES
   const entry = EVOLUTION_ABILITIES[pokemon] || POKEMON_ABILITIES[pokemon];
   if (!entry) return 'overgrow';
-  if (Math.random() < 0.01 && entry.hidden) return entry.hidden;
+  if (Math.random() < 0.002 && entry.hidden) return entry.hidden; // 0.2% hidden ability
   const normais = entry.normal;
   return normais[Math.floor(Math.random() * normais.length)];
 }
@@ -1935,18 +1957,21 @@ async function confirmarEscolha(pokemon) {
     const ability = gerarAbility(pokemon);
 
     // IVs explicitamente campo a campo — evita perda de valores 0 na serialização
-    const isShiny = Math.random() < 0.01; // 1% de chance
+    const isShiny = Math.random() < 0.002; // 0.2% de chance
+    const _golpesIniciais = inicializarGolpes(pokemon, 1);
     const novoSlot = {
-      slot:     1,
-      pokemon:  pokemon,
-      nivel:    1,
-      xp:       0,
-      lealdade: 0,
-      nature:   nature,
-      ability:  ability,
-      shiny:    isShiny,
-      addedAt:  new Date().toISOString(),
-      golpes: inicializarGolpes(pokemon, 1),
+      slot:        1,
+      pokemon:     pokemon,
+      nivel:       1,
+      xp:          0,
+      lealdade:    0,
+      nature:      nature,
+      ability:     ability,
+      shiny:       isShiny,
+      addedAt:     new Date().toISOString(),
+      capturedAt:  Date.now(),
+      golpes:      _golpesIniciais,
+      pendingMove: inicializarGolpes._pendingMove || null,
       evs:    { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
       evPoints: 0,
       ivs: {
@@ -2040,6 +2065,16 @@ function renderMyTeam(container, raidTeam) {
         <h4 class="raid-bag-titulo">&#x1F392; Bag</h4>
         <div class="raid-bag-grid" id="raidBagGrid"></div>
       </div>
+
+      <!-- Zona de Stand-by: pokémon capturado quando time está cheio -->
+      <div class="raid-standby-section" id="raidStandbySection" style="display:none">
+        <div class="raid-standby-header">
+          <span class="raid-standby-icon">⏳</span>
+          <span class="raid-standby-titulo">Pokémon in Stand-by</span>
+          <span class="raid-standby-aviso">Release a team member to add it!</span>
+        </div>
+        <div class="raid-standby-card" id="raidStandbyCard"></div>
+      </div>
     </div>
 
     <div class="raid-item-overlay" id="raidItemModal" style="display:none">
@@ -2083,6 +2118,7 @@ function renderMyTeam(container, raidTeam) {
   `;
 
   renderBagGrid(container);
+  renderStandby();
 
   // Marcar slots com evolucao disponivel
   raidTeam.forEach(s => { if (podeEvoluir(s)) sugerirEvolucao(s); });
@@ -2727,6 +2763,133 @@ function checarBotaoEvolucao(slot, container) {
 // ============================================================
 // RENDER BAG
 // ============================================================
+// ============================================================
+// STAND-BY — pokémon capturado quando time está cheio (max 6)
+// Fica em espera por 2 minutos. O usuário pode dar release
+// em algum membro do time para incluí-lo automaticamente.
+// Se o tempo expirar, o pokémon é liberado automaticamente.
+// ============================================================
+let _standbyTimer = null; // intervalo do countdown local
+
+function renderStandby() {
+  const section  = document.getElementById('raidStandbySection');
+  const cardEl   = document.getElementById('raidStandbyCard');
+  if (!section || !cardEl) return;
+
+  const standby = _userData?.raidStandby || null;
+  if (!standby || !standby.pokemon) {
+    section.style.display = 'none';
+    if (_standbyTimer) { clearInterval(_standbyTimer); _standbyTimer = null; }
+    return;
+  }
+
+  // Verificar se já expirou localmente
+  const agora = Date.now();
+  const expira = standby.expiraEm || 0;
+  if (agora >= expira) {
+    // Expirou — remover do Firestore e esconder
+    _removerStandbyExpirado();
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  // Calcular HP do standby para exibição
+  const _bsS  = BASE_STATS_EVO[standby.pokemon] || BASE_STATS[standby.pokemon] || { hp:45 };
+  const _ivS  = typeof standby.ivs?.hp === 'number' ? standby.ivs.hp : 15;
+  const _evS  = typeof standby.evs?.hp === 'number' ? standby.evs.hp : 0;
+  const _lvlS = standby.nivel || 1;
+  const hpMxS = Math.floor((2 * _bsS.hp + _ivS + Math.floor(_evS/4)) * _lvlS / 100 + _lvlS + 10);
+  const tiposS = EVOLUTION_TIPOS[standby.pokemon] || POKEMON_TIPOS[standby.pokemon] || ['normal'];
+
+  cardEl.innerHTML = `
+    <div class="standby-inner" data-standby>
+      <div class="standby-img-wrap">
+        <img src="${standby.shiny ? '../perfil/img-shiny/'+standby.pokemon+'.png' : '../perfil/img-pokeicon/'+standby.pokemon+'.png'}"
+             alt="${standby.pokemon}" class="standby-img"
+             onerror="this.src='../perfil/img-pokeicon/${standby.pokemon}.png'">
+        ${standby.shiny ? '<span class="shiny-badge">✨ Shiny</span>' : ''}
+      </div>
+      <div class="standby-info">
+        <p class="standby-nome">${capitalizar(standby.pokemon)}</p>
+        <div class="standby-tipos">${renderTipoBadges(tiposS)}</div>
+        <p class="standby-nivel">Lv. ${standby.nivel || 1} | ${hpMxS} HP</p>
+      </div>
+      <div class="standby-timer-wrap">
+        <span class="standby-timer-label">Expires in</span>
+        <span class="standby-timer" id="standbyCountdown">--:--</span>
+      </div>
+    </div>
+  `;
+
+  // Click no card abre o modal de status (view)
+  cardEl.querySelector('[data-standby]').addEventListener('click', () => {
+    abrirModalStatus(standby);
+  });
+
+  // Iniciar countdown
+  if (_standbyTimer) { clearInterval(_standbyTimer); _standbyTimer = null; }
+  function _atualizarTimer() {
+    const el = document.getElementById('standbyCountdown');
+    if (!el) { clearInterval(_standbyTimer); _standbyTimer = null; return; }
+    const diff = (standby.expiraEm || 0) - Date.now();
+    if (diff <= 0) {
+      clearInterval(_standbyTimer); _standbyTimer = null;
+      _removerStandbyExpirado();
+      return;
+    }
+    const mm = Math.floor(diff / 60000);
+    const ss = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+    el.textContent = `${mm}:${ss}`;
+    // Cor vira vermelho nos últimos 30s
+    el.style.color = diff < 30000 ? '#ff4444' : '#ff7500';
+  }
+  _atualizarTimer();
+  _standbyTimer = setInterval(_atualizarTimer, 1000);
+}
+
+async function _removerStandbyExpirado() {
+  if (!_userId || !_db) return;
+  try {
+    const { doc, updateDoc, deleteField } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+    await updateDoc(doc(_db, 'usuarios', _userId), { raidStandby: deleteField() });
+    if (_userData) delete _userData.raidStandby;
+    mostrarToast('Stand-by expired — Pokémon was released', '👋', false);
+  } catch(e) { console.error('[standby] erro ao remover:', e); }
+  renderStandby();
+}
+
+async function _promoverStandby() {
+  // Chamado quando um release é feito e há pokémon em standby
+  const standby = _userData?.raidStandby || null;
+  if (!standby || !standby.pokemon) return;
+  if ((standby.expiraEm || 0) < Date.now()) {
+    await _removerStandbyExpirado();
+    return;
+  }
+  try {
+    const { doc, updateDoc, deleteField } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+    const team = _userData?.raidTeam || [];
+    // Encontrar slot livre
+    const ocupados = new Set(team.map(s => s.slot));
+    let proxSlot = 1;
+    for (let i = 1; i <= 6; i++) { if (!ocupados.has(i)) { proxSlot = i; break; } }
+    const novoSlot = { ...standby, slot: proxSlot };
+    delete novoSlot.expiraEm; // limpar campo de standby
+    const novoTeam = [...team, novoSlot];
+    novoTeam.sort((a, b) => a.slot - b.slot);
+    await updateDoc(doc(_db, 'usuarios', _userId), {
+      raidTeam: JSON.parse(JSON.stringify(novoTeam)),
+      raidStandby: deleteField()
+    });
+    _userData.raidTeam = novoTeam;
+    delete _userData.raidStandby;
+    mostrarToast(capitalizar(standby.pokemon) + ' joined your team! 🎉', '⚔️', true);
+    renderizarBossRaid();
+  } catch(e) { console.error('[standby] erro ao promover:', e); }
+}
+
 function renderBagGrid(container) {
   const bag  = _userData?.raidBag || {};
   const grid = container ? container.querySelector('#raidBagGrid') : document.getElementById('raidBagGrid');
@@ -3172,6 +3335,22 @@ function abrirModalStatus(slot) {
     + '</div>'
     // Linha evolutiva abaixo dos EV Points, col-2
     + renderLinhaEvolutiva(slot.pokemon)
+    + (() => {
+        // Data de captura — usa capturedAt (timestamp ms) ou addedAt (ISO string)
+        let dtStr = '';
+        if (slot.capturedAt) {
+          const d = new Date(slot.capturedAt);
+          dtStr = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' })
+                + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+        } else if (slot.addedAt) {
+          const d = new Date(slot.addedAt);
+          dtStr = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' })
+                + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+        }
+        return dtStr
+          ? '<div class="raid-captured-date">📅 Captured: ' + dtStr + '</div>'
+          : '';
+      })()
     + '</div>'
 
     // ══ COLUNA 3 — Moves ══
@@ -3190,6 +3369,35 @@ function abrirModalStatus(slot) {
     + '</div>'; // fecha .raid-status-3col
 
   document.getElementById('raidModalStatus').classList.add('show');
+
+  // ── Setas de navegação entre pokémons ───────────────────────
+  const teamNav    = _userData?.raidTeam || [];
+  const idxAtual   = teamNav.findIndex(s => s.slot === slot.slot);
+  const idxPrev    = idxAtual - 1;
+  const idxNext    = idxAtual + 1;
+  const slotPrev   = teamNav[idxPrev] || null;
+  const slotNext   = teamNav[idxNext] || null;
+  const modalEl    = document.getElementById('raidModalStatus');
+
+  // Remover setas antigas se houver
+  modalEl.querySelectorAll('.raid-nav-arrow').forEach(el => el.remove());
+
+  if (slotPrev) {
+    const btnL = document.createElement('button');
+    btnL.className = 'raid-nav-arrow raid-nav-left';
+    btnL.innerHTML = '&#8592;';
+    btnL.title     = capitalizar(slotPrev.pokemon);
+    btnL.addEventListener('click', () => abrirModalStatus(slotPrev));
+    modalEl.appendChild(btnL);
+  }
+  if (slotNext) {
+    const btnR = document.createElement('button');
+    btnR.className = 'raid-nav-arrow raid-nav-right';
+    btnR.innerHTML = '&#8594;';
+    btnR.title     = capitalizar(slotNext.pokemon);
+    btnR.addEventListener('click', () => abrirModalStatus(slotNext));
+    modalEl.appendChild(btnR);
+  }
 
   // Verificar e exibir botão de evolução se disponível
   const col1 = document.querySelector('#raidStatusBody .raid-col-info');
@@ -3220,8 +3428,10 @@ function abrirModalStatus(slot) {
         await updateDoc(doc(_db, 'usuarios', _userId), { raidTeam: JSON.parse(JSON.stringify(novoTeam)) });
         _userData.raidTeam = novoTeam;
         document.getElementById('raidModalStatus')?.classList.remove('show');
-        renderizarBossRaid();
         mostrarToast('Released ' + capitalizar(slot.pokemon), '👋', false);
+        // Se havia pokémon em stand-by, promovê-lo automaticamente
+        await _promoverStandby();
+        renderizarBossRaid();
       } catch(err) {
         console.error('[BossRaid] Erro ao liberar pokémon:', err);
         btnDel.disabled = false;
