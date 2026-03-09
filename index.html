@@ -99,6 +99,10 @@
     <div class="profile-search-results" id="profileSearchResults"></div>
   </div>
 
+  <!-- ✅ BOSS AVISO - Tarja amarela/vermelha de aviso do boss -->
+  <div id="boss-aviso-tarja" class="boss-tarja" style="display:none;"></div>
+  <!-- ✅ FIM BOSS AVISO -->
+
   <main>
     <section id="home" class="hero">
       <div class="hero-image">
@@ -148,8 +152,7 @@
       </div>
     </section>
 
-    <!--
-    <section id="noticias">
+    <!--<section id="noticias">
       <h2>News</h2>
       <div class="noticias-colunas">
          As notícias serão carregadas automaticamente aqui pelo JavaScript 
@@ -159,8 +162,7 @@
           </p>
         </div>
       </div>
-    </section>
-     -->
+    </section>-->
 
     <!-- NOVA SEÇÃO DE VÍDEOS -->
     <section id="videos">
@@ -735,6 +737,26 @@
           // Obter o modo da aba
           const mode = tab.dataset.tab;
           currentBuildMode = mode;
+
+          // ── Missão Boss Raid: recent_builds ──────────────────
+          if (mode === 'recent') {
+            try {
+              var _qr = localStorage.getItem('bossraid_quest_ativa');
+              if (_qr) {
+                var _q = JSON.parse(_qr);
+                if (_q && _q.missaoKey === 'recent_builds') {
+                  // index.html tem boss-raid carregado — tentar completar direto
+                  if (typeof window.missaoDiariaCompleta === 'function') {
+                    window.missaoDiariaCompleta('recent_builds', _q.slotTarget || 1);
+                  } else {
+                    localStorage.setItem('bossraid_pending_mission',
+                      JSON.stringify({ missaoKey: 'recent_builds', slotTarget: _q.slotTarget || 1 })
+                    );
+                  }
+                }
+              }
+            } catch(e) {}
+          }
           
           // Renderizar builds do modo selecionado (usando cache)
           renderBuilds(mode);
@@ -1103,6 +1125,8 @@ profileSearchInput.addEventListener('input', async (e) => {
 <script type="module" src="./noticias/noticias-index.js"></script>
 <script type="module" src="./noticias/botao-editor.js"></script>
 <script type="module" src="./pokemon-by-role.js"></script>
+<script type="module" src="./boss/boss-system.js"></script>
+<script type="module" src="./boss/boss-scheduler.js"></script>
 
    <script>
     // ====================================

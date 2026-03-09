@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Pre-Battle — Pokémon UNITE</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0a10;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .pb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(0,0,0,0.7);
+      border-bottom: 2px solid #ff4500;
+      flex-shrink: 0;
+    }
+    .pb-header-title { font-size: 1.1rem; font-weight: 800; color: #ff9500; text-transform: uppercase; letter-spacing: 1px; }
+    .pb-room-id {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,117,0,0.1); border: 1.5px solid rgba(255,117,0,0.4);
+      border-radius: 8px; padding: 6px 14px; font-size: 0.82rem; color: #aaa;
+    }
+    .pb-room-id-val { color: #ffad00; font-weight: 800; font-size: 1.1rem; letter-spacing: 3px; }
+    .pb-copy-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px; color: #ccc; padding: 3px 10px; font-size: 0.68rem;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .pb-copy-btn:hover { background: rgba(255,255,255,0.18); }
+    .pb-status-label { font-size: 0.75rem; color: #555; }
+
+    .pb-leave-btn {
+      padding: 7px 16px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+      background: rgba(255,60,60,0.1); border: 1.5px solid rgba(255,60,60,0.35);
+      color: #ff6666; cursor: pointer; transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.3px;
+    }
+    .pb-leave-btn:hover { background: rgba(255,60,60,0.22); transform: scale(1.04); }
+
+    /* ── Timer bar ── */
+    .pb-timer-bar {
+      text-align: center; padding: 7px;
+      background: rgba(255,69,0,0.07); border-bottom: 1px solid rgba(255,69,0,0.18);
+      font-size: 0.8rem; color: #ff9500; flex-shrink: 0;
+    }
+    .pb-timer-bar b { font-size: 1rem; color: #ff4500; }
+    .pb-timer-bar.urgente { background: rgba(255,0,0,0.12) !important; color: #ff4444 !important; }
+
+    /* ── Main ── */
+    .pb-main {
+      flex: 1; display: flex; flex-direction: column; gap: 14px;
+      padding: 16px 20px 0;
+      max-width: 1400px; width: 100%; margin: 0 auto;
+    }
+
+    /* ── Arena row ── */
+    .pb-arena {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 16px; align-items: start;
+    }
+
+    /* ── Boss card ── */
+    .pb-boss-card {
+      background: linear-gradient(160deg, rgba(40,10,10,0.97), rgba(15,5,5,0.99));
+      border: 2px solid #ff4500; border-radius: 16px;
+      padding: 22px 18px; text-align: center;
+      box-shadow: 0 0 50px rgba(255,69,0,0.22), inset 0 0 60px rgba(0,0,0,0.5);
+      position: relative; overflow: hidden;
+    }
+    .pb-boss-card::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse at 50% 25%, rgba(255,69,0,0.13), transparent 65%);
+      pointer-events: none;
+    }
+    .pb-boss-gif {
+      width: 170px; height: auto;
+      filter: drop-shadow(0 0 28px rgba(255,130,0,0.9)) drop-shadow(0 0 8px rgba(255,200,100,0.5));
+      animation: pb-float 3s ease-in-out infinite; position: relative;
+      image-rendering: auto;
+    }
+    @keyframes pb-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)} }
+    .pb-boss-name { font-size:1.55rem; font-weight:900; color:#ff6b00; text-shadow:0 0 20px rgba(255,107,0,0.5); margin:10px 0 5px; letter-spacing:1px; }
+    .pb-boss-types { display:flex; gap:6px; justify-content:center; margin-bottom:9px; flex-wrap:wrap; }
+    .pb-type-badge { padding:3px 10px; border-radius:12px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+    .pb-boss-diff { font-size:0.72rem; color:#777; }
+    .pb-diff-stars { color:#ff9500; }
+
+    /* ── Players grid ── */
+    .pb-players-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:11px; }
+
+    /* ── Player card ── */
+    .pb-player-card {
+      background: rgba(14,14,26,0.97); border: 2px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 13px 11px;
+      display: flex; flex-direction: column; gap: 9px;
+      position: relative; transition: border-color 0.3s; min-height: 330px;
+    }
+    .pb-player-card.is-me { border-color: rgba(255,117,0,0.45); }
+    .pb-player-card.ready { border-color: rgba(46,204,113,0.55); box-shadow: 0 0 20px rgba(46,204,113,0.1); }
+    .pb-player-card.empty { opacity:0.35; border-style:dashed; border-color:rgba(255,255,255,0.09); }
+
+    .pb-player-header { display:flex; align-items:center; gap:8px; }
+    .pb-player-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.1); flex-shrink:0; }
+    .pb-player-nick { font-size:0.78rem; font-weight:700; color:#eee; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pb-player-tag { font-size:0.58rem; color:#ff9500; font-weight:600; }
+    .pb-empty-label { font-size:0.78rem; color:#333; text-align:center; margin:auto; }
+
+    .pb-poke-area {
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      background:rgba(255,255,255,0.02); border-radius:10px; padding:8px;
+      cursor:pointer; border:1px solid rgba(255,255,255,0.04); transition:background 0.15s;
+    }
+    .pb-poke-area:hover { background:rgba(255,117,0,0.07); }
+    .pb-poke-area.no-click { cursor:default; }
+    .pb-poke-area.no-click:hover { background:rgba(255,255,255,0.02); }
+    .pb-poke-img { width:60px; height:60px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+    .pb-poke-name { font-size:0.7rem; font-weight:700; color:#ddd; }
+    .pb-poke-lvl { font-size:0.58rem; color:#777; }
+    .pb-poke-hint { font-size:0.54rem; color:#ff9500; opacity:0.7; }
+
+    .pb-bag-area { display:flex; flex-direction:column; gap:4px; }
+    .pb-bag-title { font-size:0.58rem; color:#555; text-transform:uppercase; font-weight:700; letter-spacing:0.5px; }
+    .pb-bag-items { display:flex; flex-wrap:wrap; gap:3px; }
+    .pb-bag-item { display:flex; align-items:center; gap:3px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:4px; padding:2px 6px; font-size:0.58rem; color:#aaa; }
+    .pb-bag-item img { width:13px; height:13px; object-fit:contain; }
+    .pb-bag-item-btn { cursor:pointer; border-color:rgba(255,117,0,0.2); transition:background 0.15s, border-color 0.15s; }
+    .pb-bag-item-btn:hover { background:rgba(255,117,0,0.12); border-color:rgba(255,117,0,0.5); color:#ffad00; }
+    .pb-bag-item-btn:active { transform:scale(0.95); }
+    .pb-bag-qty { color:#ff9500; font-weight:700; }
+    .pb-bag-empty { font-size:0.58rem; color:#333; }
+
+    .pb-ready-wrap { margin-top:auto; }
+    .pb-ready-btn {
+      width:100%; padding:8px 0; border:2px solid rgba(46,204,113,0.4);
+      border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer;
+      letter-spacing:0.5px; transition:transform 0.12s, filter 0.12s, background 0.2s;
+      background:rgba(46,204,113,0.1); color:#2ecc71;
+    }
+    .pb-ready-btn:hover:not(:disabled):not(.is-ready) { transform:scale(1.03); filter:brightness(1.2); }
+    .pb-ready-btn:disabled { opacity:0.45; cursor:not-allowed; }
+    .pb-ready-btn.is-ready { background:rgba(46,204,113,0.22); border-color:#2ecc71; color:#5dfca0; }
+
+    .pb-ready-badge {
+      position:absolute; top:9px; right:9px;
+      background:#2ecc71; color:#071a0f; font-size:0.55rem; font-weight:900;
+      padding:2px 7px; border-radius:7px; letter-spacing:0.5px; text-transform:uppercase;
+    }
+
+    /* ── Countdown overlay ── */
+    .pb-cd-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.9);
+      display:none; flex-direction:column; align-items:center; justify-content:center; z-index:9999;
+    }
+    .pb-cd-overlay.show { display:flex; }
+    .pb-cd-num {
+      font-size:7rem; font-weight:900; color:#ff4500;
+      text-shadow:0 0 60px rgba(255,69,0,0.9);
+      animation:cd-pulse 0.9s ease-in-out infinite; line-height:1;
+    }
+    @keyframes cd-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+    .pb-cd-label { font-size:0.95rem; color:#ff9500; margin-top:16px; font-weight:700; letter-spacing:1px; }
+
+    /* ── Pokemon chooser modal ── */
+    .pb-modal-bg {
+      position:fixed; inset:0; background:rgba(0,0,0,0.78);
+      display:none; align-items:center; justify-content:center; z-index:9998;
+    }
+    .pb-modal-bg.show { display:flex; }
+    .pb-modal {
+      background:#111122; border:2px solid rgba(255,117,0,0.38);
+      border-radius:16px; padding:22px; max-width:480px; width:95%; max-height:80vh; overflow-y:auto;
+    }
+    .pb-modal h3 { font-size:0.88rem; color:#ff9500; margin-bottom:14px; font-weight:800; text-transform:uppercase; }
+    .pb-poke-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+    .pb-poke-opt {
+      background:rgba(255,255,255,0.03); border:1.5px solid rgba(255,255,255,0.07);
+      border-radius:10px; padding:12px 8px; text-align:center; cursor:pointer;
+      transition:border-color 0.15s, background 0.15s;
+    }
+    .pb-poke-opt:hover { border-color:rgba(255,117,0,0.5); background:rgba(255,117,0,0.06); }
+    .pb-poke-opt.sel { border-color:#ff9500; background:rgba(255,117,0,0.1); }
+    .pb-poke-opt img { width:54px; height:54px; object-fit:contain; image-rendering:pixelated; }
+    .pb-poke-opt p { font-size:0.66rem; color:#ccc; margin-top:4px; font-weight:600; }
+    .pb-modal-cancel {
+      margin-top:14px; width:100%; padding:8px;
+      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+      border-radius:8px; color:#888; cursor:pointer; font-size:0.75rem; transition:background 0.15s;
+    }
+    .pb-modal-cancel:hover { background:rgba(255,255,255,0.1); }
+
+    /* ── Chat ── */
+    .pb-chat-wrap { padding:0 20px 16px; max-width:1400px; width:100%; margin:0 auto; }
+    .pb-chat-box { background:rgba(7,7,17,0.97); border:1px solid rgba(255,255,255,0.05); border-radius:13px; overflow:hidden; }
+    .pb-chat-hdr {
+      padding:7px 14px; border-bottom:1px solid rgba(255,255,255,0.04);
+      font-size:0.66rem; color:#444; text-transform:uppercase; font-weight:700; letter-spacing:0.5px;
+      display:flex; align-items:center; gap:7px;
+    }
+    .pb-chat-dot { width:6px; height:6px; background:#2ecc71; border-radius:50%; flex-shrink:0; }
+    .pb-chat-msgs {
+      height:100px; overflow-y:auto; padding:8px 14px;
+      display:flex; flex-direction:column; gap:3px;
+      scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent;
+    }
+    .pb-chat-msg { font-size:0.68rem; color:#bbb; line-height:1.4; }
+    .pb-chat-nick { color:#ff9500; font-weight:700; }
+    .pb-chat-mine-nick { color:#ffcf7f; font-weight:700; }
+    .pb-chat-sys { color:#444; font-style:italic; }
+    .pb-chat-input-row { display:flex; border-top:1px solid rgba(255,255,255,0.04); }
+    .pb-chat-input { flex:1; background:transparent; border:none; outline:none; padding:9px 14px; font-size:0.74rem; color:#ddd; }
+    .pb-chat-send { padding:0 16px; background:rgba(255,117,0,0.14); border:none; border-left:1px solid rgba(255,255,255,0.04); color:#ff9500; font-size:0.74rem; font-weight:700; cursor:pointer; transition:background 0.15s; }
+    .pb-chat-send:hover { background:rgba(255,117,0,0.28); }
+
+    /* ── Loading ── */
+    .pb-loading { display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; gap:14px; color:#ff9500; font-size:0.88rem; }
+    .pb-spinner { width:34px; height:34px; border:3px solid rgba(255,117,0,0.15); border-top-color:#ff9500; border-radius:50%; animation:spin 0.9s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── Type colors ── */
+    .t-fire{background:#F08030;color:#fff} .t-water{background:#6890F0;color:#fff}
+    .t-grass{background:#78C850;color:#fff} .t-normal{background:#A8A878;color:#fff}
+    .t-flying{background:#A890F0;color:#fff} .t-psychic{background:#F85888;color:#fff}
+    .t-ghost{background:#705898;color:#fff} .t-dark{background:#705848;color:#fff}
+    .t-steel{background:#B8B8D0;color:#333} .t-fighting{background:#C03028;color:#fff}
+    .t-ground{background:#E0C068;color:#333} .t-rock{background:#B8A038;color:#fff}
+    .t-bug{background:#A8B820;color:#fff} .t-poison{background:#A040A0;color:#fff}
+    .t-electric{background:#F8D030;color:#333} .t-ice{background:#98D8D8;color:#333}
+    .t-dragon{background:#7038F8;color:#fff} .t-fairy{background:#EE99AC;color:#333}
+
+    @media(max-width:900px){ .pb-arena{grid-template-columns:1fr} .pb-players-grid{grid-template-columns:repeat(2,1fr)} }
+    @media(max-width:520px){ .pb-players-grid{grid-template-columns:1fr 1fr} }
+
+    .pb-poke-fainted { opacity: 0.7; border-color: rgba(200,0,0,0.35) !important; }
+    .pb-fainted-tag {
+      position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+      font-size: 0.55rem; background: rgba(180,0,0,0.75); color: #ffaaaa;
+      border-radius: 4px; padding: 1px 5px; white-space: nowrap; font-weight: 700;
+    }
+    @keyframes fadeInUp {
+      from { opacity:0; transform:translateX(-50%) translateY(10px); }
+      to   { opacity:1; transform:translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Tela de erro permanente -->
+<div id="pbErro" style="position:fixed;inset:0;background:#0a0a10;
+  flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:99999;text-align:center;padding:24px;
+  display:none;">
+  <div style="font-size:3.5rem" id="pbErroIcon">💀</div>
+  <div style="font-size:1.05rem;font-weight:800;color:#ff4444;text-transform:uppercase;letter-spacing:1px" id="pbErroTitulo">Lobby Not Found</div>
+  <div style="font-size:0.8rem;color:#555;max-width:360px;line-height:1.7" id="pbErroMsg">This lobby no longer exists.</div>
+  <a href="/index.html" style="margin-top:6px;padding:11px 28px;
+    background:linear-gradient(135deg,rgba(255,117,0,0.18),rgba(255,173,0,0.09));
+    border:2px solid rgba(255,117,0,0.4);border-radius:10px;color:#ffad00;font-weight:800;
+    font-size:0.8rem;text-decoration:none;letter-spacing:0.4px;">← Return to Home</a>
+</div>
+
+<!-- Loading -->
+<div id="pbLoading" class="pb-loading">
+  <div class="pb-spinner"></div>
+  <span id="pbLoadingMsg">Setting up battle room...</span>
+</div>
+
+<!-- App (hidden until ready) -->
+<div id="pbApp" style="display:none;flex-direction:column;flex:1;">
+
+  <div class="pb-header">
+    <div class="pb-header-title">⚔️ Pre-Battle Lobby</div>
+    <div class="pb-room-id" id="pbRoomIdRow" style="display:none">
+      Room ID: <span class="pb-room-id-val" id="pbRoomIdVal">—</span>
+      <button class="pb-copy-btn" id="pbCopyBtn">Copy</button>
+    </div>
+    <div class="pb-status-label" id="pbStatusLbl">Waiting for players...</div>
+    <button class="pb-leave-btn" id="pbLeaveBtn">✕ Leave Room</button>
+  </div>
+
+  <div class="pb-timer-bar" id="pbTimerBar">
+    Waiting for players — battle starts in <b id="pbTimerVal">2:00</b>
+  </div>
+
+  <div class="pb-main">
+    <div class="pb-arena">
+      <!-- Boss -->
+      <div class="pb-boss-card">
+        <img id="pbBossGif" class="pb-boss-gif" src="" alt="Boss" onerror="this.style.opacity=0.3">
+        <div class="pb-boss-name" id="pbBossName">—</div>
+        <!-- HP removido intencionalmente — keep it mysterious -->
+        <div class="pb-boss-types" id="pbBossTypes"></div>
+        <div class="pb-boss-diff" id="pbBossDiff"></div>
+      </div>
+      <!-- Players -->
+      <div class="pb-players-grid" id="pbPlayersGrid"></div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="pb-chat-wrap">
+    <div class="pb-chat-box">
+      <div class="pb-chat-hdr"><div class="pb-chat-dot"></div>Pre-Battle Chat</div>
+      <div class="pb-chat-msgs" id="pbChatMsgs"></div>
+      <div class="pb-chat-input-row">
+        <input class="pb-chat-input" id="pbChatInput" placeholder="Type a message..." maxlength="120">
+        <button class="pb-chat-send" id="pbChatSend">Send</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Join Room modal (para uso pelo boss-system) -->
+<div class="pb-modal-bg" id="pbJoinModal" style="display:none;align-items:center;justify-content:center;">
+  <div class="pb-modal" style="max-width:380px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:10px;">🚪</div>
+    <h3 style="margin-bottom:6px;">Join a Room</h3>
+    <p style="font-size:0.72rem;color:#777;margin-bottom:16px;">Enter the 6-character Room ID shared by the room creator.</p>
+    <input id="pbJoinInput"
+      style="width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,117,0,0.35);border-radius:8px;
+             padding:11px 14px;font-size:1.1rem;color:#ffad00;letter-spacing:3px;text-align:center;
+             text-transform:uppercase;outline:none;font-weight:800;"
+      maxlength="6" placeholder="A1B2C3">
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button id="pbJoinCancelBtn"
+        style="flex:1;padding:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+               border-radius:8px;color:#777;cursor:pointer;font-size:0.78rem;">Cancel</button>
+      <button id="pbJoinConfirmBtn"
+        style="flex:1;padding:9px;background:linear-gradient(135deg,rgba(255,117,0,0.25),rgba(255,173,0,0.15));
+               border:1.5px solid rgba(255,117,0,0.5);border-radius:8px;color:#ffad00;
+               cursor:pointer;font-size:0.78rem;font-weight:800;">Join ⚔️</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pokemon chooser modal -->
+<div class="pb-modal-bg" id="pbPokeModal">
+  <div class="pb-modal">
+    <h3>Choose your Pokémon</h3>
+    <div class="pb-poke-opts" id="pbPokeOpts"></div>
+    <button class="pb-modal-cancel" id="pbModalCancel">Cancel</button>
+  </div>
+</div>
+
+<!-- Countdown overlay -->
+<div class="pb-cd-overlay" id="pbCdOverlay">
+  <div class="pb-cd-num" id="pbCdNum">10</div>
+  <div class="pb-cd-label">Battle starting!</div>
+</div>
+
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update, onValue, push, onDisconnect, remove }
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import { getFirestore, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC9LLCXrQTHBagQxaChBazSfS5E4gUPIoI",
+  authDomain: "site-grn.firebaseapp.com",
+  projectId: "site-grn",
+  storageBucket: "site-grn.firebasestorage.app",
+  messagingSenderId: "27613322806",
+  appId: "1:27613322806:web:ad4dc08ce043f19d530297",
+  measurementId: "G-84NHN394WF",
+  databaseURL: "https://site-grn-default-rtdb.firebaseio.com"
+};
+const fbApp = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+const auth  = getAuth(fbApp);
+const rdb   = getDatabase(fbApp);
+const fsdb  = getFirestore(fbApp);
+
+// ── Estado ───────────────────────────────────────────────────
+let _uid          = null;
+let _userData     = null;   // { displayName, avatar, raidTeam, raidBag }
+let _salaId       = null;
+let _bossData     = null;
+let _timerMain    = null;
+let _timerCD      = null;
+let _tempoInicio  = null;
+let _transitioning = false;
+let _irParaBatalhaEmCurso = false;  // evita dupla navegação
+let _salaExpiraEm  = null;  // expiraEm lido do Firebase — nunca reseta
+let _meuPokSlot   = 0;
+const MAX_PLAYERS  = 4;
+const SALA_DURACAO = 2 * 60 * 1000; // 2 min
+
+// ── Helpers ──────────────────────────────────────────────────
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+
+// Exibir tela de erro permanente — usuário só sai clicando em "Return to Home"
+function mostrarErro(titulo, msg, icone) {
+  const loading = document.getElementById('pbLoading');
+  const app     = document.getElementById('pbApp');
+  const erro    = document.getElementById('pbErro');
+  if (loading) loading.style.display = 'none';
+  if (app)     app.style.display     = 'none';
+  document.getElementById('pbErroIcon').textContent   = icone  || '💀';
+  document.getElementById('pbErroTitulo').textContent = titulo || 'Error';
+  document.getElementById('pbErroMsg').textContent    = msg    || '';
+  // Forçar display:flex independente de qualquer CSS herdado
+  if (erro) { erro.style.cssText += ';display:flex!important'; }
+}
+
+function gerarId() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:6}, () => c[Math.floor(Math.random()*c.length)]).join('');
+}
+
+const BOSS_TIPOS = {
+  Staryu:['water'], Mawile:['steel','fairy'], Caterpie:['bug'],
+};
+function getBossTipos(nome) { return BOSS_TIPOS[nome] || ['normal']; }
+function getDiff(hp) {
+  if (hp>=3000) return {s:'★★★★★',l:'Legendary'};
+  if (hp>=2200) return {s:'★★★★',l:'Very Hard'};
+  if (hp>=1700) return {s:'★★★',l:'Hard'};
+  if (hp>=1200) return {s:'★★',l:'Normal'};
+  return {s:'★',l:'Easy'};
+}
+const ITEM_NAMES = {
+  pokebola:'Poké Ball',great_ball:'Great Ball',ultra_ball:'Ultra Ball',
+  potion:'Potion',super_potion:'Super Pot.',hyper_potion:'Hyper Pot.',
+  max_potion:'Max Pot.',revive:'Revive',max_revive:'Max Revive',full_restore:'Full Rest.'
+};
+const ITEM_ORDER = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore'];
+function getBagItems(bag) {
+  if (!bag) return [];
+  return ITEM_ORDER.filter(k=>(bag[k]||0)>0).map(k=>({key:k,nome:ITEM_NAMES[k]||k,qty:bag[k]}));
+}
+
+// ── Auth + init ──────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href = '../perfil/perfil.html'; return; }
+  _uid = user.uid;
+
+  document.getElementById('pbLoadingMsg').textContent = 'Loading your data...';
+
+  try {
+    const withTimeout = (promise, ms) => Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+    ]);
+    const snap = await withTimeout(getDoc(doc(fsdb,'usuarios',_uid)), 5000);
+    _userData = snap.exists() ? snap.data() : {};
+  } catch(e) {
+    console.warn('[pre-battle] Erro ao carregar userData:', e.message);
+    _userData = {};
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // PORTEIRO DE SEGURANÇA
+  // Ordem de validação:
+  //  1. A URL tem ?sala=ID?  → se não, verificar se veio pelo boss
+  //  2. Verificar boss_ativo no Firebase (sempre, sem exceção)
+  //  3. Verificar se a sala existe e não expirou
+  //  4. Só então entrar/criar
+  // ─────────────────────────────────────────────────────────
+  document.getElementById('pbLoadingMsg').textContent = 'Validating session...';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const salaIdUrl = (urlParams.get('sala') || '').toUpperCase().trim();
+  const action    = sessionStorage.getItem('boss_sala_action') || '';
+  const joinId    = (sessionStorage.getItem('boss_sala_join_id') || '').toUpperCase().trim();
+  sessionStorage.removeItem('boss_sala_action');
+  sessionStorage.removeItem('boss_sala_join_id');
+
+  // Validar boss_ativo — com timeout de 5s para não travar em caso de latência
+  document.getElementById('pbLoadingMsg').textContent = 'Checking for active boss...';
+  let bossAtivo = null;
+  try {
+    const withTimeout = (promise, ms) => Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+    ]);
+    const bsnap = await withTimeout(get(ref(rdb, 'boss_ativo')), 5000);
+    bossAtivo = bsnap.val();
+  } catch(e) {
+    console.warn('[pre-battle] Erro ao ler boss_ativo:', e.message);
+    // Em caso de timeout ou erro de rede, tentar continuar
+    // (o Firebase pode estar lento, não bloquear o usuário)
+  }
+
+  const bossOk = bossAtivo?.estado === 'ativo' && Date.now() < (bossAtivo?.expiracao || 0);
+
+  // Se o boss não está ativo, bloquear — EXCETO se:
+  //   a) veio com action='create'/'join' (do boss-system.js que só aparece com boss ativo)
+  //   b) veio com ?sala= na URL (já estava no lobby quando o boss expirou)
+  // Nesses casos a sessão foi iniciada legitimamente; o boss pode ter expirado
+  // nos milissegundos do redirect, ou estar em teste local.
+  const temAcaoLegitima = action === 'create' || action === 'join' || salaIdUrl !== '';
+
+  if (!bossOk && !temAcaoLegitima) {
+    mostrarErro(
+      'No Active Boss',
+      'There is no active boss right now. Wait for a boss to appear on the site and click it to start a battle.',
+      '👻'
+    );
+    return;
+  }
+
+  // Boss ativo — agora verificar o contexto de entrada:
+
+  if (salaIdUrl) {
+    // Veio pela URL (?sala=ID): pode ser Avançar do browser ou link direto
+    // Entrar na sala existente (não cria nova)
+    await entrarNaSala(salaIdUrl, bossAtivo);
+
+  } else if (action === 'join' && joinId) {
+    // Veio do "Join a Room" com código digitado
+    await entrarNaSala(joinId, bossAtivo);
+
+  } else if (action === 'create') {
+    // Veio do "Create a Room" clicando no boss
+    let bossSnap = null;
+    try { bossSnap = JSON.parse(sessionStorage.getItem('boss_ativo_snap')||'null'); } catch(e){}
+    _bossData = bossSnap || { boss: bossAtivo.boss };
+    await criarSala(bossAtivo);
+
+  } else {
+    // Nenhuma das condições — acesso direto sem ter clicado no boss
+    mostrarErro(
+      'Invalid Access',
+      'You must click on an active boss in the site to enter a battle room. Direct URL access without an active session is not allowed.',
+      '🚫'
+    );
+  }
+});
+
+// ── Criar sala ───────────────────────────────────────────────
+async function criarSala(bossAtivo) {
+  let salaId, tentativas = 0;
+  do {
+    salaId = gerarId();
+    const snap = await get(ref(rdb, `boss_salas/${salaId}`));
+    if (!snap.exists()) break;
+  } while (++tentativas < 8);
+
+  _salaId = salaId;
+  const boss  = _bossData?.boss || bossAtivo?.boss || { nome:'Boss', hp:1500 };
+  const agora = Date.now();
+
+  await set(ref(rdb, `boss_salas/${salaId}`), {
+    salaId,
+    criadaEm:      agora,
+    expiraEm:      agora + SALA_DURACAO,
+    bossExpiracao: bossAtivo?.expiracao || 0, // para validar re-entry
+    estado:        'aguardando',
+    criadoPor:     _uid,
+    boss,
+  });
+
+  // Firebase é a fonte da verdade — ler de volta os timestamps
+  const sv   = (await get(ref(rdb, `boss_salas/${salaId}`))).val() || {};
+  _tempoInicio  = sv.criadaEm || agora;
+  _salaExpiraEm = sv.expiraEm || (agora + SALA_DURACAO);
+
+  // Sala criada: colocar ID na URL sem recarregar
+  history.replaceState({ sala: salaId }, '', `/boss/pre-battle.html?sala=${salaId}`);
+
+  await registrarPlayer();
+  iniciarUI();
+}
+
+// ── Entrar em sala existente ─────────────────────────────────
+async function entrarNaSala(salaId, bossAtivo) {
+  const snap = await get(ref(rdb, `boss_salas/${salaId}`));
+
+  // Sala não existe
+  if (!snap.exists()) {
+    mostrarErro('Lobby Not Found',
+      `Room "${salaId}" does not exist. It may have been closed or never created.`, '🔍');
+    return;
+  }
+
+  const sala = snap.val();
+
+  // Sala expirou pelo timer
+  if (Date.now() > sala.expiraEm) {
+    mostrarErro('Lobby Expired',
+      'This battle lobby has already expired. Wait for a new boss to appear on the site.', '⏰');
+    return;
+  }
+
+  // Batalha já em curso — não pode entrar
+  if (sala.estado === 'batalha') {
+    mostrarErro('Battle In Progress',
+      'This battle has already started. You cannot join mid-battle.', '⚔️');
+    return;
+  }
+
+  // Sala cheia
+  const players = sala.players ? Object.keys(sala.players) : [];
+  if (players.length >= MAX_PLAYERS && !players.includes(_uid)) {
+    mostrarErro('Room Full',
+      'This room already has 4 players. Ask someone for a different room code.', '🚫');
+    return;
+  }
+
+  // Tudo OK
+  _salaId       = salaId;
+  _tempoInicio  = sala.criadaEm;
+  _salaExpiraEm = sala.expiraEm; // fonte da verdade — não reseta nunca
+  _bossData     = { boss: sala.boss };
+
+  // Atualizar URL para refletir a sala
+  history.replaceState({ sala: salaId }, '', `/boss/pre-battle.html?sala=${salaId}`);
+
+  await registrarPlayer();
+  iniciarUI();
+}
+
+// ── Registrar player na sala ─────────────────────────────────
+async function registrarPlayer() {
+  const team = _userData?.raidTeam || [];
+  const poke = team[_meuPokSlot] || team[0] || null;
+
+  await set(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), {
+    uid:         _uid,
+    nick:        _userData?.displayName || 'Anonymous',
+    avatar:      _userData?.avatar || '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png',
+    pokemon:     poke?.pokemon || null,
+    pokemonSlot: _meuPokSlot,
+    nivel:       poke?.nivel   || 1,
+    bag:         _userData?.raidBag || {},
+    ready:       false,
+    entrou:      Date.now(),
+  });
+
+  // onDisconnect — Firebase remove o player automaticamente se a conexão cair,
+  // o usuário fechar a aba, clicar em Leave Room, etc.
+  const playerRef = ref(rdb, `boss_salas/${_salaId}/players/${_uid}`);
+  await onDisconnect(playerRef).remove();
+}
+
+// ── UI ───────────────────────────────────────────────────────
+function iniciarUI() {
+  document.getElementById('pbLoading').style.display = 'none';
+  document.getElementById('pbApp').style.display     = 'flex';
+
+  document.getElementById('pbRoomIdRow').style.display = 'flex';
+  document.getElementById('pbRoomIdVal').textContent   = _salaId;
+  document.getElementById('pbCopyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(_salaId).then(() => {
+      const btn = document.getElementById('pbCopyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  });
+
+  renderBossCard();
+  iniciarTimerPrincipal();
+
+  // Listeners RT
+  onValue(ref(rdb, `boss_salas/${_salaId}/players`), snap => {
+    renderPlayers(snap.val() || {});
+    checarReadyAll(snap.val() || {});
+  });
+
+  onValue(ref(rdb, `boss_salas/${_salaId}/estado`), async snap => {
+    const estado = snap.val();
+    if (estado === 'iniciando' && !_transitioning) iniciarContagem();
+    if (estado === 'batalha'   && !_transitioning) await irParaBatalha();
+  });
+
+  escutarChat();
+
+  // Leave Room button
+  document.getElementById('pbLeaveBtn').addEventListener('click', async () => {
+    await sairDaSala();
+    window.location.replace('/index.html'); // replace() remove do histórico
+  });
+
+  // Bloquear botão Voltar do browser — substitui a entrada no histórico
+  // para que o usuário não consiga voltar para o lobby após sair
+  // Não precisa de pushState manual — a URL já tem ?sala=ID (via history.replaceState)
+  // Quando o usuário usa Voltar/Avançar, a página recarrega com ?sala=ID
+  // e o porteiro (onAuthStateChanged) revalida tudo: boss ativo + sala existe + não expirada
+  // onDisconnect garante que o player é removido da sala se fechar a aba
+
+  // Chat send
+  const input = document.getElementById('pbChatInput');
+  document.getElementById('pbChatSend').addEventListener('click', enviarChat);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') enviarChat(); });
+
+  // Modal cancel (pokemon chooser)
+  document.getElementById('pbModalCancel').addEventListener('click', () => {
+    document.getElementById('pbPokeModal').classList.remove('show');
+  });
+
+  // Modal Join Room (acessível externamente via window.abrirModalJoin)
+  const joinModal = document.getElementById('pbJoinModal');
+  if (joinModal) {
+    document.getElementById('pbJoinCancelBtn').addEventListener('click', () => {
+      joinModal.style.display = 'none';
+    });
+    document.getElementById('pbJoinConfirmBtn').addEventListener('click', () => {
+      const id = document.getElementById('pbJoinInput').value.trim().toUpperCase();
+      if (!id || id.length < 4) return;
+      joinModal.style.display = 'none';
+      sessionStorage.setItem('boss_sala_action', 'join');
+      sessionStorage.setItem('boss_sala_join_id', id);
+      sessionStorage.setItem('boss_ativo_snap', JSON.stringify(_bossData || {}));
+      window.location.href = '/boss/pre-battle.html';
+    });
+    document.getElementById('pbJoinInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('pbJoinConfirmBtn').click();
+    });
+    // Forçar uppercase ao digitar
+    document.getElementById('pbJoinInput').addEventListener('input', e => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+  }
+
+  // Mensagem de entrada
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:'system', nick:'System',
+    msg: `${_userData?.displayName||'A player'} joined the room.`,
+    ts: Date.now(), system: true,
+  });
+}
+
+// ── Boss card ────────────────────────────────────────────────
+function renderBossCard() {
+  const boss = _bossData?.boss || { nome:'Boss', hp:1500, gif:'' };
+  // Suporta sprite (png/jpg/jpeg) e gif (compatibilidade legada)
+  document.getElementById('pbBossGif').src = boss.sprite || boss.gif || '';
+  document.getElementById('pbBossName').textContent = boss.nome || 'Boss';
+  // HP não exibido intencionalmente
+
+  const tipos = getBossTipos(boss.nome);
+  document.getElementById('pbBossTypes').innerHTML = tipos.map(t =>
+    `<span class="pb-type-badge t-${t}">${cap(t)}</span>`
+  ).join('');
+
+  const diff = getDiff(boss.hp||1500);
+  document.getElementById('pbBossDiff').innerHTML = `<span class="pb-diff-stars">${diff.s}</span> ${diff.l}`;
+}
+
+// ── Players ──────────────────────────────────────────────────
+function renderPlayers(players) {
+  const grid = document.getElementById('pbPlayersGrid');
+  const uids = Object.keys(players).sort((a,b) => (players[a].entrou||0)-(players[b].entrou||0));
+
+  let html = '';
+  for (let i = 0; i < MAX_PLAYERS; i++) {
+    const uid = uids[i];
+    html += uid ? cardHTML(uid, players[uid], i) : emptySlotHTML(i);
+  }
+  grid.innerHTML = html;
+
+  // Events para MEU card
+  const myIdx = uids.indexOf(_uid);
+  if (myIdx !== -1) {
+    const myCard = grid.querySelector(`[data-slot="${myIdx}"]`);
+    if (myCard) {
+      myCard.querySelector('.pb-ready-btn')?.addEventListener('click', () => toggleReady(players[_uid]));
+      myCard.querySelector('.pb-poke-area')?.addEventListener('click', abrirTrocaPoke);
+      // Bag items clicáveis
+      myCard.querySelectorAll('.pb-bag-item-btn').forEach(btn => {
+        btn.addEventListener('click', () => usarItemPreBattle(btn.dataset.item, players[_uid]));
+      });
+    }
+  }
+}
+
+function getPokeSprite(pokemonKey, isShiny) {
+  if (!pokemonKey) return '../estatisticas-shad/images/backgrounds/pikachu-left-bg.png';
+  if (isShiny) return `../boss/img-shiny/${pokemonKey}.png`;
+  return `../perfil/img-pokeicon/${pokemonKey}.png`;
+}
+
+function cardHTML(uid, p, i) {
+  const isMe     = uid === _uid;
+  const bagItems = getBagItems(p.bag);
+
+  // Sprite shiny: busca no raidTeam local (só disponível para o próprio jogador)
+  const teamSlot  = (isMe && _userData?.raidTeam) ? (_userData.raidTeam[p.pokemonSlot ?? _meuPokSlot] || null) : null;
+  const isShiny   = teamSlot?.shiny === true || p.shiny === true;
+  const spriteUrl = getPokeSprite(p.pokemon, isShiny);
+
+  // Bag: para o próprio jogador, items são clicáveis; para outros, só visual
+  const bagHTML = bagItems.length
+    ? bagItems.map(it => isMe
+        ? `<div class="pb-bag-item pb-bag-item-btn" data-item="${it.key}" title="Use ${it.nome}">
+             <img src="../boss/img-items/${it.key}.png" onerror="this.style.display='none'">
+             ${it.nome} <span class="pb-bag-qty">×${it.qty}</span>
+           </div>`
+        : `<div class="pb-bag-item">
+             <img src="../boss/img-items/${it.key}.png" onerror="this.style.display='none'">
+             ${it.nome} ×${it.qty}
+           </div>`
+      ).join('')
+    : '<span class="pb-bag-empty">Empty</span>';
+
+  return `
+  <div class="pb-player-card ${isMe?'is-me':''} ${p.ready?'ready':''}" data-uid="${uid}" data-slot="${i}">
+    ${p.ready ? '<div class="pb-ready-badge">✔ READY</div>' : ''}
+    <div class="pb-player-header">
+      <img class="pb-player-avatar" src="${p.avatar||''}" alt="${p.nick}"
+           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
+      <div>
+        <div class="pb-player-nick">${p.nick}</div>
+        <div class="pb-player-tag">${isMe?'You':'Player '+(i+1)}</div>
+      </div>
+    </div>
+    <div class="pb-poke-area ${isMe?'':'no-click'}">
+      <img class="pb-poke-img"
+           src="${spriteUrl}"
+           onerror="this.src='../perfil/img-pokeicon/${p.pokemon||'unknown'}.png'"
+           style="${isShiny?'filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 6px rgba(255,220,40,0.7))':'filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5))'}">
+      <div class="pb-poke-name">${p.pokemon?cap(p.pokemon):'No Pokémon'}${isShiny?' <span style="font-size:0.6rem;color:#ffe033">✨</span>':''}</div>
+      <div class="pb-poke-lvl">Lv. ${p.nivel||1}</div>
+      ${isMe?'<div class="pb-poke-hint">Tap to change</div>':''}
+    </div>
+    <div class="pb-bag-area">
+      <div class="pb-bag-title">Bag ${isMe?'<span style="color:#ff9500;font-weight:400;font-size:0.5rem">(tap to use)</span>':''}</div>
+      <div class="pb-bag-items">${bagHTML}</div>
+    </div>
+    <div class="pb-ready-wrap">
+      <button class="pb-ready-btn ${p.ready?'is-ready':''}" ${isMe?'':'disabled'}>
+        ${p.ready?'Ready ✔':(isMe?'Not Ready':'Waiting...')}
+      </button>
+    </div>
+  </div>`;
+}
+
+function emptySlotHTML(i) {
+  return `<div class="pb-player-card empty" data-slot="${i}">
+    <div class="pb-empty-label">Waiting for player...</div>
+  </div>`;
+}
+
+// ── Ready ────────────────────────────────────────────────────
+async function toggleReady(myData) {
+  // Bloqueia Ready se o pokémon selecionado está fainted (hp <= 0)
+  if (!myData.ready) {
+    const team = _userData?.raidTeam || [];
+    const slot = team[_meuPokSlot] || team[0] || null;
+    if (!slot) {
+      alert('⚠️ You need a Pokémon in your team before marking Ready.');
+      return;
+    }
+    // hpAtual é o campo correto no Firestore; hp é undefined → falso positivo
+    const hpAtual = typeof slot.hpAtual === 'number' ? slot.hpAtual : null;
+    const isFainted = slot.fainted === true || (hpAtual !== null && hpAtual <= 0);
+    if (isFainted) {
+      // Mostrar aviso inline — não usa alert() para não bloquear UX
+      mostrarAvisoFainted(slot.pokemon);
+      return;
+    }
+  }
+  await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { ready: !myData.ready });
+}
+
+function mostrarAvisoFainted(pokemonKey) {
+  // Remove aviso anterior se existir
+  document.getElementById('pbFaintedWarn')?.remove();
+  const nome = pokemonKey ? pokemonKey.charAt(0).toUpperCase() + pokemonKey.slice(1) : 'Your Pokémon';
+  const el   = document.createElement('div');
+  el.id        = 'pbFaintedWarn';
+  el.innerHTML = `<span>💀</span> <strong>${nome} is fainted!</strong> Use a Revive before marking Ready.`;
+  el.style.cssText = [
+    'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+    'background:#1a0a0a','border:1px solid #c03030','border-radius:10px',
+    'color:#ff6060','font-size:0.82rem','padding:10px 20px','z-index:99999',
+    'box-shadow:0 4px 20px rgba(200,0,0,0.3)','white-space:nowrap',
+    'animation:fadeInUp 0.2s ease',
+  ].join(';');
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+
+// ── Usar item no pré-battle ───────────────────────────────────
+const ITEM_CURA = {
+  potion:       { tipo:'hp', val:20  },
+  super_potion: { tipo:'hp', val:50  },
+  hyper_potion: { tipo:'hp', val:120 },
+  max_potion:   { tipo:'hp', val:999 },
+  full_restore: { tipo:'hp', val:999 },
+  revive:       { tipo:'revive', pct:0.5 },
+  max_revive:   { tipo:'revive', pct:1.0 },
+};
+
+async function usarItemPreBattle(itemKey, playerData) {
+  const efeito = ITEM_CURA[itemKey];
+  if (!efeito) { mostrarToastBag('\u274c This item cannot be used here.', '#c03030'); return; }
+
+  const team = _userData?.raidTeam || [];
+  const slot = team[_meuPokSlot] || team[0] || null;
+  if (!slot) { mostrarToastBag('\u274c No Pokémon selected.', '#c03030'); return; }
+
+  const bag = { ...(_userData?.raidBag || {}) };
+  const qtd = bag[itemKey] || 0;
+  if (qtd <= 0) { mostrarToastBag(`\u274c No ${ITEM_NAMES[itemKey] || itemKey} left.`, '#c03030'); return; }
+
+  // HP máximo
+  const BASE_HP = {squirtle:44,bulbasaur:45,charmander:39,caterpie:45,metapod:50,
+    butterfree:60,weedle:35,kakuna:45,beedrill:65,cyndaquil:39,quilava:58,
+    typhlosion:78,pikachu:35,raichu:60};
+  const bs   = BASE_HP[slot.pokemon] || 45;
+  const iv   = typeof slot.ivs?.hp==='number' ? slot.ivs.hp : 15;
+  const ev   = typeof slot.evs?.hp==='number' ? slot.evs.hp : 0;
+  const lv   = slot.nivel || 1;
+  const hpMx = Math.floor((2*bs+iv+Math.floor(ev/4))*lv/100+lv+10);
+  const hpAt = typeof slot.hpAtual==='number' ? slot.hpAtual : hpMx;
+  const isFainted = slot.fainted === true || hpAt <= 0;
+
+  if (efeito.tipo === 'hp' && isFainted) {
+    mostrarToastBag(`\u{1F480} ${cap(slot.pokemon)} is fainted — use a Revive first!`, '#c03030'); return;
+  }
+  if (efeito.tipo === 'revive' && !isFainted) {
+    mostrarToastBag(`${cap(slot.pokemon)} is not fainted.`, '#888'); return;
+  }
+  if (efeito.tipo === 'hp' && hpAt >= hpMx) {
+    mostrarToastBag(`${cap(slot.pokemon)} is already at full HP.`, '#888'); return;
+  }
+
+  const novoHp = efeito.tipo === 'revive'
+    ? Math.max(1, Math.floor(hpMx * efeito.pct))
+    : Math.min(hpMx, hpAt + efeito.val);
+
+  const novoTeam = team.map((s,i) =>
+    i !== _meuPokSlot ? s : { ...s, hpAtual: novoHp, fainted: false });
+  bag[itemKey] = qtd - 1;
+
+  try {
+    const { getFirestore: _gfs, doc: _doc, updateDoc: _upd } =
+      await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+    await _upd(_doc(_gfs(fbApp), 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
+    _userData.raidTeam = novoTeam;
+    _userData.raidBag  = bag;
+    await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { bag });
+    const emoji = efeito.tipo === 'revive' ? '\u{1F48A}' : '\u{1F9EA}';
+    mostrarToastBag(`${emoji} ${cap(slot.pokemon)} ${efeito.tipo==='revive'?'revived':'healed'} \u2192 ${novoHp}/${hpMx} HP`, '#2ecc71');
+  } catch(e) {
+    console.error('[usarItemPreBattle]', e);
+    mostrarToastBag('\u274c Error applying item. Try again.', '#c03030');
+  }
+}
+
+function mostrarToastBag(msg, cor) {
+  document.getElementById('pbFaintedWarn')?.remove();
+  const el = document.createElement('div');
+  el.id = 'pbFaintedWarn';
+  el.textContent = msg;
+  el.style.cssText = [
+    'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+    'background:#0f0f1a',`border:1px solid ${cor}`,`border-radius:10px`,
+    `color:${cor}`,'font-size:0.82rem','padding:10px 20px','z-index:99999',
+    `box-shadow:0 4px 20px ${cor}44`,'white-space:nowrap','animation:fadeInUp 0.2s ease',
+  ].join(';');
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+async function checarReadyAll(players) {
+  const uids = Object.keys(players);
+  if (!uids.length) return;
+  const todos = uids.every(u => players[u].ready);
+  if (!todos) return;
+
+  // Só o criador da sala seta 'iniciando' (evita race)
+  const snap = await get(ref(rdb, `boss_salas/${_salaId}`));
+  if (!snap.exists()) return;
+  const sala = snap.val();
+  if (sala.estado !== 'aguardando') return;
+  // Qualquer player pode setar 'iniciando' — Firebase garante consistência
+  // pois checarReadyAll já verifica estado === 'aguardando' antes
+  await update(ref(rdb, `boss_salas/${_salaId}`), { estado: 'iniciando' });
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:'system', nick:'System',
+    msg:'All players ready! Battle starting in 10 seconds...',
+    ts:Date.now(), system:true,
+  });
+}
+
+// ── Timer principal ──────────────────────────────────────────
+function iniciarTimerPrincipal() {
+  const bar   = document.getElementById('pbTimerBar');
+  const valEl = document.getElementById('pbTimerVal');
+  // Usar sempre expiraEm do Firebase para evitar reset no histórico do browser
+  // _salaExpiraEm é lido do Firestore em iniciarUI()
+  const expira = _salaExpiraEm || (_tempoInicio + SALA_DURACAO);
+
+  _timerMain = setInterval(async () => {
+    const diff = expira - Date.now();
+    if (diff <= 0) {
+      clearInterval(_timerMain);
+      if (!_transitioning) await forcarInicio('Time\'s up! Starting the battle...');
+      return;
+    }
+    const min = Math.floor(diff/60000);
+    const sec = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+    valEl.textContent = `${min}:${sec}`;
+    if (diff < 30000) bar.classList.add('urgente');
+  }, 1000);
+}
+
+async function forcarInicio(msg) {
+  const snap = await get(ref(rdb, `boss_salas/${_salaId}`));
+  if (!snap.exists()) return;
+  const sala = snap.val();
+  if (sala.estado !== 'aguardando') return;
+  // Qualquer player presente pode iniciar quando o tempo zera
+  // (não apenas o criador — ele pode ter saído da sala)
+  await update(ref(rdb, `boss_salas/${_salaId}`), { estado: 'iniciando' });
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:'system', nick:'System', msg, ts:Date.now(), system:true,
+  });
+}
+
+// ── Countdown 10s ────────────────────────────────────────────
+function iniciarContagem() {
+  if (_transitioning) return;
+  _transitioning = true;
+  clearInterval(_timerMain);
+
+  const overlay = document.getElementById('pbCdOverlay');
+  const numEl   = document.getElementById('pbCdNum');
+  overlay.classList.add('show');
+  let n = 10;
+  numEl.textContent = n;
+
+  _timerCD = setInterval(async () => {
+    n--;
+    numEl.textContent = n;
+    if (n <= 0) { clearInterval(_timerCD); await irParaBatalha(); }
+  }, 1000);
+}
+
+async function irParaBatalha() {
+  if (_irParaBatalhaEmCurso) return;
+  _irParaBatalhaEmCurso = true;
+
+  try {
+    const playerRef         = ref(rdb, `boss_salas/${_salaId}/players/${_uid}`);
+    const snapshotRef       = ref(rdb, `boss_salas/${_salaId}/battle_roster/${_uid}`);
+
+    // 1. Ler dados atuais do player na sala
+    const playerSnap = await get(playerRef);
+    const playerData = playerSnap.val();
+
+    if (playerData) {
+      // 2. Copiar para battle_roster — este nó NÃO tem onDisconnect
+      //    battle.js usa este nó para montar a batalha, garantindo
+      //    que os dados chegam mesmo que players/ seja limpo
+      await set(snapshotRef, {
+        ...playerData,
+        entrou: playerData.entrou || Date.now(),
+        savedAt: Date.now(),
+      });
+    }
+
+    // 3. Só então cancelar o onDisconnect de players/
+    await onDisconnect(playerRef).cancel();
+
+  } catch(e) {
+    console.warn('[pre-battle] Erro ao preparar batalha:', e);
+  }
+
+  // Pequena pausa para garantir que as writes propagaram no Firebase
+  await new Promise(res => setTimeout(res, 400));
+
+  window.location.href = `/boss/battle.html?sala=${_salaId}`;
+}
+
+// ── Troca de pokemon ─────────────────────────────────────────
+function abrirTrocaPoke() {
+  const team = _userData?.raidTeam || [];
+  if (!team.length) {
+    alert('No Pokémon in your team. Set up your team in the Boss Raid section first.');
+    return;
+  }
+  const cont = document.getElementById('pbPokeOpts');
+  cont.innerHTML = team.map((sl, i) => {
+    // hpAtual é o campo correto; fainted flag também
+    const hpAtual   = typeof sl.hpAtual === 'number' ? sl.hpAtual : null;
+    const isFainted = sl.fainted === true || (hpAtual !== null && hpAtual <= 0);
+    const sprite    = getPokeSprite(sl.pokemon, sl.shiny === true);
+    return `
+    <div class="pb-poke-opt ${i===_meuPokSlot?'sel':''} ${isFainted?'pb-poke-fainted':''}" data-idx="${i}" title="${isFainted?cap(sl.pokemon)+' is fainted!':cap(sl.pokemon)}">
+      <img src="${sprite}" alt="${cap(sl.pokemon)}"
+           onerror="this.src='../perfil/img-pokeicon/${sl.pokemon}.png'"
+           style="${isFainted?'filter:grayscale(1) brightness(0.4)':''}${sl.shiny&&!isFainted?'filter:drop-shadow(0 0 6px rgba(255,220,40,0.7))':''}">
+      ${isFainted ? '<span class="pb-fainted-tag">💀 Fainted</span>' : ''}
+      ${sl.shiny&&!isFainted ? '<span class="pb-fainted-tag" style="background:rgba(180,140,0,0.75);color:#ffe;top:auto;bottom:4px;">✨ Shiny</span>' : ''}
+      <p>${cap(sl.pokemon)}</p>
+      <p style="font-size:0.56rem;color:${isFainted?'#c03030':'#555'}">Lv.${sl.nivel||1}${isFainted?' · Fainted':''}</p>
+    </div>`;
+  }).join('');
+
+  // listeners
+  cont.querySelectorAll('.pb-poke-opt').forEach(el => {
+    el.addEventListener('click', async () => {
+      const idx = parseInt(el.dataset.idx);
+      const sl  = team[idx];
+      if (!sl) return;
+      _meuPokSlot = idx;
+      document.getElementById('pbPokeModal').classList.remove('show');
+      await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), {
+        pokemon: sl.pokemon, pokemonSlot: idx, nivel: sl.nivel||1,
+      });
+    });
+  });
+
+  document.getElementById('pbPokeModal').classList.add('show');
+}
+
+// ── Sair da sala ─────────────────────────────────────────────
+async function sairDaSala() {
+  if (!_salaId || !_uid) return;
+  try {
+    clearInterval(_timerMain);
+    clearInterval(_timerCD);
+    // Cancelar onDisconnect (já vai remover manualmente)
+    const playerRef = ref(rdb, `boss_salas/${_salaId}/players/${_uid}`);
+    await onDisconnect(playerRef).cancel();
+    await remove(playerRef);
+    // Notificar chat
+    await push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+      uid:'system', nick:'System',
+      msg: `${_userData?.displayName||'A player'} left the room.`,
+      ts: Date.now(), system: true,
+    });
+  } catch(e) { console.warn('sairDaSala error:', e); }
+}
+
+// ── Chat ─────────────────────────────────────────────────────
+function enviarChat() {
+  const input = document.getElementById('pbChatInput');
+  const txt   = input.value.trim();
+  if (!txt) return;
+  input.value = '';
+  push(ref(rdb, `boss_salas/${_salaId}/chat`), {
+    uid:  _uid,
+    nick: _userData?.displayName || 'Anonymous',
+    msg:  txt,
+    ts:   Date.now(),
+    system: false,
+  });
+}
+
+function escutarChat() {
+  onValue(ref(rdb, `boss_salas/${_salaId}/chat`), snap => {
+    if (!snap.exists()) return;
+    const msgs = Object.values(snap.val()).sort((a,b) => (a.ts||0)-(b.ts||0));
+    const cont = document.getElementById('pbChatMsgs');
+    cont.innerHTML = msgs.map(m => {
+      if (m.system) return `<div class="pb-chat-msg"><span class="pb-chat-sys">— ${m.msg} —</span></div>`;
+      const nickCls = m.uid === _uid ? 'pb-chat-mine-nick' : 'pb-chat-nick';
+      return `<div class="pb-chat-msg"><span class="${nickCls}">${m.nick}:</span> ${m.msg}</div>`;
+    }).join('');
+    cont.scrollTop = cont.scrollHeight;
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+/* ============================================================
+   BATTLE.CSS — Boss Battle Screen
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #000;
+  overflow: hidden;
+  height: 100vh; width: 100vw;
+  user-select: none;
+}
+
+/* ── Background ── */
+#battleBG {
+  position: fixed; inset: 0;
+  background: url('/boss/img-background/battlebackground.jpg') center/cover no-repeat;
+  image-rendering: pixelated;
+  z-index: 0;
+}
+#battleBG::after {
+  content:''; position:absolute; inset:0;
+  background: rgba(0,0,0,0.15);
+}
+
+/* ── Erro ── */
+#btErro {
+  display:none; position:fixed; inset:0; background:#0a0a10;
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; z-index:9999; text-align:center; padding:24px;
+}
+#btErroIcon   { font-size:3.5rem; }
+#btErroTitulo { font-size:1.05rem; font-weight:800; color:#ff4444; text-transform:uppercase; letter-spacing:1px; }
+#btErroMsg    { font-size:0.8rem; color:#555; max-width:360px; line-height:1.7; }
+#btErroLink   {
+  margin-top:8px; padding:11px 28px;
+  background:linear-gradient(135deg,rgba(255,117,0,0.18),rgba(255,173,0,0.09));
+  border:2px solid rgba(255,117,0,0.4); border-radius:10px;
+  color:#ffad00; font-weight:800; font-size:0.8rem; text-decoration:none;
+}
+
+/* ── Arena ── */
+#arena {
+  position:relative; z-index:1;
+  width:100vw; height:100vh;
+  display:none; flex-direction:column;
+}
+
+/* ── Banners de turno / timer ── */
+#turnBanner {
+  position:absolute; top:10px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,0.78); border:1.5px solid rgba(255,220,0,0.55);
+  border-radius:20px; padding:5px 20px;
+  font-size:0.75rem; font-weight:800; color:#ffe070; letter-spacing:0.5px;
+  white-space:nowrap; z-index:5;
+}
+/* Banner vermelho quando o boss está atacando */
+#turnBanner.boss-turn {
+  border-color:rgba(255,60,60,0.7);
+  background:rgba(180,0,0,0.25);
+  color:#ff6060;
+  animation:bossTurnPulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes bossTurnPulse {
+  from { box-shadow:0 0 8px rgba(255,0,0,0.3);  }
+  to   { box-shadow:0 0 18px rgba(255,0,0,0.7); }
+}
+
+#turnTimer {
+  position:absolute; top:10px; right:18px;
+  background:rgba(0,0,0,0.72); border:1.5px solid rgba(255,100,0,0.4);
+  border-radius:8px; padding:4px 13px;
+  font-size:0.75rem; font-weight:800; color:#ff9500; z-index:5;
+}
+#turnTimer.urgent { color:#ff4444; border-color:rgba(255,0,0,0.6); animation:timerPulse 0.5s ease-in-out infinite; }
+@keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+
+/* ═══════════════════════════════════════════════════
+   BOSS — esquerda
+   ═══════════════════════════════════════════════════ */
+.boss-side {
+  position:absolute; left:14vw; top:50%;
+  transform:translateY(-60%);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.boss-sprite-wrap { position:relative; }
+.boss-sprite {
+  width: clamp(160px, 20vw, 260px);
+  height:auto;
+  filter: drop-shadow(0 0 22px rgba(255,80,0,0.55)) drop-shadow(0 4px 14px rgba(0,0,0,0.85));
+  animation:btFloat 3s ease-in-out infinite;
+  image-rendering:auto;
+}
+.boss-sprite.shake   { animation:btShake 0.35s ease-in-out; }
+
+/* ── Status conditions do boss ── */
+#bossStatusIcons {
+  min-height:22px; font-size:0.78rem; letter-spacing:4px;
+  color:#fff; text-shadow:0 0 8px rgba(255,200,0,0.8);
+  text-align:center; padding:2px 0 4px;
+  animation:statusPulse 2s ease-in-out infinite alternate;
+}
+@keyframes statusPulse {
+  from { opacity:0.8; }
+  to   { opacity:1;   text-shadow:0 0 14px rgba(255,200,0,1); }
+}
+.boss-sprite.captured{ animation:btCapture 0.8s ease-in-out forwards; }
+@keyframes btFloat   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes btShake   { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)} }
+@keyframes btCapture { 0%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.55)} 100%{opacity:0;transform:scale(0)} }
+
+/* HP boss — sem borda, limpo */
+.boss-hp-bar-wrap { width: clamp(160px, 20vw, 260px); }
+.boss-hp-label {
+  display:flex; justify-content:space-between; align-items:baseline;
+  margin-bottom:5px;
+}
+.boss-name-tag { font-size:0.82rem; font-weight:900; color:#fff; text-shadow:0 1px 5px rgba(0,0,0,1); letter-spacing:0.3px; }
+.boss-hp-nums  { font-size:0.65rem; color:#eee; text-shadow:0 1px 3px rgba(0,0,0,1); }
+.boss-bar-bg   { height:9px; background:rgba(0,0,0,0.5); border-radius:5px; overflow:hidden; }
+.boss-bar-fill {
+  height:100%; border-radius:5px;
+  background:linear-gradient(90deg,#ff4444,#ff8800);
+  transition:width 0.6s ease;
+}
+
+/* Float de dano sobre o boss */
+.dmg-float {
+  position:absolute; top:8px; left:50%;
+  transform:translateX(-50%);
+  font-size:2rem; font-weight:900; color:#ff4444;
+  text-shadow:0 0 12px rgba(255,0,0,1), 0 2px 6px rgba(0,0,0,1);
+  pointer-events:none; white-space:nowrap;
+  animation:dmgRise 2.8s ease-out forwards;
+}
+.dmg-float.heal   { color:#2ecc71; text-shadow:0 0 12px rgba(46,204,113,1), 0 2px 6px rgba(0,0,0,1); }
+.dmg-float.miss   { color:#bbb; font-size:1rem; }
+.dmg-float.super  { color:#ffdd00; text-shadow:0 0 12px rgba(255,220,0,1), 0 2px 6px rgba(0,0,0,1); }
+.dmg-float.immune { color:#888; font-size:0.9rem; }
+@keyframes dmgRise {
+  0%   { opacity:1;    transform:translateX(-50%) translateY(0)     scale(1);   }
+  30%  { opacity:1;    transform:translateX(-50%) translateY(-24px)  scale(1.3); }
+  70%  { opacity:0.85; transform:translateX(-50%) translateY(-52px)  scale(1.0); }
+  100% { opacity:0;    transform:translateX(-50%) translateY(-80px)  scale(0.7); }
+}
+
+/* ═══════════════════════════════════════════════════
+   PLAYERS — direita, sem borda, sprite maior + HP
+   ═══════════════════════════════════════════════════ */
+.players-side {
+  position:absolute; right:3vw; top:50%;
+  transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:12px;
+}
+.player-row {
+  display:flex; align-items:center; gap:10px;
+  min-width:240px; position:relative;
+  /* Efeito escada: cada row se desloca para a direita conforme índice,
+     simulando profundidade diagonal (índice passado via translateX inline) */
+}
+/* Sombra vermelha pulsante no turno ativo (drop-shadow atrás do sprite) */
+.player-row.active-turn .player-poke-img {
+  filter:
+    drop-shadow(0 0 18px rgba(255,40,40,0.95))
+    drop-shadow(0 0 8px  rgba(255,40,40,0.7))
+    drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+  animation: activeShadowPulse 1s ease-in-out infinite alternate;
+}
+@keyframes activeShadowPulse {
+  from {
+    filter:
+      drop-shadow(0 0 12px rgba(255,40,40,0.7))
+      drop-shadow(0 0 4px  rgba(255,40,40,0.5))
+      drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+  }
+  to {
+    filter:
+      drop-shadow(0 0 26px rgba(255,70,70,1))
+      drop-shadow(0 0 12px rgba(255,50,50,0.85))
+      drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+  }
+}
+.player-row.fainted { opacity:0.35; }
+.player-poke-img {
+  width:128px; height:128px; object-fit:contain;
+  image-rendering:pixelated;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.9));
+  flex-shrink:0;
+}
+.player-poke-img.fainted { filter:grayscale(1) brightness(0.3); }
+.player-poke-img.shake   { animation:btShake 0.3s ease-in-out; }
+
+.player-info { flex:1; min-width:0; }
+.player-nick {
+  font-size:0.68rem; color:#ffad00; font-weight:700;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  text-shadow:0 1px 4px rgba(0,0,0,1);
+}
+.player-poke-name {
+  font-size:0.9rem; font-weight:900; color:#fff;
+  text-shadow:0 1px 5px rgba(0,0,0,1);
+}
+.player-hp-bar-wrap { margin-top:6px; }
+.player-hp-label {
+  display:flex; justify-content:space-between;
+  font-size:0.64rem; color:#eee; margin-bottom:4px;
+  text-shadow:0 1px 3px rgba(0,0,0,1);
+}
+.player-bar-bg   { height:8px; background:rgba(0,0,0,0.5); border-radius:4px; overflow:hidden; }
+.player-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#2ecc71,#58d68d); transition:width 0.5s ease; }
+.player-bar-fill.yellow { background:linear-gradient(90deg,#f1c40f,#f39c12); }
+.player-bar-fill.red    { background:linear-gradient(90deg,#e74c3c,#c0392b); }
+
+.player-dmg-float {
+  position:absolute; right:0; top:0;
+  font-size:1.2rem; font-weight:900;
+  color:#ff4444; text-shadow:0 0 8px rgba(255,0,0,1), 0 2px 4px rgba(0,0,0,1);
+  pointer-events:none; white-space:nowrap;
+  animation:dmgRise 2.8s ease-out forwards;
+}
+.player-dmg-float.heal { color:#2ecc71; }
+
+/* ═══════════════════════════════════════════════════
+   HUD INFERIOR
+   ═══════════════════════════════════════════════════ */
+#actionHUD {
+  position:absolute; bottom:0; left:0; right:0;
+  z-index:10; display:flex;
+  background:rgba(6,6,18,0.95);
+  border-top:2px solid rgba(255,255,255,0.07);
+  min-height:150px;
+}
+
+/* Caixa de log — histórico de 3 turnos */
+#msgBox {
+  flex:1; padding:10px 18px;
+  font-size:0.9rem; color:#e8e8e8; line-height:1.7;
+  display:flex; align-items:flex-start; flex-direction:column; justify-content:center;
+  border-right:1px solid rgba(255,255,255,0.05);
+  min-width:170px; gap:0;
+}
+#msgText {
+  width:100%; display:flex; flex-direction:column; gap:2px;
+}
+.log-entry { line-height:1.45; padding:1px 0; }
+.log-age-0 { color:#f0f0f0; }
+.log-age-1 { color:#999; }
+.log-age-2 { color:#555; }
+
+/* ── Buffs / Debuffs no card do player ── */
+.player-stages-row {
+  display:flex; flex-wrap:wrap; gap:3px; margin:3px 0 1px;
+}
+.buff-tag, .debuff-tag, .status-tag {
+  font-size:0.58rem; font-weight:800; border-radius:4px;
+  padding:1px 5px; letter-spacing:0.3px; line-height:1.5;
+  white-space:nowrap;
+}
+.buff-tag   { background:rgba(46,204,113,0.18); border:1px solid rgba(46,204,113,0.4); color:#2ecc71; }
+.debuff-tag { background:rgba(231,76,60,0.18);  border:1px solid rgba(231,76,60,0.4);  color:#e74c3c; }
+.status-tag { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#ddd; }
+.status-tag.burn { background:rgba(231,76,60,0.18);  border-color:rgba(231,76,60,0.45);  color:#ff8060; }
+.status-tag.para { background:rgba(241,196,15,0.18); border-color:rgba(241,196,15,0.45); color:#f1c40f; }
+.status-tag.psn  { background:rgba(155,89,182,0.2);  border-color:rgba(155,89,182,0.45); color:#c084fc; }
+.status-tag.slp  { background:rgba(149,165,166,0.18);border-color:rgba(149,165,166,0.4); color:#aaa; }
+
+/* ── 3 botões principais — estilo Pokémon RPG ── */
+#btnPanel {
+  display:flex; flex-direction:column;
+  justify-content:center; gap:8px;
+  padding:14px 18px; min-width:165px;
+  border-right:1px solid rgba(255,255,255,0.05);
+}
+.bt-btn {
+  padding:13px 16px;
+  border-radius:10px;
+  font-size:0.88rem; font-weight:900;
+  cursor:pointer; text-align:center;
+  letter-spacing:0.6px; text-transform:uppercase;
+  transition:transform 0.1s, filter 0.1s;
+  border:2.5px solid transparent;
+}
+.bt-btn:hover:not(:disabled) { transform:scale(1.05); filter:brightness(1.15); }
+.bt-btn:active:not(:disabled){ transform:scale(0.96); }
+.bt-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.bt-btn.fight {
+  background:linear-gradient(135deg,#b71c1c,#e53935);
+  border-color:#ff7070; color:#fff;
+  box-shadow:0 3px 14px rgba(229,57,53,0.5);
+}
+.bt-btn.bag {
+  background:linear-gradient(135deg,#1565c0,#1e88e5);
+  border-color:#64b5f6; color:#fff;
+  box-shadow:0 3px 14px rgba(30,136,229,0.5);
+}
+.bt-btn.pass {
+  background:linear-gradient(135deg,#424242,#616161);
+  border-color:#bdbdbd; color:#fff;
+  box-shadow:0 3px 8px rgba(0,0,0,0.5);
+}
+
+/* ── Sub-painel (golpes / itens) ── */
+#subPanel {
+  display:none; flex-direction:column; gap:0;
+  padding:10px 14px;
+  min-width:400px; max-width:500px;
+  border-left:1px solid rgba(255,255,255,0.05);
+  overflow-y:auto; max-height:150px;
+}
+
+/* Grid 2×2 dos golpes */
+.move-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:7px; width:100%;
+}
+
+/* Card de golpe com fundo colorido pelo tipo */
+.move-card {
+  display:flex; flex-direction:column;
+  padding:9px 12px; border-radius:9px;
+  border:2px solid rgba(255,255,255,0.15);
+  cursor:pointer; position:relative;
+  min-height:62px; justify-content:space-between;
+  transition:transform 0.1s, filter 0.12s;
+  overflow:hidden;
+}
+.move-card::before {
+  content:''; position:absolute; inset:0;
+  background:rgba(0,0,0,0.3); pointer-events:none;
+}
+.move-card:hover:not([disabled]) { transform:scale(1.04); filter:brightness(1.15); }
+.move-card:active:not([disabled]){ transform:scale(0.97); }
+.move-card[disabled] { opacity:0.4; cursor:not-allowed; }
+
+.move-card-top {
+  display:flex; align-items:center; gap:7px; position:relative; z-index:1;
+}
+.move-type-badge {
+  font-size:0.52rem; font-weight:900; letter-spacing:0.5px;
+  padding:2px 6px; border-radius:4px;
+  background:rgba(0,0,0,0.45); color:#fff;
+  text-transform:uppercase; flex-shrink:0; white-space:nowrap;
+}
+.move-name {
+  font-size:0.8rem; font-weight:800; color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,0.8);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.move-card-bot {
+  display:flex; gap:10px; align-items:center;
+  position:relative; z-index:1; margin-top:5px;
+}
+.move-stat {
+  font-size:0.6rem; color:rgba(255,255,255,0.8); font-weight:700;
+}
+.move-stat b { color:#fff; }
+.move-pp { font-size:0.6rem; color:rgba(255,255,255,0.75); font-weight:700; margin-left:auto; }
+.move-pp b { color:#fff; }
+
+/* botão back */
+.sub-back {
+  font-size:0.68rem; color:#777; cursor:pointer;
+  padding:4px 0 8px; border:none; background:none;
+  text-align:left; width:100%;
+}
+.sub-back:hover { color:#aaa; }
+
+/* itens */
+.sub-btn {
+  padding:9px 12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px; color:#d0d0d0;
+  font-size:0.74rem; font-weight:600;
+  cursor:pointer; text-align:left;
+  transition:background 0.12s;
+}
+.sub-btn:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
+.sub-btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+/* ── Pokébola ── */
+.pokeball-throw {
+  position:fixed; width:52px; height:52px; border-radius:50%;
+  background: none;
+  z-index:200; pointer-events:none;
+  animation:throwBall 0.9s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.pokeball-throw img,
+.pokeball-shake img {
+  width:100%; height:100%; object-fit:contain; pointer-events:none;
+}
+@keyframes throwBall {
+  0%  { left:80vw; top:70vh; transform:scale(0.6) rotate(0deg);   opacity:1; }
+  60% { left:30vw; top:25vh; transform:scale(1.1) rotate(540deg); opacity:1; }
+  100%{ left:10vw; top:45vh; transform:scale(1)   rotate(720deg); opacity:1; }
+}
+
+/* ── Pokébola shake (balanços) ── */
+.pokeball-shake {
+  position:fixed; left:10vw; top:45vh;
+  width:52px; height:52px; border-radius:50%;
+  background: none;
+  z-index:200; pointer-events:none;
+  transform-origin:center center;
+  animation:shakeCapture 1.8s ease-in-out forwards;
+}
+@keyframes shakeCapture {
+  0%  { transform:rotate(0deg);    opacity:1; }
+  8%  { transform:rotate(-20deg);  }
+  16% { transform:rotate(20deg);   }
+  24% { transform:rotate(-15deg);  }
+  32% { transform:rotate(15deg);   }
+  40% { transform:rotate(-10deg);  }
+  48% { transform:rotate(10deg);   }
+  56% { transform:rotate(0deg);    }
+  75% { transform:rotate(0deg);    opacity:1; }
+  85% { transform:rotate(0deg);    opacity:0.8; }
+  100%{ transform:scale(0.8);      opacity:0; }
+}
+
+/* ── Resultado ── */
+#resultOverlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9);
+  flex-direction:column; align-items:center; justify-content:center;
+  z-index:999; gap:18px; text-align:center; padding:24px;
+}
+#resultOverlay.show { display:flex; }
+#resultIcon  { font-size:4.5rem; animation:resultPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+#resultTitle { font-size:1.5rem; font-weight:900; letter-spacing:1px; }
+#resultDesc  { font-size:0.84rem; color:#aaa; max-width:400px; line-height:1.6; }
+#resultBtn   {
+  margin-top:8px; padding:12px 30px;
+  background:linear-gradient(135deg,rgba(255,117,0,0.2),rgba(255,173,0,0.1));
+  border:2px solid rgba(255,117,0,0.45); border-radius:10px;
+  color:#ffad00; font-weight:800; font-size:0.84rem; cursor:pointer; text-decoration:none;
+}
+@keyframes resultPop { from{transform:scale(0)} to{transform:scale(1)} }
+
+/* ── Flash captura ── */
+.capture-flash {
+  position:fixed; inset:0; background:#fff;
+  opacity:0; pointer-events:none; z-index:500;
+  animation:capFlash 0.4s ease-out forwards;
+}
+@keyframes capFlash { 0%{opacity:0.9} 100%{opacity:0} }
+
+/* ── Loading ── */
+#btLoading {
+  display:flex; position:fixed; inset:0; background:#0a0a10;
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; z-index:9999; color:#ff9500; font-size:0.88rem;
+}
+.bt-spinner {
+  width:36px; height:36px;
+  border:3px solid rgba(255,117,0,0.15); border-top-color:#ff9500;
+  border-radius:50%; animation:spin 0.9s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ═══════════════════════════════════════════════════
+   DROPS OVERLAY — popup individual de recompensas
+   ═══════════════════════════════════════════════════ */
+#dropsOverlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.92);
+  flex-direction:column; align-items:center; justify-content:center;
+  z-index:1000; gap:0; padding:20px;
+  animation:dropsFadeIn 0.5s ease;
+}
+#dropsOverlay.show { display:flex; }
+@keyframes dropsFadeIn { from{opacity:0;transform:scale(0.93)} to{opacity:1;transform:scale(1)} }
+
+.drops-box {
+  background:linear-gradient(160deg,#0e0e1e,#080810);
+  border:2px solid rgba(255,173,0,0.45);
+  border-radius:20px; padding:28px 32px 24px;
+  max-width:420px; width:95%; text-align:center;
+  box-shadow:0 0 60px rgba(255,173,0,0.12);
+}
+.drops-title {
+  font-size:1.3rem; font-weight:900; color:#ffad00;
+  letter-spacing:1px; margin-bottom:4px;
+  text-transform:uppercase;
+}
+.drops-subtitle {
+  font-size:0.72rem; color:#666; margin-bottom:22px;
+}
+.drops-grid {
+  display:flex; flex-wrap:wrap; gap:14px;
+  justify-content:center; margin-bottom:22px;
+}
+.drop-item {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px; padding:12px 16px; min-width:80px;
+  animation:dropItemPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes dropItemPop {
+  from { transform:scale(0); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+.drop-item img { width:56px; height:56px; object-fit:contain; image-rendering:pixelated; }
+.drop-item .drop-qty {
+  font-size:0.88rem; font-weight:900; color:#fff;
+}
+.drop-item .drop-label {
+  font-size:0.6rem; color:#888; text-align:center; line-height:1.3;
+}
+.drop-item.caught-pokemon {
+  border-color:rgba(255,173,0,0.5);
+  background:rgba(255,173,0,0.07);
+}
+.drop-item.caught-pokemon .drop-qty { color:#ffad00; }
+
+.drops-xp-bar-wrap { margin:0 0 18px; }
+.drops-xp-label {
+  display:flex; justify-content:space-between;
+  font-size:0.65rem; color:#aaa; margin-bottom:5px;
+}
+.drops-xp-bg {
+  height:8px; background:rgba(255,255,255,0.08);
+  border-radius:4px; overflow:hidden;
+}
+.drops-xp-fill {
+  height:100%; border-radius:4px;
+  background:linear-gradient(90deg,#9b59b6,#e056fd);
+  transition:width 1.2s ease;
+}
+.drops-level-up {
+  font-size:1rem; font-weight:900; color:#e056fd;
+  margin-bottom:12px; display:none;
+  animation:levelUpPulse 0.6s ease-in-out 3;
+}
+@keyframes levelUpPulse {
+  0%,100%{ transform:scale(1); opacity:1; }
+  50%     { transform:scale(1.12); opacity:0.8; }
+}
+
+.drops-return-btn {
+  display:block; width:100%; padding:13px;
+  background:linear-gradient(135deg,rgba(255,117,0,0.2),rgba(255,173,0,0.1));
+  border:2px solid rgba(255,117,0,0.45); border-radius:10px;
+  color:#ffad00; font-weight:800; font-size:0.84rem;
+  cursor:pointer; text-decoration:none; text-align:center;
+  transition:background 0.15s, transform 0.1s;
+  letter-spacing:0.3px; margin-top:4px;
+}
+.drops-return-btn:hover { background:rgba(255,117,0,0.3); transform:scale(1.02); }
+
+/* Fase de captura: timer visível acima dos botões */
+#captureTimer {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:3rem; font-weight:900; color:#ffad00;
+  text-shadow:0 0 24px rgba(255,173,0,0.9);
+  pointer-events:none; z-index:900; display:none;
+  animation:captureTimerPulse 1s ease-in-out infinite alternate;
+}
+@keyframes captureTimerPulse {
+  from { opacity:0.7; transform:translate(-50%,-50%) scale(0.95); }
+  to   { opacity:1;   transform:translate(-50%,-50%) scale(1.05); }
+}

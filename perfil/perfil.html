@@ -8,6 +8,7 @@
   <link rel="icon" href="../img-site/favicon.png" type="image/png">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
+  <link rel="stylesheet" href="./boss-raid-status.css">
   <meta name="theme-color" content="#ffad00">
 </head>
 
@@ -103,7 +104,7 @@
             </button>
           </div>
           <input type="text" id="perfilNomeInput" class="perfil-nome-input" style="display: none;" maxlength="30">
-          <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
+          <p class="perfil-email" id="perfilEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7401070115061d1b341119151d185a171b19">[email&#160;protected]</a></p>
           <!-- Player ID Section -->
           <div class="perfil-player-id-container">
             <p class="perfil-player-id-label">Unite ID:</p>
@@ -162,6 +163,21 @@
             </div>
           </div>
       </div>  
+
+      <!-- ⚔️ BOSS RAID SECTION -->
+      <section class="perfil-section">
+        <h2>Boss Raid</h2>
+        <div class="perfil-content raid-content" id="bossRaidContainer">
+          <!-- Estado deslogado: visível por padrão, substituído pelo JS ao logar -->
+          <div class="raid-deslogado" id="raidDeslogado">
+            <div class="raid-deslogado-inner">
+              <span class="raid-deslogado-icon">⚔️</span>
+              <p class="raid-deslogado-texto">Click to play</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- FIM BOSS RAID SECTION -->
 
       <!-- Área para builds salvas -->
       <section class="perfil-section">
@@ -259,7 +275,7 @@
       </div>
     </div>
   </footer>
-  <script src="../estatisticas-shad/util.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../estatisticas-shad/util.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -284,6 +300,7 @@
 
   // Importar funções do perfil.js
   import { initRibbons } from './perfil.js';
+  import { initBossRaid } from './boss-raid.js';
   
   // ⭐ Importar sistema de avaliação
   import { createRatingViewOnly } from './build-rating.js';
@@ -1152,7 +1169,25 @@ btnShareProfile.addEventListener('click', () => {
     alert('⚠️ You need to be logged in to share your profile');
     return;
   }
-  
+
+  // ── Missão Boss Raid: copiar_link ──────────────────────────
+  try {
+    var _qr = localStorage.getItem('bossraid_quest_ativa');
+    if (_qr) {
+      var _q = JSON.parse(_qr);
+      if (_q && _q.missaoKey === 'copiar_link') {
+        // perfil.html tem boss-raid carregado — tentar completar direto
+        if (typeof window.missaoDiariaCompleta === 'function') {
+          window.missaoDiariaCompleta('copiar_link', _q.slotTarget || 1);
+        } else {
+          localStorage.setItem('bossraid_pending_mission',
+            JSON.stringify({ missaoKey: 'copiar_link', slotTarget: _q.slotTarget || 1 })
+          );
+        }
+      }
+    }
+  } catch(e) {}
+
   copiarLinkPerfil(currentUser.uid);
 });
   
@@ -1472,6 +1507,9 @@ async function updateUI(user) {
       await carregarBuildsUsuario(user.uid);
       await carregarPlayerId(user.uid);
       await carregarUltimasVisualizacoes(user.uid);
+      // Inicializar sistema Boss Raid
+      const raidUserData = userDocSnap.exists() ? userDocSnap.data() : {};
+      await initBossRaid(user.uid, db, raidUserData);
       
     } catch (error) {
       console.error('❌ Erro ao carregar dados do usuário:', error);
@@ -1540,13 +1578,4 @@ async function updateUI(user) {
     });
 
     // Fechar menu ao redimensionar para desktop
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 900) {
-        menuToggle.classList.remove('ativo');
-        mobileMenu.classList.remove('ativo');
-      }
-    });
-  </script>
-
-</body>
-</html>
+    w
