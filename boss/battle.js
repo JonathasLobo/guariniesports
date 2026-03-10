@@ -250,7 +250,79 @@ const TIPO_CORES = {
 // Para adicionar um item: inclua { item:'chave_item', qty:1, chance:0.5 }
 // A função rola Math.random() para cada entrada com chance < 1
 // ──────────────────────────────────────────────────────────────
-function calcularDrops(bossNivel) {
+
+// ── Player Level (Trainer Level) ──────────────────────────────────────────
+function xpParaProximoNivelPlayer(nivel) {
+  return Math.floor(100 * Math.pow(1.25, nivel - 1));
+}
+function xpPlayerPorBoss(bossNivel) {
+  if (bossNivel <= 15)  return 30;
+  if (bossNivel <= 25)  return 50;
+  if (bossNivel <= 40)  return 80;
+  return 120;
+}
+const PLAYER_LEVEL_REWARDS_BATTLE = {
+  2:  { potion: 3 },
+  3:  { potion: 3, pokebola: 2 },
+  4:  { potion: 5, revive: 1 },
+  5:  { potion: 5, revive: 2, pokebola: 3 },
+  6:  { potion: 5, revive: 2 },
+  7:  { potion: 8, revive: 3, pokebola: 3 },
+  8:  { potion: 8, revive: 3 },
+  9:  { potion: 10, revive: 3, pokebola: 5 },
+  10: { potion: 10, revive: 5, pokebola: 5, ether: 3 },
+};
+function getPlayerLevelRewardBattle(nivel) {
+  if (PLAYER_LEVEL_REWARDS_BATTLE[nivel]) return PLAYER_LEVEL_REWARDS_BATTLE[nivel];
+  return {
+    potion:   Math.floor(5 + nivel * 1.5),
+    revive:   Math.floor(nivel / 2),
+    pokebola: Math.floor(nivel / 2),
+    ether:    Math.floor(nivel / 3),
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// DROPS INDIVIDUAIS POR BOSS
+// ─────────────────────────────────────────────────────────────
+// Cada entrada define drops EXTRAS que só esse boss específico
+// pode soltar, além dos drops normais por faixa de nível.
+//
+// Formato de cada linha:
+//   { item: 'nome_do_item', qty: quantidade, chance: 0.0-1.0 }
+//
+// chance: 1.0 = sempre cai | 0.5 = 50% | 0.3 = 30% | 0.1 = 10%
+//
+// Itens válidos: pokebola, great_ball, ultra_ball, potion,
+//   super_potion, hyper_potion, max_potion, revive, max_revive,
+//   full_restore, ether, antidote
+// ══════════════════════════════════════════════════════════════
+const BOSS_DROPS_INDIVIDUAIS = {
+
+  weedle: [
+    { item: 'antidote', qty: 1, chance: 0.6 },  // 60% — Weedle é venenosa
+    { item: 'antidote', qty: 1, chance: 0.25 }, // +25% de chance de 2x
+  ],
+
+  caterpie: [
+    // Quando awakening for implementado, adicionar aqui:
+    // { item: 'awakening', qty: 1, chance: 0.5 },
+    { item: 'potion',   qty: 1, chance: 0.4  }, // bonus de cura
+  ],
+
+  wooloo: [
+    { item: 'potion',   qty: 2, chance: 0.5  },
+    { item: 'revive',   qty: 1, chance: 0.2  },
+  ],
+
+  // Adicione outros bosses aqui:
+  // nome_pokemon: [
+  //   { item: 'nome_item', qty: 1, chance: 0.5 },
+  // ],
+
+};
+
+function calcularDrops(bossNivel, bossNome) {
   const n = bossNivel || 10;
 
   // Rola os drops probabilísticos e retorna { item: qty }
@@ -300,18 +372,54 @@ function calcularDrops(bossNivel) {
       { item: 'ether',       qty: 1, chance: 0.5 },
     ]),
   };
-  return { // Difícil (ex: Mawile lv35+)
-    xp:       400,
-    lealdade: 20,
-    itens: rolarDrops([
-      { item: 'ultra_ball',  qty: 2, chance: 1.0 },
-      { item: 'hyper_potion',qty: 2, chance: 1.0 },
-      { item: 'revive',      qty: 1, chance: 1.0 },
-      { item: 'revive',      qty: 1, chance: 0.5 },
-      { item: 'ether',       qty: 1, chance: 0.6 },
-      { item: 'ether',       qty: 1, chance: 0.3 },
-    ]),
-  };
+  // ── Base drop por nível ─────────────────────────────────────────────────
+  let resultado;
+  if (n <= 15) resultado = { xp: 80,  lealdade: 20, itens: rolarDrops([
+    { item: 'pokebola',  qty: 1, chance: 1.0 },
+    { item: 'potion',    qty: 1, chance: 1.0 },
+    { item: 'ether',     qty: 1, chance: 1.0 },
+    { item: 'revive',    qty: 1, chance: 1.0 },
+    { item: 'ether',     qty: 1, chance: 0.25 },
+    { item: 'potion',    qty: 1, chance: 0.25 },
+    { item: 'revive',    qty: 1, chance: 0.25 },
+  ])};
+  else if (n <= 25) resultado = { xp: 150, lealdade: 20, itens: rolarDrops([
+    { item: 'pokebola',    qty: 2, chance: 1.0 },
+    { item: 'great_ball',  qty: 1, chance: 1.0 },
+    { item: 'super_potion',qty: 1, chance: 1.0 },
+    { item: 'super_potion',qty: 1, chance: 0.5 },
+    { item: 'revive',      qty: 1, chance: 0.4 },
+    { item: 'ether',       qty: 1, chance: 0.35 },
+  ])};
+  else if (n <= 35) resultado = { xp: 250, lealdade: 20, itens: rolarDrops([
+    { item: 'great_ball',  qty: 2, chance: 1.0 },
+    { item: 'super_potion',qty: 2, chance: 1.0 },
+    { item: 'revive',      qty: 1, chance: 1.0 },
+    { item: 'revive',      qty: 1, chance: 0.5 },
+    { item: 'ether',       qty: 1, chance: 0.5 },
+  ])};
+  else resultado = { xp: 400, lealdade: 20, itens: rolarDrops([
+    { item: 'ultra_ball',  qty: 2, chance: 1.0 },
+    { item: 'hyper_potion',qty: 2, chance: 1.0 },
+    { item: 'revive',      qty: 1, chance: 1.0 },
+    { item: 'revive',      qty: 1, chance: 0.5 },
+    { item: 'ether',       qty: 1, chance: 0.6 },
+    { item: 'ether',       qty: 1, chance: 0.3 },
+  ])};
+
+  // ── Drops individuais do boss específico ────────────────────────────────
+  if (bossNome) {
+    const key = bossNome.toLowerCase();
+    const extras = BOSS_DROPS_INDIVIDUAIS[key] || [];
+    if (extras.length > 0) {
+      const itensExtras = rolarDrops(extras);
+      Object.entries(itensExtras).forEach(([item, qty]) => {
+        resultado.itens[item] = (resultado.itens[item] || 0) + qty;
+      });
+    }
+  }
+
+  return resultado;
 }
 
 function xpParaNivel(n){ return Math.pow(n, 3); } // mesma fórmula do boss-raid.js
@@ -1193,15 +1301,19 @@ function renderBattle(){
   const captureQIdx   = bs.captureQueueIdx || 0;
   const myCaptureUid  = captureQueue[captureQIdx];
   // Na captura, TODOS os players têm vez (inclusive fainted)
-  _myTurn = (curUid === _uid && !bs.bossFainted) ||
-            (bs.bossFainted && bs.fase === 'capture' && myCaptureUid === _uid);
+  // fase='boss_turn': nenhum player tem vez — boss está atacando
+  const isBossTurnFase = bs.fase === 'boss_turn';
+  _myTurn = !isBossTurnFase && (
+    (curUid === _uid && !bs.bossFainted) ||
+    (bs.bossFainted && bs.fase === 'capture' && myCaptureUid === _uid)
+  );
 
   // Banner de turno
   const players = bs.players || {};
   const curPlayer = players[curUid];
   // _bossAttacking é setado verdadeiro durante bossAtaca() e falso depois
   let bannerTxt;
-  if (_bossAttacking){
+  if (_bossAttacking || isBossTurnFase){
     bannerTxt = '🔴 Boss is attacking...';
   } else if (bs.fase === 'capture'){
     const captureQueue = bs.captureQueue || [];
@@ -1347,7 +1459,10 @@ function renderPlayers(bs){
            alt="${sanitize(p.pokemon)}">
       <div class="player-info">
         <div class="player-nick">${isMe?'You':sanitize(p.nick)}</div>
-        <div class="player-poke-name">${sanitize(cap(p.pokemon))||'—'}</div>
+        <div class="player-poke-name">
+          ${sanitize(cap(p.pokemon))||'—'}
+          <span class="player-poke-lv">Lv.${p.nivel||1}</span>
+        </div>
         ${(() => {
           const stages = p.statStages || {};
           const statNames = {atk:'Atk',def:'Def',spa:'Sp.A',spd:'Sp.D',spe:'Spd',acc:'Acc'};
@@ -1416,7 +1531,8 @@ function atualizarBotoes(bs){
   const myCaptureTurn = capture_fase && captureQueue_a[captureQIdx_a] === _uid;
 
   // Durante o turno do boss, bloquear TODOS os botões de todos os players
-  const bossAtuando = _bossAttacking;
+  // (tanto pelo flag local quanto pelo campo fase='boss_turn' do Firebase)
+  const bossAtuando = _bossAttacking || (_battleSnap?.fase === 'boss_turn');
   document.getElementById('btnFight').disabled = bossAtuando || !myTurn || _capturePhase;
   document.getElementById('btnBag').disabled   = bossAtuando || (myCaptureTurn ? false : !myTurn);
   document.getElementById('btnPass').disabled  = bossAtuando || (myCaptureTurn ? false : !myTurn);
@@ -1826,33 +1942,176 @@ window.btUsarGolpe = async function(idx, moveKey){
 };
 
 // ── Usar item ────────────────────────────────────────────────
+// ── Constante de ITEM_INFO usada em btUsarItem e btAplicarItem ────────────
+const _BATTLE_ITEM_INFO = {
+  pokebola:{name:'Poké Ball',isBall:true,ballMult:1},
+  great_ball:{name:'Great Ball',isBall:true,ballMult:1.5},
+  ultra_ball:{name:'Ultra Ball',isBall:true,ballMult:2},
+  potion:{name:'Potion',heal:20},
+  super_potion:{name:'Super Potion',heal:60},
+  hyper_potion:{name:'Hyper Potion',heal:120},
+  max_potion:{name:'Max Potion',heal:9999},
+  full_restore:{name:'Full Restore',heal:9999},
+  revive:{name:'Revive',revive:true},
+  antidote:{name:'Antidote',antidote:true},
+};
+
+// ── Usar item — abre seletor de alvo para cura/revive ────────────────────
 window.btUsarItem = async function(itemKey){
   if (!_myTurn || _actionDone) return;
-  // Na fase de captura, ignorar actedThisTurn (pode ser stale do turno que matou o boss)
   const isCapturePhase = _battleSnap?.fase === 'capture';
   if (!isCapturePhase && _battleSnap?.players?.[_uid]?.actedThisTurn) return;
 
-  const ITEM_INFO = {
-    pokebola:{name:'Poké Ball',isBall:true,ballMult:1},
-    great_ball:{name:'Great Ball',isBall:true,ballMult:1.5},
-    ultra_ball:{name:'Ultra Ball',isBall:true,ballMult:2},
-    potion:{name:'Potion',heal:20},super_potion:{name:'Super Potion',heal:60},
-    hyper_potion:{name:'Hyper Potion',heal:120},max_potion:{name:'Max Potion',heal:9999},
-    full_restore:{name:'Full Restore',heal:9999},
-    revive:{name:'Revive',revive:true},
-  };
-
-  const info = ITEM_INFO[itemKey];
+  const info = _BATTLE_ITEM_INFO[itemKey];
   if (!info) return;
 
   // Pokébola apenas na fase de captura
   if (info.isBall && !_capturePhase){ setSubPanel(null); return; }
 
+  // ── Itens de CURA: pedir alvo antes de usar ───────────────────────────
+  if (info.heal){
+    const players = _battleSnap?.players || {};
+    const order   = _battleSnap?.turnOrder || [];
+    // Aliados que podem receber cura (HP < max, não fainted)
+    const targets = order.filter(uid => uid !== 'boss').map(uid => {
+      const p = players[uid];
+      if (!p) return null;
+      return { uid, p };
+    }).filter(Boolean);
+
+    // Montar seletor visual de alvo
+    _actionDone = false;
+    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
+    html += '<div class="item-target-header"><span class="item-target-icon">💊</span><span class="item-target-title">Use on who?</span></div>';
+    targets.forEach(({ uid, p }) => {
+      const isMe     = uid === _uid;
+      const pct      = p.hpMax > 0 ? Math.max(0, p.hp / p.hpMax * 100) : 0;
+      const barCls   = pct > 50 ? 'ok' : pct > 20 ? 'low' : 'crit';
+      const fainted  = p.fainted || p.hp <= 0;
+      const isFull   = !fainted && p.hp >= p.hpMax;
+      const disabledCls = isFull ? 'disabled' : '';
+      const hpLabel  = fainted ? '💀 Fainted' : `${Math.max(0,p.hp)} / ${p.hpMax} HP`;
+      html += `
+        <button class="sub-btn item-target-btn ${disabledCls}"
+                ${isFull ? 'disabled title="HP already full"' : ''}
+                onclick="window.btAplicarItem('${uid}','${itemKey}')">
+          <img src="${p.shiny ? '../perfil/img-shiny/' : '../perfil/img-pokeicon/'}${p.pokemon}.png"
+               class="itarget-img" onerror="this.style.display='none'">
+          <div class="itarget-info">
+            <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
+            <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
+            <div class="itarget-hpbar-bg">
+              <div class="itarget-hpbar-fill ${barCls}" style="width:${pct}%"></div>
+            </div>
+            <span class="itarget-hp">${hpLabel}</span>
+          </div>
+        </button>`;
+    });
+    setSubPanel(html);
+    return;
+  }
+
+  // ── REVIVE: seletor de alvo (só fainted) ─────────────────────────────
+  if (info.revive){
+    const players = _battleSnap?.players || {};
+    const faintedAllies = Object.entries(players)
+      .filter(([uid, p]) => (p.fainted || p.hp <= 0));
+
+    if (faintedAllies.length === 0){
+      setMsg("No fainted Pokémon to revive!");
+      return;
+    }
+    if (faintedAllies.length === 1){
+      // Só um — chamar diretamente
+      await btAplicarRevive(faintedAllies[0][0], itemKey);
+      return;
+    }
+    // Múltiplos — seletor
+    _actionDone = false;
+    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
+    html += '<div class="item-target-header"><span class="item-target-icon">💊</span><span class="item-target-title">Revive who?</span></div>';
+    faintedAllies.forEach(([uid, p]) => {
+      const isMe = uid === _uid;
+      html += `<button class="sub-btn item-target-btn"
+               onclick="window.btReviveAlly('${uid}','${itemKey}')">
+        <img src="../perfil/img-pokeicon/${p.pokemon}.png"
+             class="itarget-img" style="opacity:0.5" onerror="this.style.display='none'">
+        <div class="itarget-info">
+          <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
+          <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
+          <span class="itarget-hp">💀 Fainted</span>
+        </div>
+      </button>`;
+    });
+    setSubPanel(html);
+    return;
+  }
+
+  // ── ANTIDOTE: seletor de alvo (só envenenados) ──────────────────────────
+  if (info.antidote){
+    const players = _battleSnap?.players || {};
+    const order   = _battleSnap?.turnOrder || [];
+    const poisonedTargets = order.filter(uid => uid !== 'boss').map(uid => {
+      const p = players[uid];
+      if (!p) return null;
+      return { uid, p };
+    }).filter(t => t && (t.p.status === 'poison' || t.p.status === 'toxic'));
+
+    if (poisonedTargets.length === 0){
+      setMsg('No poisoned Pokémon!');
+      return;
+    }
+    if (poisonedTargets.length === 1){
+      await btAplicarAntidote(poisonedTargets[0].uid, itemKey);
+      return;
+    }
+    _actionDone = false;
+    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
+    html += '<div class="item-target-header"><span class="item-target-icon">🌿</span><span class="item-target-title">Cure who?</span></div>';
+    poisonedTargets.forEach(({ uid, p }) => {
+      const isMe = uid === _uid;
+      html += `<button class="sub-btn item-target-btn"
+               onclick="window.btAplicarAntidoteAlly('${uid}','${itemKey}')">
+        <img src="${p.shiny ? '../perfil/img-shiny/' : '../perfil/img-pokeicon/'}${p.pokemon}.png"
+             class="itarget-img" onerror="this.style.display='none'">
+        <div class="itarget-info">
+          <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
+          <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
+          <span class="itarget-hp" style="color:#a040a0">☠ Poisoned</span>
+        </div>
+      </button>`;
+    });
+    setSubPanel(html);
+    return;
+  }
+
+  // ── POKÉBOLA: direto (sem seletor) ───────────────────────────────────
+  if (info.isBall){
+    _actionDone = true;
+    pararTurnTimer();
+    setSubPanel(null);
+    try {
+      const newBag = Object.assign({}, _userData.raidBag || {});
+      newBag[itemKey] = (newBag[itemKey] || 0) - 1;
+      if (newBag[itemKey] <= 0) delete newBag[itemKey];
+      _userData.raidBag = newBag;
+      await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
+    } catch(e){}
+    await arremessarPokebola(itemKey, info);
+    return;
+  }
+
+  await avancarTurno();
+};
+
+
+// ── Aplicar antidote no alvo selecionado ─────────────────────────────────
+async function btAplicarAntidote(targetUid, itemKey) {
   _actionDone = true;
   pararTurnTimer();
   setSubPanel(null);
 
-  // Remover item da bag do Firestore
+  // Consumir item
   try {
     const newBag = Object.assign({}, _userData.raidBag || {});
     newBag[itemKey] = (newBag[itemKey] || 0) - 1;
@@ -1861,82 +2120,107 @@ window.btUsarItem = async function(itemKey){
     await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
   } catch(e){}
 
-  if (info.isBall){
-    // Lançar pokébola
-    await arremessarPokebola(itemKey, info);
+  const target = _battleSnap?.players?.[targetUid];
+  if (!target){ await avancarTurno(); return; }
+
+  if (target.status !== 'poison' && target.status !== 'toxic'){
+    setMsg('Not poisoned!');
+    _actionDone = false;
     return;
   }
 
-  if (info.heal){
-    const me = _battleSnap.players?.[_uid];
-    if (!me){ await avancarTurno(); return; }
-    if (me.hp >= me.hpMax){
-      // HP cheio — devolve item e não consome turno
-      try {
-        const devBag = Object.assign({}, _userData.raidBag || {});
-        devBag[itemKey] = (devBag[itemKey] || 0) + 1;
-        _userData.raidBag = devBag;
-        await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
-      } catch(e){}
-      setMsg("HP is already full!");
-      _actionDone = false;
-      return;
-    }
-    const healed = Math.min(info.heal, me.hpMax - me.hp);
-    const newHp  = me.hp + healed;
-    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), { hp: newHp, fainted: false });
-    showPlayerFloat(_uid, `+${healed}`, 'heal');
-    await logAction(`${getNick()} used ${info.name} and restored ${healed} HP!`);
+  // Remover status poison no Firebase RTDB
+  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { status: null });
+  const isMe    = targetUid === _uid;
+  const whoName = isMe ? cap(target.pokemon) : `${sanitize(target.nick || 'ally')}'s ${cap(target.pokemon)}`;
+  showPlayerFloat(targetUid, '🌿 Cured!', 'heal');
+  await logAction(`${getNick()} used Antidote on ${whoName}! Poison cured!`);
+
+  await avancarTurno();
+}
+window.btAplicarAntidoteAlly = async function(targetUid, itemKey){
+  if (_actionDone) return;
+  await btAplicarAntidote(targetUid, itemKey);
+};
+
+// ── Aplicar item de cura no alvo selecionado ─────────────────────────────
+window.btAplicarItem = async function(targetUid, itemKey){
+  if (_actionDone) return;
+  const info = _BATTLE_ITEM_INFO[itemKey];
+  if (!info || !info.heal) return;
+
+  _actionDone = true;
+  pararTurnTimer();
+  setSubPanel(null);
+
+  // Consumir item
+  try {
+    const newBag = Object.assign({}, _userData.raidBag || {});
+    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
+    if (newBag[itemKey] <= 0) delete newBag[itemKey];
+    _userData.raidBag = newBag;
+    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
+  } catch(e){}
+
+  const target = _battleSnap?.players?.[targetUid];
+  if (!target){ await avancarTurno(); return; }
+
+  if (target.hp >= target.hpMax){
+    setMsg("HP is already full!");
+    _actionDone = false;
+    // Devolver item
+    try {
+      const devBag = Object.assign({}, _userData.raidBag || {});
+      devBag[itemKey] = (devBag[itemKey] || 0) + 1;
+      _userData.raidBag = devBag;
+      await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
+    } catch(e){}
+    return;
   }
 
-  if (info.revive){
-    // Revive pode ser usado em si mesmo OU em aliados desmaiados
-    // Se há aliados fainted, mostrar seletor
-    const players = _battleSnap?.players || {};
-    const faintedAllies = Object.entries(players)
-      .filter(([uid, p]) => p.fainted || p.hp <= 0);
+  const healed  = Math.min(info.heal, target.hpMax - target.hp);
+  const newHp   = target.hp + healed;
+  const isMe    = targetUid === _uid;
+  const whoName = isMe ? 'own' : `${sanitize(target.nick || 'ally')}'s`;
 
-    if (faintedAllies.length === 0){
-      // Ninguém fainted — devolve item
-      try {
-        const devBag = Object.assign({}, _userData.raidBag || {});
-        devBag[itemKey] = (devBag[itemKey] || 0) + 1;
-        _userData.raidBag = devBag;
-        await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
-      } catch(e){}
-      setMsg("No fainted Pokémon to revive!");
-      _actionDone = false;
-      return;
-    }
-
-    if (faintedAllies.length === 1){
-      // Só um — reviver direto
-      const [targetUid, targetP] = faintedAllies[0];
-      const halfHp = Math.floor((targetP.hpMax||1)/2);
-      await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: halfHp, fainted: false });
-      showPlayerFloat(targetUid, `+${halfHp}`, 'heal');
-      await logAction(`${getNick()} used Revive! ${cap(targetP.pokemon)} came back with ${halfHp} HP!`);
-    } else {
-      // Múltiplos fainted — mostrar seletor
-      _actionDone = false; // desfazer lock temporariamente
-      let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
-      html += '<div style="font-size:0.7rem;color:#ffad00;padding:4px 8px 8px;text-align:center">Choose who to revive:</div>';
-      faintedAllies.forEach(([uid, p]) => {
-        const isMe = uid === _uid;
-        html += `<button class="sub-btn" onclick="window.btReviveAlly('${uid}','${itemKey}')">
-          ${isMe ? 'Your' : sanitize(p.nick) + "'s"} ${cap(p.pokemon)}
-        </button>`;
-      });
-      setSubPanel(html);
-      return;
-    }
-  }
+  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: newHp, fainted: false });
+  showPlayerFloat(targetUid, `+${healed}`, 'heal');
+  await logAction(`${getNick()} used ${info.name} on ${isMe ? cap(target.pokemon) : whoName + ' ' + cap(target.pokemon)} (+${healed} HP)!`);
 
   await avancarTurno();
 };
 
-// ── Reviver aliado selecionado ───────────────────────────────
+// ── Reviver aliado (helper interno) ─────────────────────────────────────
+async function btAplicarRevive(targetUid, itemKey){
+  _actionDone = true;
+  pararTurnTimer();
+  setSubPanel(null);
+
+  try {
+    const newBag = Object.assign({}, _userData.raidBag || {});
+    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
+    if (newBag[itemKey] <= 0) delete newBag[itemKey];
+    _userData.raidBag = newBag;
+    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
+  } catch(e){}
+
+  const targetP = _battleSnap?.players?.[targetUid];
+  if (!targetP){ await avancarTurno(); return; }
+  const halfHp = Math.floor((targetP.hpMax||1)/2);
+  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: halfHp, fainted: false, status: null });
+  showPlayerFloat(targetUid, `+${halfHp}`, 'heal');
+  await logAction(`${getNick()} used Revive! ${cap(targetP.pokemon)} came back with ${halfHp} HP!`);
+  await avancarTurno();
+}
+
+// ── Reviver aliado selecionado (chamado pelo seletor visual) ───────────────
 window.btReviveAlly = async function(targetUid, itemKey){
+  if (_actionDone) return;
+  await btAplicarRevive(targetUid, itemKey);
+};
+
+// ── (helper interno duplicado removido — usa btAplicarRevive) ───────────
+async function _btReviveAllyLegacy(targetUid, itemKey){
   if (_actionDone) return;
   _actionDone = true;
   pararTurnTimer();
@@ -2005,17 +2289,16 @@ async function arremessarPokebola(itemKey, info){
 // ══════════════════════════════════════════════════════════════
 async function bossAtaca(){
   _bossAttacking = true;
-  // Desabilitar botões imediatamente — não esperar pelo próximo onValue
-  const _bsNow = _battleSnap;
-  if (_bsNow) atualizarBotoes(_bsNow);
+  // Sinalizar no Firebase que é turno do boss — bloqueia botões em TODOS os clientes
+  await update(_battleRef, { fase: 'boss_turn' });
   const bannerEl = document.getElementById('turnBanner');
   if (bannerEl){ bannerEl.textContent = '🔴 Boss is attacking...'; bannerEl.classList.add('boss-turn'); }
 
   const bs      = (await get(_battleRef)).val();
-  if (!bs || bs.bossFainted){ _bossAttacking = false; return; }
+  if (!bs || bs.bossFainted){ _bossAttacking = false; await update(_battleRef, { fase: 'battle' }); return; }
 
   const golpes  = _bossData?.golpes || [];
-  if (!golpes.length){ _bossAttacking = false; return; }
+  if (!golpes.length){ _bossAttacking = false; await update(_battleRef, { fase: 'battle' }); return; }
 
   const bossTipos = _bossData.tipos;
 
@@ -2258,9 +2541,8 @@ async function bossAtaca(){
   }
   _bossAttacking = false;
   document.getElementById('turnBanner')?.classList.remove('boss-turn');
-  // Reabilitar botões assim que o boss termina
-  const _bsEnd = _battleSnap;
-  if (_bsEnd) atualizarBotoes(_bsEnd);
+  // Restaurar fase='battle' no Firebase — reabilita botões em todos os clientes
+  await update(_battleRef, { fase: 'battle' });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2328,6 +2610,8 @@ async function avancarTurno(){
     // Verificar se há players vivos antes de chamar o boss
     const alguemVivo = Object.values(bs.players||{}).some(p => !p.fainted && p.hp > 0);
     if (alguemVivo) {
+      // Sinalizar fase='boss_turn' ANTES dos 3s — bloqueia todos os clientes imediatamente
+      await update(_battleRef, { fase: 'boss_turn' });
       await logAction('— Boss turn! —');
       await new Promise(res => setTimeout(res, 3000)); // 3s de suspense
       await bossAtaca();
@@ -2489,7 +2773,7 @@ async function mostrarDrops(){
   _dropsShown = true;
 
   const bs      = (await get(_battleRef)).val();
-  const drops   = calcularDrops(_bossData?.nivel || 10);
+  const drops   = calcularDrops(_bossData?.nivel || 10, _bossNome);
   const results = bs?.captureResults || {};
   const myResult = _myCaptureResult || results[_uid] || 'skipped';
   const caught   = myResult === 'caught';
@@ -2564,6 +2848,9 @@ async function mostrarDrops(){
     // Persistir PP gasto — lê do snap da batalha (Firebase RTDB)
     // myBattlePlayer.ppAtual = { tackle: 33, water_gun: 23, ... }
     const ppFinal = myBattlePlayer?.ppAtual ?? null;
+    // Persistir status de poison da batalha para o perfil
+    const statusFinal = (myBattlePlayer?.status === 'poison' || myBattlePlayer?.status === 'toxic')
+      ? myBattlePlayer.status : null;
     const atualizado = {
       ...s,
       xp:       novoXP,
@@ -2574,6 +2861,8 @@ async function mostrarDrops(){
       hpAtual:  hpAtualFinal !== null ? hpAtualFinal : undefined,
       ppAtual:  ppFinal !== null ? ppFinal : (s.ppAtual || {}),
     };
+    if (statusFinal)  atualizado.status = statusFinal;
+    else              delete atualizado.status;
     // Só aplica golpes se não está pendente aprovação do usuário
     if ((leveledUp || ganheiGolpe) && !pendingNewMove) atualizado.golpes = nGolpes;
     // Se pendente, salvar na lista de pending para o UI decidir
@@ -2641,19 +2930,50 @@ async function mostrarDrops(){
     }
   }
 
+  // ── Player XP e Level Up ────────────────────────────────────────────────
+  const _bossNivelAtual = _bossData?.nivel || 10;
+  const _xpGanhoPlayer  = xpPlayerPorBoss(_bossNivelAtual);
+  let _pNivel   = userData?.playerLevel || 1;
+  let _pXP      = (userData?.playerXP   || 0) + _xpGanhoPlayer;
+  let _pLevelUp = false;
+  let _pLevelReward = null;
+  while (_pXP >= xpParaProximoNivelPlayer(_pNivel)) {
+    _pXP    -= xpParaProximoNivelPlayer(_pNivel);
+    _pNivel += 1;
+    _pLevelUp = true;
+    _pLevelReward = getPlayerLevelRewardBattle(_pNivel);
+  }
+  // Se levelou, adicionar recompensas à bag
+  if (_pLevelUp && _pLevelReward) {
+    Object.entries(_pLevelReward).forEach(([item, qty]) => {
+      newBag[item] = (newBag[item] || 0) + qty;
+    });
+  }
+
   // Gravar no Firestore
   try {
     const fsUpdate = {
-      raidBag:  newBag,
-      raidTeam: JSON.parse(JSON.stringify(novoTeam)),
+      raidBag:      newBag,
+      raidTeam:     JSON.parse(JSON.stringify(novoTeam)),
+      playerLevel:  _pNivel,
+      playerXP:     _pXP,
       ...(caught ? { pokedex: arrayUnion(_bossNome.toLowerCase()) } : {}),
     };
     // Se há stand-by, gravar o slot pendente
     if (typeof _bossStandbySlot !== 'undefined' && _bossStandbySlot) {
       fsUpdate.raidStandby = JSON.parse(JSON.stringify(_bossStandbySlot));
     }
+    // Sinalizar level up pendente no Firestore — perfil.html vai exibir o toast
+    if (_pLevelUp) {
+      fsUpdate.playerLevelUpPending = { nivel: _pNivel, rewardItens: _pLevelReward };
+    }
     await updateDoc(doc(fsdb,'usuarios',_uid), fsUpdate);
-    if (_userData){ _userData.raidBag = newBag; _userData.raidTeam = novoTeam; }
+    if (_userData){
+      _userData.raidBag     = newBag;
+      _userData.raidTeam    = novoTeam;
+      _userData.playerLevel = _pNivel;
+      _userData.playerXP    = _pXP;
+    }
   } catch(e){ console.error('[drops] Firestore error:', e); }
 
   // ── Renderizar popup ──

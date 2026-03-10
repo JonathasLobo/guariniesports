@@ -10,6 +10,105 @@
   <link rel="stylesheet" href="perfil.css">
   <link rel="stylesheet" href="./boss-raid-status.css">
   <meta name="theme-color" content="#ffad00">
+
+<style>
+/* Level Up Toast */
+/* ─── Level Up Modal ─── */
+.levelup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 99998;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+  backdrop-filter: blur(4px);
+}
+.levelup-overlay.show {
+  opacity: 1; pointer-events: all;
+}
+.levelup-modal {
+  background: linear-gradient(160deg, #1a1000, #261800, #1a1000);
+  border: 2px solid #ffb700;
+  border-radius: 20px;
+  padding: 36px 40px 28px;
+  max-width: 420px; width: 90%;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255,160,0,0.45), 0 0 120px rgba(255,100,0,0.2);
+  position: relative;
+  transform: scale(0.85);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+}
+.levelup-overlay.show .levelup-modal {
+  transform: scale(1);
+}
+.lu-burst {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 16px rgba(255,200,0,0.8));
+  animation: lu-pulse 0.8s ease-in-out infinite alternate;
+}
+@keyframes lu-pulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+.lu-label {
+  font-size: 0.7rem; font-weight: 900;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #ff9500; margin-bottom: 2px;
+}
+.lu-level-num {
+  font-size: 3rem; font-weight: 900;
+  color: #ffe066;
+  text-shadow: 0 0 20px rgba(255,200,0,0.9), 0 0 40px rgba(255,140,0,0.5);
+  line-height: 1.1; margin-bottom: 4px;
+}
+.lu-divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, transparent, #ffb700, transparent);
+  margin: 12px auto;
+}
+.lu-rewards-label {
+  font-size: 0.68rem; font-weight: 700; color: #aaa;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+.lu-rewards-grid {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.lu-reward-item {
+  background: rgba(255,180,0,0.1);
+  border: 1px solid rgba(255,180,0,0.3);
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-width: 72px;
+}
+.lu-reward-img {
+  width: 32px; height: 32px; object-fit: contain;
+  image-rendering: pixelated;
+}
+.lu-reward-name {
+  font-size: 0.62rem; font-weight: 700; color: #ddd;
+}
+.lu-reward-qty {
+  font-size: 0.82rem; font-weight: 900; color: #ffe066;
+}
+.lu-close-btn {
+  background: linear-gradient(135deg, #ff9500, #ffb700);
+  color: #000; border: none;
+  padding: 10px 32px; border-radius: 24px;
+  font-size: 0.85rem; font-weight: 900;
+  cursor: pointer; letter-spacing: 0.05em;
+  transition: transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 4px 18px rgba(255,150,0,0.4);
+}
+.lu-close-btn:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgba(255,150,0,0.6); }
+/* (mantidos para compatibilidade mas não usados no modal novo) */
+.levelup-toast, .lu-icon, .lu-title, .lu-body, .lu-items { display:none; }
+</style>
 </head>
 
 <body>
@@ -278,7 +377,7 @@
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../estatisticas-shad/util.js"></script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { 
     getAuth, 
     onAuthStateChanged, 
@@ -317,9 +416,9 @@
     measurementId: "G-84NHN394WF"
   };
 
-  const app = initializeApp(firebaseConfig);
+  const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore();
+  const db = getFirestore(app);
 
   // ========================================
   // ELEMENTOS DO DOM - BUSCA DE PERFIL
@@ -1477,6 +1576,80 @@ async function updateUI(user) {
         }
         if (userData.avatar) {
           avatarPath = userData.avatar;
+        }
+
+
+      // ── Modal de Level Up (centralizado) ────────────────────────────────
+      function mostrarToastLevelUp(nivel, rewardItens) {
+        const ITEM_NOMES = {
+          potion:'Potion', super_potion:'Super Potion', hyper_potion:'Hyper Potion',
+          max_potion:'Max Potion', revive:'Revive', max_revive:'Max Revive',
+          pokebola:'Poké Ball', great_ball:'Great Ball', ultra_ball:'Ultra Ball',
+          ether:'Ether', antidote:'Antidote', full_restore:'Full Restore'
+        };
+        const ITEM_IMG = {
+          potion:'../boss/img-items/potion.png',
+          super_potion:'../boss/img-items/super_potion.png',
+          hyper_potion:'../boss/img-items/hyper_potion.png',
+          max_potion:'../boss/img-items/max_potion.png',
+          revive:'../boss/img-items/revive.png',
+          max_revive:'../boss/img-items/max_revive.png',
+          pokebola:'../boss/img-items/pokebola.png',
+          great_ball:'../boss/img-items/great_ball.png',
+          ultra_ball:'../boss/img-items/ultra_ball.png',
+          ether:'../boss/img-items/ether.png',
+          antidote:'../boss/img-items/antidote.png',
+          full_restore:'../boss/img-items/full_restore.png'
+        };
+
+        const rewardEntries = Object.entries(rewardItens || {}).filter(([,qty]) => qty > 0);
+        const rewardsHTML = rewardEntries.map(([item, qty]) => `
+          <div class="lu-reward-item">
+            <img class="lu-reward-img"
+                 src="${ITEM_IMG[item] || ''}"
+                 onerror="this.style.display='none'"
+                 alt="${ITEM_NOMES[item] || item}">
+            <span class="lu-reward-name">${ITEM_NOMES[item] || item}</span>
+            <span class="lu-reward-qty">×${qty}</span>
+          </div>`).join('');
+
+        const overlay = document.createElement('div');
+        overlay.className = 'levelup-overlay';
+        overlay.innerHTML = `
+          <div class="levelup-modal">
+            <div class="lu-burst">🏅</div>
+            <div class="lu-label">Trainer Level Up!</div>
+            <div class="lu-level-num">Lv. ${nivel}</div>
+            <div class="lu-divider"></div>
+            ${rewardEntries.length > 0 ? `
+              <div class="lu-rewards-label">Rewards</div>
+              <div class="lu-rewards-grid">${rewardsHTML}</div>
+            ` : ''}
+            <button class="lu-close-btn" id="luCloseBtn">Awesome! 🎉</button>
+          </div>`;
+        document.body.appendChild(overlay);
+        setTimeout(() => overlay.classList.add('show'), 40);
+        overlay.querySelector('#luCloseBtn').addEventListener('click', () => {
+          overlay.classList.remove('show');
+          setTimeout(() => overlay.remove(), 400);
+        });
+        // Auto-fechar após 12s se não clicar
+        setTimeout(() => {
+          if (overlay.isConnected) {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.remove(), 400);
+          }
+        }, 12000);
+      }
+
+        // ── Verificar Level Up pendente ────────────────────────────────
+        if (userData.playerLevelUpPending) {
+          const lu = userData.playerLevelUpPending;
+          // Exibir toast de level up
+          mostrarToastLevelUp(lu.nivel, lu.rewardItens || {});
+          // Limpar o pending no Firestore
+          const { updateDoc: _upd, doc: _doc } = await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
+          await _upd(_doc(db, "usuarios", user.uid), { playerLevelUpPending: null });
         }
       }
       

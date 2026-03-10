@@ -124,8 +124,7 @@ const POKEDEX_NUM = {
   popplio:728, sobble:816,   quaxly:912,
   // Bug
   caterpie:10,
-  weedle:13,
-  wooloo:831
+  weedle:13, kakuna:14, beedrill:15,
 };
 
 // ============================================================
@@ -283,16 +282,13 @@ const EVOLUTION_CHAIN = {
   // ── Linha Caterpie (Bug) ──────────────────────────────────
   // Caterpie → Metapod (L7) → Butterfree (L10)
   caterpie:   { evolvesTo: 'metapod',    levelReq: 7,  loyaltyReq: 50  },
+  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 50  },
   metapod:    { evolvesTo: 'butterfree', levelReq: 10, loyaltyReq: 50  },
 
   // ── Linha Weedle (Bug/Poison) ─────────────────────────────
   // Weedle → Kakuna (L7) → Beedrill (L10)
   weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
   kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
-
-  // ── Linha Wooloo (Normal) ─────────────────────────────
-  // Wooloo → Dubwool (L24))
-  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 255  },
 };
 
 // ============================================================
@@ -392,8 +388,6 @@ const EVOLUTION_ABILITIES = {
   // ── Linha Quaxly ──────────────────────────────────────────
   quaxwell:    { normal: ['torrent'],            hidden: 'moxie'         },
   quaquaval:   { normal: ['torrent'],            hidden: 'moxie'         },
-  // ── Linha Quaxly ──────────────────────────────────────────
-  dubwool:     { normal: ['fluffy','steadfast'], hidden: 'bulletproof'   },
 };
 
 // ============================================================
@@ -460,11 +454,10 @@ const EVOLUTION_TIPOS = {
   // Caterpie line — Butterfree ganha flying
   metapod:     ['bug'],
   butterfree:  ['bug','flying'],
+  dubwool:     ['normal'],
   // Weedle line — mantém bug/poison até Beedrill
   kakuna:      ['bug','poison'],
   beedrill:    ['bug','poison'],
-  // Woloo line
-  dubwool:     ['normal'],
 };
 
 // ============================================================
@@ -555,11 +548,10 @@ const BASE_STATS_EVO = {
   // Caterpie line
   metapod:     { hp:50,  atk:20,  def:55,  spa:25,  spd:25,  spe:30  },
   butterfree:  { hp:60,  atk:45,  def:50,  spa:90,  spd:80,  spe:70  },
+  dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
-  // Wooloo line
-  dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
 };
 
 // ============================================================
@@ -594,9 +586,9 @@ const POKEDEX_NUM_EVO = {
   brionne:729, primarina:730,
   drizzile:817, inteleon:818,
   quaxwell:913, quaquaval:914,
+  // Caterpie line
   metapod:11,  butterfree:12,
-  kakuna:14,  beedrill:15,
-  dubwool:832,
+  wooloo:831,  dubwool:832,
 };
 
 
@@ -1102,6 +1094,9 @@ const ABILITIES_DB = {
   damp:           { name: 'Damp',           desc: 'Prevents moves like Selfdestruct and Explosion.' },
   swift_swim:     { name: 'Swift Swim',     desc: 'Doubles Speed in rain.' },
   sniper:         { name: 'Sniper',         desc: 'Powers up critical hits to deal triple damage.' },
+  run_away:       { name: 'Run Away',       desc: 'In-battle: +2% Speed. Represents a nimble Pokémon always looking for an escape route.' },
+  shield_dust:    { name: 'Shield Dust',    desc: 'Blocks the additional effects of moves that can cause status conditions or stat changes.' },
+  bulletproof:    { name: 'Bulletproof',    desc: 'Protects against ball and bomb moves like Shadow Ball and Rock Blast.' },
   mega_launcher:  { name: 'Mega Launcher',  desc: 'Powers up pulse and aura moves by 50%.' },
   liquid_voice:   { name: 'Liquid Voice',   desc: 'Sound-based moves become Water-type.' },
   cute_charm:     { name: 'Cute Charm',     desc: 'Contact may infatuate the foe (30%).' },
@@ -1182,8 +1177,9 @@ const ITEMS_DB = {
   max_revive:    { name:'Max Revive',    img:'../boss/img-items/max_revive.png',    category:'revive', usableIn:'both',   desc:'Revives a fainted Pokemon, fully restoring its HP.',       effect:{ type:'revive', value:1.0 } },
   full_restore:  { name:'Full Restore',  img:'../boss/img-items/full_restore.png',  category:'heal',   usableIn:'both',   desc:'Fully restores HP and heals all status conditions.',       effect:{ type:'fullrestore' } },
   ether:         { name:'Ether',         img:'../boss/img-items/ether.png',         category:'pp',     usableIn:'both',   desc:'Restores 20 PP of a chosen move. Select a Pokemon, then choose the move.',  effect:{ type:'restorepp', value:20 } },
+  antidote:      { name:'Antidote',      img:'../boss/img-items/antidote.png',      category:'status', usableIn:'both',   desc:'Cures a Poisoned Pokémon. Can be used on allies in battle.',                    effect:{ type:'antidote' } },
 };
-const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether'];
+const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether','antidote'];
 // ──────────────────────────────────────────────────────────────
 // BAG INICIAL — itens que todo novo jogador recebe ao começar
 // Para editar: altere as quantidades abaixo ou adicione novas chaves.
@@ -1220,6 +1216,13 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
   if (ef?.type === 'heal'        && !fainted && hpAtual < hpMax) { novoHP = Math.min(hpMax, hpAtual + ef.value); ok = true; }
   if (ef?.type === 'revive'      && fainted)                     { novoHP = Math.max(1, Math.floor(hpMax * ef.value)); ok = true; }
   if (ef?.type === 'fullrestore' && (hpAtual < hpMax || fainted)){ novoHP = hpMax; ok = true; }
+  // Antidote: cura poison fora da batalha
+  if (ef?.type === 'antidote'){
+    if (!slot.status || (slot.status !== 'poison' && slot.status !== 'toxic')){
+      mostrarToastSimples('❌ ' + capitalizar(slot.pokemon) + ' is not poisoned!'); return;
+    }
+    ok = true; // não muda HP, só remove status
+  }
 
   // Ether: +20 PP em UM golpe escolhido — seleção de golpe fica em abrirUsarItem/abrirEtherMoveSelect
   // Esta função é chamada DEPOIS que o usuário escolheu pokemon E golpe
@@ -1260,7 +1263,14 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
   bag[itemKey] = (bag[itemKey] || 0) - 1;
   if (bag[itemKey] <= 0) delete bag[itemKey];
 
-  const novoTeam = team.map((s, i) => i === slotIdx ? Object.assign({}, s, { hpAtual: novoHP }) : s);
+  // Para antidote: remover poison. Para fullrestore: remover todos os status
+  const novoTeam = team.map((s, i) => {
+    if (i !== slotIdx) return s;
+    const updated = Object.assign({}, s, { hpAtual: novoHP });
+    if (ef?.type === 'antidote' || ef?.type === 'fullrestore') delete updated.status;
+    if (ef?.type === 'revive') delete updated.status; // ao reviver, status também some
+    return updated;
+  });
   try {
     const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
     await updateDoc(doc(_db, 'usuarios', _userId), {
@@ -1271,8 +1281,12 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
     _userData.raidTeam = novoTeam;
     renderizarBossRaid();
     const isRevive = item.effect?.type === 'revive';
-    const emoji = isRevive ? '💊' : '🧪';
-    mostrarToastSimples(emoji + ' ' + item.name + ' used on ' + capitalizar(slot.pokemon) + '! ' + novoHP + '/' + hpMax + ' HP');
+    const isAntidote = item.effect?.type === 'antidote';
+    const emoji = isRevive ? '💊' : isAntidote ? '🌿' : '🧪';
+    const msg = isAntidote
+      ? emoji + ' Antidote used! ' + capitalizar(slot.pokemon) + ' is cured of Poison!'
+      : emoji + ' ' + item.name + ' used on ' + capitalizar(slot.pokemon) + '! ' + novoHP + '/' + hpMax + ' HP';
+    mostrarToastSimples(msg, 'ok');
   } catch(e) { console.error('[BossRaid] Erro ao usar item:', e); }
 }
 
@@ -1752,12 +1766,56 @@ window.salvarMissaoPendente = function(missaoKey, slotTarget) {
 };
 
 
+
+// ══════════════════════════════════════════════════════════════
+// POISON TICK — 1 HP por minuto fora da batalha
+// ══════════════════════════════════════════════════════════════
+let _poisonTickInterval = null;
+
+function iniciarPoisonTick() {
+  pararPoisonTick();
+  _poisonTickInterval = setInterval(async () => {
+    const team = _userData?.raidTeam;
+    if (!team) return;
+    let mudou = false;
+    const novoTeam = team.map(slot => {
+      if (slot.status !== 'poison' && slot.status !== 'toxic') return slot;
+      const stats  = calcularStats(slot.pokemon, slot.ivs||{}, slot.nivel||1, slot.nature||'Hardy', slot.evs||{});
+      const hpMax  = stats.hp;
+      const hpAtual = typeof slot.hpAtual === 'number' && slot.hpAtual > 0 ? slot.hpAtual : hpMax;
+      if (hpAtual <= 1) return slot; // já ao limite, não mata de vez
+      const newHp = Math.max(1, hpAtual - 1); // perde 1 HP por tick
+      mudou = true;
+      // Se chegou a 1 HP (mas não fainted — revive cura, não mata fora de batalha)
+      return { ...slot, hpAtual: newHp };
+    });
+    if (!mudou) return;
+    try {
+      const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+      await updateDoc(doc(_db, 'usuarios', _userId), { raidTeam: JSON.parse(JSON.stringify(novoTeam)) });
+      _userData.raidTeam = novoTeam;
+      renderizarBossRaid();
+      // Mostrar aviso de poison tick
+      const envenenados = novoTeam.filter(s => s.status === 'poison' || s.status === 'toxic');
+      if (envenenados.length > 0) {
+        mostrarToastSimples('☠ ' + envenenados.map(s => capitalizar(s.pokemon)).join(', ') + ' lost 1 HP from Poison!', 'erro');
+      }
+    } catch(e) { console.error('[poison tick]', e); }
+  }, 60 * 1000); // 1 minuto
+}
+
+function pararPoisonTick() {
+  if (_poisonTickInterval) { clearInterval(_poisonTickInterval); _poisonTickInterval = null; }
+}
+
 export async function initBossRaid(userId, db, userData) {
   _db       = db;
   _userId   = userId;
   _userData = userData;
   console.log('[BossRaid] Inicializando:', userId);
   renderizarBossRaid();
+  // Iniciar poison tick (1 HP/min para pokemons envenenados fora de batalha)
+  iniciarPoisonTick();
   // Restaurar quest widget se havia uma ativa na sessao anterior
   inicializarQuestWidget();
   // Consumir missao pendente salva em localStorage
@@ -2030,6 +2088,188 @@ async function confirmarEscolha(pokemon) {
 
 // ============================================================
 // FASE 3 — MY TEAM
+
+// ============================================================
+// SISTEMA DE LEVEL DO PLAYER
+// ============================================================
+
+// XP necessário para subir para o próximo nível (escalonamento progressivo)
+function xpParaProximoNivelPlayer(nivel) {
+  // Nível 1→2: 100xp, cresce ~25% por nível
+  return Math.floor(100 * Math.pow(1.25, nivel - 1));
+}
+
+// Recompensas por level up
+const PLAYER_LEVEL_REWARDS = {
+  2:  { potion: 3 },
+  3:  { potion: 3, pokebola: 2 },
+  4:  { potion: 5, revive: 1 },
+  5:  { potion: 5, revive: 2, pokebola: 3 },
+  6:  { potion: 5, revive: 2 },
+  7:  { potion: 8, revive: 3, pokebola: 3 },
+  8:  { potion: 8, revive: 3 },
+  9:  { potion: 10, revive: 3, pokebola: 5 },
+  10: { potion: 10, revive: 5, pokebola: 5, ether: 3 },
+};
+function getPlayerLevelReward(nivel) {
+  // Para níveis acima de 10, escalar as recompensas
+  if (PLAYER_LEVEL_REWARDS[nivel]) return PLAYER_LEVEL_REWARDS[nivel];
+  return {
+    potion:   Math.floor(5 + nivel * 1.5),
+    revive:   Math.floor(nivel / 2),
+    pokebola: Math.floor(nivel / 2),
+    ether:    Math.floor(nivel / 3),
+  };
+}
+
+// XP de player por boss vencido (baseado no nível do boss)
+function xpPlayerPorBoss(bossNivel) {
+  if (bossNivel <= 15)  return 30;   // fácil
+  if (bossNivel <= 25)  return 50;   // médio-baixo
+  if (bossNivel <= 40)  return 80;   // médio-alto
+  return 120;                         // difícil
+}
+
+// Renderiza a barra de XP/Level do player — inserida entre My Team e Pokédex
+function renderPlayerLevelWidget(userData) {
+  const nivel    = userData?.playerLevel    || 1;
+  const xpAtual  = userData?.playerXP       || 0;
+  const xpProx   = xpParaProximoNivelPlayer(nivel);
+  const pct      = Math.min(100, Math.floor((xpAtual / xpProx) * 100));
+
+  return `
+    <div class="player-level-widget">
+      <div class="plw-top">
+        <span class="plw-label">🏅 Trainer Level</span>
+        <span class="plw-nivel">Lv. ${nivel}</span>
+      </div>
+      <div class="plw-bar-bg">
+        <div class="plw-bar-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="plw-xp-label">${xpAtual} / ${xpProx} XP</div>
+    </div>`;
+}
+
+// Processar level up do player após boss raid — chamado ao salvar no Firestore
+// Retorna { novoNivel, novoXP, leveledUp, rewardItens }
+function processarPlayerLevelUp(userData, xpGanho) {
+  let nivel   = userData?.playerLevel || 1;
+  let xpAtual = (userData?.playerXP   || 0) + xpGanho;
+  let leveledUp = false;
+  let ultimoReward = null;
+
+  while (xpAtual >= xpParaProximoNivelPlayer(nivel)) {
+    xpAtual  -= xpParaProximoNivelPlayer(nivel);
+    nivel    += 1;
+    leveledUp = true;
+    ultimoReward = getPlayerLevelReward(nivel);
+  }
+  return { novoNivel: nivel, novoXP: xpAtual, leveledUp, rewardItens: ultimoReward };
+}
+
+
+// ============================================================
+// DRAG & DROP — Reordenação do time
+// ============================================================
+function initSlotDragDrop(container) {
+  const grid = container.querySelector('.raid-slots-grid');
+  if (!grid) return;
+
+  let _dragSrcIndex = null;
+
+  grid.querySelectorAll('.raid-slot.ocupado').forEach(el => {
+    // ── Início do drag ──
+    el.addEventListener('dragstart', e => {
+      _dragSrcIndex = parseInt(el.dataset.index);
+      el.classList.add('drag-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', _dragSrcIndex);
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('drag-dragging');
+      grid.querySelectorAll('.raid-slot').forEach(s => s.classList.remove('drag-over'));
+    });
+
+    // ── Hover sobre destino ──
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      grid.querySelectorAll('.raid-slot').forEach(s => s.classList.remove('drag-over'));
+      el.classList.add('drag-over');
+    });
+
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('drag-over');
+    });
+
+    // ── Drop ──
+    el.addEventListener('drop', async e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const destIndex = parseInt(el.dataset.index);
+      if (_dragSrcIndex === null || _dragSrcIndex === destIndex) return;
+
+      // Reordenar o array raidTeam
+      const team = [...(_userData?.raidTeam || [])];
+      // Ordenar por slot atual para garantir ordem correta
+      team.sort((a, b) => a.slot - b.slot);
+
+      // Retirar o item da posição src e inserir na dest
+      const [moved] = team.splice(_dragSrcIndex, 1);
+      team.splice(destIndex, 0, moved);
+
+      // Re-numerar slots: 1, 2, 3...
+      team.forEach((s, i) => { s.slot = i + 1; });
+
+      // Salvar no Firestore
+      try {
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+        await updateDoc(doc(_db, 'usuarios', _userId), {
+          raidTeam: JSON.parse(JSON.stringify(team))
+        });
+        _userData.raidTeam = team;
+        renderizarBossRaid();
+      } catch(err) {
+        console.error('[drag-drop] erro ao reordenar:', err);
+        mostrarToastSimples('❌ Failed to reorder team', 'erro');
+      }
+    });
+  });
+
+  // Permitir drop nas células vazias também
+  grid.querySelectorAll('.raid-slot.vazio').forEach(el => {
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', async e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const destIndex = parseInt(el.dataset.slot);
+      if (_dragSrcIndex === null) return;
+
+      const team = [...(_userData?.raidTeam || [])];
+      team.sort((a, b) => a.slot - b.slot);
+      const [moved] = team.splice(_dragSrcIndex, 1);
+      team.splice(destIndex, 0, moved);
+      team.forEach((s, i) => { s.slot = i + 1; });
+
+      try {
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+        await updateDoc(doc(_db, 'usuarios', _userId), {
+          raidTeam: JSON.parse(JSON.stringify(team))
+        });
+        _userData.raidTeam = team;
+        renderizarBossRaid();
+      } catch(err) {
+        console.error('[drag-drop] erro ao reordenar:', err);
+      }
+    });
+  });
+}
+
 // ============================================================
 function renderMyTeam(container, raidTeam) {
   const slots = Array(6).fill(null);
@@ -2041,10 +2281,11 @@ function renderMyTeam(container, raidTeam) {
         <h3 class="raid-myteam-titulo">⚔️ My Team</h3>
         <button class="raid-pokedex-btn" id="btnAbrirPokedex">📖 Pokédex</button>
       </div>
+      ${renderPlayerLevelWidget(_userData)}
       <p class="raid-myteam-desc">Click to view its stats</p>
       <div class="raid-slots-grid">
         ${slots.map((slot, i) => slot ? `
-          <div class="raid-slot ocupado" data-slot="${i}" title="Click to view ${capitalizar(slot.pokemon)}">
+          <div class="raid-slot ocupado" data-slot="${i}" data-index="${i}" draggable="true" title="Drag to reorder · Click to view ${capitalizar(slot.pokemon)}">
             <span class="raid-slot-numero">${i + 1}</span>
             <img src="${slot.shiny ? `../perfil/img-shiny/${slot.pokemon}.png` : `../perfil/img-pokeicon/${slot.pokemon}.png`}"
                  alt="${slot.pokemon}" class="raid-slot-img"
@@ -2052,6 +2293,7 @@ function renderMyTeam(container, raidTeam) {
                  data-shiny="${slot.shiny ? '1' : '0'}">
             ${slot.shiny ? '<span class="shiny-badge">✨ Shiny</span>' : ''}
             <p class="raid-slot-nome">${capitalizar(slot.pokemon)}</p>
+            ${slot.status === 'poison' || slot.status === 'toxic' ? '<span class="raid-slot-status-psn" title="Poisoned — use Antidote!">☠ PSN</span>' : ''}
             <div class="raid-slot-tipos">${renderTipoBadges(EVOLUTION_TIPOS[slot.pokemon]||POKEMON_TIPOS[slot.pokemon]||['normal'])}</div>
             <p class="raid-slot-nivel">Lv. ${slot.nivel}</p>
             ${(() => {
@@ -2150,6 +2392,9 @@ function renderMyTeam(container, raidTeam) {
 
   // Marcar slots com evolucao disponivel
   raidTeam.forEach(s => { if (podeEvoluir(s)) sugerirEvolucao(s); });
+
+  // ── Drag & Drop de reordenação dos slots ────────────────────────────────
+  initSlotDragDrop(container);
 
   container.querySelectorAll('.raid-slot.ocupado').forEach(el =>
     el.addEventListener('click', () => {
@@ -2849,11 +3094,35 @@ function renderStandby() {
         <span class="standby-timer" id="standbyCountdown">--:--</span>
       </div>
     </div>
+    <button class="standby-release-btn" id="btnStandbyRelease" title="Release from stand-by (cannot be undone)">🗑️ Release</button>
   `;
 
   // Click no card abre o modal de status (view)
   cardEl.querySelector('[data-standby]').addEventListener('click', () => {
     abrirModalStatus(standby);
+  });
+
+  // Release direto do standby — apaga sem entrar no time
+  cardEl.querySelector('#btnStandbyRelease').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const confirmado = await mostrarConfirmacaoToast(
+      `Release ${capitalizar(standby.pokemon)} from stand-by?`,
+      'This cannot be undone.'
+    );
+    if (!confirmado) return;
+    const btn = cardEl.querySelector('#btnStandbyRelease');
+    btn.disabled = true; btn.textContent = 'Releasing...';
+    try {
+      const { doc, updateDoc, deleteField } = await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+      await updateDoc(doc(_db, 'usuarios', _userId), { raidStandby: deleteField() });
+      if (_userData) delete _userData.raidStandby;
+      if (_standbyTimer) { clearInterval(_standbyTimer); _standbyTimer = null; }
+      mostrarToast('Released ' + capitalizar(standby.pokemon) + ' from stand-by', '👋', false);
+      renderizarBossRaid();
+    } catch(err) {
+      console.error('[standby] erro ao liberar:', err);
+      btn.disabled = false; btn.textContent = '🗑️ Release';
+    }
   });
 
   // Iniciar countdown
@@ -3359,7 +3628,7 @@ function abrirModalStatus(slot) {
     + '<div class="ev-rodape" id="evRodape">'
     + '<span class="ev-rodape-label">✨ EV Points:</span>'
     + '<span class="ev-rodape-val" id="evPontosDisplay">' + evPointsSalvos + '</span>'
-    + (evPointsSalvos > 0 ? '<button class="ev-confirmar-btn" id="btnConfirmarEV">Confirm EVs</button>' : '')
+    + '' /* btnConfirmarEV aparece dinamicamente só após distribuir pontos */
     + '</div>'
     // Linha evolutiva abaixo dos EV Points, col-2
     + renderLinhaEvolutiva(slot.pokemon)
@@ -3431,9 +3700,10 @@ function abrirModalStatus(slot) {
   const col1 = document.querySelector('#raidStatusBody .raid-col-info');
   if (col1) checarBotaoEvolucao(slot, col1);
 
-  // ── Botão DELETAR (apenas quando há 2+ pokémons) ────────────────
+  // ── Botão DELETAR (apenas quando há 2+ pokémons E é slot do team, não standby) ─
   const teamAtual = _userData?.raidTeam || [];
-  if (teamAtual.length >= 2 && col1) {
+  const isStandbySlot = slot.expiraEm !== undefined && slot.slot === undefined;
+  if (teamAtual.length >= 2 && col1 && !isStandbySlot) {
     const btnDel = document.createElement('button');
     btnDel.className = 'release-btn';
     btnDel.innerHTML = '🗑️ Release';

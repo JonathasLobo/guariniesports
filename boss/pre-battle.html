@@ -125,7 +125,20 @@
     .pb-poke-area.no-click:hover { background:rgba(255,255,255,0.02); }
     .pb-poke-img { width:60px; height:60px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
     .pb-poke-name { font-size:0.7rem; font-weight:700; color:#ddd; }
-    .pb-poke-lvl { font-size:0.58rem; color:#777; }
+    .pb-poke-lvl {
+      font-size:0.72rem; font-weight:800;
+      color:#ffb700;
+      background:rgba(255,180,0,0.12);
+      border:1px solid rgba(255,180,0,0.3);
+      border-radius:5px;
+      padding:1px 6px;
+      margin-top:3px;
+      display:inline-block;
+    }
+    .pb-card-lvl {
+      font-size:0.64rem; font-weight:800;
+      color:#ffb700; margin:2px 0 0;
+    }
     .pb-poke-hint { font-size:0.54rem; color:#ff9500; opacity:0.7; }
 
     .pb-bag-area { display:flex; flex-direction:column; gap:4px; }
@@ -353,7 +366,7 @@
 
 <!-- Countdown overlay -->
 <div class="pb-cd-overlay" id="pbCdOverlay">
-  <div class="pb-cd-num" id="pbCdNum">10</div>
+  <div class="pb-cd-num" id="pbCdNum">5</div>
   <div class="pb-cd-label">Battle starting!</div>
 </div>
 
@@ -786,9 +799,12 @@ function cardHTML(uid, p, i) {
   const isMe     = uid === _uid;
   const bagItems = getBagItems(p.bag);
 
-  // Sprite shiny: busca no raidTeam local (só disponível para o próprio jogador)
-  const teamSlot  = (isMe && _userData?.raidTeam) ? (_userData.raidTeam[p.pokemonSlot ?? _meuPokSlot] || null) : null;
-  const isShiny   = teamSlot?.shiny === true || p.shiny === true;
+  // Sprite shiny: usa p.shiny do Firebase (gravado ao entrar/trocar pokémon)
+  // Fallback: buscar no raidTeam local pelo nome do pokémon (mais robusto que índice)
+  const teamSlot  = (isMe && _userData?.raidTeam)
+    ? (_userData.raidTeam.find(s => s.pokemon === p.pokemon) || null)
+    : null;
+  const isShiny   = p.shiny === true || teamSlot?.shiny === true;
   const spriteUrl = getPokeSprite(p.pokemon, isShiny);
 
   // Bag: para o próprio jogador, items são clicáveis; para outros, só visual
@@ -983,7 +999,7 @@ async function checarReadyAll(players) {
   await update(ref(rdb, `boss_salas/${_salaId}`), { estado: 'iniciando' });
   push(ref(rdb, `boss_salas/${_salaId}/chat`), {
     uid:'system', nick:'System',
-    msg:'All players ready! Battle starting in 10 seconds...',
+    msg:'All players ready! Battle starting in 5 seconds...',
     ts:Date.now(), system:true,
   });
 }
@@ -1032,7 +1048,7 @@ function iniciarContagem() {
   const overlay = document.getElementById('pbCdOverlay');
   const numEl   = document.getElementById('pbCdNum');
   overlay.classList.add('show');
-  let n = 10;
+  let n = 5;
   numEl.textContent = n;
 
   _timerCD = setInterval(async () => {
@@ -1099,7 +1115,7 @@ function abrirTrocaPoke() {
       ${isFainted ? '<span class="pb-fainted-tag">💀 Fainted</span>' : ''}
       ${sl.shiny&&!isFainted ? '<span class="pb-fainted-tag" style="background:rgba(180,140,0,0.75);color:#ffe;top:auto;bottom:4px;">✨ Shiny</span>' : ''}
       <p>${cap(sl.pokemon)}</p>
-      <p style="font-size:0.56rem;color:${isFainted?'#c03030':'#555'}">Lv.${sl.nivel||1}${isFainted?' · Fainted':''}</p>
+      <p class="pb-card-lvl" style="${isFainted?'color:#c03030':''}" >Lv.${sl.nivel||1}${isFainted?' · Fainted':''}</p>
     </div>`;
   }).join('');
 
@@ -1113,6 +1129,7 @@ function abrirTrocaPoke() {
       document.getElementById('pbPokeModal').classList.remove('show');
       await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), {
         pokemon: sl.pokemon, pokemonSlot: idx, nivel: sl.nivel||1,
+        shiny: sl.shiny === true,
       });
     });
   });

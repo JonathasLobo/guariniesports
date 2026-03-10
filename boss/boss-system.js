@@ -48,32 +48,28 @@ const BOSS_CONFIG = {
       nome:      'Caterpie',
       sprite:    '/boss/img-bosses/caterpie.png',
       tipos:     ['bug'],
-      baseStats: { hp:5, atk:1, def:1, spa:1, spd:1, spe:1 },
+      baseStats: { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
       nivel:     10,
       golpes: [
         { name:'Tackle',      type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
-        { name:'Harden',      type:'normal', cat:'status',   power:null,acc:null,target:'self',
-          effect:'buff', stat:'def', stages:1 },
       ],
-      catchRate: 255,
+      catchRate: 90,
     },
 
     {
       nome:      'Weedle',
       sprite:    '/boss/img-bosses/weedle.png',
       tipos:     ['bug','poison'],
-      baseStats: { hp:5, atk:1, def:1, spa:1, spd:1, spe:1 },
-      nivel:     10,
+      baseStats: { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
+      nivel:     5,
       golpes: [
         { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
-        { name:'Harden',      type:'normal', cat:'status',   power:null,acc:null,target:'self',
-          effect:'buff', stat:'def', stages:1 },
       ],
-      catchRate: 255,
+      catchRate: 90,
     },
 
     {
@@ -81,7 +77,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/wooloo.png',
       tipos:     ['normal'],
       baseStats: { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
-      nivel:     10,
+      nivel:     5,
       golpes: [
         { name:'Tackle',       type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'Growl',        type:'normal', cat:'status',   power:null,acc:100, target:'all',
@@ -90,7 +86,7 @@ const BOSS_CONFIG = {
           effect:'buff', stat:'def', stages:1 },
         { name:'Rollout',      type:'rock',   cat:'physical', power:30,  acc:90,  target:'single' },
       ],
-      catchRate: 255,
+      catchRate: 90,
     },
 
     // ── Médio ─────────────────────────────────────────────────

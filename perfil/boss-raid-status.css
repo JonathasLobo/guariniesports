@@ -466,7 +466,14 @@
   margin: 2px 0 1px; text-align: center;
 }
 .raid-slot-nivel {
-  font-size: 0.64rem; color: #888; margin: 1px 0;
+  font-size: 0.74rem; font-weight: 800;
+  color: #ffb700;
+  background: rgba(255,180,0,0.1);
+  border: 1px solid rgba(255,180,0,0.25);
+  border-radius: 5px;
+  padding: 1px 7px;
+  margin: 2px 0;
+  display: inline-block;
 }
 .raid-slot-vazio-icon {
   font-size: 1.8rem; color: #333; margin: 16px 0 6px;
@@ -1676,4 +1683,120 @@
   color: #ff7500;
   font-variant-numeric: tabular-nums;
   transition: color 0.3s;
+}
+
+/* ═══════════════════════════════════════════════════
+   PLAYER LEVEL WIDGET
+═══════════════════════════════════════════════════ */
+.player-level-widget {
+  background: linear-gradient(135deg, rgba(255,180,0,0.12), rgba(255,120,0,0.08));
+  border: 1px solid rgba(255,180,0,0.35);
+  border-radius: 12px;
+  padding: 10px 14px 8px;
+  margin: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.plw-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.plw-label {
+  font-size: 0.72rem;
+  color: #ffb700;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.plw-nivel {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffe066;
+  text-shadow: 0 0 8px rgba(255,200,0,0.5);
+}
+.plw-bar-bg {
+  width: 100%;
+  height: 7px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.plw-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffb700, #ff6a00);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+.plw-xp-label {
+  font-size: 0.65rem;
+  color: rgba(255,200,100,0.65);
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP — Reordenação do time
+═══════════════════════════════════════════════════ */
+.raid-slot[draggable="true"] {
+  cursor: grab;
+}
+.raid-slot[draggable="true"]:active {
+  cursor: grabbing;
+}
+.raid-slot.drag-dragging {
+  opacity: 0.45;
+  transform: scale(0.95);
+  border: 2px dashed rgba(255,180,0,0.7) !important;
+}
+.raid-slot.drag-over {
+  border: 2px solid #ffb700 !important;
+  background: rgba(255,180,0,0.12) !important;
+  transform: scale(1.04);
+  transition: transform 0.1s, border 0.1s;
+}
+
+/* ═══════════════════════════════════════════════════
+   STANDBY RELEASE BUTTON
+═══════════════════════════════════════════════════ */
+.standby-release-btn {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 6px 8px 2px;
+  padding: 6px;
+  background: rgba(200, 40, 40, 0.18);
+  border: 1px solid rgba(200,60,60,0.4);
+  border-radius: 8px;
+  color: #ff7070;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.standby-release-btn:hover {
+  background: rgba(200,40,40,0.35);
+  color: #ffaaaa;
+}
+.standby-release-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Poison status badge no slot ─────────────────────────── */
+.raid-slot-status-psn {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 900;
+  color: #cc44cc;
+  background: rgba(160, 40, 160, 0.18);
+  border: 1px solid rgba(160,40,160,0.4);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin: 1px 0;
+  letter-spacing: 0.05em;
+  animation: psn-pulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes psn-pulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1; border-color: rgba(200,60,200,0.8); }
 }
