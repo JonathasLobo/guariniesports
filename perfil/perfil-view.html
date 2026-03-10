@@ -8,379 +8,7 @@
   <link rel="icon" href="../img-site/favicon.png" type="image/png">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
-  <link rel="stylesheet" href="../boss/boss-raid-status.css">
   <meta name="theme-color" content="#ffad00">
-
-  <style>
-    /* ============================================================
-       BOSS RAID TEAM — perfil-view
-       Slots (rv-*) + Modal (#rvModal) idêntico ao boss-raid
-       Todo CSS do modal embutido aqui com #rvModal prefix
-       para máxima especificidade (sem depender de arquivo externo)
-       ============================================================ */
-
-    /* ── Wrapper da seção ── */
-    .rv-myteam-view {
-      background: rgba(0,0,0,0.7);
-      border: 2px solid #ff7500;
-      border-radius: 15px;
-      padding: 20px 24px 24px;
-      box-shadow: 0 8px 25px rgba(255,117,0,0.3);
-    }
-
-    /* ── Grid de slots ── */
-    .rv-slots-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
-    }
-    @media (max-width: 900px) { .rv-slots-grid { grid-template-columns: repeat(3,1fr); } }
-
-    /* ── Slot card ── */
-    .rv-slot {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 10px 6px 12px;
-      display: flex; flex-direction: column; align-items: center;
-      position: relative; min-height: 150px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .rv-slot-ocupado { cursor: pointer; }
-    .rv-slot-ocupado:hover {
-      border-color: rgba(255,117,0,0.5);
-      background: rgba(255,117,0,0.06);
-    }
-    .rv-slot-vazio { opacity: 0.35; cursor: default; }
-    .rv-slot-num {
-      position: absolute; top: 5px; left: 8px;
-      font-size: 0.6rem; color: #555; font-weight: 700;
-    }
-    .rv-slot-circle {
-      width: 72px; height: 72px; border-radius: 50%;
-      border: 3px solid #ff7500;
-      background: rgba(255,117,0,0.08);
-      display: flex; align-items: center; justify-content: center;
-      margin: 10px 0 8px;
-      box-shadow: 0 3px 10px rgba(255,117,0,0.25);
-      position: relative; flex-shrink: 0;
-    }
-    .rv-slot-circle.rv-slot-shiny { border-color: #ffe033; box-shadow: 0 0 12px rgba(255,220,40,0.4); }
-    .rv-slot-circle-empty { border-color: rgba(255,255,255,0.1); box-shadow: none; background: transparent; }
-    .rv-slot-img { width: 58px; height: 58px; object-fit: contain; image-rendering: pixelated; }
-    .rv-shiny-badge { position: absolute; top: -4px; right: -6px; font-size: 0.7rem; }
-    .rv-slot-vazio-q { font-size: 1.6rem; color: #333; }
-    .rv-slot-nome { font-size: 0.72rem; color: #ddd; font-weight: 600; margin: 0 0 3px; text-align: center; }
-    .rv-slot-tipos { display: flex; gap: 3px; justify-content: center; flex-wrap: wrap; margin-bottom: 3px; }
-    .rv-slot-tipos .tipo-badge { font-size: 0.5rem; padding: 1px 5px; }
-    .rv-slot-lv { font-size: 0.62rem; color: #888; margin: 0; }
-
-    /* ================================================================
-       MODAL #rvModal — CSS EMBUTIDO COM ALTA ESPECIFICIDADE
-       Todo regra prefixada com #rvModal para sobrescrever
-       perfil.css / style.css sem depender de boss-raid-status.css
-       ================================================================ */
-
-    #rvModal {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.88); z-index: 100000;
-      align-items: center; justify-content: center; padding: 12px;
-    }
-    #rvModal.show { display: flex; }
-
-    /* Container */
-    #rvModal .raid-modal-content {
-      background: rgba(14,14,18,0.98) !important;
-      border: 2px solid #ff7500 !important;
-      border-radius: 16px !important;
-      width: 98vw !important; max-width: 1160px !important;
-      max-height: 96vh !important; overflow-y: auto !important; overflow-x: hidden !important;
-      padding: 40px 28px 24px !important;
-      position: relative !important;
-      box-shadow: 0 12px 48px rgba(255,117,0,0.28) !important;
-      animation: rvSlideDown 0.25s ease !important;
-      min-height: unset !important;
-      display: block !important;
-    }
-    @keyframes rvSlideDown {
-      from { transform: translateY(-24px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Botão fechar */
-    #rvModal .raid-modal-close {
-      position: absolute !important; top: 12px !important; right: 14px !important;
-      background: rgba(255,0,0,0.2) !important; border: 2px solid #f00 !important;
-      color: #fff !important; font-size: 16px !important;
-      width: 32px !important; height: 32px !important; border-radius: 50% !important;
-      cursor: pointer !important; display: flex !important;
-      align-items: center !important; justify-content: center !important; z-index: 10 !important;
-    }
-    #rvModal .raid-modal-close:hover { background: rgba(255,0,0,0.5) !important; }
-
-    /* Grid 3 colunas — sempre, independente de media query */
-    #rvModal .raid-status-3col {
-      display: grid !important;
-      grid-template-columns: 210px 1fr 1fr !important;
-      gap: 0 !important; align-items: start !important;
-    }
-    #rvModal .raid-col {
-      padding: 0 18px !important; overflow: visible !important;
-      border-bottom: none !important;
-    }
-    #rvModal .raid-col:first-child { padding-left: 0 !important; }
-    #rvModal .raid-col:last-child  { padding-right: 0 !important; }
-    #rvModal .raid-col-stats {
-      border-left: 1px solid rgba(255,117,0,0.2) !important;
-      border-right: 1px solid rgba(255,117,0,0.2) !important;
-    }
-
-    /* Col 1 — header sprite */
-    #rvModal .raid-status-header {
-      display: flex !important; flex-direction: column !important;
-      align-items: center !important; gap: 5px !important;
-      padding-bottom: 14px !important; margin-bottom: 12px !important;
-      border-bottom: 2px solid rgba(255,117,0,0.25) !important;
-    }
-    #rvModal .raid-status-img {
-      width: 84px !important; height: 84px !important;
-      object-fit: contain !important;
-      border-radius: 50% !important;
-      border: 3px solid rgba(255,117,0,0.5) !important;
-      background: rgba(255,117,0,0.05) !important;
-    }
-    #rvModal .raid-status-nome {
-      color: #ffad00 !important; font-size: 1.2rem !important;
-      font-weight: 700 !important; margin: 0 !important; text-align: center !important;
-    }
-    #rvModal .raid-status-nivel {
-      color: #aaa !important; font-size: 0.85rem !important;
-      font-weight: 600 !important; margin: 0 !important;
-    }
-    #rvModal .raid-status-tipos {
-      display: flex !important; gap: 6px !important;
-      justify-content: center !important; margin: 2px 0 !important;
-    }
-
-    /* Barras HP/Loyalty/XP */
-    #rvModal .raid-status-barra-wrap { margin-bottom: 8px !important; }
-    #rvModal .raid-status-barra-label {
-      display: flex !important; justify-content: space-between !important;
-      color: #bbb !important; font-size: 0.72rem !important;
-      font-weight: 600 !important; margin-bottom: 3px !important;
-    }
-    #rvModal .raid-status-barra {
-      height: 10px !important;
-      background: rgba(255,255,255,0.07) !important;
-      border-radius: 3px !important; overflow: hidden !important;
-      border: 1px solid rgba(255,255,255,0.05) !important;
-    }
-    #rvModal .raid-status-barra-fill {
-      height: 100% !important; border-radius: 3px !important;
-      transition: width 0.6s ease !important; min-width: 3px !important;
-    }
-    #rvModal .raid-status-barra-fill.lealdade {
-      background: linear-gradient(90deg,#c0392b,#e74c3c,#ff6b6b) !important;
-    }
-    #rvModal .raid-status-barra-fill.xp {
-      background: linear-gradient(90deg,#27ae60,#2ecc71,#a8e063) !important;
-    }
-    #rvModal .raid-status-barra-fill.hp-ok {
-      background: linear-gradient(90deg,#27ae60,#2ecc71) !important;
-    }
-    #rvModal .raid-status-barra-fill.hp-low {
-      background: linear-gradient(90deg,#f39c12,#f1c40f) !important;
-    }
-    #rvModal .raid-status-barra-fill.hp-critical {
-      background: linear-gradient(90deg,#c0392b,#e74c3c) !important;
-      animation: hp-pulse 1.2s ease-in-out infinite !important;
-    }
-    @keyframes hp-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-    /* Nature & Ability cards */
-    #rvModal .raid-nature-wrap {
-      display: flex !important; align-items: center !important;
-      gap: 6px !important; flex-wrap: wrap !important;
-      margin: 7px 0 !important; padding: 6px 10px !important;
-      background: rgba(255,255,255,0.04) !important;
-      border: 1px solid rgba(255,117,0,0.2) !important;
-      border-radius: 8px !important; font-size: 0.76rem !important;
-    }
-    #rvModal .raid-nature-label { color: #888 !important; font-weight: 600 !important; white-space: nowrap !important; }
-    #rvModal .raid-nature-nome  { color: #ffad00 !important; font-weight: 700 !important; }
-    #rvModal .raid-nature-efeito {
-      margin-left: auto !important; display: flex !important;
-      align-items: center !important; gap: 4px !important; font-size: 0.71rem !important;
-    }
-    #rvModal .nature-up   { color: #2ecc71 !important; font-weight: 700 !important; }
-    #rvModal .nature-down { color: #e74c3c !important; font-weight: 700 !important; }
-    #rvModal .nature-neutro { color: #888 !important; font-style: italic !important; font-size: 0.71rem !important; }
-
-    /* Type matchup titles + badges */
-    #rvModal .raid-efet-titulo {
-      color: #ffad00 !important; font-size: 0.7rem !important; font-weight: 700 !important;
-      text-transform: uppercase !important; letter-spacing: 0.6px !important; margin: 12px 0 6px !important;
-    }
-    #rvModal .raid-efet-grupo {
-      display: flex !important; align-items: flex-start !important;
-      gap: 5px !important; margin-bottom: 5px !important;
-    }
-    #rvModal .raid-efet-label {
-      font-size: 0.62rem !important; font-weight: 700 !important;
-      min-width: 48px !important; padding-top: 3px !important;
-      text-transform: uppercase !important; letter-spacing: 0.4px !important;
-      white-space: nowrap !important;
-    }
-    #rvModal .fraco-label   { color: #e74c3c !important; }
-    #rvModal .resiste-label { color: #2ecc71 !important; }
-    #rvModal .imune-label   { color: #95a5a6 !important; }
-    #rvModal .raid-efet-badges { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; }
-
-    /* Tipo badges */
-    #rvModal .tipo-badge {
-      display: inline-block !important; padding: 2px 7px !important; border-radius: 4px !important;
-      font-size: 0.58rem !important; font-weight: 800 !important; letter-spacing: 0.5px !important;
-      color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important; line-height: 1.6 !important;
-    }
-    #rvModal .tipo-badge-efet { font-size: 0.58rem !important; padding: 2px 6px !important; }
-    #rvModal .tipo-badge-resiste {
-      background: transparent !important; border: 1.5px solid !important;
-      text-shadow: none !important;
-      /* color herdado do inline style — NÃO adicionar !important aqui */
-    }
-    #rvModal .tipo-badge-imune {
-      background: transparent !important; border: 1.5px dashed !important;
-      text-shadow: none !important; opacity: 0.7 !important;
-    }
-
-    /* Col 2 — Stats & IVs */
-    #rvModal .raid-status-iv-titulo {
-      color: #ffad00 !important; font-size: 0.7rem !important; font-weight: 700 !important;
-      text-transform: uppercase !important; letter-spacing: 0.6px !important; margin: 0 0 10px !important;
-    }
-    #rvModal .raid-iv-tabela {
-      width: 100% !important; border-collapse: collapse !important;
-      border-radius: 8px !important; overflow: hidden !important; font-size: 0.8rem !important;
-    }
-    #rvModal .raid-iv-tabela thead tr { background: rgba(255,117,0,0.18) !important; }
-    #rvModal .raid-iv-tabela thead th {
-      color: #ffad00 !important; font-weight: 700 !important; font-size: 0.64rem !important;
-      text-transform: uppercase !important; letter-spacing: 0.5px !important;
-      padding: 8px !important; text-align: left !important;
-    }
-    #rvModal .raid-iv-tabela thead th.th-center { text-align: center !important; }
-    #rvModal .raid-iv-tabela tbody tr:nth-child(odd)  { background: rgba(255,255,255,0.05) !important; }
-    #rvModal .raid-iv-tabela tbody tr:nth-child(even) { background: rgba(0,0,0,0.22) !important; }
-    #rvModal .raid-iv-tabela tbody tr:hover           { background: rgba(255,117,0,0.08) !important; }
-    #rvModal .iv-col-label {
-      color: #ddd !important; font-weight: 700 !important; padding: 10px 8px !important;
-      white-space: nowrap !important; width: 55px !important;
-    }
-    #rvModal .iv-col-stat {
-      color: #fff !important; font-weight: 700 !important; text-align: center !important;
-      padding: 10px 6px !important; min-width: 40px !important; vertical-align: middle !important;
-    }
-    #rvModal .iv-col-valor {
-      color: #aaa !important; font-weight: 700 !important; text-align: center !important;
-      padding: 10px 6px !important; min-width: 30px !important;
-    }
-    #rvModal .iv-col-valor.iv-max { color: #ffe033 !important; text-shadow: 0 0 6px rgba(255,224,0,0.4) !important; }
-    #rvModal .iv-col-nature { text-align: center !important; padding: 10px 8px 10px 4px !important; min-width: 24px !important; }
-    #rvModal .nat-up   { color: #2ecc71 !important; font-size: 0.8rem !important; font-weight: 800 !important; }
-    #rvModal .nat-down { color: #e74c3c !important; font-size: 0.8rem !important; font-weight: 800 !important; }
-    #rvModal .ev-com-valor { color: #ffad00 !important; font-weight: 700 !important; }
-    #rvModal .ev-col { text-align: center !important; padding: 10px 6px !important; min-width: 30px !important; }
-
-    /* Col 3 — Golpes */
-    #rvModal .raid-golpes-grid { display: flex !important; flex-direction: column !important; gap: 8px !important; }
-    #rvModal .raid-golpe-slot {
-      border: 1px solid rgba(255,255,255,0.08) !important;
-      border-radius: 10px !important; padding: 9px 12px !important;
-      background: rgba(255,255,255,0.03) !important;
-      transition: background 0.18s !important;
-    }
-    #rvModal .raid-golpe-slot:hover { background: rgba(255,255,255,0.07) !important; }
-    #rvModal .raid-golpe-slot.vazio {
-      border: 1px dashed rgba(255,255,255,0.09) !important;
-      display: flex !important; align-items: center !important; justify-content: center !important;
-      min-height: 48px !important;
-    }
-    #rvModal .golpe-vazio-txt { color: #333 !important; font-size: 0.7rem !important; font-style: italic !important; }
-    #rvModal .golpe-header {
-      display: flex !important; align-items: center !important; gap: 6px !important;
-      margin-bottom: 4px !important; flex-wrap: wrap !important;
-    }
-    #rvModal .golpe-tipo-badge {
-      font-size: 0.54rem !important; font-weight: 800 !important; letter-spacing: 0.5px !important;
-      padding: 1px 5px !important; border-radius: 3px !important; color: #fff !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important; flex-shrink: 0 !important;
-    }
-    #rvModal .golpe-nome  { color: #eee !important; font-weight: 700 !important; font-size: 0.82rem !important; flex: 1 !important; }
-    #rvModal .golpe-cat   { font-size: 0.7rem !important; flex-shrink: 0 !important; }
-    #rvModal .golpe-stab  {
-      font-size: 0.55rem !important; font-weight: 800 !important; color: #ffe033 !important;
-      background: rgba(255,224,0,0.13) !important;
-      border: 1px solid rgba(255,224,0,0.26) !important;
-      border-radius: 3px !important; padding: 0 4px !important; letter-spacing: 0.4px !important;
-    }
-    #rvModal .golpe-cat-tag {
-      font-size: 0.6rem !important; font-weight: 800 !important; letter-spacing: 0.6px !important;
-      border-radius: 3px !important; padding: 1px 5px !important; flex-shrink: 0 !important;
-    }
-    #rvModal .golpe-cat-physical {
-      color: #e67e22 !important;
-      background: rgba(230,126,34,0.18) !important;
-      border: 1px solid rgba(230,126,34,0.38) !important;
-    }
-    #rvModal .golpe-cat-special {
-      color: #9b59b6 !important;
-      background: rgba(155,89,182,0.18) !important;
-      border: 1px solid rgba(155,89,182,0.38) !important;
-    }
-    #rvModal .golpe-desc { color: #555 !important; font-size: 0.67rem !important; margin: 0 0 6px !important; line-height: 1.4 !important; }
-    #rvModal .golpe-stats-row { display: flex !important; gap: 10px !important; flex-wrap: wrap !important; align-items: center !important; }
-    #rvModal .golpe-power, #rvModal .golpe-acc, #rvModal .golpe-pp {
-      font-size: 0.65rem !important; color: #555 !important; white-space: nowrap !important;
-    }
-    #rvModal .golpe-power b, #rvModal .golpe-acc b, #rvModal .golpe-pp b { color: #bbb !important; }
-    #rvModal .golpe-power.status-move b { color: #7ec8e3 !important; }
-
-    /* ── Setas de navegação entre pokémons ── */
-    #rvModal .rv-nav-arrow {
-      position: absolute !important; top: 50% !important;
-      transform: translateY(-50%) !important;
-      background: rgba(255,117,0,0.12) !important;
-      border: 2px solid rgba(255,117,0,0.35) !important;
-      border-radius: 50% !important; color: #ff7500 !important;
-      font-size: 1.4rem !important; font-weight: 700 !important;
-      width: 42px !important; height: 42px !important;
-      display: flex !important; align-items: center !important;
-      justify-content: center !important; cursor: pointer !important;
-      transition: all 0.18s !important; z-index: 10 !important;
-    }
-    #rvModal .rv-nav-arrow:hover {
-      background: rgba(255,117,0,0.28) !important;
-      border-color: #ff7500 !important;
-      box-shadow: 0 0 12px rgba(255,117,0,0.35) !important;
-    }
-    #rvModal .rv-nav-left  { left: 10px !important; }
-    #rvModal .rv-nav-right { right: 10px !important; }
-    /* ── Data de captura ── */
-    #rvModal .raid-captured-date {
-      margin-top: 10px !important; font-size: 0.7rem !important;
-      color: rgba(255,255,255,0.45) !important;
-      border-top: 1px solid rgba(255,117,0,0.12) !important;
-      padding-top: 8px !important; text-align: center !important;
-    }
-    /* Mobile real (<600px) */
-    @media (max-width: 600px) {
-      #rvModal .raid-modal-content { padding: 36px 12px 16px !important; }
-      #rvModal .raid-status-3col   { grid-template-columns: 1fr !important; }
-      #rvModal .raid-col           { padding: 12px 0 !important; border-bottom: 1px solid rgba(255,117,0,0.15) !important; }
-      #rvModal .raid-col:last-child { border-bottom: none !important; }
-      #rvModal .raid-col-stats     { border-left: none !important; border-right: none !important; }
-    }
-  </style>
 </head>
 
 <body>
@@ -469,14 +97,6 @@
         <div class="perfil-info">
           <div class="perfil-nome-container">
             <h3 id="perfilNomeDisplay">Loading...</h3>
-            <div id="trainerLevelBadge" style="display:none;margin-top:4px">
-              <span id="trainerLevelText" style="
-                display:inline-flex;align-items:center;gap:5px;
-                background:linear-gradient(135deg,rgba(255,180,0,0.18),rgba(255,100,0,0.12));
-                border:1px solid rgba(255,180,0,0.4);border-radius:20px;
-                padding:3px 10px;font-size:0.72rem;font-weight:700;color:#ffe066;
-                letter-spacing:0.03em;">🏅 Trainer Lv. 1</span>
-            </div>
           </div>
           <!-- EMAIL REMOVIDO - não será exibido -->
           
@@ -486,17 +106,6 @@
           </div>
         </div>
       </div>  
-
-      <!-- ⚔️ Boss Raid Team (view-only) -->
-      <section class="perfil-section" id="rv-section" style="display:none">
-        <div class="raid-myteam rv-myteam-view">
-          <div class="raid-myteam-topbar">
-            <h3 class="raid-myteam-titulo">⚔️ Boss Raid Team</h3>
-          </div>
-          <p class="raid-myteam-desc">Click to view stats</p>
-          <div id="rvSlotsGrid" class="rv-slots-grid"></div>
-        </div>
-      </section>
 
       <!-- Área de builds (somente visualização) -->
       <section class="perfil-section">
@@ -556,17 +165,7 @@
         </div>
       </section>
     </section>
-
-    </section>
   </main>
-
-  <!-- Modal status (view-only) -->
-  <div class="raid-modal-overlay" id="rvModal">
-    <div class="raid-modal-content raid-modal-status-content">
-      <button class="raid-modal-close" id="rvModalClose">✕</button>
-      <div id="rvModalBody"></div>
-    </div>
-  </div>
 
   <footer>
     <div class="footer-info">
@@ -578,7 +177,7 @@
   </footer>
 
 <script type="module">
-  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { 
     getAuth, 
     onAuthStateChanged, 
@@ -612,8 +211,8 @@
     measurementId: "G-84NHN394WF"
   };
 
-  const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore();
   const auth = getAuth(app);
   let currentUser = null;
 
@@ -846,6 +445,7 @@ async function atualizarMenuUsuario(user) {
         <img src="${avatarPath}" alt="Avatar" class="dropdown-avatar">
         <span>Olá, ${displayName}!</span>
       `;
+      console.log('✅ Menu dropdown atualizado para:', displayName);
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -862,7 +462,6 @@ async function atualizarMenuUsuario(user) {
         handleLogout();
       };
       perfilLink.style.display = 'block';
-      console.log('✅ Menu dropdown atualizado para:', displayName);
     } else {
       userDropdownHeader.innerHTML = '<span>Olá, visitante!</span>';
       authLink.textContent = 'Login';
@@ -1305,15 +904,6 @@ function createBuildCard(build, isOwnProfile = false) {
       
       // Atualizar interface - SEM EMAIL
       perfilNomeDisplay.textContent = userData.displayName || 'Anonymous Player';
-
-      // Exibir trainer level
-      const _tLevel = userData.playerLevel || 1;
-      const _tBadge = document.getElementById('trainerLevelBadge');
-      const _tText  = document.getElementById('trainerLevelText');
-      if (_tBadge && _tText) {
-        _tText.textContent = '🏅 Trainer Lv. ' + _tLevel;
-        _tBadge.style.display = 'block';
-      }
       
       if (userData.avatar) {
         avatarImg.src = userData.avatar;
@@ -1345,7 +935,6 @@ function createBuildCard(build, isOwnProfile = false) {
       // Carregar builds
       await carregarBuildsUsuario(userId);
       await carregarRibbonsUsuario(userId);
-      await carregarRaidTeamView(userId);
       
     } catch (error) {
       console.error('❌ Error loading user:', error);
@@ -1398,28 +987,16 @@ async function carregarBuildsUsuario(uid) {
       window.initRatingEvents(uid, db);
 
       // ── Missão diária: avaliar build ─────────────────────────
-      // Escuta 'ratingSubmitted' disparado pelo build-rating.js
-      // APOS o updateDoc ser confirmado no Firebase.
-      // Registramos uma vez por sessao para evitar duplicatas.
+      // O build-rating.js já dispara o CustomEvent 'ratingSubmitted' e salva
+      // no localStorage automaticamente após o voto ser confirmado no Firebase.
+      // Este listener é um fallback extra para garantia.
       if (!window._ratingMissionHookRegistered) {
         window._ratingMissionHookRegistered = true;
         document.addEventListener('ratingSubmitted', function(e) {
-          console.log('[PokeMission] ratingSubmitted recebido:', e.detail);
-          // Estrategia 1: boss-raid ja esta carregado nesta pagina
-          if (typeof window.missaoDiariaCompleta === 'function') {
-            window.missaoDiariaCompleta('avaliar_build');
-            console.log('[PokeMission] missaoDiariaCompleta chamada diretamente');
-            return;
-          }
-          // Estrategia 2: salvar em localStorage para o boss-raid consumir
-          // na proxima vez que a pagina com boss-raid for carregada
-          try {
-            localStorage.setItem('bossraid_pending_mission', 'avaliar_build');
-            console.log('[PokeMission] missao salva no localStorage para consumo posterior');
-          } catch(err) {
-            window._pendingMission = 'avaliar_build'; // fallback
-          }
-        }, { once: true });
+          console.log('[PokeMission] ratingSubmitted recebido (perfil-view listener):', e.detail);
+          // build-rating.js já tratou — não fazer nada aqui para evitar duplicata
+          // (a missão já está no localStorage ou foi chamada diretamente)
+        });
       }
     }
     
@@ -1437,452 +1014,6 @@ async function carregarBuildsUsuario(uid) {
 
   // Carregar dados ao iniciar
   carregarDadosUsuario();
-
-  // ============================================================
-  // BOSS RAID TEAM — view-only (replica slot grid + status modal)
-  // ============================================================
-  async function carregarRaidTeamView(uid) {
-    try {
-      const snap = await getDoc(doc(db, 'usuarios', uid));
-      if (!snap.exists()) return;
-      const data   = snap.data();
-      const team   = data.raidTeam   || [];
-      const status = data.raidStatus || null;
-      if (!team.length || status !== 'active') return;
-
-      document.getElementById('rv-section').style.display = 'block';
-
-      // ── Tabelas ─────────────────────────────────────────────
-      const TIPO_CORES = {
-        normal:'#A8A878',fire:'#F08030',water:'#6890F0',electric:'#F8D030',
-        grass:'#78C850',ice:'#98D8D8',fighting:'#C03028',poison:'#A040A0',
-        ground:'#E0C068',flying:'#A890F0',psychic:'#F85888',bug:'#A8B820',
-        rock:'#B8A038',ghost:'#705898',dragon:'#7038F8',dark:'#705848',
-        steel:'#B8B8D0',fairy:'#EE99AC',
-      };
-      const POKEMON_TIPOS = {
-        bulbasaur:['grass','poison'],chikorita:['grass'],treecko:['grass'],
-        turtwig:['grass'],snivy:['grass'],chespin:['grass'],rowlet:['grass','flying'],
-        grookey:['grass'],sprigatito:['grass'],charmander:['fire'],cyndaquil:['fire'],
-        torchic:['fire'],chimchar:['fire'],tepig:['fire'],fennekin:['fire'],
-        litten:['fire'],scorbunny:['fire'],fuecoco:['fire'],squirtle:['water'],
-        totodile:['water'],mudkip:['water'],piplup:['water'],oshawott:['water'],
-        froakie:['water'],popplio:['water'],sobble:['water'],quaxly:['water'],
-        pikachu:['electric'],caterpie:['bug'],weedle:['bug','poison'],
-      };
-      const EVOLUTION_TIPOS = {
-        ivysaur:['grass','poison'],venusaur:['grass','poison'],
-        bayleef:['grass'],meganium:['grass'],grovyle:['grass'],sceptile:['grass'],
-        grotle:['grass'],torterra:['grass','ground'],servine:['grass'],serperior:['grass'],
-        quilladin:['grass'],chesnaught:['grass','fighting'],dartrix:['grass','flying'],
-        decidueye:['grass','ghost'],thwackey:['grass'],rillaboom:['grass'],
-        floragato:['grass'],meowscarada:['grass','dark'],charmeleon:['fire'],
-        charizard:['fire','flying'],quilava:['fire'],typhlosion:['fire'],
-        combusken:['fire','fighting'],blaziken:['fire','fighting'],
-        monferno:['fire','fighting'],infernape:['fire','fighting'],
-        pignite:['fire','fighting'],emboar:['fire','fighting'],
-        braixen:['fire','psychic'],delphox:['fire','psychic'],
-        torracat:['fire'],incineroar:['fire','dark'],raboot:['fire'],cinderace:['fire'],
-        crocalor:['fire'],skeledirge:['fire','ghost'],wartortle:['water'],blastoise:['water'],
-        croconaw:['water'],feraligatr:['water'],marshtomp:['water','ground'],
-        swampert:['water','ground'],prinplup:['water'],empoleon:['water','steel'],
-        dewott:['water'],samurott:['water'],frogadier:['water'],greninja:['water','dark'],
-        brionne:['water','fairy'],primarina:['water','fairy'],drizzile:['water'],
-        inteleon:['water'],quaxwell:['water','fighting'],quaquaval:['water','fighting'],
-        metapod:['bug'],butterfree:['bug','flying'],kakuna:['bug','poison'],beedrill:['bug','poison'],
-      };
-      const BASE_STATS = {
-        bulbasaur:{hp:45,atk:49,def:49,spa:65,spd:65,spe:45},
-        chikorita:{hp:45,atk:49,def:65,spa:49,spd:65,spe:45},
-        treecko:{hp:40,atk:45,def:35,spa:65,spd:55,spe:70},
-        turtwig:{hp:55,atk:68,def:64,spa:45,spd:55,spe:31},
-        snivy:{hp:45,atk:45,def:55,spa:45,spd:55,spe:63},
-        chespin:{hp:56,atk:61,def:65,spa:48,spd:45,spe:38},
-        rowlet:{hp:68,atk:55,def:55,spa:50,spd:50,spe:42},
-        grookey:{hp:50,atk:65,def:50,spa:40,spd:40,spe:65},
-        sprigatito:{hp:40,atk:61,def:54,spa:45,spd:45,spe:65},
-        charmander:{hp:39,atk:52,def:43,spa:60,spd:50,spe:65},
-        cyndaquil:{hp:39,atk:52,def:43,spa:60,spd:50,spe:65},
-        torchic:{hp:45,atk:60,def:40,spa:70,spd:50,spe:45},
-        chimchar:{hp:44,atk:58,def:44,spa:58,spd:44,spe:61},
-        tepig:{hp:65,atk:63,def:45,spa:45,spd:45,spe:45},
-        fennekin:{hp:40,atk:45,def:40,spa:62,spd:60,spe:60},
-        litten:{hp:45,atk:65,def:40,spa:60,spd:40,spe:70},
-        scorbunny:{hp:50,atk:71,def:40,spa:40,spd:40,spe:69},
-        fuecoco:{hp:67,atk:45,def:59,spa:63,spd:40,spe:36},
-        squirtle:{hp:44,atk:48,def:65,spa:50,spd:64,spe:43},
-        totodile:{hp:50,atk:65,def:64,spa:44,spd:48,spe:43},
-        mudkip:{hp:50,atk:70,def:50,spa:50,spd:50,spe:40},
-        piplup:{hp:53,atk:51,def:53,spa:61,spd:56,spe:40},
-        oshawott:{hp:55,atk:55,def:45,spa:63,spd:45,spe:45},
-        froakie:{hp:41,atk:56,def:40,spa:62,spd:44,spe:71},
-        popplio:{hp:50,atk:54,def:54,spa:66,spd:56,spe:40},
-        sobble:{hp:50,atk:40,def:40,spa:70,spd:40,spe:70},
-        quaxly:{hp:55,atk:65,def:45,spa:50,spd:45,spe:50},
-        caterpie:{hp:45,atk:30,def:35,spa:20,spd:20,spe:45},
-        weedle:{hp:40,atk:35,def:30,spa:20,spd:20,spe:50},
-        pikachu:{hp:35,atk:55,def:40,spa:50,spd:50,spe:90},
-        ivysaur:{hp:60,atk:62,def:63,spa:80,spd:80,spe:60},
-        venusaur:{hp:80,atk:82,def:83,spa:100,spd:100,spe:80},
-        charmeleon:{hp:58,atk:64,def:58,spa:80,spd:65,spe:80},
-        charizard:{hp:78,atk:84,def:78,spa:109,spd:85,spe:100},
-        wartortle:{hp:59,atk:63,def:80,spa:65,spd:80,spe:58},
-        blastoise:{hp:79,atk:83,def:100,spa:85,spd:105,spe:78},
-        metapod:{hp:50,atk:20,def:55,spa:25,spd:25,spe:30},
-        butterfree:{hp:60,atk:45,def:50,spa:90,spd:80,spe:70},
-        kakuna:{hp:45,atk:25,def:50,spa:25,spd:25,spe:35},
-        beedrill:{hp:65,atk:90,def:40,spa:45,spd:80,spe:75},
-      };
-      const MOVES_DB = {
-        tackle:{name:'Tackle',type:'normal',category:'physical',power:40,accuracy:100,pp:35,desc:'A physical attack.'},
-        scratch:{name:'Scratch',type:'normal',category:'physical',power:40,accuracy:100,pp:35,desc:'Scratches with sharp claws.'},
-        growl:{name:'Growl',type:'normal',category:'status',power:null,accuracy:100,pp:40,desc:'Lowers foe ATK.'},
-        vine_whip:{name:'Vine Whip',type:'grass',category:'physical',power:45,accuracy:100,pp:25,desc:'Strikes with vines.'},
-        ember:{name:'Ember',type:'fire',category:'special',power:40,accuracy:100,pp:25,desc:'May burn the foe.'},
-        water_gun:{name:'Water Gun',type:'water',category:'special',power:40,accuracy:100,pp:25,desc:'Shoots water.'},
-        bubble:{name:'Bubble',type:'water',category:'special',power:40,accuracy:100,pp:30,desc:'May lower Speed.'},
-        thunder_shock:{name:'ThunderShock',type:'electric',category:'special',power:40,accuracy:100,pp:30,desc:'May paralyze.'},
-        poison_sting:{name:'Poison Sting',type:'poison',category:'physical',power:15,accuracy:100,pp:35,desc:'May poison.'},
-        string_shot:{name:'String Shot',type:'bug',category:'status',power:null,accuracy:95,pp:40,desc:'Lowers foe Speed.'},
-        bug_bite:{name:'Bug Bite',type:'bug',category:'physical',power:60,accuracy:100,pp:20,desc:'Steals and eats foe berry.'},
-        twineedle:{name:'Twineedle',type:'bug',category:'physical',power:25,accuracy:100,pp:20,desc:'Hits twice. May poison.'},
-        fury_attack:{name:'Fury Attack',type:'normal',category:'physical',power:15,accuracy:85,pp:20,desc:'2-5 rapid stabs.'},
-        poison_jab:{name:'Poison Jab',type:'poison',category:'physical',power:80,accuracy:100,pp:20,desc:'May poison.'},
-        agility:{name:'Agility',type:'psychic',category:'status',power:null,accuracy:null,pp:30,desc:'Sharply raises Speed.'},
-        pin_missile:{name:'Pin Missile',type:'bug',category:'physical',power:25,accuracy:95,pp:20,desc:'2-5 hits.'},
-        x_scissor:{name:'X-Scissor',type:'bug',category:'physical',power:80,accuracy:100,pp:15,desc:'Slashes an X.'},
-        harden:{name:'Harden',type:'normal',category:'status',power:null,accuracy:null,pp:30,desc:'Raises Defense.'},
-        razor_leaf:{name:'Razor Leaf',type:'grass',category:'physical',power:55,accuracy:95,pp:25,desc:'High crit ratio.'},
-        flamethrower:{name:'Flamethrower',type:'fire',category:'special',power:90,accuracy:100,pp:15,desc:'May burn.'},
-        bubble_beam:{name:'BubbleBeam',type:'water',category:'special',power:65,accuracy:100,pp:20,desc:'May lower Speed.'},
-      };
-      const NATURES = {
-        Hardy:{},Lonely:{up:'atk',down:'def'},Brave:{up:'atk',down:'spe'},
-        Adamant:{up:'atk',down:'spa'},Naughty:{up:'atk',down:'spd'},Bold:{up:'def',down:'atk'},
-        Docile:{},Relaxed:{up:'def',down:'spe'},Impish:{up:'def',down:'spa'},
-        Lax:{up:'def',down:'spd'},Timid:{up:'spe',down:'atk'},Hasty:{up:'spe',down:'def'},
-        Serious:{},Jolly:{up:'spe',down:'spa'},Naive:{up:'spe',down:'spd'},
-        Modest:{up:'spa',down:'atk'},Mild:{up:'spa',down:'def'},Quiet:{up:'spa',down:'spe'},
-        Bashful:{},Rash:{up:'spa',down:'spd'},Calm:{up:'spd',down:'atk'},
-        Gentle:{up:'spd',down:'def'},Sassy:{up:'spd',down:'spe'},Careful:{up:'spd',down:'spa'},
-        Quirky:{},
-      };
-      const STAT_LABELS = {hp:'HP',atk:'Atk',def:'Def',spa:'Sp.Atk',spd:'Sp.Def',spe:'Spd'};
-      const TYPE_CHART = {
-        normal: {rock:0.5,steel:0.5,ghost:0},fire:{fire:0.5,water:0.5,rock:0.5,dragon:0.5,grass:2,ice:2,bug:2,steel:2},
-        water:{water:0.5,grass:0.5,dragon:0.5,fire:2,ground:2,rock:2},
-        electric:{electric:0.5,grass:0.5,dragon:0.5,ground:0,flying:2,water:2},
-        grass:{fire:0.5,grass:0.5,poison:0.5,flying:0.5,bug:0.5,dragon:0.5,steel:0.5,water:2,ground:2,rock:2},
-        ice:{fire:0.5,water:0.5,ice:0.5,steel:0.5,grass:2,ground:2,flying:2,dragon:2},
-        fighting:{poison:0.5,bug:0.5,psychic:0.5,flying:0.5,fairy:0.5,ghost:0,normal:2,ice:2,rock:2,dark:2,steel:2},
-        poison:{poison:0.5,ground:0.5,rock:0.5,ghost:0.5,steel:0,grass:2,fairy:2},
-        ground:{grass:0.5,bug:0.5,flying:0,fire:2,electric:2,poison:2,rock:2,steel:2},
-        flying:{electric:0.5,rock:0.5,steel:0.5,ground:0,grass:2,fighting:2,bug:2},
-        psychic:{psychic:0.5,steel:0.5,dark:0,fighting:2,poison:2},
-        bug:{fire:0.5,fighting:0.5,flying:0.5,ghost:0.5,steel:0.5,fairy:0.5,grass:2,psychic:2,dark:2},
-        rock:{fighting:0.5,ground:0.5,steel:0.5,fire:2,ice:2,flying:2,bug:2},
-        ghost:{normal:0,dark:0.5,ghost:2,psychic:2},
-        dragon:{steel:0.5,fairy:0,dragon:2},
-        dark:{fighting:0.5,fairy:0.5,dark:0.5,ghost:2,psychic:2},
-        steel:{fire:0.5,water:0.5,electric:0.5,steel:0.5,ice:2,rock:2,fairy:2},
-        fairy:{fire:0.5,poison:0.5,steel:0.5,fighting:2,dragon:2,dark:2},
-      };
-
-      function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
-
-      function getTipos(pokemon) {
-        return EVOLUTION_TIPOS[pokemon] || POKEMON_TIPOS[pokemon] || ['normal'];
-      }
-
-      function renderTipoBadges(tipos) {
-        return tipos.map(t => {
-          const c = TIPO_CORES[t]||'#888';
-          return `<span class="tipo-badge" style="background:${c}">${t.toUpperCase()}</span>`;
-        }).join('');
-      }
-
-      function calcStats(pokemon, ivs, nivel, nature, evs) {
-        const bs  = BASE_STATS[pokemon] || {hp:45,atk:45,def:45,spa:45,spd:45,spe:45};
-        const nat = NATURES[nature]||{};
-        const lv  = nivel||1;
-        const r   = {};
-        ['hp','atk','def','spa','spd','spe'].forEach(st => {
-          const iv=((ivs||{})[st])||0, ev=((evs||{})[st])||0;
-          if(st==='hp') r[st]=Math.floor(((2*bs[st]+iv+Math.floor(ev/4))*lv/100)+lv+10);
-          else {
-            r[st]=Math.floor(((2*bs[st]+iv+Math.floor(ev/4))*lv/100)+5);
-            if(nat.up===st) r[st]=Math.floor(r[st]*1.1);
-            if(nat.down===st) r[st]=Math.floor(r[st]*0.9);
-          }
-        });
-        return r;
-      }
-
-      function calcEfetividades(tipos) {
-        const mult = {};
-        const ALL_TYPES = Object.keys(TYPE_CHART);
-        ALL_TYPES.forEach(at => {
-          let m = 1;
-          tipos.forEach(dt => { m *= (TYPE_CHART[at]?.[dt] ?? 1); });
-          mult[at] = m;
-        });
-        const fraco    = ALL_TYPES.filter(t=>mult[t]>1).map(t=>({tipo:t,mult:mult[t]})).sort((a,b)=>b.mult-a.mult);
-        const resiste   = ALL_TYPES.filter(t=>mult[t]>0&&mult[t]<1).map(t=>({tipo:t,mult:mult[t]}));
-        const imune     = ALL_TYPES.filter(t=>mult[t]===0);
-        return {fraco,resiste,imune};
-      }
-
-      function xpParaNivel(n) { return Math.floor(Math.pow(n,3) * 0.8); }
-
-      // ── Render slot grid ──
-      const slots = Array(6).fill(null);
-      team.forEach(e => { if(e.slot>=1&&e.slot<=6) slots[e.slot-1]=e; });
-      const grid = document.getElementById('rvSlotsGrid');
-      grid.innerHTML = slots.map((slot, i) => slot ? `
-        <div class="rv-slot rv-slot-ocupado" data-rv-slot="${i}" title="Click to view ${cap(slot.pokemon)}">
-          <span class="rv-slot-num">${i+1}</span>
-          <div class="rv-slot-circle ${slot.shiny ? 'rv-slot-shiny' : ''}">
-            <img src="${slot.shiny ? `../perfil/img-shiny/${slot.pokemon}.png` : `../perfil/img-pokeicon/${slot.pokemon}.png`}"
-                 class="rv-slot-img" alt="${slot.pokemon}"
-                 onerror="this.src='../perfil/img-pokeicon/${slot.pokemon}.png'">
-            ${slot.shiny ? '<span class="rv-shiny-badge">✨</span>' : ''}
-          </div>
-          <p class="rv-slot-nome">${cap(slot.pokemon)}</p>
-          <div class="rv-slot-tipos">${renderTipoBadges(getTipos(slot.pokemon))}</div>
-          <p class="rv-slot-lv">Lv. ${slot.nivel||1}</p>
-        </div>
-      ` : `
-        <div class="rv-slot rv-slot-vazio">
-          <span class="rv-slot-num">${i+1}</span>
-          <div class="rv-slot-circle rv-slot-circle-empty">
-            <span class="rv-slot-vazio-q">?</span>
-          </div>
-          <p class="rv-slot-nome" style="color:#333">Empty</p>
-        </div>
-      `).join('');
-
-      // ── Click → abrir modal de status view-only ──
-      grid.querySelectorAll('.rv-slot-ocupado').forEach(el => {
-        el.addEventListener('click', () => {
-          const slot = slots[parseInt(el.dataset.rvSlot)];
-          if (slot) abrirRvModal(slot);
-        });
-      });
-
-      // ── Modal close ──
-      const modal = document.getElementById('rvModal');
-      document.getElementById('rvModalClose').addEventListener('click', () => modal.classList.remove('show'));
-      modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('show'); });
-
-      // ── Render modal view-only ──
-      function abrirRvModal(slot) {
-        const ivs = slot.ivs && typeof slot.ivs==='object' ? slot.ivs : {};
-        const evs = slot.evs && typeof slot.evs==='object' ? slot.evs : {};
-        const nature  = slot.nature || 'Hardy';
-        const nivel   = slot.nivel  || 1;
-        const nat     = NATURES[nature] || {};
-        const stats   = calcStats(slot.pokemon, ivs, nivel, nature, evs);
-        const tipos   = getTipos(slot.pokemon);
-        const { fraco, resiste, imune } = calcEfetividades(tipos);
-        const xpAtual = slot.xp || 0;
-        const xpProx  = xpParaNivel(nivel+1);
-        const pctXP   = Math.min(100, Math.floor(xpAtual/xpProx*100));
-        const lealdade = slot.lealdade || 0;
-        const pctLeal  = Math.min(100, Math.floor(lealdade/255*100));
-
-        const bs   = BASE_STATS[slot.pokemon] || {hp:45};
-        const iv_hp = typeof ivs.hp==='number' ? ivs.hp : 15;
-        const ev_hp = typeof evs.hp==='number' ? evs.hp : 0;
-        const hpMx = Math.floor((2*bs.hp+iv_hp+Math.floor(ev_hp/4))*nivel/100+nivel+10);
-        const hpAt = typeof slot.hpAtual==='number'&&slot.hpAtual>0
-          ? Math.min(slot.hpAtual,hpMx)
-          : slot.hpPct!==undefined ? Math.max(1,Math.floor(hpMx*slot.hpPct)) : hpMx;
-        const hpPct = hpMx>0 ? Math.max(0,hpAt/hpMx*100) : 0;
-        const hpCls = hpPct>50?'hp-ok':hpPct>20?'hp-low':'hp-critical';
-
-        // Nature desc
-        let natureDesc = '';
-        if (!nat.up && !nat.down) {
-          natureDesc = '<span class="nature-neutro">Neutral</span>';
-        } else {
-          natureDesc = `<span class="nature-up">↑ ${STAT_LABELS[nat.up]}</span>`
-                     + '<span class="nature-sep"> / </span>'
-                     + `<span class="nature-down">↓ ${STAT_LABELS[nat.down]}</span>`;
-        }
-
-        // Ability display
-        const abilityNome = (slot.ability||'').replace(/_/g,' ').replace(/\b\w/g,x=>x.toUpperCase()) || '—';
-
-        // Stats table (view-only: sem botões EV)
-        const STAT_ORDER = ['hp','atk','def','spa','spd','spe'];
-        const linhasHTML = STAT_ORDER.map(key => {
-          const label = STAT_LABELS[key];
-          const val   = stats[key];
-          const iv    = ivs[key] ?? 0;
-          const ev    = evs[key] ?? 0;
-          const ivCls = iv===31 ? 'iv-max' : '';
-          let natTag = '';
-          if(key!=='hp'&&nat.up===key) natTag='<span class="nat-up">▲</span>';
-          if(key!=='hp'&&nat.down===key) natTag='<span class="nat-down">▼</span>';
-          const evDisp = ev>0 ? `<span class="ev-com-valor">${ev}</span>` : `<span style="color:#444">0</span>`;
-          return `<tr>
-            <td class="iv-col-label">${label}</td>
-            <td class="iv-col-stat">${val}</td>
-            <td class="iv-col-valor ${ivCls}">${iv}</td>
-            <td class="iv-col-nature">${natTag}</td>
-            <td class="ev-col">${evDisp}</td>
-          </tr>`;
-        }).join('');
-
-        // Type matchups
-        const fracoHTML = fraco.length
-          ? '<div class="raid-efet-grupo"><span class="raid-efet-label fraco-label">Weak to</span><div class="raid-efet-badges">'
-            + fraco.map(f=>`<span class="tipo-badge tipo-badge-efet" style="background:${TIPO_CORES[f.tipo]||'#888'}">${f.tipo.toUpperCase()}${f.mult===4?' <b>×4</b>':''}</span>`).join('')
-            + '</div></div>' : '';
-        const resisteHTML = resiste.length
-          ? '<div class="raid-efet-grupo"><span class="raid-efet-label resiste-label">Resists</span><div class="raid-efet-badges">'
-            + resiste.map(r=>`<span class="tipo-badge tipo-badge-efet tipo-badge-resiste" style="border-color:${TIPO_CORES[r.tipo]||'#888'};color:${TIPO_CORES[r.tipo]||'#888'}">${r.tipo.toUpperCase()}${r.mult===0.25?' <b>×¼</b>':''}</span>`).join('')
-            + '</div></div>' : '';
-        const imuneHTML = imune.length
-          ? '<div class="raid-efet-grupo"><span class="raid-efet-label imune-label">Immune</span><div class="raid-efet-badges">'
-            + imune.map(i=>`<span class="tipo-badge tipo-badge-efet tipo-badge-imune" style="border-color:${TIPO_CORES[i]||'#888'};color:${TIPO_CORES[i]||'#888'}">${i.toUpperCase()}</span>`).join('')
-            + '</div></div>' : '';
-
-        // Golpes
-        const golpes = (() => {
-          const raw = slot.golpes;
-          if(!Array.isArray(raw)) return [];
-          return raw.map(g=>typeof g==='string'?g:(g?.move||null)).filter(Boolean);
-        })();
-        const golpeCards = Array(4).fill(null).map((_,i)=>{
-          const key  = golpes[i];
-          const move = key ? MOVES_DB[key] : null;
-          if(!move) return '<div class="raid-golpe-slot vazio"><span class="golpe-vazio-txt">— Empty —</span></div>';
-          const cor    = TIPO_CORES[move.type]||'#888';
-          const catIcon = move.category==='physical'?'⚔️':move.category==='special'?'✨':'🔵';
-          const isStab  = tipos.includes(move.type);
-          const ppMax  = move.pp||10;
-          const ppAtual = slot.ppAtual ? (slot.ppAtual[key]!==undefined?slot.ppAtual[key]:ppMax) : ppMax;
-          const ppGasto = ppMax-ppAtual;
-          const ppTag   = ppGasto>0
-            ? `<span class="golpe-pp pp-gasto">PP <b>${ppAtual}/${ppMax}</b></span>`
-            : `<span class="golpe-pp">PP <b>${ppMax}</b></span>`;
-          const catTag  = move.category==='physical'
-            ? '<span class="golpe-cat-tag golpe-cat-physical">PHY</span>'
-            : move.category==='special'
-              ? '<span class="golpe-cat-tag golpe-cat-special">SPC</span>' : '';
-          return `<div class="raid-golpe-slot" style="border-color:${cor}33;background:linear-gradient(135deg,${cor}15,transparent)">
-            <div class="golpe-header">
-              <span class="golpe-tipo-badge" style="background:${cor}">${move.type.toUpperCase()}</span>
-              <span class="golpe-nome">${move.name}</span>
-              <span class="golpe-cat">${catIcon}</span>
-              ${isStab ? '<span class="golpe-stab">STAB</span>' : ''}
-            </div>
-            <p class="golpe-desc">${move.desc}</p>
-            <div class="golpe-stats-row">
-              ${move.power ? `<span class="golpe-power">PWR <b>${move.power}</b></span>` : '<span class="golpe-power status-move">Status</span>'}
-              <span class="golpe-acc">ACC <b>${move.accuracy?move.accuracy+'%':'—'}</b></span>
-              ${ppTag}${catTag}
-            </div>
-          </div>`;
-        }).join('');
-
-        document.getElementById('rvModalBody').innerHTML = `
-          <div class="raid-status-3col">
-
-            <!-- Col 1: identidade + barras + matchups -->
-            <div class="raid-col raid-col-info">
-              <div class="raid-status-header">
-                <img src="${slot.shiny?`../perfil/img-shiny/${slot.pokemon}.png`:`../perfil/img-pokeicon/${slot.pokemon}.png`}"
-                     alt="${slot.pokemon}" class="raid-status-img"
-                     onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'">
-                <h3 class="raid-status-nome">${cap(slot.pokemon)}${slot.shiny?' <span style="color:#ffe033;font-size:0.8rem">✨</span>':''}</h3>
-                <div class="raid-status-tipos">${renderTipoBadges(tipos)}</div>
-                <p class="raid-status-nivel">Level ${nivel}</p>
-              </div>
-              <div class="raid-status-barra-wrap">
-                <div class="raid-status-barra-label"><span>❤️ HP</span><span>${hpAt} / ${hpMx}</span></div>
-                <div class="raid-status-barra"><div class="raid-status-barra-fill ${hpCls}" style="width:${hpPct.toFixed(1)}%"></div></div>
-              </div>
-              <div class="raid-status-barra-wrap">
-                <div class="raid-status-barra-label"><span>❤️ Loyalty</span><span>${lealdade} / 255</span></div>
-                <div class="raid-status-barra"><div class="raid-status-barra-fill lealdade" style="width:${pctLeal}%"></div></div>
-              </div>
-              <div class="raid-status-barra-wrap">
-                <div class="raid-status-barra-label"><span>⭐ XP</span><span>${xpAtual} / ${xpProx}</span></div>
-                <div class="raid-status-barra"><div class="raid-status-barra-fill xp" style="width:${pctXP}%"></div></div>
-              </div>
-              <div class="raid-nature-wrap">
-                <span class="raid-nature-label">🌿 Nature:</span>
-                <span class="raid-nature-nome">${nature}</span>
-                <span class="raid-nature-efeito">${natureDesc}</span>
-              </div>
-              <div class="raid-nature-wrap raid-ability-wrap">
-                <span class="raid-nature-label">⚡ Ability:</span>
-                <span class="raid-nature-nome ability-nome">${abilityNome}</span>
-              </div>
-              <div class="raid-efet-titulo">Type Matchups</div>
-              ${fracoHTML}${resisteHTML}${imuneHTML}
-            </div>
-
-            <!-- Col 2: stats & IVs (sem botões EV) -->
-            <div class="raid-col raid-col-stats">
-              <div class="raid-status-iv-titulo">Stats & IVs</div>
-              <table class="raid-iv-tabela">
-                <thead><tr><th>Stat</th><th class="th-center">Value</th><th class="th-center">IV</th><th class="th-center">Nat</th><th class="th-center ev-th">EV</th></tr></thead>
-                <tbody>${linhasHTML}</tbody>
-              </table>
-              ${(() => {
-                let dtStr = '';
-                if (slot.capturedAt) {
-                  const d = new Date(slot.capturedAt);
-                  dtStr = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})
-                        + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-                } else if (slot.addedAt) {
-                  const d = new Date(slot.addedAt);
-                  dtStr = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})
-                        + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-                }
-                return dtStr ? `<div class="raid-captured-date">📅 Captured: ${dtStr}</div>` : '';
-              })()}
-            </div>
-
-            <!-- Col 3: golpes -->
-            <div class="raid-col raid-col-moves">
-              <div class="raid-efet-titulo">Moves</div>
-              <div class="raid-golpes-grid">${golpeCards}</div>
-            </div>
-
-          </div>`;
-
-        // ── Setas de navegação entre pokémons (perfil-view) ───────
-        const rvModal  = document.getElementById('rvModal');
-        rvModal.querySelectorAll('.rv-nav-arrow').forEach(el => el.remove());
-        const rvTeam   = (data?.raidTeam || []).filter(s => s.slot);
-        const rvIdx    = rvTeam.findIndex(s => s.slot === slot.slot);
-        if (rvIdx > 0) {
-          const bL = document.createElement('button');
-          bL.className = 'rv-nav-arrow rv-nav-left'; bL.innerHTML = '&#8592;';
-          bL.title = cap(rvTeam[rvIdx-1].pokemon);
-          bL.addEventListener('click', () => abrirRvModal(rvTeam[rvIdx-1]));
-          rvModal.appendChild(bL);
-        }
-        if (rvIdx < rvTeam.length - 1) {
-          const bR = document.createElement('button');
-          bR.className = 'rv-nav-arrow rv-nav-right'; bR.innerHTML = '&#8594;';
-          bR.title = cap(rvTeam[rvIdx+1].pokemon);
-          bR.addEventListener('click', () => abrirRvModal(rvTeam[rvIdx+1]));
-          rvModal.appendChild(bR);
-        }
-
-        document.getElementById('rvModal').classList.add('show');
-      }
-
-    } catch(err) {
-      console.warn('carregarRaidTeamView error:', err);
-    }
-  }
-
 </script>
 
 <script>

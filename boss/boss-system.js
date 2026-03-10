@@ -49,7 +49,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/caterpie.png',
       tipos:     ['bug'],
       baseStats: { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
-      nivel:     10,
+      nivel:     5,
       golpes: [
         { name:'Tackle',      type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',

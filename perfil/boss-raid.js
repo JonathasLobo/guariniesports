@@ -35,6 +35,7 @@ const BASE_STATS = {
   caterpie:  { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
   wooloo:    { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
   weedle:    { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
+  spinarak:  { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },   // #167 Bug/Poison
   // --- Water ---
   squirtle:  { hp:44,  atk:48,  def:65, spa:50,  spd:64, spe:43  },
   totodile:   { hp:50,  atk:65,  def:64,  spa:44, spd:48,  spe:43 },
@@ -102,6 +103,7 @@ const POKEMON_TIPOS = {
   caterpie:   ['bug'],
   wooloo:     ['normal'],
   weedle:     ['bug','poison'],
+  spinarak:   ['bug','poison'],  // #167
 };
 
 // Cor de cada tipo
@@ -125,6 +127,7 @@ const POKEDEX_NUM = {
   // Bug
   caterpie:10,
   weedle:13, kakuna:14, beedrill:15,
+  spinarak:167,
 };
 
 // ============================================================
@@ -288,6 +291,7 @@ const EVOLUTION_CHAIN = {
   // ── Linha Weedle (Bug/Poison) ─────────────────────────────
   // Weedle → Kakuna (L7) → Beedrill (L10)
   weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
+  spinarak:   { evolvesTo: 'ariados',    levelReq: 22, loyaltyReq: 50  }, // #167→168
   kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
 };
 
@@ -307,6 +311,7 @@ const EVOLUTION_ABILITIES = {
   // Weedle line
   kakuna:      { normal: ['shed_skin'],           hidden: null, noHidden: true  },  // sem hidden, linhagem continua
   beedrill:    { normal: ['swarm'],               hidden: 'sniper'              },
+  ariados:     { normal: ['swarm', 'insomnia'],   hidden: 'sniper'              }, // #168
   // ── Linha Bulbasaur ───────────────────────────────────────
   ivysaur:     { normal: ['overgrow'],           hidden: 'chlorophyll'   },
   venusaur:    { normal: ['overgrow','thick_fat'],hidden: 'chlorophyll'   },
@@ -458,6 +463,8 @@ const EVOLUTION_TIPOS = {
   // Weedle line — mantém bug/poison até Beedrill
   kakuna:      ['bug','poison'],
   beedrill:    ['bug','poison'],
+  // Spinarak line — mantém bug/poison
+  ariados:     ['bug','poison'],   // #168
 };
 
 // ============================================================
@@ -552,6 +559,8 @@ const BASE_STATS_EVO = {
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
+  // Spinarak line
+  ariados:     { hp:70,  atk:90,  def:70,  spa:60,  spd:70,  spe:40  },    // #168 Bug/Poison
 };
 
 // ============================================================
@@ -589,6 +598,8 @@ const POKEDEX_NUM_EVO = {
   // Caterpie line
   metapod:11,  butterfree:12,
   wooloo:831,  dubwool:832,
+  // Spinarak line
+  ariados:168,
 };
 
 
@@ -622,6 +633,7 @@ const CATCH_RATE = {
   caterpie:255, metapod:120, butterfree:45,
   wooloo:255, dubwool:127,
   weedle:255, kakuna:120, beedrill:45,
+  spinarak:255, ariados:90,
   pikachu:190,
 };
 const TIPO_CORES = {
@@ -917,6 +929,15 @@ const MOVES_DB = {
   string_shot:   {name:'String Shot',   type:'bug',     category:'status', power:null, accuracy:95,  pp:40,  desc:"Lowers foe's Speed.", eff:'deboss', stat:'spe', stages:-1},
   bug_bite:      {name:'Bug Bite',      type:'bug',     category:'physical',power:60,  accuracy:100, pp:20},
   harden:        {name:'Harden',        type:'normal',  category:'status', power:null, accuracy:null, pp:30,  desc:'Raises own Defense.', eff:'buff', stat:'def', stages:1},
+  // ── Spinarak/Ariados moves ─────────────────────────────────────────────────────
+  scary_face:    {name:'Scary Face',    type:'normal',  category:'status',  power:null, accuracy:100, pp:10, eff:'debuff', stat:'spe', stages:-2, desc:"Harshly lowers foe's Speed by 2 stages."},
+  leech_life:    {name:'Leech Life',    type:'bug',     category:'physical',power:80,   accuracy:100, pp:10, desc:'Steals half the damage dealt as HP.'},
+  night_shade:   {name:'Night Shade',   type:'ghost',   category:'special', power:null, accuracy:100, pp:15, desc:'Deals damage equal to the user\'s level.'},
+  shadow_sneak:  {name:'Shadow Sneak',  type:'ghost',   category:'physical',power:40,   accuracy:100, pp:30, desc:'Always strikes first (Priority +1).'},
+  spider_web:    {name:'Spider Web',    type:'bug',     category:'status',  power:null, accuracy:null,pp:10, desc:'Prevents the foe from fleeing or switching out.'},
+  signal_beam:   {name:'Signal Beam',   type:'bug',     category:'special', power:75,   accuracy:100, pp:15, desc:'A strange beam that may confuse the target.'},
+  cross_poison:  {name:'Cross Poison',  type:'poison',  category:'physical',power:70,   accuracy:100, pp:20, desc:'High critical-hit ratio. May poison the target.'},
+  toxic_thread:  {name:'Toxic Thread',  type:'poison',  category:'status',  power:null, accuracy:100, pp:20, eff:'debuff', stat:'spe', stages:-1, desc:'Poisons the foe and lowers its Speed by 1 stage.'},
   // ── Water extras ──
   bubble:        {name:'Bubble',        type:'water',   category:'special', power:40,  accuracy:100, pp:30},
   rapid_spin:    {name:'Rapid Spin',    type:'normal',  category:'physical',power:50,  accuracy:100, pp:40},
@@ -982,6 +1003,11 @@ const LEARNSETS = {
   weedle:     [[1,'poison_sting'],[1,'string_shot']],
   kakuna:     [[1,'harden'],[7,'poison_sting']],
   beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
+  // ── Spinarak line ────────────────────────────────────────────────────────────
+  spinarak:   [[1,'poison_sting'],[1,'string_shot'],[5,'scary_face'],[11,'leech_life'],
+               [17,'night_shade'],[23,'shadow_sneak'],[29,'agility'],[35,'spider_web'],[43,'signal_beam']], // #167
+  ariados:    [[1,'poison_sting'],[1,'string_shot'],[27,'night_shade'],[33,'shadow_sneak'],
+               [40,'signal_beam'],[47,'cross_poison'],[55,'toxic_thread']],   // #168
   metapod:    [[1,'harden']],
   butterfree: [[1,'confusion'],[1,'sleep_powder'],[10,'gust'],[12,'stun_spore'],[14,'psybeam'],[16,'silver_wind'],[18,'supersonic'],[21,'tailwind'],[24,'safeguard'],[27,'whirlwind'],[30,'psychic_move'],[33,'bug_buzz'],[36,'quiver_dance']],
 };
@@ -1103,6 +1129,7 @@ const ABILITIES_DB = {
   ball_fetch:     { name: 'Ball Fetch',     desc: 'Fetches a Poke Ball if the first throw fails.' },
   cotton_down:    { name: 'Cotton Down',    desc: "Lowers foe's Speed when hit." },
   fluffy:         { name: 'Fluffy',         desc: 'Halves damage from contact moves; doubles from Fire.' },
+  insomnia:       { name: 'Insomnia',       desc: 'Prevents the Pokémon from falling asleep. Immune to all sleep-inducing moves.' },
 };
 
 // Tabela de abilities por pokémon
@@ -1144,6 +1171,7 @@ const POKEMON_ABILITIES = {
   caterpie:    { normal: ['shield_dust','run_away'], hidden: 'run_away'      },
   wooloo:      { normal: ['fluffy','run_away'],       hidden: 'bulletproof'  },
   weedle:      { normal: ['run_away'],                    hidden: 'sniper'        },
+  spinarak:    { normal: ['swarm', 'insomnia'],           hidden: 'sniper'        }, // #167 Swarm + Insomnia, hidden Sniper
 };
 
 // Sorteia a ability do pokémon — 5% hidden, resto dividido entre as normais
@@ -1177,9 +1205,10 @@ const ITEMS_DB = {
   max_revive:    { name:'Max Revive',    img:'../boss/img-items/max_revive.png',    category:'revive', usableIn:'both',   desc:'Revives a fainted Pokemon, fully restoring its HP.',       effect:{ type:'revive', value:1.0 } },
   full_restore:  { name:'Full Restore',  img:'../boss/img-items/full_restore.png',  category:'heal',   usableIn:'both',   desc:'Fully restores HP and heals all status conditions.',       effect:{ type:'fullrestore' } },
   ether:         { name:'Ether',         img:'../boss/img-items/ether.png',         category:'pp',     usableIn:'both',   desc:'Restores 20 PP of a chosen move. Select a Pokemon, then choose the move.',  effect:{ type:'restorepp', value:20 } },
-  antidote:      { name:'Antidote',      img:'../boss/img-items/antidote.png',      category:'status', usableIn:'both',   desc:'Cures a Poisoned Pokémon. Can be used on allies in battle.',                    effect:{ type:'antidote' } },
+  antidote:      { name:'Antidote',      img:'../boss/img-items/antidote.png',      category:'status', usableIn:'both',   desc:'Cures a Poisoned Pokémon. Can be used on allies in battle.',                    effect:{ type:'antidote'  } },
+  awakening:     { name:'Awakening',     img:'../boss/img-items/awakening.png',     category:'status', usableIn:'both',   desc:'Wakes a sleeping Pokémon. Use before a raid or on allies in battle.',         effect:{ type:'awakening' } },
 };
-const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether','antidote'];
+const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether','antidote','awakening'];
 // ──────────────────────────────────────────────────────────────
 // BAG INICIAL — itens que todo novo jogador recebe ao começar
 // Para editar: altere as quantidades abaixo ou adicione novas chaves.
@@ -1221,7 +1250,14 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
     if (!slot.status || (slot.status !== 'poison' && slot.status !== 'toxic')){
       mostrarToastSimples('❌ ' + capitalizar(slot.pokemon) + ' is not poisoned!'); return;
     }
-    ok = true; // não muda HP, só remove status
+    ok = true;
+  }
+  // Awakening: acorda pokemon adormecido fora da batalha
+  if (ef?.type === 'awakening'){
+    if (slot.status !== 'sleep'){
+      mostrarToastSimples('❌ ' + capitalizar(slot.pokemon) + ' is not asleep!'); return;
+    }
+    ok = true; // não muda HP, só remove status sleep
   }
 
   // Ether: +20 PP em UM golpe escolhido — seleção de golpe fica em abrirUsarItem/abrirEtherMoveSelect
@@ -1267,7 +1303,7 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
   const novoTeam = team.map((s, i) => {
     if (i !== slotIdx) return s;
     const updated = Object.assign({}, s, { hpAtual: novoHP });
-    if (ef?.type === 'antidote' || ef?.type === 'fullrestore') delete updated.status;
+    if (ef?.type === 'antidote' || ef?.type === 'awakening' || ef?.type === 'fullrestore') delete updated.status;
     if (ef?.type === 'revive') delete updated.status; // ao reviver, status também some
     return updated;
   });
@@ -1281,11 +1317,14 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
     _userData.raidTeam = novoTeam;
     renderizarBossRaid();
     const isRevive = item.effect?.type === 'revive';
-    const isAntidote = item.effect?.type === 'antidote';
-    const emoji = isRevive ? '💊' : isAntidote ? '🌿' : '🧪';
+    const isAntidote  = item.effect?.type === 'antidote';
+    const isAwakening = item.effect?.type === 'awakening';
+    const emoji = isRevive ? '💊' : isAntidote ? '🌿' : isAwakening ? '☕' : '🧪';
     const msg = isAntidote
       ? emoji + ' Antidote used! ' + capitalizar(slot.pokemon) + ' is cured of Poison!'
-      : emoji + ' ' + item.name + ' used on ' + capitalizar(slot.pokemon) + '! ' + novoHP + '/' + hpMax + ' HP';
+      : isAwakening
+        ? emoji + ' Awakening used! ' + capitalizar(slot.pokemon) + ' woke up!'
+        : emoji + ' ' + item.name + ' used on ' + capitalizar(slot.pokemon) + '! ' + novoHP + '/' + hpMax + ' HP';
     mostrarToastSimples(msg, 'ok');
   } catch(e) { console.error('[BossRaid] Erro ao usar item:', e); }
 }
@@ -1529,7 +1568,11 @@ function missaoFeitaHoje(missaoKey, slotTarget) {
 async function completarMissaoDiaria(missaoKey, slotTarget) {
   if (!_userId || !_userData) return;
 
-  if (missaoFeitaHoje(missaoKey, slotTarget)) {
+  // Resolver slot: usar quest ativa se não fornecido
+  const questAtiva = getQuestAtiva();
+  const slotResolvido = slotTarget || questAtiva?.slotTarget || 1;
+
+  if (missaoFeitaHoje(missaoKey, slotResolvido)) {
     mostrarToast('Already done today!', (_userData?.raidTeam?.[0]?.pokemon || ''), false);
     return;
   }
@@ -1538,7 +1581,7 @@ async function completarMissaoDiaria(missaoKey, slotTarget) {
   if (!config) return;
 
   const team     = _userData.raidTeam || [];
-  const alvoSlot = slotTarget || 1;
+  const alvoSlot = slotResolvido;
 
   // Credita lealdade ao pokemon-alvo
   const novoTeam = team.map(s => {
@@ -1836,11 +1879,16 @@ export async function initBossRaid(userId, db, userData) {
           pendSlot = parsed.slotTarget || 1;
         } else {
           pendKey  = parsed;          // string pura (formato antigo)
-          pendSlot = 1;
+          pendSlot = null;            // resolver via quest ativa
         }
       } catch(e) {
         pendKey  = pendRaw;           // string literal sem JSON
-        pendSlot = 1;
+        pendSlot = null;              // resolver via quest ativa
+      }
+      // Usar slot da quest ativa se não foi especificado explicitamente
+      if (pendSlot === null) {
+        const qa = getQuestAtiva();
+        pendSlot = qa?.slotTarget || 1;
       }
       if (pendKey && MISSOES_CONFIG[pendKey] && pendKey !== 'completar_raid') {
         localStorage.removeItem('bossraid_pending_mission');
@@ -2271,6 +2319,176 @@ function initSlotDragDrop(container) {
 }
 
 // ============================================================
+
+// ══════════════════════════════════════════════════════════════
+// MODAL INFO — exibe detalhes do evento Boss Raid atual
+// ══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────
+// ⚙️  CONFIGURE O EVENTO AQUI
+// Atualize esses dados quando mudar o boss/evento da rotação.
+// ─────────────────────────────────────────────────────────────
+const BOSS_EVENT_INFO = {
+  imagemEvento:  '/boss/img-event/poison.jpg',   // imagem principal do evento
+  nomeEvento:    'Poison Event',
+  descricao:     'To celebrate the beginning of the Boss Raid system, the first wave features poison-type Pokémon from the early routes. Battle, capture, and add them to your team!',
+  dataInicio:    'June 1, 2025',
+  dataFim:       'Ongoing',
+  bosses: [
+    {
+      nome:    'Caterpie',
+      sprite:  '/boss/img-bosses/caterpie.png',
+      nivel:   5,
+      estrelas: 1,
+      golpes: ['Tackle', 'String Shot'],
+      drops: [
+        { item: 'Poke Ball',  chance: '100%' },
+        { item: 'Potion',     chance: '100%' },
+        { item: 'Revive',     chance: '100%' },
+        { item: 'Ether',      chance: '50%'  },
+      ],
+    },
+    {
+      nome:    'Weedle',
+      sprite:  '/boss/img-bosses/weedle.png',
+      nivel:   5,
+      estrelas: 1,
+      golpes: ['Poison Sting', 'String Shot'],
+      drops: [
+        { item: 'Poke Ball',  chance: '100%' },
+        { item: 'Potion',     chance: '100%' },
+        { item: 'Revive',     chance: '100%' },
+        { item: 'Antidote',   chance: '60%'  },
+      ],
+    },
+    {
+      nome:    'Wooloo',
+      sprite:  '/boss/img-bosses/wooloo.png',
+      nivel:   5,
+      estrelas: 1,
+      golpes: ['Tackle', 'Growl', 'Defense Curl', 'Rollout'],
+      drops: [
+        { item: 'Poke Ball',  chance: '100%' },
+        { item: 'Potion',     chance: '100%' },
+        { item: 'Revive',     chance: '100%' },
+        { item: 'Potion ×2',  chance: '50%'  },
+      ],
+    },
+    {
+      nome:    'Spinarak',
+      sprite:  '/boss/img-bosses/spinarak.png',
+      nivel:   5,
+      estrelas: 1,
+      golpes: ['Poison Sting', 'String Shot', 'Scary Face', 'Spider Web'],
+      drops: [
+        { item: 'Poke Ball',  chance: '100%' },
+        { item: 'Potion',     chance: '100%' },
+        { item: 'Revive',     chance: '100%' },
+        { item: 'Awakening',  chance: '50%'  },
+        { item: 'Antidote',   chance: '40%'  },
+      ],
+    },
+  ],
+};
+
+function renderEstrelasInfo(n) {
+  return '⭐'.repeat(n) + '☆'.repeat(Math.max(0, 5 - n));
+}
+
+// Mapa de nome de item → chave do arquivo em /boss/img-items/
+const INFO_ITEM_IMG_MAP = {
+  'Poke Ball':    'pokebola',
+  'Great Ball':   'great_ball',
+  'Ultra Ball':   'ultra_ball',
+  'Potion':       'potion',
+  'Super Potion': 'super_potion',
+  'Hyper Potion': 'hyper_potion',
+  'Max Potion':   'max_potion',
+  'Revive':       'revive',
+  'Max Revive':   'max_revive',
+  'Full Restore': 'full_restore',
+  'Ether':        'ether',
+  'Antidote':     'antidote',
+  'Awakening':    'awakening',
+};
+function getInfoItemImg(nome) {
+  // Remove quantidade do nome (ex: "Potion ×2" -> "Potion")
+  const baseName = nome.replace(/\s*[×x]\d+.*/, '').trim();
+  const key = INFO_ITEM_IMG_MAP[baseName];
+  return key ? `/boss/img-items/${key}.png` : null;
+}
+
+function abrirModalInfo() {
+  const info = BOSS_EVENT_INFO;
+
+  const bossesHTML = info.bosses.map(b => {
+    const dropsHTML = b.drops.map(d => {
+      const imgSrc = getInfoItemImg(d.item);
+      const imgTag = imgSrc
+        ? `<img class="info-drop-img" src="${imgSrc}" alt="${d.item}" onerror="this.style.display='none'">`
+        : `<span class="info-drop-noimg">🎁</span>`;
+      return `<div class="info-drop-chip">
+        ${imgTag}
+        <div class="info-drop-text">
+          <span class="info-drop-name">${d.item}</span>
+          <span class="info-drop-pct">${d.chance}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    const movesHTML = b.golpes.map(g =>
+      `<span class="info-move-tag">${g}</span>`
+    ).join('');
+
+    return `<div class="info-boss-card">
+      <div class="info-boss-header">
+        <img class="info-boss-sprite" src="${b.sprite}" alt="${b.nome}"
+             onerror="this.src='/boss/img-pokeicon/${b.nome.toLowerCase()}.png'">
+        <div class="info-boss-title-wrap">
+          <span class="info-boss-nome">${b.nome}</span>
+          <span class="info-boss-lv">Lv. ${b.nivel}</span>
+          <div class="info-boss-stars">${renderEstrelasInfo(b.estrelas)}</div>
+          <div class="info-boss-moves-inline">${movesHTML}</div>
+        </div>
+      </div>
+      <div class="info-drops-grid">${dropsHTML}</div>
+    </div>`;
+  }).join('');
+
+  const modal = document.createElement('div');
+  modal.className = 'info-modal-overlay';
+  modal.id = 'raidInfoModal';
+  modal.innerHTML = `
+    <div class="info-modal-box">
+      <button class="info-modal-close" id="btnFecharInfo">✕</button>
+
+      <div class="info-hero-wrap">
+        <img class="info-event-hero" src="${info.imagemEvento}" alt="Event"
+             onerror="this.style.display='none'">
+        <div class="info-hero-glow"></div>
+      </div>
+
+      <div class="info-event-nome">${info.nomeEvento}</div>
+      <div class="info-event-datas">📅 ${info.dataInicio} → ${info.dataFim}</div>
+      <p class="info-event-desc">${info.descricao}</p>
+      <div class="info-divider"></div>
+      <div class="info-bosses-wrap">${bossesHTML}</div>
+    </div>`;
+
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('show'), 30);
+
+  modal.querySelector('#btnFecharInfo').addEventListener('click', () => {
+    modal.classList.remove('show');
+    setTimeout(() => modal.remove(), 350);
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 350);
+    }
+  });
+}
+
 function renderMyTeam(container, raidTeam) {
   const slots = Array(6).fill(null);
   raidTeam.forEach(e => { if (e.slot >= 1 && e.slot <= 6) slots[e.slot - 1] = e; });
@@ -2279,6 +2497,7 @@ function renderMyTeam(container, raidTeam) {
     <div class="raid-myteam">
       <div class="raid-myteam-topbar">
         <h3 class="raid-myteam-titulo">⚔️ My Team</h3>
+        <button class="raid-pokedex-btn" id="btnAbrirInfo">ℹ️ Info</button>
         <button class="raid-pokedex-btn" id="btnAbrirPokedex">📖 Pokédex</button>
       </div>
       ${renderPlayerLevelWidget(_userData)}
@@ -2402,6 +2621,7 @@ function renderMyTeam(container, raidTeam) {
       if (slot) abrirModalStatus(slot);
     }));
 
+  document.getElementById('btnAbrirInfo')?.addEventListener('click', () => abrirModalInfo());
   document.getElementById('btnAbrirPokedex')?.addEventListener('click', () => abrirPokedex());
   document.getElementById('btnFecharPokedex')?.addEventListener('click', () =>
     document.getElementById('raidPokedexModal').classList.remove('show'));
@@ -3345,6 +3565,8 @@ function abrirUsarItem(key) {
         const canUse  = (ef?.type === 'heal' && !fainted && hpAtual < st.hp)
                      || (ef?.type === 'revive' && fainted)
                      || (ef?.type === 'fullrestore' && (hpAtual < st.hp || fainted))
+                     || (ef?.type === 'antidote'  && (s.status === 'poison' || s.status === 'toxic'))
+                     || (ef?.type === 'awakening' && s.status === 'sleep')
                      || temPPGasto;
         return '<div class="iusar-slot' + (canUse ? '' : ' nao-pode') + '" data-idx="' + i + '">'
           + '<img src="../perfil/img-pokeicon/' + s.pokemon + '.png" class="iusar-img">'

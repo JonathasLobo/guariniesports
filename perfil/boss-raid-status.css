@@ -1,3 +1,14 @@
+
+.status-badge.slp {
+  background: rgba(60,80,180,0.25);
+  border: 1px solid rgba(100,140,220,0.5);
+  color: #a0b8ff;
+  animation: slp-badge-pulse 1.4s ease-in-out infinite alternate;
+}
+@keyframes slp-badge-pulse {
+  from { background:rgba(50,70,160,0.18); box-shadow:none; }
+  to   { background:rgba(80,110,200,0.35); box-shadow:0 0 6px rgba(100,140,220,0.5); }
+}
 /* ============================================================
    BOSS RAID — STATUS MODAL
    Layout 3 colunas: Info | Stats & IVs | Moves
@@ -1799,4 +1810,324 @@
 @keyframes psn-pulse {
   from { opacity: 0.7; }
   to   { opacity: 1; border-color: rgba(200,60,200,0.8); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EVOLUTION MODAL
+══════════════════════════════════════════════════════════════ */
+.evo-modal-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 10px 0 18px;
+}
+.evo-antes, .evo-depois {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.evo-img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 14px rgba(255,180,0,0.4));
+}
+.evo-img-de {
+  opacity: 0.55;
+  filter: grayscale(0.4) drop-shadow(0 0 6px rgba(255,255,255,0.1));
+}
+.evo-img-para {
+  animation: evo-glow-pulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes evo-glow-pulse {
+  from { filter: drop-shadow(0 0 10px rgba(255,200,0,0.5)); }
+  to   { filter: drop-shadow(0 0 26px rgba(255,180,0,1)); }
+}
+.evo-nome-de {
+  font-size: 0.7rem;
+  color: #888;
+  font-weight: 600;
+  text-decoration: line-through;
+}
+.evo-nome-para {
+  font-size: 0.88rem;
+  color: #ffe066;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+.evo-seta {
+  font-size: 1.8rem;
+  color: #ffb700;
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255,180,0,0.8);
+  flex-shrink: 0;
+}
+.evo-tipos {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2px;
+}
+.evo-info {
+  background: rgba(255,180,0,0.06);
+  border: 1px solid rgba(255,180,0,0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.evo-info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+.evo-info-label {
+  color: #aaa;
+  font-weight: 700;
+  min-width: 68px;
+}
+.evo-info-val {
+  color: #ffe066;
+  font-weight: 800;
+}
+.evo-info-val.evo-hidden {
+  color: #c080ff;
+}
+.evo-fechar-btn {
+  display: block;
+  width: 100%;
+  padding: 11px 0;
+  background: linear-gradient(135deg, #ff9500, #ffb700);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.12s, box-shadow 0.15s;
+  box-shadow: 0 4px 18px rgba(255,150,0,0.35);
+}
+.evo-fechar-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 22px rgba(255,150,0,0.55);
+}
+
+/* ── Evolve button no card de status ──────────────────────── */
+.evo-btn-disponivel {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 0;
+  background: linear-gradient(135deg, rgba(255,210,0,0.15), rgba(255,150,0,0.1));
+  border: 2px solid rgba(255,180,0,0.55);
+  border-radius: 10px;
+  color: #ffe066;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-align: center;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 0 14px rgba(255,180,0,0.15);
+  animation: evo-btn-pulse 1.5s ease-in-out infinite alternate;
+}
+@keyframes evo-btn-pulse {
+  from { box-shadow: 0 0 10px rgba(255,180,0,0.15); border-color: rgba(255,180,0,0.45); }
+  to   { box-shadow: 0 0 22px rgba(255,200,0,0.45); border-color: rgba(255,200,0,0.85); }
+}
+.evo-btn-disponivel:hover {
+  background: rgba(255,180,0,0.2);
+  transform: scale(1.02);
+}
+.evo-btn-disponivel:disabled {
+  opacity: 0.5; cursor: default; animation: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   INFO MODAL — Boss Event  (redesign)
+══════════════════════════════════════════════════════════════ */
+.info-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(6px);
+  padding: 12px;
+}
+.info-modal-overlay.show {
+  opacity: 1; pointer-events: all;
+}
+.info-modal-box {
+  background: linear-gradient(170deg, #0c0c18 0%, #10101e 60%, #0c0c18 100%);
+  border: 2px solid rgba(255,117,0,0.45);
+  border-radius: 22px;
+  padding: 0 0 20px;
+  width: min(520px, 96vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.38s cubic-bezier(.22,1,.36,1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,117,0,0.3) transparent;
+  box-shadow: 0 0 80px rgba(255,100,0,0.12), 0 30px 80px rgba(0,0,0,0.6);
+}
+.info-modal-overlay.show .info-modal-box {
+  transform: translateY(0) scale(1);
+}
+.info-modal-close {
+  position: absolute; top: 12px; right: 14px; z-index: 5;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #aaa; border-radius: 8px;
+  width: 28px; height: 28px;
+  font-size: 0.7rem; font-weight: 900;
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.info-modal-close:hover { background: rgba(255,60,60,0.35); color: #fff; }
+
+/* ── Hero image ─────────────────────────────────────────── */
+.info-hero-wrap {
+  position: relative;
+  width: 100%; height: 180px;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.info-event-hero {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: brightness(0.85) saturate(1.1);
+}
+.info-hero-glow {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 30%, rgba(12,12,24,0.92) 100%);
+  pointer-events: none;
+}
+
+/* ── Event meta ─────────────────────────────────────────── */
+.info-event-nome {
+  text-align: center;
+  font-size: 1.25rem; font-weight: 900;
+  color: #ffe066;
+  text-shadow: 0 0 18px rgba(255,200,0,0.55);
+  margin: 14px 20px 3px;
+  line-height: 1.2;
+}
+.info-event-datas {
+  text-align: center;
+  font-size: 0.64rem; color: #777; font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+.info-event-desc {
+  font-size: 0.73rem; color: #b8b8c8; line-height: 1.6;
+  text-align: center; margin: 0 22px 14px;
+}
+.info-divider {
+  width: calc(100% - 40px); height: 1px; margin: 0 20px 16px;
+  background: linear-gradient(90deg, transparent, rgba(255,117,0,0.4), transparent);
+}
+/* ── Boss cards ─────────────────────────────────────────── */
+.info-bosses-wrap {
+  display: flex; flex-direction: column;
+  gap: 10px; padding: 0 16px;
+}
+.info-boss-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,117,0,0.2);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.info-boss-header {
+  display: flex; align-items: center;
+  gap: 12px; padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.info-boss-sprite {
+  width: 52px; height: 52px;
+  object-fit: contain; image-rendering: pixelated;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(255,150,0,0.4));
+}
+.info-boss-title-wrap {
+  flex: 1; min-width: 0;
+}
+.info-boss-nome {
+  font-size: 0.9rem; font-weight: 900; color: #fff;
+  margin-right: 6px;
+}
+.info-boss-lv {
+  font-size: 0.6rem; font-weight: 800; color: #ffb700;
+  background: rgba(255,180,0,0.1);
+  border: 1px solid rgba(255,180,0,0.25);
+  border-radius: 4px; padding: 1px 5px;
+  vertical-align: middle;
+}
+.info-boss-stars {
+  font-size: 0.65rem; margin: 2px 0 5px;
+  letter-spacing: 2px;
+}
+.info-boss-moves-inline {
+  display: flex; flex-wrap: wrap; gap: 3px;
+}
+.info-move-tag {
+  font-size: 0.55rem; font-weight: 700; color: #ccc;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 2px 6px;
+}
+
+/* ── Drops grid com imagens ─────────────────────────────── */
+.info-drops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 6px; padding: 8px 12px 10px;
+}
+.info-drop-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 5px 8px;
+  transition: background 0.15s;
+}
+.info-drop-chip:hover {
+  background: rgba(255,180,0,0.06);
+  border-color: rgba(255,180,0,0.2);
+}
+.info-drop-img {
+  width: 26px; height: 26px;
+  object-fit: contain; image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.info-drop-noimg {
+  font-size: 1.1rem; flex-shrink: 0; width: 26px; text-align: center;
+}
+.info-drop-text {
+  display: flex; flex-direction: column; min-width: 0;
+}
+.info-drop-name {
+  font-size: 0.6rem; font-weight: 700; color: #ddd;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 70px;
+}
+.info-drop-pct {
+  font-size: 0.58rem; font-weight: 900;
+  color: #ffb700;
 }
