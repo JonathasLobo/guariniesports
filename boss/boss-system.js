@@ -89,6 +89,25 @@ const BOSS_CONFIG = {
       catchRate: 90,
     },
 
+
+    {
+      nome:      'Spinarak',
+      sprite:    '/boss/img-bosses/spinarak.png',
+      tipos:     ['bug','poison'],
+      baseStats: { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
+      nivel:     5,
+      golpes: [
+        { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
+        { name:'String Shot',  type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
+          effect:'debuff', stat:'spe', stages:-1 },
+        { name:'Scary Face',   type:'normal', cat:'status',   power:null,acc:100, target:'single',
+          effect:'debuff', stat:'spe', stages:-2 },
+        { name:'Spider Web',   type:'bug',    cat:'status',   power:null,acc:null,target:'single',
+          effect:'trap' },
+      ],
+      catchRate: 90,
+    },
+
     // ── Médio ─────────────────────────────────────────────────
     /*{
       nome:      'Staryu',
