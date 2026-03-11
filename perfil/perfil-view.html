@@ -8,6 +8,7 @@
   <link rel="icon" href="../img-site/favicon.png" type="image/png">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
+  <link rel="stylesheet" href="boss-raid-status.css">
   <meta name="theme-color" content="#ffad00">
 </head>
 
@@ -97,6 +98,14 @@
         <div class="perfil-info">
           <div class="perfil-nome-container">
             <h3 id="perfilNomeDisplay">Loading...</h3>
+            <div id="trainerLevelBadge" style="display:none;margin-top:4px">
+              <span id="trainerLevelText" style="
+                display:inline-flex;align-items:center;gap:5px;
+                background:linear-gradient(135deg,rgba(255,180,0,0.18),rgba(255,100,0,0.12));
+                border:1px solid rgba(255,180,0,0.4);border-radius:20px;
+                padding:3px 10px;font-size:0.72rem;font-weight:700;color:#ffe066;
+                letter-spacing:0.03em;">🏅 Trainer Lv. 1</span>
+            </div>
           </div>
           <!-- EMAIL REMOVIDO - não será exibido -->
           
@@ -106,6 +115,14 @@
           </div>
         </div>
       </div>  
+
+      <!-- ⚔️ BOSS RAID SECTION -->
+      <section class="perfil-section" id="rv-section" style="display:none">
+        <h2>Boss Raid</h2>
+        <div class="perfil-content raid-content" id="bossRaidViewContainer">
+          <div id="rv-inner"></div>
+        </div>
+      </section>
 
       <!-- Área de builds (somente visualização) -->
       <section class="perfil-section">
@@ -214,6 +231,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore();
   const auth = getAuth(app);
+  window._rvDb = db; // expor para raid view carregar pokédex do visitante
   let currentUser = null;
 
   // ========================================
@@ -904,6 +922,15 @@ function createBuildCard(build, isOwnProfile = false) {
       
       // Atualizar interface - SEM EMAIL
       perfilNomeDisplay.textContent = userData.displayName || 'Anonymous Player';
+
+      // Badge Trainer Level ao lado do nick
+      const _tLevel = userData.playerLevel || 1;
+      const _tBadge = document.getElementById('trainerLevelBadge');
+      const _tText  = document.getElementById('trainerLevelText');
+      if (_tBadge && _tText) {
+        _tText.textContent = '🏅 Trainer Lv. ' + _tLevel;
+        _tBadge.style.display = 'block';
+      }
       
       if (userData.avatar) {
         avatarImg.src = userData.avatar;
@@ -935,6 +962,7 @@ function createBuildCard(build, isOwnProfile = false) {
       // Carregar builds
       await carregarBuildsUsuario(userId);
       await carregarRibbonsUsuario(userId);
+      renderizarRaidTeamView(userData);
       
     } catch (error) {
       console.error('❌ Error loading user:', error);
@@ -1012,6 +1040,605 @@ async function carregarBuildsUsuario(uid) {
   }
 }
 
+
+  // ═══════════════════════════════════════════════════════════
+  // BOSS RAID TEAM VIEW
+  // ═══════════════════════════════════════════════════════════
+
+  const RV_TIPO_CORES = {
+    fire:'#f08030',water:'#6890f0',grass:'#78c850',electric:'#f8d030',
+    psychic:'#f85888',ice:'#98d8d8',dragon:'#7038f8',dark:'#705848',
+    fairy:'#ee99ac',normal:'#a8a878',fighting:'#c03028',poison:'#a040a0',
+    ground:'#e0c068',flying:'#a890f0',bug:'#a8b820',rock:'#b8a038',
+    ghost:'#705898',steel:'#b8b8d0'
+  };
+
+  const RV_POKEMON_TIPOS = {
+    squirtle:['water'],bulbasaur:['grass','poison'],charmander:['fire'],
+    ivysaur:['grass','poison'],venusaur:['grass','poison'],
+    charmeleon:['fire'],charizard:['fire','flying'],
+    wartortle:['water'],blastoise:['water'],
+    caterpie:['bug'],metapod:['bug'],butterfree:['bug','flying'],
+    weedle:['bug','poison'],kakuna:['bug','poison'],beedrill:['bug','poison'],
+    pikachu:['electric'],raichu:['electric'],wooloo:['normal'],dubwool:['normal'],
+    spinarak:['bug','poison'],ariados:['bug','poison'],
+    cyndaquil:['fire'],quilava:['fire'],typhlosion:['fire'],
+    totodile:['water'],croconaw:['water'],feraligatr:['water'],
+    chikorita:['grass'],bayleef:['grass'],meganium:['grass'],
+    treecko:['grass'],grovyle:['grass'],sceptile:['grass'],
+    mudkip:['water','ground'],marshtomp:['water','ground'],swampert:['water','ground'],
+    torchic:['fire'],combusken:['fire','fighting'],blaziken:['fire','fighting'],
+    piplup:['water'],prinplup:['water'],empoleon:['water','steel'],
+    turtwig:['grass'],grotle:['grass'],torterra:['grass','ground'],
+    chimchar:['fire'],monferno:['fire','fighting'],infernape:['fire','fighting'],
+    oshawott:['water'],dewott:['water'],samurott:['water'],
+    snivy:['grass'],servine:['grass'],serperior:['grass'],
+    tepig:['fire'],pignite:['fire','fighting'],emboar:['fire','fighting'],
+    froakie:['water'],frogadier:['water'],greninja:['water','dark'],
+    chespin:['grass'],quilladin:['grass'],chesnaught:['grass','fighting'],
+    fennekin:['fire'],braixen:['fire'],delphox:['fire','psychic'],
+    rowlet:['grass','flying'],dartrix:['grass','flying'],decidueye:['grass','ghost'],
+    litten:['fire'],torracat:['fire'],incineroar:['fire','dark'],
+    popplio:['water'],brionne:['water'],primarina:['water','fairy'],
+    sobble:['water'],drizzile:['water'],inteleon:['water'],
+    scorbunny:['fire'],raboot:['fire'],cinderace:['fire'],
+    grookey:['grass'],thwackey:['grass'],rillaboom:['grass'],
+    sprigatito:['grass'],floragato:['grass'],meowscarada:['grass','dark'],
+    fuecoco:['fire'],crocalor:['fire'],skeledirge:['fire','ghost'],
+    quaxly:['water'],quaxwell:['water'],quaquaval:['water','fighting'],
+  };
+
+  const RV_BASE_STATS = {
+    squirtle:{hp:44,atk:48,def:65,spa:50,spd:64,spe:43},
+    bulbasaur:{hp:45,atk:49,def:49,spa:65,spd:65,spe:45},ivysaur:{hp:60,atk:62,def:63,spa:80,spd:80,spe:60},venusaur:{hp:80,atk:82,def:83,spa:100,spd:100,spe:80},
+    charmander:{hp:39,atk:52,def:43,spa:60,spd:50,spe:65},charmeleon:{hp:58,atk:64,def:58,spa:80,spd:65,spe:80},charizard:{hp:78,atk:84,def:78,spa:109,spd:85,spe:100},
+    wartortle:{hp:59,atk:63,def:80,spa:65,spd:80,spe:58},blastoise:{hp:79,atk:83,def:100,spa:85,spd:105,spe:78},
+    caterpie:{hp:45,atk:30,def:35,spa:20,spd:20,spe:45},metapod:{hp:50,atk:20,def:55,spa:25,spd:25,spe:30},butterfree:{hp:60,atk:45,def:50,spa:90,spd:80,spe:70},
+    weedle:{hp:35,atk:35,def:30,spa:20,spd:20,spe:50},kakuna:{hp:45,atk:25,def:50,spa:25,spd:25,spe:35},beedrill:{hp:65,atk:90,def:40,spa:45,spd:80,spe:75},
+    pikachu:{hp:35,atk:55,def:40,spa:50,spd:50,spe:90},raichu:{hp:60,atk:90,def:55,spa:90,spd:80,spe:110},
+    wooloo:{hp:42,atk:40,def:55,spa:40,spd:45,spe:48},dubwool:{hp:72,atk:80,def:100,spa:60,spd:90,spe:88},
+    spinarak:{hp:40,atk:60,def:40,spa:40,spd:40,spe:30},ariados:{hp:70,atk:90,def:70,spa:60,spd:60,spe:40},
+    cyndaquil:{hp:39,atk:52,def:43,spa:60,spd:50,spe:65},quilava:{hp:58,atk:64,def:58,spa:80,spd:65,spe:80},typhlosion:{hp:78,atk:84,def:78,spa:109,spd:85,spe:100},
+    totodile:{hp:50,atk:65,def:64,spa:44,spd:48,spe:43},croconaw:{hp:65,atk:80,def:80,spa:59,spd:63,spe:58},feraligatr:{hp:85,atk:105,def:100,spa:79,spd:83,spe:78},
+    chikorita:{hp:45,atk:49,def:65,spa:49,spd:65,spe:45},bayleef:{hp:60,atk:62,def:80,spa:63,spd:80,spe:60},meganium:{hp:80,atk:82,def:100,spa:83,spd:100,spe:80},
+    treecko:{hp:40,atk:45,def:35,spa:65,spd:55,spe:70},grovyle:{hp:50,atk:65,def:45,spa:85,spd:65,spe:95},sceptile:{hp:70,atk:85,def:65,spa:105,spd:85,spe:120},
+    mudkip:{hp:50,atk:70,def:50,spa:50,spd:50,spe:40},marshtomp:{hp:70,atk:85,def:70,spa:60,spd:70,spe:50},swampert:{hp:100,atk:110,def:90,spa:85,spd:90,spe:60},
+    torchic:{hp:45,atk:60,def:40,spa:70,spd:50,spe:45},combusken:{hp:60,atk:85,def:60,spa:85,spd:60,spe:55},blaziken:{hp:80,atk:120,def:70,spa:110,spd:70,spe:80},
+    piplup:{hp:53,atk:51,def:53,spa:61,spd:56,spe:40},prinplup:{hp:64,atk:66,def:68,spa:81,spd:76,spe:50},empoleon:{hp:84,atk:86,def:88,spa:111,spd:101,spe:60},
+    turtwig:{hp:55,atk:68,def:64,spa:45,spd:55,spe:31},grotle:{hp:75,atk:89,def:85,spa:55,spd:65,spe:36},torterra:{hp:95,atk:109,def:105,spa:75,spd:85,spe:56},
+    chimchar:{hp:44,atk:58,def:44,spa:58,spd:44,spe:61},monferno:{hp:64,atk:78,def:52,spa:78,spd:52,spe:81},infernape:{hp:76,atk:104,def:71,spa:104,spd:71,spe:108},
+    oshawott:{hp:55,atk:55,def:45,spa:63,spd:45,spe:45},dewott:{hp:75,atk:75,def:60,spa:83,spd:60,spe:60},samurott:{hp:95,atk:100,def:85,spa:108,spd:70,spe:70},
+    snivy:{hp:45,atk:45,def:55,spa:45,spd:55,spe:63},servine:{hp:60,atk:60,def:75,spa:60,spd:75,spe:83},serperior:{hp:75,atk:75,def:95,spa:75,spd:95,spe:113},
+    tepig:{hp:65,atk:63,def:45,spa:45,spd:45,spe:45},pignite:{hp:90,atk:93,def:55,spa:70,spd:55,spe:55},emboar:{hp:110,atk:123,def:65,spa:100,spd:65,spe:65},
+    froakie:{hp:41,atk:56,def:40,spa:62,spd:44,spe:71},frogadier:{hp:54,atk:63,def:52,spa:83,spd:56,spe:97},greninja:{hp:72,atk:95,def:67,spa:103,spd:71,spe:122},
+    chespin:{hp:56,atk:61,def:65,spa:48,spd:45,spe:38},quilladin:{hp:61,atk:78,def:95,spa:56,spd:58,spe:57},chesnaught:{hp:88,atk:107,def:122,spa:74,spd:75,spe:64},
+    fennekin:{hp:40,atk:45,def:40,spa:62,spd:60,spe:60},braixen:{hp:59,atk:59,def:58,spa:90,spd:70,spe:73},delphox:{hp:75,atk:69,def:72,spa:114,spd:100,spe:104},
+    rowlet:{hp:68,atk:55,def:55,spa:50,spd:50,spe:42},dartrix:{hp:78,atk:75,def:75,spa:70,spd:70,spe:52},decidueye:{hp:78,atk:107,def:75,spa:100,spd:100,spe:70},
+    litten:{hp:45,atk:65,def:40,spa:60,spd:40,spe:70},torracat:{hp:65,atk:85,def:50,spa:80,spd:50,spe:90},incineroar:{hp:95,atk:115,def:90,spa:80,spd:90,spe:60},
+    popplio:{hp:50,atk:54,def:54,spa:66,spd:56,spe:40},brionne:{hp:60,atk:69,def:69,spa:91,spd:81,spe:50},primarina:{hp:80,atk:74,def:74,spa:126,spd:116,spe:60},
+    sobble:{hp:50,atk:40,def:40,spa:70,spd:40,spe:70},drizzile:{hp:65,atk:60,def:55,spa:95,spd:55,spe:90},inteleon:{hp:70,atk:85,def:65,spa:125,spd:65,spe:120},
+    scorbunny:{hp:50,atk:71,def:40,spa:40,spd:40,spe:69},raboot:{hp:65,atk:86,def:60,spa:55,spd:60,spe:94},cinderace:{hp:80,atk:116,def:75,spa:65,spd:75,spe:119},
+    grookey:{hp:50,atk:65,def:50,spa:40,spd:40,spe:65},thwackey:{hp:70,atk:85,def:70,spa:55,spd:60,spe:80},rillaboom:{hp:100,atk:125,def:90,spa:60,spd:70,spe:85},
+    sprigatito:{hp:40,atk:61,def:54,spa:45,spd:45,spe:65},floragato:{hp:61,atk:80,def:63,spa:60,spd:63,spe:83},meowscarada:{hp:76,atk:110,def:70,spa:81,spd:70,spe:123},
+    fuecoco:{hp:67,atk:45,def:59,spa:63,spd:40,spe:36},crocalor:{hp:81,atk:55,def:78,spa:90,spd:58,spe:49},skeledirge:{hp:104,atk:75,def:100,spa:110,spd:75,spe:66},
+    quaxly:{hp:55,atk:65,def:45,spa:50,spd:45,spe:50},quaxwell:{hp:70,atk:78,def:60,spa:65,spd:60,spe:67},quaquaval:{hp:85,atk:120,def:80,spa:85,spd:75,spe:85},
+  };
+
+  const RV_NATURES = {
+    Hardy:{up:null,down:null},Lonely:{up:'atk',down:'def'},Brave:{up:'atk',down:'spe'},
+    Adamant:{up:'atk',down:'spa'},Naughty:{up:'atk',down:'spd'},Bold:{up:'def',down:'atk'},
+    Docile:{up:null,down:null},Relaxed:{up:'def',down:'spe'},Impish:{up:'def',down:'spa'},
+    Lax:{up:'def',down:'spd'},Timid:{up:'spe',down:'atk'},Hasty:{up:'spe',down:'def'},
+    Serious:{up:null,down:null},Jolly:{up:'spe',down:'spa'},Naive:{up:'spe',down:'spd'},
+    Modest:{up:'spa',down:'atk'},Mild:{up:'spa',down:'def'},Quiet:{up:'spa',down:'spe'},
+    Bashful:{up:null,down:null},Rash:{up:'spa',down:'spd'},Calm:{up:'spd',down:'atk'},
+    Gentle:{up:'spd',down:'def'},Sassy:{up:'spd',down:'spe'},Careful:{up:'spd',down:'spa'},
+    Quirky:{up:null,down:null}
+  };
+
+  const RV_MOVES_DB = {
+    tackle:{name:'Tackle',type:'normal',category:'physical',power:40,accuracy:100,pp:35,desc:'A physical attack.'},
+    growl:{name:'Growl',type:'normal',category:'status',power:null,accuracy:100,pp:40,desc:"Lowers the foe's Attack."},
+    scratch:{name:'Scratch',type:'normal',category:'physical',power:40,accuracy:100,pp:35,desc:'A scratching attack.'},
+    tail_whip:{name:'Tail Whip',type:'normal',category:'status',power:null,accuracy:100,pp:30,desc:"Lowers foe's Defense."},
+    vine_whip:{name:'Vine Whip',type:'grass',category:'physical',power:45,accuracy:100,pp:25,desc:'Strikes with vines.'},
+    ember:{name:'Ember',type:'fire',category:'special',power:40,accuracy:100,pp:25,desc:'May inflict a burn.'},
+    water_gun:{name:'Water Gun',type:'water',category:'special',power:40,accuracy:100,pp:25,desc:'Forcefully shoots water.'},
+    bubble:{name:'Bubble',type:'water',category:'special',power:40,accuracy:100,pp:30,desc:'May lower Speed.'},
+    pound:{name:'Pound',type:'normal',category:'physical',power:40,accuracy:100,pp:35,desc:'Pounds with forelegs.'},
+    string_shot:{name:'String Shot',type:'bug',category:'status',power:null,accuracy:95,pp:40,desc:"Lowers foe's Speed."},
+    bug_bite:{name:'Bug Bite',type:'bug',category:'physical',power:60,accuracy:100,pp:20,desc:'Eats the held berry.'},
+    poison_sting:{name:'Poison Sting',type:'poison',category:'physical',power:15,accuracy:100,pp:35,desc:'May poison the foe.'},
+    thunder_shock:{name:'Thunder Shock',type:'electric',category:'special',power:40,accuracy:100,pp:30,desc:'May paralyze foe.'},
+    quick_attack:{name:'Quick Attack',type:'normal',category:'physical',power:40,accuracy:100,pp:30,desc:'Strikes first.'},
+    peck:{name:'Peck',type:'flying',category:'physical',power:35,accuracy:100,pp:35,desc:'Attacks with a beak.'},
+    flamethrower:{name:'Flamethrower',type:'fire',category:'special',power:90,accuracy:100,pp:15,desc:'May cause a burn.'},
+    fire_blast:{name:'Fire Blast',type:'fire',category:'special',power:110,accuracy:85,pp:5,desc:'May cause a burn.'},
+    overheat:{name:'Overheat',type:'fire',category:'special',power:130,accuracy:90,pp:5,desc:'Sharply lowers Sp. Atk.'},
+    surf:{name:'Surf',type:'water',category:'special',power:90,accuracy:100,pp:15,desc:'Attacks everything nearby.'},
+    hydro_pump:{name:'Hydro Pump',type:'water',category:'special',power:110,accuracy:80,pp:5,desc:'A powerful water attack.'},
+    razor_leaf:{name:'Razor Leaf',type:'grass',category:'physical',power:55,accuracy:95,pp:25,desc:'May cause a critical hit.'},
+    solar_beam:{name:'Solar Beam',type:'grass',category:'special',power:120,accuracy:100,pp:10,desc:'Absorbs light then fires.'},
+    thunderbolt:{name:'Thunderbolt',type:'electric',category:'special',power:90,accuracy:100,pp:15,desc:'May cause paralysis.'},
+    thunder:{name:'Thunder',type:'electric',category:'special',power:110,accuracy:70,pp:10,desc:'May cause paralysis.'},
+    psychic:{name:'Psychic',type:'psychic',category:'special',power:90,accuracy:100,pp:10,desc:'May lower Sp. Def.'},
+    ice_beam:{name:'Ice Beam',type:'ice',category:'special',power:90,accuracy:100,pp:10,desc:'May freeze the foe.'},
+    blizzard:{name:'Blizzard',type:'ice',category:'special',power:110,accuracy:70,pp:5,desc:'May freeze the foe.'},
+    earthquake:{name:'Earthquake',type:'ground',category:'physical',power:100,accuracy:100,pp:10,desc:'Shakes all nearby.'},
+    hyper_beam:{name:'Hyper Beam',type:'normal',category:'special',power:150,accuracy:90,pp:5,desc:'Must recharge next turn.'},
+    giga_drain:{name:'Giga Drain',type:'grass',category:'special',power:75,accuracy:100,pp:10,desc:'Drains half of damage.'},
+    iron_tail:{name:'Iron Tail',type:'steel',category:'physical',power:100,accuracy:75,pp:15,desc:'May lower Defense.'},
+    shadow_ball:{name:'Shadow Ball',type:'ghost',category:'special',power:80,accuracy:100,pp:15,desc:'May lower Sp. Def.'},
+    brick_break:{name:'Brick Break',type:'fighting',category:'physical',power:75,accuracy:100,pp:15,desc:'Breaks barriers then attacks.'},
+    aerial_ace:{name:'Aerial Ace',type:'flying',category:'physical',power:60,accuracy:null,pp:20,desc:'Never misses.'},
+    dragon_claw:{name:'Dragon Claw',type:'dragon',category:'physical',power:80,accuracy:100,pp:15,desc:'Slashes with sharp claws.'},
+    close_combat:{name:'Close Combat',type:'fighting',category:'physical',power:120,accuracy:100,pp:5,desc:'Lowers own def stats.'},
+    acrobatics:{name:'Acrobatics',type:'flying',category:'physical',power:55,accuracy:100,pp:15,desc:'Stronger without items.'},
+    superpower:{name:'Superpower',type:'fighting',category:'physical',power:120,accuracy:100,pp:5,desc:'Lowers own Atk and Def.'},
+    u_turn:{name:'U-turn',type:'bug',category:'physical',power:70,accuracy:100,pp:20,desc:'Attack then switch out.'},
+    x_scissor:{name:'X-Scissor',type:'bug',category:'physical',power:80,accuracy:100,pp:15,desc:'Slashes an X.'},
+    poison_jab:{name:'Poison Jab',type:'poison',category:'physical',power:80,accuracy:100,pp:20,desc:'May poison the foe.'},
+    thunder_punch:{name:'Thunder Punch',type:'electric',category:'physical',power:75,accuracy:100,pp:15,desc:'May paralyze foe.'},
+    fire_punch:{name:'Fire Punch',type:'fire',category:'physical',power:75,accuracy:100,pp:15,desc:'May cause a burn.'},
+    ice_punch:{name:'Ice Punch',type:'ice',category:'physical',power:75,accuracy:100,pp:15,desc:'May freeze the foe.'},
+    mach_punch:{name:'Mach Punch',type:'fighting',category:'physical',power:40,accuracy:100,pp:30,desc:'Always goes first.'},
+    brave_bird:{name:'Brave Bird',type:'flying',category:'physical',power:120,accuracy:100,pp:15,desc:'Recoil damage.'},
+    leaf_blade:{name:'Leaf Blade',type:'grass',category:'physical',power:90,accuracy:100,pp:15,desc:'High critical-hit ratio.'},
+    energy_ball:{name:'Energy Ball',type:'grass',category:'special',power:90,accuracy:100,pp:10,desc:'May lower Sp. Def.'},
+    aqua_tail:{name:'Aqua Tail',type:'water',category:'physical',power:90,accuracy:90,pp:10,desc:'Attacks with the tail.'},
+    waterfall:{name:'Waterfall',type:'water',category:'physical',power:80,accuracy:100,pp:15,desc:'May make foe flinch.'},
+    dark_pulse:{name:'Dark Pulse',type:'dark',category:'special',power:80,accuracy:100,pp:15,desc:'May make foe flinch.'},
+    night_slash:{name:'Night Slash',type:'dark',category:'physical',power:70,accuracy:100,pp:15,desc:'High critical-hit ratio.'},
+    crunch:{name:'Crunch',type:'dark',category:'physical',power:80,accuracy:100,pp:15,desc:'May lower Defense.'},
+    sucker_punch:{name:'Sucker Punch',type:'dark',category:'physical',power:70,accuracy:100,pp:5,desc:'Priority if foe attacks.'},
+    moonblast:{name:'Moonblast',type:'fairy',category:'special',power:95,accuracy:100,pp:15,desc:'May lower Sp. Atk.'},
+    play_rough:{name:'Play Rough',type:'fairy',category:'physical',power:90,accuracy:90,pp:10,desc:'May lower Attack.'},
+    dazzling_gleam:{name:'Dazzling Gleam',type:'fairy',category:'special',power:80,accuracy:100,pp:10,desc:'Emits a powerful flash.'},
+    focus_blast:{name:'Focus Blast',type:'fighting',category:'special',power:120,accuracy:70,pp:5,desc:'May lower Sp. Def.'},
+    drain_punch:{name:'Drain Punch',type:'fighting',category:'physical',power:75,accuracy:100,pp:10,desc:'Drains half of damage.'},
+    aura_sphere:{name:'Aura Sphere',type:'fighting',category:'special',power:80,accuracy:null,pp:20,desc:'Never misses.'},
+    hex:{name:'Hex',type:'ghost',category:'special',power:65,accuracy:100,pp:10,desc:'Double power vs. status.'},
+    will_o_wisp:{name:'Will-O-Wisp',type:'fire',category:'status',power:null,accuracy:85,pp:15,desc:'Burns the foe.'},
+    toxic:{name:'Toxic',type:'poison',category:'status',power:null,accuracy:90,pp:10,desc:'Badly poisons the foe.'},
+    scary_face:{name:'Scary Face',type:'normal',category:'status',power:null,accuracy:100,pp:10,desc:'Sharply lowers Speed.'},
+    leech_life:{name:'Leech Life',type:'bug',category:'physical',power:80,accuracy:100,pp:10,desc:'Drains half of damage.'},
+    night_shade:{name:'Night Shade',type:'ghost',category:'special',power:null,accuracy:100,pp:15,desc:'Deals damage = level.'},
+    shadow_sneak:{name:'Shadow Sneak',type:'ghost',category:'physical',power:40,accuracy:100,pp:30,desc:'Priority, always first.'},
+    spider_web:{name:'Spider Web',type:'bug',category:'status',power:null,accuracy:null,pp:10,desc:'Prevents foe from fleeing.'},
+    signal_beam:{name:'Signal Beam',type:'bug',category:'special',power:75,accuracy:100,pp:15,desc:'May cause confusion.'},
+    cross_poison:{name:'Cross Poison',type:'poison',category:'physical',power:70,accuracy:100,pp:20,desc:'High crit; may poison.'},
+    toxic_thread:{name:'Toxic Thread',type:'poison',category:'status',power:null,accuracy:100,pp:20,desc:'Poisons and lowers Speed.'},
+    double_kick:{name:'Double Kick',type:'fighting',category:'physical',power:30,accuracy:100,pp:30,desc:'Hits twice in a row.'},
+  };
+
+  const RV_EVOLUTION_CHAIN = {
+    bulbasaur:{evolvesTo:'ivysaur',levelReq:16},ivysaur:{evolvesTo:'venusaur',levelReq:32},
+    chikorita:{evolvesTo:'bayleef',levelReq:16},bayleef:{evolvesTo:'meganium',levelReq:32},
+    treecko:{evolvesTo:'grovyle',levelReq:16},grovyle:{evolvesTo:'sceptile',levelReq:36},
+    turtwig:{evolvesTo:'grotle',levelReq:18},grotle:{evolvesTo:'torterra',levelReq:32},
+    snivy:{evolvesTo:'servine',levelReq:17},servine:{evolvesTo:'serperior',levelReq:36},
+    chespin:{evolvesTo:'quilladin',levelReq:16},quilladin:{evolvesTo:'chesnaught',levelReq:36},
+    rowlet:{evolvesTo:'dartrix',levelReq:17},dartrix:{evolvesTo:'decidueye',levelReq:34},
+    grookey:{evolvesTo:'thwackey',levelReq:16},thwackey:{evolvesTo:'rillaboom',levelReq:35},
+    sprigatito:{evolvesTo:'floragato',levelReq:16},floragato:{evolvesTo:'meowscarada',levelReq:36},
+    charmander:{evolvesTo:'charmeleon',levelReq:16},charmeleon:{evolvesTo:'charizard',levelReq:36},
+    cyndaquil:{evolvesTo:'quilava',levelReq:14},quilava:{evolvesTo:'typhlosion',levelReq:36},
+    torchic:{evolvesTo:'combusken',levelReq:16},combusken:{evolvesTo:'blaziken',levelReq:36},
+    chimchar:{evolvesTo:'monferno',levelReq:14},monferno:{evolvesTo:'infernape',levelReq:36},
+    tepig:{evolvesTo:'pignite',levelReq:17},pignite:{evolvesTo:'emboar',levelReq:36},
+    fennekin:{evolvesTo:'braixen',levelReq:16},braixen:{evolvesTo:'delphox',levelReq:36},
+    litten:{evolvesTo:'torracat',levelReq:17},torracat:{evolvesTo:'incineroar',levelReq:34},
+    scorbunny:{evolvesTo:'raboot',levelReq:16},raboot:{evolvesTo:'cinderace',levelReq:35},
+    fuecoco:{evolvesTo:'crocalor',levelReq:16},crocalor:{evolvesTo:'skeledirge',levelReq:36},
+    squirtle:{evolvesTo:'wartortle',levelReq:16},wartortle:{evolvesTo:'blastoise',levelReq:36},
+    totodile:{evolvesTo:'croconaw',levelReq:18},croconaw:{evolvesTo:'feraligatr',levelReq:30},
+    mudkip:{evolvesTo:'marshtomp',levelReq:16},marshtomp:{evolvesTo:'swampert',levelReq:36},
+    piplup:{evolvesTo:'prinplup',levelReq:16},prinplup:{evolvesTo:'empoleon',levelReq:36},
+    oshawott:{evolvesTo:'dewott',levelReq:17},dewott:{evolvesTo:'samurott',levelReq:36},
+    froakie:{evolvesTo:'frogadier',levelReq:16},frogadier:{evolvesTo:'greninja',levelReq:36},
+    popplio:{evolvesTo:'brionne',levelReq:17},brionne:{evolvesTo:'primarina',levelReq:34},
+    sobble:{evolvesTo:'drizzile',levelReq:16},drizzile:{evolvesTo:'inteleon',levelReq:35},
+    quaxly:{evolvesTo:'quaxwell',levelReq:16},quaxwell:{evolvesTo:'quaquaval',levelReq:36},
+    caterpie:{evolvesTo:'metapod',levelReq:7},metapod:{evolvesTo:'butterfree',levelReq:10},
+    wooloo:{evolvesTo:'dubwool',levelReq:24},
+    weedle:{evolvesTo:'kakuna',levelReq:7},kakuna:{evolvesTo:'beedrill',levelReq:10},
+    spinarak:{evolvesTo:'ariados',levelReq:22},
+  };
+
+  function rvCap(s){ return s ? s[0].toUpperCase()+s.slice(1) : ''; }
+
+  function rvCalcStat(base, iv, ev, lv, nature, statKey) {
+    const b=base||50, i=iv||0, e=ev||0;
+    const n=RV_NATURES[nature]||{up:null,down:null};
+    const natMul=n.up===statKey?1.1:n.down===statKey?0.9:1;
+    return statKey==='hp'
+      ? Math.floor((2*b+i+Math.floor(e/4))*lv/100+lv+10)
+      : Math.floor(Math.floor((2*b+i+Math.floor(e/4))*lv/100+5)*natMul);
+  }
+
+  function rvTipoBadges(tipos){
+    return (tipos||['normal']).map(t=>
+      `<span class="tipo-badge" style="background:${RV_TIPO_CORES[t]||'#888'}">${t.toUpperCase()}</span>`
+    ).join('');
+  }
+
+  // ── Linha evolutiva: só pokémons que o VISITANTE logado tem na pokedex ──
+  // visitorPokedex é um Set preenchido após carregar dados do visitante
+  let _rvVisitorPokedex = new Set();
+
+  function rvLinhaEvolutiva(pokemonAtual) {
+    function base(p){ for(const[k,v]of Object.entries(RV_EVOLUTION_CHAIN)){if(v.evolvesTo===p)return base(k);} return p; }
+    function cadeia(p){ const a=[p]; let c=p; while(RV_EVOLUTION_CHAIN[c]){c=RV_EVOLUTION_CHAIN[c].evolvesTo;a.push(c);} return a; }
+    const chain = cadeia(base(pokemonAtual));
+    if(chain.length < 2) return '';
+
+    // sempre mostra o pokémon atual; demais dependem da pokédex do visitante
+    const cards = chain.map(poke => {
+      const isAtual   = poke === pokemonAtual;
+      const registrado = isAtual || _rvVisitorPokedex.has(poke);
+      let lvlTag = '';
+      for(const[from,d]of Object.entries(RV_EVOLUTION_CHAIN)){if(d.evolvesTo===poke){lvlTag='Lv.'+d.levelReq;break;}}
+      if(registrado){
+        return `<div class="evo-chain-card${isAtual?' evo-chain-atual':''}">
+          ${!isAtual&&lvlTag?`<span class="evo-chain-num">${lvlTag}</span>`:''}
+          <img src="../perfil/img-pokeicon/${poke}.png" class="evo-chain-img" onerror="this.style.display='none'">
+          <span class="evo-chain-nome">${rvCap(poke)}</span>
+          ${isAtual?'<span class="evo-chain-tag">Current</span>':''}
+        </div>`;
+      } else {
+        return `<div class="evo-chain-card evo-chain-desconhecido">
+          ${lvlTag?`<span class="evo-chain-num">${lvlTag}</span>`:''}
+          <div class="evo-chain-silhueta">?</div>
+          <span class="evo-chain-nome">???</span>
+        </div>`;
+      }
+    });
+    const partes=[];
+    cards.forEach((card,i)=>{partes.push(card);if(i<cards.length-1)partes.push('<div class="evo-chain-seta">→</div>');});
+    return `<div class="evo-chain-secao"><div class="evo-chain-titulo">Evolution Line</div><div class="evo-chain-wrap">${partes.join('')}</div></div>`;
+  }
+
+  const RV_TYPE_CHART = {
+    normal:{weak:['fighting'],immune:['ghost'],resist:[]},
+    fire:{weak:['water','ground','rock'],immune:[],resist:['fire','grass','ice','bug','steel','fairy']},
+    water:{weak:['electric','grass'],immune:[],resist:['fire','water','ice','steel']},
+    grass:{weak:['fire','ice','poison','flying','bug'],immune:[],resist:['water','electric','grass','ground']},
+    electric:{weak:['ground'],immune:[],resist:['electric','flying','steel']},
+    ice:{weak:['fire','fighting','rock','steel'],immune:[],resist:['ice']},
+    fighting:{weak:['flying','psychic','fairy'],immune:[],resist:['bug','rock','dark']},
+    poison:{weak:['ground','psychic'],immune:[],resist:['grass','fighting','poison','bug','fairy']},
+    ground:{weak:['water','grass','ice'],immune:['electric'],resist:['poison','rock']},
+    flying:{weak:['electric','ice','rock'],immune:['ground'],resist:['grass','fighting','bug']},
+    psychic:{weak:['bug','ghost','dark'],immune:[],resist:['fighting','psychic']},
+    bug:{weak:['fire','flying','rock'],immune:[],resist:['grass','fighting','ground']},
+    rock:{weak:['water','grass','fighting','ground','steel'],immune:[],resist:['normal','fire','poison','flying']},
+    ghost:{weak:['ghost','dark'],immune:['normal','fighting'],resist:['poison','bug']},
+    dragon:{weak:['ice','dragon','fairy'],immune:[],resist:['fire','water','electric','grass']},
+    dark:{weak:['fighting','bug','fairy'],immune:['psychic'],resist:['ghost','dark']},
+    steel:{weak:['fire','fighting','ground'],immune:['poison'],resist:['normal','grass','ice','flying','psychic','bug','rock','dragon','steel','fairy']},
+    fairy:{weak:['poison','steel'],immune:['dragon'],resist:['fighting','bug','dark']},
+  };
+
+  function rvEfetividades(tipos){
+    const mult={};
+    for(const t of Object.keys(RV_TYPE_CHART))mult[t]=1;
+    for(const tipo of tipos){
+      const c=RV_TYPE_CHART[tipo]||{weak:[],immune:[],resist:[]};
+      for(const t of c.weak)   if(t)mult[t]=(mult[t]||1)*2;
+      for(const t of c.resist) if(t)mult[t]=(mult[t]||1)*0.5;
+      for(const t of c.immune) if(t)mult[t]=0;
+    }
+    const fraco   = Object.entries(mult).filter(([,v])=>v>1).map(([t,v])=>({tipo:t,mult:v}));
+    const resiste = Object.entries(mult).filter(([,v])=>v>0&&v<1).map(([t,v])=>({tipo:t,mult:v}));
+    const imune   = Object.entries(mult).filter(([,v])=>v===0).map(([t])=>t);
+    return {fraco,resiste,imune};
+  }
+
+
+  const RV_ABILITIES_DB = {
+    overgrow:{name:'Overgrow',desc:'Powers up Grass-type moves when HP is below 1/3.'},
+    blaze:{name:'Blaze',desc:'Powers up Fire-type moves when HP is below 1/3.'},
+    torrent:{name:'Torrent',desc:'Powers up Water-type moves when HP is below 1/3.'},
+    swarm:{name:'Swarm',desc:'Powers up Bug-type moves when HP is below 1/3.'},
+    chlorophyll:{name:'Chlorophyll',desc:'Doubles Speed in harsh sunlight.'},
+    leaf_guard:{name:'Leaf Guard',desc:'Prevents status conditions in harsh sunlight.'},
+    anticipation:{name:'Anticipation',desc:"Senses the foe's dangerous moves."},
+    speed_boost:{name:'Speed Boost',desc:'Raises Speed by 1 at the end of each turn.'},
+    long_reach:{name:'Long Reach',desc:'Uses moves without making contact.'},
+    grassy_surge:{name:'Grassy Surge',desc:'Turns the ground into Grassy Terrain on entry.'},
+    protean:{name:'Protean',desc:'Changes type to match the move being used.'},
+    libero:{name:'Libero',desc:'Changes type to match the move being used.'},
+    solar_power:{name:'Solar Power',desc:'Raises Sp.Atk in sunlight but loses HP each turn.'},
+    intimidate:{name:'Intimidate',desc:"Lowers the foe's Attack by 1 on entry."},
+    flash_fire:{name:'Flash Fire',desc:'Powers up Fire moves when hit by one.'},
+    iron_fist:{name:'Iron Fist',desc:'Powers up punching moves by 20%.'},
+    thick_fat:{name:'Thick Fat',desc:'Halves damage from Fire and Ice moves.'},
+    reckless:{name:'Reckless',desc:'Powers up recoil moves by 20%.'},
+    magician:{name:'Magician',desc:"Steals the foe's held item when dealing damage."},
+    mold_breaker:{name:'Mold Breaker',desc:'Ignores abilities that hinder attacks.'},
+    rain_dish:{name:'Rain Dish',desc:'Gradually restores HP in rain.'},
+    shell_armor:{name:'Shell Armor',desc:'Prevents critical hits.'},
+    damp:{name:'Damp',desc:'Prevents self-destruct moves.'},
+    swift_swim:{name:'Swift Swim',desc:'Doubles Speed in rain.'},
+    sniper:{name:'Sniper',desc:'Powers up critical hits to deal triple damage.'},
+    run_away:{name:'Run Away',desc:'+2% Speed. Nimble Pokemon always ready to escape.'},
+    shield_dust:{name:'Shield Dust',desc:'Blocks the additional effects of moves.'},
+    bulletproof:{name:'Bulletproof',desc:'Protects against ball and bomb moves.'},
+    fluffy:{name:'Fluffy',desc:'Halves damage from contact moves; doubles from Fire.'},
+    shed_skin:{name:'Shed Skin',desc:'30% chance to heal status conditions each turn.'},
+    natural_cure:{name:'Natural Cure',desc:'Status conditions heal when switching out.'},
+    insomnia:{name:'Insomnia',desc:'Prevents the Pokemon from falling asleep.'},
+    huge_power:{name:'Huge Power',desc:"Doubles the Pokemon's Attack stat."},
+    pure_power:{name:'Pure Power',desc:"Doubles the Pokemon's Attack stat."},
+    hustle:{name:'Hustle',desc:'+50% Attack, but accuracy of physical moves drops.'},
+    unnerve:{name:'Unnerve',desc:"Prevents the foe from eating its held Berry."},
+    mega_launcher:{name:'Mega Launcher',desc:'Powers up pulse and aura moves by 50%.'},
+    static:{name:'Static',desc:'Contact may cause paralysis (30%).'},
+    illuminate:{name:'Illuminate',desc:'Raises the likelihood of meeting wild Pokemon.'},
+  };
+  function rvAbilityInfo(key) {
+    if (!key) return {name:'--',desc:''};
+    const db = RV_ABILITIES_DB[key];
+    if (db) return db;
+    const name = key.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+    return {name, desc:''};
+  }
+
+  // ── Render grid de slots ───────────────────────────────────────────────
+  function renderizarRaidTeamView(userData) {
+    const team   = userData?.raidTeam   || [];
+    const status = userData?.raidStatus || null;
+    if(!team.length || status !== 'active') return;
+    document.getElementById('rv-section').style.display = '';
+
+    // Pokedex do visitante logado (currentUser)
+    _rvVisitorPokedex = new Set(Array.isArray(currentUser?._pokedex) ? currentUser._pokedex : []);
+    // Também tentamos carregar do Firestore de forma assíncrona se disponível
+    if(currentUser && currentUser.uid) {
+      import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js').then(({getDoc, doc}) => {
+        const _db2 = window._rvDb || null;
+        if(!_db2) return;
+        getDoc(doc(_db2, 'usuarios', currentUser.uid)).then(snap => {
+          if(snap.exists()){
+            const vd = snap.data();
+            _rvVisitorPokedex = new Set(Array.isArray(vd.pokedex) ? vd.pokedex : []);
+          }
+        }).catch(()=>{});
+      }).catch(()=>{});
+    }
+
+    const slots = Array(6).fill(null);
+    team.forEach(e => { if(e.slot>=1&&e.slot<=6) slots[e.slot-1]=e; });
+
+    // Trainer level — apenas badge, sem barra (já está no header)
+    document.getElementById('rv-inner').innerHTML = `
+      <div class="raid-myteam">
+        <div class="raid-myteam-topbar">
+          <h3 class="raid-myteam-titulo">⚔️ Raid Team</h3>
+        </div>
+        <p class="raid-myteam-desc">Click a Pokémon to view its stats</p>
+        <div class="raid-slots-grid">
+          ${slots.map((slot, i) => slot ? `
+            <div class="raid-slot ocupado" data-rv-i="${i}" title="${rvCap(slot.pokemon)}" style="cursor:pointer">
+              <span class="raid-slot-numero">${i+1}</span>
+              <img src="${slot.shiny?`../perfil/img-shiny/${slot.pokemon}.png`:`../perfil/img-pokeicon/${slot.pokemon}.png`}"
+                   alt="${slot.pokemon}" class="raid-slot-img"
+                   onerror="this.src='../perfil/img-pokeicon/${slot.pokemon}.png'">
+              ${slot.shiny?'<span class="shiny-badge">✨ Shiny</span>':''}
+              <p class="raid-slot-nome">${rvCap(slot.pokemon)}</p>
+              ${slot.status==='poison'||slot.status==='toxic'?'<span class="raid-slot-status-psn" style="color:#a040a0;border-color:#a040a0">☠ PSN</span>':''}
+              ${slot.status==='sleep'?'<span class="raid-slot-status-psn" style="color:#6080d0;border-color:#6080d0">💤 SLP</span>':''}
+              <div class="raid-slot-tipos">${rvTipoBadges(RV_POKEMON_TIPOS[slot.pokemon]||['normal'])}</div>
+              <p class="raid-slot-nivel">Lv. ${slot.nivel||1}</p>
+              ${(()=>{
+                const bs=RV_BASE_STATS[slot.pokemon]||{hp:45};
+                const iv=typeof slot.ivs?.hp==='number'?slot.ivs.hp:15;
+                const ev=typeof slot.evs?.hp==='number'?slot.evs.hp:0;
+                const lv=slot.nivel||1;
+                const hpMx=Math.floor((2*bs.hp+iv+Math.floor(ev/4))*lv/100+lv+10);
+                const hpAt=typeof slot.hpAtual==='number'&&slot.hpAtual>=0?Math.min(slot.hpAtual,hpMx):hpMx;
+                const p=hpMx>0?Math.max(0,hpAt/hpMx*100):100;
+                const cls=p>50?'hp-ok':p>20?'hp-low':'hp-critical';
+                return `<div class="raid-slot-hpbar-wrap" title="${hpAt}/${hpMx} HP">
+                  <span class="raid-slot-hp-txt">${hpAt}/${hpMx}</span>
+                  <div class="raid-slot-hpbar"><div class="raid-slot-hpbar-fill ${cls}" style="width:${p.toFixed(1)}%"></div></div>
+                </div>`;
+              })()}
+            </div>
+          ` : `
+            <div class="raid-slot vazio">
+              <span class="raid-slot-numero">${i+1}</span>
+              <div class="raid-slot-vazio-icon">?</div>
+              <p class="raid-slot-vazio-texto">Empty</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+
+    document.getElementById('rv-inner').querySelectorAll('.raid-slot.ocupado').forEach(el => {
+      el.addEventListener('click', () => {
+        const slot = team.find(s => s.slot === parseInt(el.dataset.rvI)+1);
+        if(slot) rvAbrirModal(slot, team);
+      });
+    });
+  }
+
+  // ── Modal idêntico ao abrirModalStatus, sem ações ──────────────────────
+  function rvAbrirModal(slot, team) {
+    const overlay = document.getElementById('rvModalOverlay');
+    const body    = document.getElementById('rvModalBody');
+    const content = document.getElementById('rvModalContent');
+
+    const ivs = slot.ivs&&typeof slot.ivs==='object' ? {
+      hp:typeof slot.ivs.hp==='number'?slot.ivs.hp:0,
+      atk:typeof slot.ivs.atk==='number'?slot.ivs.atk:0,
+      def:typeof slot.ivs.def==='number'?slot.ivs.def:0,
+      spa:typeof slot.ivs.spa==='number'?slot.ivs.spa:0,
+      spd:typeof slot.ivs.spd==='number'?slot.ivs.spd:0,
+      spe:typeof slot.ivs.spe==='number'?slot.ivs.spe:0,
+    } : {hp:0,atk:0,def:0,spa:0,spd:0,spe:0};
+    const evs = slot.evs&&typeof slot.evs==='object' ? {
+      hp:typeof slot.evs.hp==='number'?slot.evs.hp:0,
+      atk:typeof slot.evs.atk==='number'?slot.evs.atk:0,
+      def:typeof slot.evs.def==='number'?slot.evs.def:0,
+      spa:typeof slot.evs.spa==='number'?slot.evs.spa:0,
+      spd:typeof slot.evs.spd==='number'?slot.evs.spd:0,
+      spe:typeof slot.evs.spe==='number'?slot.evs.spe:0,
+    } : {hp:0,atk:0,def:0,spa:0,spd:0,spe:0};
+
+    const nature = slot.nature||'Hardy';
+    const nivel  = slot.nivel||1;
+    const xpAtual= slot.xp||0;
+    const bs     = RV_BASE_STATS[slot.pokemon]||{hp:45,atk:50,def:50,spa:50,spd:50,spe:50};
+    const nat    = RV_NATURES[nature]||{up:null,down:null};
+    const tipos  = RV_POKEMON_TIPOS[slot.pokemon]||['normal'];
+    const {fraco,resiste,imune} = rvEfetividades(tipos);
+    const stats  = {};
+    for(const k of ['hp','atk','def','spa','spd','spe'])
+      stats[k] = rvCalcStat(bs[k],ivs[k],evs[k],nivel,nature,k);
+
+    const hpMax   = stats.hp;
+    const hpAtual = typeof slot.hpAtual==='number'&&slot.hpAtual>=0?Math.min(slot.hpAtual,hpMax):hpMax;
+    const lealdade= slot.lealdade||0;
+    const xpProx  = Math.floor(100*Math.pow(nivel,1.4));
+    const hpPct   = hpMax>0?Math.max(0,hpAtual/hpMax*100):0;
+    const hpBarCls= hpPct>50?'hp-ok':hpPct>20?'hp-low':'hp-critical';
+    const pctLeal = Math.min(100,Math.floor((lealdade/255)*100));
+    const pctXP   = Math.min(100,Math.floor((xpAtual/xpProx)*100));
+
+    const STAT_LABELS = {hp:'HP',atk:'Atk',def:'Def',spa:'Sp.Atk',spd:'Sp.Def',spe:'Spd'};
+    let natureDesc = '';
+    if(!nat.up&&!nat.down){
+      natureDesc='<span class="nature-neutro">Neutral</span>';
+    } else {
+      natureDesc=`<span class="nature-up">↑ ${STAT_LABELS[nat.up]||''}</span><span class="nature-sep"> / </span><span class="nature-down">↓ ${STAT_LABELS[nat.down]||''}</span>`;
+    }
+
+    const linhasHTML = ['hp','atk','def','spa','spd','spe'].map(key=>{
+      let natTag='';
+      if(key!=='hp'&&nat.up===key)   natTag='<span class="nat-up">▲</span>';
+      if(key!=='hp'&&nat.down===key) natTag='<span class="nat-down">▼</span>';
+      const ivCls=ivs[key]===31?'iv-max':'';
+      const evVal=evs[key]||0;
+      return `<tr>
+        <td class="iv-col-label">${STAT_LABELS[key]}</td>
+        <td class="iv-col-stat">${stats[key]}</td>
+        <td class="iv-col-valor ${ivCls}">${ivs[key]}</td>
+        <td class="iv-col-nature">${natTag}</td>
+        <td class="ev-col"><span class="ev-val${evVal>0?' ev-com-valor':''}">${evVal}</span></td>
+      </tr>`;
+    }).join('');
+
+    const fracoHTML   = fraco.length ? '<div class="raid-efet-grupo"><span class="raid-efet-label fraco-label">Weak to</span><div class="raid-efet-badges">'+fraco.map(f=>`<span class="tipo-badge tipo-badge-efet" style="background:${RV_TIPO_CORES[f.tipo]||'#888'}">${f.tipo.toUpperCase()}${f.mult===4?' <b>×4</b>':''}</span>`).join('')+'</div></div>' : '';
+    const resisteHTML = resiste.length ? '<div class="raid-efet-grupo"><span class="raid-efet-label resiste-label">Resists</span><div class="raid-efet-badges">'+resiste.map(r=>`<span class="tipo-badge tipo-badge-efet tipo-badge-resiste" style="border-color:${RV_TIPO_CORES[r.tipo]||'#888'};color:${RV_TIPO_CORES[r.tipo]||'#888'}">${r.tipo.toUpperCase()}${r.mult===0.25?' <b>×¼</b>':''}</span>`).join('')+'</div></div>' : '';
+    const imuneHTML   = imune.length ? '<div class="raid-efet-grupo"><span class="raid-efet-label imune-label">Immune</span><div class="raid-efet-badges">'+imune.map(i=>`<span class="tipo-badge tipo-badge-efet tipo-badge-imune" style="border-color:${RV_TIPO_CORES[i]||'#888'};color:${RV_TIPO_CORES[i]||'#888'}">${i.toUpperCase()}</span>`).join('')+'</div></div>' : '';
+
+    const golpesArr = Array.isArray(slot.golpes)
+      ? slot.golpes.map(g=>typeof g==='string'?g:(g?.move||g?.key||null)).filter(Boolean)
+      : [];
+    const golpeCards = Array(4).fill(null).map((_,i)=>{
+      const key  = golpesArr[i];
+      const move = key ? RV_MOVES_DB[key] : null;
+      if(!move) return '<div class="raid-golpe-slot vazio"><span class="golpe-vazio-txt">— Empty —</span></div>';
+      const cor    = RV_TIPO_CORES[move.type]||'#888';
+      const isStab = (RV_POKEMON_TIPOS[slot.pokemon]||[]).includes(move.type);
+      const catIcon= move.category==='physical'?'⚔️':move.category==='special'?'✨':'🔵';
+      const catTag = move.category==='physical'?'<span class="golpe-cat-tag golpe-cat-physical">PHY</span>':move.category==='special'?'<span class="golpe-cat-tag golpe-cat-special">SPC</span>':'';
+      const ppMax  = move.pp||10;
+      const ppTag  = `<span class="golpe-pp">PP <b>${ppMax}</b></span>`;
+      const pwrTag = move.power?`<span class="golpe-power">PWR <b>${move.power}</b></span>`:'<span class="golpe-power status-move"><b>Status</b></span>';
+      const accTag = `<span class="golpe-acc">ACC <b>${move.accuracy?move.accuracy+'%':'—'}</b></span>`;
+      return `<div class="raid-golpe-slot" style="border-color:${cor}33;background:linear-gradient(135deg,${cor}15,transparent)">
+        <div class="golpe-header">
+          <span class="golpe-tipo-badge" style="background:${cor}">${move.type.toUpperCase()}</span>
+          <span class="golpe-nome">${move.name}</span>
+          <span class="golpe-cat">${catIcon}</span>
+          ${isStab?'<span class="golpe-stab">STAB</span>':''}${catTag}
+        </div>
+        <p class="golpe-desc">${move.desc}</p>
+        <div class="golpe-stats-row">${pwrTag}${accTag}${ppTag}</div>
+      </div>`;
+    }).join('');
+
+    const isHidden  = !!slot.hiddenAbility;
+    const _abilInfo = rvAbilityInfo(slot.ability);
+    const abilNome  = _abilInfo.name;
+    const abilDesc  = _abilInfo.desc;
+    let capturedStr='';
+    const ts=slot.capturedAt||slot.addedAt;
+    if(ts){const d=new Date(ts);capturedStr=`📅 Captured: ${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})} ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;}
+    const shinyStyle=slot.shiny?'filter:drop-shadow(0 0 8px rgba(255,220,40,.9))':'';
+
+    body.innerHTML =
+      '<div class="raid-status-3col">'
+      + '<div class="raid-col raid-col-info">'
+      + '<div class="raid-status-header">'
+      + `<img src="${slot.shiny?`../perfil/img-shiny/${slot.pokemon}.png`:`../perfil/img-pokeicon/${slot.pokemon}.png`}" alt="${slot.pokemon}" class="raid-status-img" style="${shinyStyle}" onerror="this.src='../perfil/img-pokeicon/${slot.pokemon}.png'">`
+      + `<h3 class="raid-status-nome">${rvCap(slot.pokemon)}${slot.shiny?' <span style="color:#ffe033;font-size:.8rem">✨</span>':''}</h3>`
+      + `<div class="raid-status-tipos">${rvTipoBadges(tipos)}</div>`
+      + `<p class="raid-status-nivel">Level ${nivel}</p>`
+      + '</div>'
+      + '<div class="raid-status-barra-wrap">'
+      + `<div class="raid-status-barra-label"><span>❤️ HP</span><span>${hpAtual} / ${hpMax}</span></div>`
+      + `<div class="raid-status-barra"><div class="raid-status-barra-fill ${hpBarCls}" style="width:${hpPct.toFixed(1)}%"></div></div>`
+      + '</div>'
+      + '<div class="raid-status-barra-wrap">'
+      + `<div class="raid-status-barra-label"><span>❤️ Loyalty</span><span>${lealdade} / 255</span></div>`
+      + `<div class="raid-status-barra"><div class="raid-status-barra-fill lealdade" style="width:${pctLeal}%"></div></div>`
+      + '</div>'
+      + '<div class="raid-status-barra-wrap">'
+      + `<div class="raid-status-barra-label"><span>⭐ XP</span><span>${xpAtual} / ${xpProx}</span></div>`
+      + `<div class="raid-status-barra"><div class="raid-status-barra-fill xp" style="width:${pctXP}%"></div></div>`
+      + '</div>'
+      + `<div class="raid-nature-wrap"><span class="raid-nature-label">🌿 Nature:</span><span class="raid-nature-nome">${nature}</span><span class="raid-nature-efeito">${natureDesc}</span></div>`
+      + `<div class="raid-nature-wrap raid-ability-wrap" data-tooltip="${abilDesc||abilNome}"><span class="raid-nature-label">⚡ Ability:</span><span class="raid-nature-nome ability-nome${isHidden?' ability-hidden':''}">${abilNome}</span><span class="raid-nature-efeito ability-desc">${isHidden?'\u2605 Hidden':''}</span>${abilDesc?`<span style="display:block;font-size:0.62rem;color:rgba(255,255,255,0.55);margin-top:2px">${abilDesc}</span>`:''}</div>`
+      + '<div class="raid-efet-titulo">Type Matchups</div>'
+      + fracoHTML+resisteHTML+imuneHTML
+      + '</div>'
+      + '<div class="raid-col raid-col-stats">'
+      + '<div class="raid-status-iv-titulo">Stats & IVs</div>'
+      + '<table class="raid-iv-tabela"><thead><tr><th>Stat</th><th class="th-center">Value</th><th class="th-center">IV</th><th class="th-center">Nat</th><th class="th-center ev-th">EV</th></tr></thead>'
+      + `<tbody>${linhasHTML}</tbody></table>`
+      + ''
+      + rvLinhaEvolutiva(slot.pokemon)
+      + (capturedStr?`<div class="raid-captured-date">${capturedStr}</div>`:'')
+      + '</div>'
+      + '<div class="raid-col raid-col-moves">'
+      + '<div class="raid-efet-titulo">Moves</div>'
+      + `<div class="raid-golpes-grid">${golpeCards}</div>`
+      + '</div>'
+      + '</div>';
+
+    // Limpar setas antigas de qualquer lugar
+    overlay.querySelectorAll('.raid-nav-arrow').forEach(e=>e.remove());
+    content.querySelectorAll('.raid-nav-arrow').forEach(e=>e.remove());
+    const rvTeam = team.filter(s=>s.slot);
+    const idx    = rvTeam.findIndex(s=>s.slot===slot.slot);
+    if(idx>0){
+      const b=document.createElement('button');
+      b.className='raid-nav-arrow raid-nav-left';b.innerHTML='&#8592;';b.title=rvCap(rvTeam[idx-1].pokemon);
+      b.onclick=()=>rvAbrirModal(rvTeam[idx-1],team);overlay.appendChild(b);
+    }
+    if(idx<rvTeam.length-1){
+      const b=document.createElement('button');
+      b.className='raid-nav-arrow raid-nav-right';b.innerHTML='&#8594;';b.title=rvCap(rvTeam[idx+1].pokemon);
+      b.onclick=()=>rvAbrirModal(rvTeam[idx+1],team);overlay.appendChild(b);
+    }
+    overlay.classList.add('show');
+  }
+
+  document.getElementById('rvModalClose').addEventListener('click',()=>{
+    const ov=document.getElementById('rvModalOverlay');
+    ov.querySelectorAll('.raid-nav-arrow').forEach(e=>e.remove());
+    ov.classList.remove('show');
+  });
+  document.getElementById('rvModalOverlay').addEventListener('click',e=>{
+    if(e.target.id==='rvModalOverlay'){
+      e.currentTarget.querySelectorAll('.raid-nav-arrow').forEach(el=>el.remove());
+      e.currentTarget.classList.remove('show');
+    }
+  });
+
   // Carregar dados ao iniciar
   carregarDadosUsuario();
 </script>
@@ -1044,5 +1671,46 @@ async function carregarBuildsUsuario(uid) {
   });
 </script>
 
+
+  <!-- Modal status Raid Team View -->
+  <div class="raid-modal-overlay" id="rvModalOverlay">
+    <div class="raid-modal-content raid-modal-status-content" id="rvModalContent">
+      <button class="raid-modal-close" id="rvModalClose">✕</button>
+      <div id="rvModalBody"></div>
+    </div>
+  </div>
+
+  <style>
+    /* Grid preenchendo o container igual ao perfil.html */
+    #bossRaidViewContainer {
+      display: block !important;
+      align-items: unset !important;
+      justify-content: unset !important;
+    }
+    #bossRaidViewContainer .raid-myteam {
+      width: 100%;
+    }
+    /* Setas fora do modal-content, no overlay */
+    .raid-nav-arrow {
+      position:fixed;
+      top:50%; transform:translateY(-50%);
+      background:rgba(14,14,18,0.85); border:2px solid rgba(255,117,0,.5);
+      border-radius:50%; color:#ff7500; font-size:1.4rem; font-weight:700;
+      width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:all .18s; z-index:10001; padding:0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    }
+    .raid-nav-arrow:hover { background:rgba(255,117,0,.2); border-color:#ff7500; }
+    .raid-nav-left  { left:12px; }
+    .raid-nav-right { right:12px; }
+    .raid-slot-status-psn {
+      display:inline-block; font-size:.55rem;
+      border:1px solid; border-radius:4px; padding:1px 4px; font-weight:800; margin-top:2px;
+    }
+    .raid-captured-date {
+      margin-top:10px; font-size:0.65rem; color:rgba(255,255,255,0.35);
+      border-top:1px solid rgba(255,117,0,0.12); padding-top:8px; text-align:center;
+    }
+  </style>
 </body>
 </html>

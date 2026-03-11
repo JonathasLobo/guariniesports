@@ -49,7 +49,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/caterpie.png',
       tipos:     ['bug'],
       baseStats: { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
-      nivel:     5,
+      nivel:     10,
       golpes: [
         { name:'Tackle',      type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
@@ -63,7 +63,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/weedle.png',
       tipos:     ['bug','poison'],
       baseStats: { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
-      nivel:     5,
+      nivel:     10,
       golpes: [
         { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
@@ -77,7 +77,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/wooloo.png',
       tipos:     ['normal'],
       baseStats: { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
-      nivel:     5,
+      nivel:     10,
       golpes: [
         { name:'Tackle',       type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'Growl',        type:'normal', cat:'status',   power:null,acc:100, target:'all',
@@ -95,7 +95,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/spinarak.png',
       tipos:     ['bug','poison'],
       baseStats: { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
-      nivel:     5,
+      nivel:     10,
       golpes: [
         { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
         { name:'String Shot',  type:'bug',    cat:'status',   power:null,acc:95,  target:'all',

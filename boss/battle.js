@@ -30,17 +30,6 @@ const fsdb  = getFirestore(fbApp);
 // MOVES_DB — usado no painel de golpes (PP incluído)
 // ══════════════════════════════════════════════════════════════
 const MOVES_DB = {
-  growl:         {name:'Growl',        type:'normal',   cat:'status',   power:null,acc:100,pp:40, effect:'debuff',stat:'atk',stages:-1},
-  defense_curl:  {name:'Defense Curl', type:'normal',   cat:'status',   power:null,acc:null,pp:40,effect:'buff',  stat:'def',stages:1 },
-  rollout:       {name:'Rollout',      type:'rock',     cat:'physical', power:30,  acc:90, pp:20},
-  round:         {name:'Round',        type:'normal',   cat:'special',  power:60,  acc:100,pp:15},
-  double_kick:   {name:'Double Kick',  type:'fighting', cat:'physical', power:30,  acc:100,pp:30},
-  take_down:     {name:'Take Down',    type:'normal',   cat:'physical', power:90,  acc:85, pp:20},
-  charm:         {name:'Charm',        type:'fairy',    cat:'status',   power:null,acc:100,pp:20,effect:'debuff',stat:'atk',stages:-2},
-  bulk_up:       {name:'Bulk Up',      type:'fighting', cat:'status',   power:null,acc:null,pp:20,effect:'buff',  stat:'atk',stages:1 },
-  double_edge:   {name:'Double-Edge',  type:'normal',   cat:'physical', power:120, acc:100,pp:15},
-  swagger:       {name:'Swagger',      type:'normal',   cat:'status',   power:null,acc:85, pp:15,effect:'buff',   stat:'atk',stages:2 },
-  headbutt:      {name:'Headbutt',     type:'normal',   cat:'physical', power:70,  acc:100,pp:15},
   tackle:       {name:'Tackle',        type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
   scratch:      {name:'Scratch',       type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
   pound:        {name:'Pound',         type:'normal',  cat:'physical', power:40,  acc:100, pp:35},
@@ -58,6 +47,11 @@ const MOVES_DB = {
   fire_blast:   {name:'Fire Blast',    type:'fire',    cat:'special',  power:110, acc:85,  pp:5 },
   overheat:     {name:'Overheat',      type:'fire',    cat:'special',  power:130, acc:90,  pp:5 },
   vine_whip:    {name:'Vine Whip',     type:'grass',   cat:'physical', power:45,  acc:100, pp:25},
+  branch_poke:  {name:'Branch Poke',   type:'grass',   cat:'physical', power:40,  acc:100, pp:40},
+  scary_face:   {name:'Scary Face',    type:'normal',  cat:'status',   power:null,acc:100, pp:10,  effect:'deboss', stat:'spe', stages:-2},
+  fury_swipes:  {name:'Fury Swipes',   type:'normal',  cat:'physical', power:18,  acc:80,  pp:15},
+  sucker_punch: {name:'Sucker Punch',  type:'dark',    cat:'physical', power:70,  acc:100, pp:5},
+  shadow_sneak: {name:'Shadow Sneak',  type:'ghost',   cat:'physical', power:40,  acc:100, pp:30},
   razor_leaf:   {name:'Razor Leaf',    type:'grass',   cat:'physical', power:55,  acc:95,  pp:25},
   seed_bomb:    {name:'Seed Bomb',     type:'grass',   cat:'physical', power:80,  acc:100, pp:15},
   leaf_blade:   {name:'Leaf Blade',    type:'grass',   cat:'physical', power:90,  acc:100, pp:15},
@@ -80,8 +74,8 @@ const MOVES_DB = {
   aerial_ace:   {name:'Aerial Ace',    type:'flying',  cat:'physical', power:60,  acc:null,pp:20},
   brave_bird:   {name:'Brave Bird',    type:'flying',  cat:'physical', power:120, acc:100, pp:15},
   x_scissor:    {name:'X-Scissor',     type:'bug',     cat:'physical', power:80,  acc:100, pp:15},
-  poison_sting:  {name:'Poison Sting', type:'poison',  cat:'physical', power:15,  acc:100, pp:35},
-  twineedle:     {name:'Twineedle',    type:'bug',     cat:'physical', power:25,  acc:100, pp:20},
+  poison_sting:  {name:'Poison Sting', type:'poison',  cat:'physical', power:15,  acc:100, pp:35, effect:'poison', effectChance:30},
+  twineedle:     {name:'Twineedle',    type:'bug',     cat:'physical', power:25,  acc:100, pp:20, effect:'poison', effectChance:20},
   blizzard:     {name:'Blizzard',      type:'ice',     cat:'special',  power:110, acc:70,  pp:5 },
   giga_drain:   {name:'Giga Drain',    type:'grass',   cat:'special',  power:75,  acc:100, pp:10},
   rapid_spin:    {name:'Rapid Spin',    type:'normal',  cat:'physical', power:50,  acc:100, pp:40},
@@ -172,7 +166,7 @@ const MOVES_DB = {
   safeguard:     {name:'Safeguard',     type:'normal',  cat:'status',   power:null,acc:null,pp:25},
   whirlwind:     {name:'Whirlwind',     type:'normal',  cat:'status',   power:null,acc:null,pp:20},
   // ── Water moves ausentes ──
-  withdraw:      {name:'Withdraw',      type:'water',   cat:'status',   power:null,acc:null,pp:40,  effect:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
+  withdraw:      {name:'Withdraw',      type:'water',   cat:'status',   power:null,acc:null,pp:40,  eff:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
   bubble:        {name:'Bubble',        type:'water',   cat:'special',  power:40,  acc:100, pp:30},
   aqua_tail:     {name:'Aqua Tail',     type:'water',   cat:'physical', power:90,  acc:90,  pp:10},
   aqua_jet:      {name:'Aqua Jet',      type:'water',   cat:'physical', power:40,  acc:100, pp:20},
@@ -183,17 +177,8 @@ const MOVES_DB = {
   rapid_spin:    {name:'Rapid Spin',    type:'normal',  cat:'physical', power:50,  acc:100, pp:40},
   // ── Bug moves ausentes ──
   bug_bite:      {name:'Bug Bite',      type:'bug',     cat:'physical', power:60,  acc:100, pp:20},
-  string_shot:   {name:'String Shot',   type:'bug',     cat:'status',   power:null,acc:95,  pp:40, effect:'debuff', stat:'spe', stages:-1, desc:"Lowers foe's Speed."},
-  harden:        {name:'Harden',        type:'normal',  cat:'status',   power:null,acc:null,pp:30, effect:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
-  // ── Spinarak/Ariados ───────────────────────────────────
-  scary_face:    {name:'Scary Face',   type:'normal',  cat:'status',   power:null,acc:100, pp:10, effect:'debuff', stat:'spe', stages:-2, desc:"Harshly lowers foe's Speed."},
-  leech_life:    {name:'Leech Life',   type:'bug',     cat:'physical', power:80,  acc:100, pp:10, desc:'Steals half damage as HP.'},
-  night_shade:   {name:'Night Shade',  type:'ghost',   cat:'special',  power:null,acc:100, pp:15, desc:'Damage = user level.'},
-  shadow_sneak:  {name:'Shadow Sneak', type:'ghost',   cat:'physical', power:40,  acc:100, pp:30, desc:'Priority +1, always goes first.'},
-  spider_web:    {name:'Spider Web',   type:'bug',     cat:'status',   power:null,acc:null,pp:10, desc:'Prevents foe from fleeing.'},
-  signal_beam:   {name:'Signal Beam',  type:'bug',     cat:'special',  power:75,  acc:100, pp:15, desc:'May confuse the target.'},
-  cross_poison:  {name:'Cross Poison', type:'poison',  cat:'physical', power:70,  acc:100, pp:20, desc:'High crit. May poison.'},
-  toxic_thread:  {name:'Toxic Thread', type:'poison',  cat:'status',   power:null,acc:100, pp:20, effect:'debuff', stat:'spe', stages:-1, desc:'Poisons and lowers Speed.'},
+  string_shot:   {name:'String Shot',   type:'bug',     cat:'status',   power:null,acc:95,  pp:40, eff:'deboss', stat:'spe', stages:-1, desc:"Lowers foe's Speed."},
+  harden:        {name:'Harden',        type:'normal',  cat:'status',   power:null,acc:null,pp:30, eff:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
   // ── Grass moves ausentes ──
   absorb:        {name:'Absorb',        type:'grass',   cat:'special',  power:20,  acc:100, pp:25},
   razor_leaf:    {name:'Razor Leaf',    type:'grass',   cat:'physical', power:55,  acc:95,  pp:25},
@@ -212,13 +197,13 @@ const MOVES_DB = {
   heat_crash:    {name:'Heat Crash',    type:'fire',    cat:'physical', power:null,acc:100, pp:10},
   // ── Misc ausentes ──
   odor_sleuth:   {name:'Odor Sleuth',   type:'normal',  cat:'status',   power:null,acc:null,pp:40},
-  defense_curl:  {name:'Defense Curl',  type:'normal',  cat:'status',   power:null,acc:null,pp:40, effect:'buff', stat:'def', stages:1},
+  defense_curl:  {name:'Defense Curl',  type:'normal',  cat:'status',   power:null,acc:null,pp:40, eff:'buff', stat:'def', stages:1},
   smog:          {name:'Smog',          type:'poison',  cat:'special',  power:30,  acc:70,  pp:20},
   rollout:       {name:'Rollout',       type:'rock',    cat:'physical', power:30,  acc:90,  pp:20},
   take_down:     {name:'Take Down',     type:'normal',  cat:'physical', power:90,  acc:85,  pp:20},
   assurance:     {name:'Assurance',     type:'dark',    cat:'physical', power:60,  acc:100, pp:10},
   head_smash:    {name:'Head Smash',    type:'rock',    cat:'physical', power:150, acc:80,  pp:5},
-  howl:          {name:'Howl',          type:'normal',  cat:'status',   power:null,acc:null,pp:40, effect:'buff', stat:'atk', stages:1},
+  howl:          {name:'Howl',          type:'normal',  cat:'status',   power:null,acc:null,pp:40, eff:'buff', stat:'atk', stages:1},
   psybeam:       {name:'Psybeam',       type:'psychic', cat:'special',  power:65,  acc:100, pp:20},
   fire_spin:     {name:'Fire Spin',     type:'fire',    cat:'special',  power:35,  acc:85,  pp:15},
   lucky_chant:   {name:'Lucky Chant',   type:'normal',  cat:'status',   power:null,acc:null,pp:30},
@@ -231,7 +216,7 @@ const MOVES_DB = {
   revenge:       {name:'Revenge',       type:'fighting',cat:'physical', power:60,  acc:100, pp:10},
   encore:        {name:'Encore',        type:'normal',  cat:'status',   power:null,acc:100, pp:5},
   retaliate:     {name:'Retaliate',     type:'normal',  cat:'physical', power:70,  acc:100, pp:5},
-  swords_dance:  {name:'Swords Dance',  type:'normal',  cat:'status',   power:null,acc:null,pp:20, effect:'buff', stat:'atk', stages:2},
+  swords_dance:  {name:'Swords Dance',  type:'normal',  cat:'status',   power:null,acc:null,pp:20, eff:'buff', stat:'atk', stages:2},
   slash:         {name:'Slash',         type:'normal',  cat:'physical', power:70,  acc:100, pp:20},
 };
 
@@ -259,84 +244,7 @@ const TIPO_CORES = {
 // Para adicionar um item: inclua { item:'chave_item', qty:1, chance:0.5 }
 // A função rola Math.random() para cada entrada com chance < 1
 // ──────────────────────────────────────────────────────────────
-
-// ── Player Level (Trainer Level) ──────────────────────────────────────────
-function xpParaProximoNivelPlayer(nivel) {
-  return Math.floor(100 * Math.pow(1.25, nivel - 1));
-}
-function xpPlayerPorBoss(bossNivel) {
-  if (bossNivel <= 15)  return 30;
-  if (bossNivel <= 25)  return 50;
-  if (bossNivel <= 40)  return 80;
-  return 120;
-}
-const PLAYER_LEVEL_REWARDS_BATTLE = {
-  2:  { potion: 3 },
-  3:  { potion: 3, pokebola: 2 },
-  4:  { potion: 5, revive: 1 },
-  5:  { potion: 5, revive: 2, pokebola: 3 },
-  6:  { potion: 5, revive: 2 },
-  7:  { potion: 8, revive: 3, pokebola: 3 },
-  8:  { potion: 8, revive: 3 },
-  9:  { potion: 10, revive: 3, pokebola: 5 },
-  10: { potion: 10, revive: 5, pokebola: 5, ether: 3 },
-};
-function getPlayerLevelRewardBattle(nivel) {
-  if (PLAYER_LEVEL_REWARDS_BATTLE[nivel]) return PLAYER_LEVEL_REWARDS_BATTLE[nivel];
-  return {
-    potion:   Math.floor(5 + nivel * 1.5),
-    revive:   Math.floor(nivel / 2),
-    pokebola: Math.floor(nivel / 2),
-    ether:    Math.floor(nivel / 3),
-  };
-}
-
-// ══════════════════════════════════════════════════════════════
-// DROPS INDIVIDUAIS POR BOSS
-// ─────────────────────────────────────────────────────────────
-// Cada entrada define drops EXTRAS que só esse boss específico
-// pode soltar, além dos drops normais por faixa de nível.
-//
-// Formato de cada linha:
-//   { item: 'nome_do_item', qty: quantidade, chance: 0.0-1.0 }
-//
-// chance: 1.0 = sempre cai | 0.5 = 50% | 0.3 = 30% | 0.1 = 10%
-//
-// Itens válidos: pokebola, great_ball, ultra_ball, potion,
-//   super_potion, hyper_potion, max_potion, revive, max_revive,
-//   full_restore, ether, antidote
-// ══════════════════════════════════════════════════════════════
-const BOSS_DROPS_INDIVIDUAIS = {
-
-  weedle: [
-    { item: 'antidote', qty: 1, chance: 0.6 },  // 60% — Weedle é venenosa
-    { item: 'antidote', qty: 1, chance: 0.25 }, // +25% de chance de 2x
-  ],
-
-  caterpie: [
-    // Quando awakening for implementado, adicionar aqui:
-    // { item: 'awakening', qty: 1, chance: 0.5 },
-    { item: 'potion',   qty: 1, chance: 0.4  }, // bonus de cura
-  ],
-
-  wooloo: [
-    { item: 'potion',   qty: 2, chance: 0.5  },
-    { item: 'revive',   qty: 1, chance: 0.2  },
-  ],
-
-  spinarak: [
-    { item: 'awakening', qty: 1, chance: 0.5 }, // 50%
-    { item: 'antidote',  qty: 1, chance: 0.4 }, // 40% — Bug/Poison
-  ],
-
-  // Adicione outros bosses aqui:
-  // nome_pokemon: [
-  //   { item: 'nome_item', qty: 1, chance: 0.5 },
-  // ],
-
-};
-
-function calcularDrops(bossNivel, bossNome) {
+function calcularDrops(bossNivel) {
   const n = bossNivel || 10;
 
   // Rola os drops probabilísticos e retorna { item: qty }
@@ -350,57 +258,54 @@ function calcularDrops(bossNivel, bossNome) {
     return itens;
   }
 
-  // ── Base drop por faixa de nível ────────────────────────────────────────
-  // IMPORTANTE: NÃO usar early return aqui — os drops individuais
-  // precisam ser mesclados DEPOIS de definir o resultado base.
-  let resultado;
-  if (n <= 15) resultado = { xp: 80, lealdade: 20, itens: rolarDrops([
-    { item: 'pokebola',  qty: 1, chance: 1.0 },
-    { item: 'potion',    qty: 1, chance: 1.0 },
-    { item: 'ether',     qty: 1, chance: 1.0 },
-    { item: 'revive',    qty: 1, chance: 1.0 },
-    { item: 'ether',     qty: 1, chance: 0.25 },
-    { item: 'potion',    qty: 1, chance: 0.25 },
-    { item: 'revive',    qty: 1, chance: 0.25 },
-  ])};
-  else if (n <= 25) resultado = { xp: 150, lealdade: 20, itens: rolarDrops([
-    { item: 'pokebola',    qty: 2, chance: 1.0 },
-    { item: 'great_ball',  qty: 1, chance: 1.0 },
-    { item: 'super_potion',qty: 1, chance: 1.0 },
-    { item: 'super_potion',qty: 1, chance: 0.5 },
-    { item: 'revive',      qty: 1, chance: 0.4 },
-    { item: 'ether',       qty: 1, chance: 0.35 },
-  ])};
-  else if (n <= 35) resultado = { xp: 250, lealdade: 20, itens: rolarDrops([
-    { item: 'great_ball',  qty: 2, chance: 1.0 },
-    { item: 'super_potion',qty: 2, chance: 1.0 },
-    { item: 'revive',      qty: 1, chance: 1.0 },
-    { item: 'revive',      qty: 1, chance: 0.5 },
-    { item: 'ether',       qty: 1, chance: 0.5 },
-  ])};
-  else resultado = { xp: 400, lealdade: 20, itens: rolarDrops([
-    { item: 'ultra_ball',  qty: 2, chance: 1.0 },
-    { item: 'hyper_potion',qty: 2, chance: 1.0 },
-    { item: 'revive',      qty: 1, chance: 1.0 },
-    { item: 'revive',      qty: 1, chance: 0.5 },
-    { item: 'ether',       qty: 1, chance: 0.6 },
-    { item: 'ether',       qty: 1, chance: 0.3 },
-  ])};
-
-  // ── Drops individuais do boss específico ────────────────────────────────
-  // Somados SEMPRE ao drop base, independente da faixa de nível.
-  if (bossNome) {
-    const key = bossNome.toLowerCase();
-    const extras = BOSS_DROPS_INDIVIDUAIS[key] || [];
-    if (extras.length > 0) {
-      const itensExtras = rolarDrops(extras);
-      Object.entries(itensExtras).forEach(([item, qty]) => {
-        resultado.itens[item] = (resultado.itens[item] || 0) + qty;
-      });
-    }
-  }
-
-  return resultado;
+  if (n <= 15) return { // Fácil (ex: Caterpie lv10)
+    xp:       80,
+    lealdade: 20,
+    itens: rolarDrops([
+      { item: 'pokebola',  qty: 1, chance: 1.0 },  // 100% — garantido
+      { item: 'potion',    qty: 1, chance: 1.0 },  // 100% — garantido
+      { item: 'ether',     qty: 1, chance: 1.0 },  // 50%  — sorte
+      { item: 'revive',    qty: 1, chance: 1.0 },  // 30%  — raro
+      { item: 'ether',     qty: 1, chance: 0.25 },
+      { item: 'potion',    qty: 1, chance: 0.25 },
+      { item: 'revive',    qty: 1, chance: 0.25 }, // 25%  — raro
+    ]),
+  };
+  if (n <= 25) return { // Médio-baixo
+    xp:       150,
+    lealdade: 20,
+    itens: rolarDrops([
+      { item: 'pokebola',    qty: 2, chance: 1.0 },
+      { item: 'great_ball',  qty: 1, chance: 1.0 },
+      { item: 'super_potion',qty: 1, chance: 1.0 },
+      { item: 'super_potion',qty: 1, chance: 0.5 },
+      { item: 'revive',      qty: 1, chance: 0.4 },
+      { item: 'ether',       qty: 1, chance: 0.35 },
+    ]),
+  };
+  if (n <= 35) return { // Médio (ex: Staryu lv30)
+    xp:       250,
+    lealdade: 20,
+    itens: rolarDrops([
+      { item: 'great_ball',  qty: 2, chance: 1.0 },
+      { item: 'super_potion',qty: 2, chance: 1.0 },
+      { item: 'revive',      qty: 1, chance: 1.0 },
+      { item: 'revive',      qty: 1, chance: 0.5 },
+      { item: 'ether',       qty: 1, chance: 0.5 },
+    ]),
+  };
+  return { // Difícil (ex: Mawile lv35+)
+    xp:       400,
+    lealdade: 20,
+    itens: rolarDrops([
+      { item: 'ultra_ball',  qty: 2, chance: 1.0 },
+      { item: 'hyper_potion',qty: 2, chance: 1.0 },
+      { item: 'revive',      qty: 1, chance: 1.0 },
+      { item: 'revive',      qty: 1, chance: 0.5 },
+      { item: 'ether',       qty: 1, chance: 0.6 },
+      { item: 'ether',       qty: 1, chance: 0.3 },
+    ]),
+  };
 }
 
 function xpParaNivel(n){ return Math.pow(n, 3); } // mesma fórmula do boss-raid.js
@@ -437,6 +342,10 @@ const POKEMON_TIPOS = {
   squirtle:['water'],totodile:['water'],mudkip:['water'],piplup:['water'],
   oshawott:['water'],froakie:['water'],popplio:['water'],sobble:['water'],quaxly:['water'],
   pikachu:['electric'],
+  caterpie:['bug'], metapod:['bug'], butterfree:['bug','flying'],
+  wooloo:['normal'], dubwool:['normal'],
+  weedle:['bug','poison'], kakuna:['bug','poison'], beedrill:['bug','poison'],
+  spinarak:['bug','poison'], ariados:['bug','poison'],
   // evoluções
   ivysaur:['grass','poison'],venusaur:['grass','poison'],bayleef:['grass'],meganium:['grass'],
   grovyle:['grass'],sceptile:['grass'],grotle:['grass'],torterra:['grass','ground'],
@@ -471,6 +380,10 @@ const BASE_STATS = {
   oshawott:{hp:55,atk:55,def:45,spa:63,spd:45,spe:45},froakie:{hp:41,atk:56,def:40,spa:62,spd:44,spe:71},
   popplio:{hp:50,atk:54,def:54,spa:66,spd:56,spe:40},sobble:{hp:50,atk:40,def:40,spa:70,spd:40,spe:70},
   quaxly:{hp:55,atk:65,def:45,spa:50,spd:45,spe:50},pikachu:{hp:35,atk:55,def:40,spa:50,spd:50,spe:90},
+  caterpie:{hp:45,atk:30,def:35,spa:20,spd:20,spe:45},metapod:{hp:50,atk:20,def:55,spa:25,spd:25,spe:30},
+  wooloo:{hp:42,atk:40,def:55,spa:40,spd:45,spe:48},weedle:{hp:40,atk:35,def:30,spa:20,spd:20,spe:50},
+  kakuna:{hp:45,atk:25,def:50,spa:25,spd:25,spe:35},
+  spinarak:{hp:40,atk:60,def:40,spa:40,spd:40,spe:30},
 };
 // Evoluções — fallback para BASE_STATS se não encontrar
 const BASE_STATS_EVO = {
@@ -500,6 +413,12 @@ const BASE_STATS_EVO = {
   cinderace:{hp:80,atk:116,def:75,spa:65,spd:75,spe:119},
   skeledirge:{hp:104,atk:75,def:100,spa:110,spd:75,spe:66},
   typhlosion:{hp:78,atk:84,def:78,spa:109,spd:85,spe:100},
+  // Bug/Wooloo/Weedle lines
+  butterfree:{hp:60,atk:45,def:50,spa:90,spd:80,spe:70},
+  dubwool:{hp:72,atk:80,def:100,spa:60,spd:90,spe:88},
+  beedrill:{hp:65,atk:90,def:40,spa:45,spd:80,spe:75},
+  ariados:{hp:70,atk:90,def:70,spa:60,spd:70,spe:40},
+  ivysaur:{hp:60,atk:62,def:63,spa:80,spd:80,spe:60},
 };
 
 const NATURES = {
@@ -546,12 +465,12 @@ const LEARNSETS_BATTLE = {
   sobble:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'bind'],[12,'water_pulse'],[16,'tearful_look'],[20,'acrobatics'],[24,'sucker_punch'],[28,'surf'],[32,'liquidation'],[36,'snipe_shot'],[40,'hydro_pump'],[44,'bounce']],
   quaxly:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'wing_attack'],[12,'quick_attack'],[16,'water_pulse'],[20,'aerial_ace'],[24,'aqua_jet'],[28,'acrobatics'],[32,'liquidation'],[36,'double_hit'],[40,'hydro_pump'],[44,'brave_bird']],
   caterpie:   [[1,'tackle'],[1,'string_shot'],[5,'bug_bite']],
-  wooloo:     [[1,'tackle'],[1,'growl'],[4,'defense_curl'],[8,'rollout'],[12,'round'],[16,'double_kick'],[20,'take_down'],[24,'charm'],[28,'bulk_up'],[32,'double_edge'],[36,'swagger'],[40,'headbutt']],
   weedle:     [[1,'poison_sting'],[1,'string_shot']],
   kakuna:     [[1,'harden'],[7,'poison_sting']],
   beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
-  spinarak:   [[1,'poison_sting'],[1,'string_shot'],[5,'scary_face'],[11,'leech_life'],[17,'night_shade'],[23,'shadow_sneak'],[29,'agility'],[35,'spider_web'],[43,'signal_beam']],
-  ariados:    [[1,'poison_sting'],[1,'string_shot'],[27,'night_shade'],[33,'shadow_sneak'],[40,'signal_beam'],[47,'cross_poison'],[55,'toxic_thread']],
+  spinarak:   [[1,'poison_sting'],[1,'string_shot'],[5,'absorb'],[8,'scary_face'],[12,'shadow_sneak'],[15,'fury_swipes'],[19,'sucker_punch'],[22,'pin_missile'],[26,'agility'],[30,'poison_jab'],[35,'bug_bite']],
+  ariados:    [[1,'poison_sting'],[1,'string_shot'],[1,'absorb'],[1,'bug_bite'],[8,'scary_face'],[12,'shadow_sneak'],[15,'fury_swipes'],[19,'sucker_punch'],[23,'pin_missile'],[28,'agility'],[33,'poison_jab'],[40,'x_scissor']],
+  wooloo:     [[1,'tackle'],[1,'growl'],[4,'defense_curl'],[8,'rollout'],[12,'round'],[16,'double_kick'],[20,'take_down'],[24,'charm'],[28,'bulk_up'],[32,'double_edge']],
   metapod:    [[1,'harden']],
   butterfree: [[1,'confusion'],[1,'sleep_powder'],[10,'gust'],[12,'stun_spore'],[14,'psybeam'],[16,'silver_wind'],[18,'supersonic'],[21,'tailwind'],[24,'safeguard'],[27,'whirlwind'],[30,'psychic_move'],[33,'bug_buzz'],[36,'quiver_dance']],
 };
@@ -570,7 +489,6 @@ const EVOLUTION_CHAIN_BATTLE = {
   squirtle:    { evolvesTo: 'wartortle',    levelReq: 16 },
   wartortle:   { evolvesTo: 'blastoise',    levelReq: 36 },
   caterpie:    { evolvesTo: 'metapod',      levelReq: 7  },
-  wooloo:      { evolvesTo: 'dubwool',      levelReq: 24 },
   metapod:     { evolvesTo: 'butterfree',   levelReq: 10 },
   chikorita:   { evolvesTo: 'bayleef',      levelReq: 16 },
   bayleef:     { evolvesTo: 'meganium',     levelReq: 32 },
@@ -620,6 +538,7 @@ const EVOLUTION_CHAIN_BATTLE = {
   crocalor:    { evolvesTo: 'skeledirge',   levelReq: 36 },
   quaxly:      { evolvesTo: 'quaxwell',     levelReq: 16 },
   quaxwell:    { evolvesTo: 'quaquaval',    levelReq: 36 },
+  wooloo:      { evolvesTo: 'dubwool',      levelReq: 24 },
   weedle:      { evolvesTo: 'kakuna',       levelReq: 7  },
   kakuna:      { evolvesTo: 'beedrill',     levelReq: 10 },
   spinarak:    { evolvesTo: 'ariados',      levelReq: 22 },
@@ -680,6 +599,9 @@ const BOSS_ABILITIES = {
   caterpie: { normal: ['shield_dust','run_away'], hidden: 'run_away' },
   staryu:   { normal: ['illuminate','natural_cure'], hidden: 'analytic' },
   mawile:   { normal: ['hyper_cutter','intimidate'], hidden: 'sheer_force' },
+  spinarak: { normal: ['swarm','insomnia'], hidden: 'sniper' },
+  weedle:   { normal: ['run_away'], hidden: 'sniper' },
+  wooloo:   { normal: ['fluffy','run_away'], hidden: 'bulletproof' },
 };
 function gerarAbilityBoss(pokemon) {
   const entry = BOSS_ABILITIES[pokemon];
@@ -818,6 +740,7 @@ let _bossAttacking = false; // flag global: boss está executando ataque agora
 let _myCaptureResult = null; // 'caught' | 'failed' | 'skipped' — resultado desta raid
 let _dropsShown = false;     // garante que o popup só abre uma vez
 let _reinitDone = false;     // garante que o re-init de pokemon só ocorre uma vez
+let _bossStandbySlot = null; // pokémon capturado quando time está cheio (stand-by)
 
 // ── Modificadores de batalha (em memória, dono = quem lê é o líder da batalha) ──
 // Stages de stat do boss: { atk:0, def:0, spa:0, spd:0, spe:0 } (-6 a +6)
@@ -825,86 +748,7 @@ let _bossStages   = { atk:0, def:0, spa:0, spd:0, spe:0 };
 // Stages dos players por uid (ex: debuffs aplicados pelo boss)
 let _playerStages = {};  // { uid: { atk:0, def:0, spe:0, ... } }
 // Status conditions do boss: { sleep: turnosRestantes, confusion: bool }
-let _bossStatus      = { sleep:0, confusion:false };
-let _bossStandbySlot = null; // pokémon capturado em standby (time cheio)
-
-// ══════════════════════════════════════════════════════════════
-// ABILITIES PASSIVAS
-// Aplicadas sobre as stats base do player antes de calcular dano.
-// Algumas (torrent/blaze/overgrow/swarm) dependem do HP atual
-// e são aplicadas direto no calcDano via modificador de dano.
-// ══════════════════════════════════════════════════════════════
-
-// Modificador de stat pré-combate (Run Away, Static, etc.)
-function applyAbilityPassive(stats, ability) {
-  if (!stats || !ability) return stats;
-  const s = { ...stats };
-  switch (ability) {
-    // ── Run Away: +2% Speed ──────────────────────────────────
-    case 'run_away':
-      s.spe = Math.max(1, Math.round(s.spe * 1.02));
-      break;
-    // ── Speed Boost: +5% Speed ──────────────────────────────
-    case 'speed_boost':
-      s.spe = Math.max(1, Math.round(s.spe * 1.05));
-      break;
-    // ── Huge Power / Pure Power: dobra o Atk físico ─────────
-    case 'huge_power': case 'pure_power':
-      s.atk = Math.max(1, Math.round(s.atk * 2));
-      break;
-    // ── Hustle: +50% Atk, -20% Acc (Acc não é stat, ignorar aqui) ──
-    case 'hustle':
-      s.atk = Math.max(1, Math.round(s.atk * 1.5));
-      break;
-    // ── Intimidate: não modifica stats do dono ──────────────
-    // (efeito no oponente — aplicado em applyAbilityOnBossEntry)
-  }
-  return s;
-}
-
-// Modificador de dano ofensivo (depende de HP — Torrent/Blaze/Overgrow/Swarm)
-// hpAtual e hpMax são os valores do pokémon atacante
-function applyAbilityDmgMod(baseDmg, ability, moveType, hpAtual, hpMax) {
-  if (!ability || !baseDmg) return baseDmg;
-  const hpPct = hpMax > 0 ? hpAtual / hpMax : 1;
-  switch (ability) {
-    // ── Torrent: +50% dano water quando HP ≤ 1/3 ──────────
-    case 'torrent':
-      if (moveType === 'water' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
-      break;
-    // ── Blaze: +50% dano fire quando HP ≤ 1/3 ─────────────
-    case 'blaze':
-      if (moveType === 'fire' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
-      break;
-    // ── Overgrow: +50% dano grass quando HP ≤ 1/3 ─────────
-    case 'overgrow':
-      if (moveType === 'grass' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
-      break;
-    // ── Swarm: +50% dano bug quando HP ≤ 1/3 ──────────────
-    case 'swarm':
-      if (moveType === 'bug' && hpPct <= 1/3) return Math.floor(baseDmg * 1.5);
-      break;
-    // ── Iron Fist: +20% dano em golpes de soco ─────────────
-    // (tackle, headbutt, double_kick, etc. — physical normal/fighting)
-    case 'iron_fist':
-      if (['normal','fighting'].includes(moveType)) return Math.floor(baseDmg * 1.2);
-      break;
-    // ── Sheer Force: +30% dano em golpes com efeito secundário ─
-    // Simplificado: aplica a todos os golpes especiais
-    case 'sheer_force':
-      return Math.floor(baseDmg * 1.3);
-    // ── Protean / Libero: STAB em todos os golpes ───────────
-    // (o STAB já é calculado em calcDano — aqui garantimos que
-    //  o modificador final já vem com o bônus aplicado)
-    case 'protean': case 'libero':
-      // Forçar STAB multiplicando por 1.5 e dividindo pelo STAB base (1.0)
-      // Só se o tipo do golpe for diferente dos tipos do pokémon
-      // (se já tiver STAB, não aplica duplo)
-      // Nota: tratado diretamente no ataque do player (ver adiante)
-      break;
-  }
-  return baseDmg;
-}
+let _bossStatus   = { sleep:0, confusion:false };
 
 // helpers
 const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
@@ -1061,7 +905,6 @@ onAuthStateChanged(auth, async user => {
       playersState[uid] = {
         uid, nick: p.nick, avatar: p.avatar,
         pokemon: p.pokemon, nivel: p.nivel||1,
-        shiny: p.shiny === true,
         hpMax: 100, hp: 100,  // recalculado por atualizarHPPlayer()
         fainted: false, actedThisTurn: false, ppAtual: {},
       };
@@ -1088,7 +931,6 @@ onAuthStateChanged(auth, async user => {
       await set(ref(rdb, `boss_salas/${salaId}/battle/players/${_uid}`), {
         uid: _uid, nick: p.nick, avatar: p.avatar,
         pokemon: p.pokemon, nivel: p.nivel||1,
-        shiny: p.shiny === true,
         hpMax: 100, hp: 100,
         fainted: false, actedThisTurn: false, ppAtual: {},
       });
@@ -1203,23 +1045,11 @@ async function atualizarHPPlayer(){
 
   await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
     hpMax, hp: hpAtual, pokemon: pokeName, nivel: pokemonSlot.nivel||1,
-    shiny: pokemonSlot.shiny === true,
     ivs: pokemonSlot.ivs||{}, evs: pokemonSlot.evs||{},
     nature: pokemonSlot.nature||'Hardy',
     golpes,
     ppAtual: ppInicial,
-    ability: pokemonSlot.ability || null,
   });
-
-  // ── Intimidate: aplica -1 Atk no boss ao entrar ──────────────────────────
-  if (pokemonSlot.ability === 'intimidate') {
-    const bsNow = _battleSnap;
-    if (bsNow && !bsNow.bossFainted) {
-      applyBossStage('atk', -1);
-      await update(_battleRef, { [`bossStages/atk`]: (_bossStages.atk || 0) });
-      await logAction(`⬇️ Intimidate! ${cap(pokeName)}'s presence lowered the Boss's Attack!`);
-    }
-  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1240,36 +1070,21 @@ function iniciarBattleUI(sala){
 // ══════════════════════════════════════════════════════════════
 // RENDER PRINCIPAL — chamado toda vez que o Firebase atualiza
 // ══════════════════════════════════════════════════════════════
-async function renderBattle(){
+function renderBattle(){
   const bs = _battleSnap;
   if (!bs) return;
 
   // ── Ícones de status do boss ────────────────────────────────
-  // PSN badge inline ao lado do nome
-  const bossNameEl = document.getElementById('bossNameTag');
-  if (bossNameEl) {
-    const bossBaseName = (_bossData?.nome || bs.boss?.nome || '—');
-    let nameBadges = '';
-    if (_bossStatus.poisoned === 'toxic') nameBadges += '<span class="boss-status-badge psn">☠☠ PSN</span>';
-    else if (_bossStatus.poisoned)        nameBadges += '<span class="boss-status-badge psn">☠ PSN</span>';
-    if (_bossStatus.burned)               nameBadges += '<span class="boss-status-badge brn">🔥 BRN</span>';
-    if (_bossStatus.sleep > 0)            nameBadges += `<span class="boss-status-badge slp">💤 SLP</span>`;
-    if (_bossStatus.confusion)            nameBadges += '<span class="boss-status-badge cnf">💫 CNF</span>';
-    bossNameEl.innerHTML = sanitize(bossBaseName) + (nameBadges ? ' ' + nameBadges : '');
-  }
-
-  // Stage badges na área de status
-  const stageIcons = [];
+  const statusIcons = [];
+  if (_bossStatus.sleep > 0)      statusIcons.push(`💤×${_bossStatus.sleep}`);
+  if (_bossStatus.confusion)      statusIcons.push('💫');
+  if (_bossStatus.poisoned === 'toxic')  statusIcons.push('☠☠');
+  else if (_bossStatus.poisoned)  statusIcons.push('☠');
+  if (_bossStatus.burned)         statusIcons.push('🔥');
   const stageKeys = Object.entries(_bossStages).filter(([,v])=>v!==0);
-  const stageStatNames = {atk:'ATK',def:'DEF',spa:'SpA',spd:'SpD',spe:'SPE'};
-  stageKeys.forEach(([k,v]) => {
-    const sign  = v > 0 ? '+' : '';
-    const cls   = v > 0 ? 'boss-stage-up' : 'boss-stage-down';
-    const arrow = v > 0 ? '▲' : '▼';
-    stageIcons.push(`<span class="${cls}">${stageStatNames[k]||k.toUpperCase()}${sign}${v}${arrow}</span>`);
-  });
+  stageKeys.forEach(([k,v])=> statusIcons.push(`${k.toUpperCase()}${v>0?'+':''}${v}`));
   const statusEl = document.getElementById('bossStatusIcons');
-  if (statusEl) statusEl.innerHTML = stageIcons.join('  ');
+  if (statusEl) statusEl.textContent = statusIcons.join('  ');
 
   // ── Boss HP ──────────────────────────────────────────────
   const bossHpPct = bs.bossHpMax > 0 ? Math.max(0, bs.bossHp / bs.bossHpMax * 100) : 0;
@@ -1302,24 +1117,16 @@ async function renderBattle(){
   const captureQIdx   = bs.captureQueueIdx || 0;
   const myCaptureUid  = captureQueue[captureQIdx];
   // Na captura, TODOS os players têm vez (inclusive fainted)
-  // fase='boss_turn': nenhum player tem vez — boss está atacando
-  // Sincronizar _bossStages a partir do Firebase (para todos os clientes verem debuffs)
-  if (bs.bossStages) {
-    Object.assign(_bossStages, bs.bossStages);
-  }
-  const isBossTurnFase = bs.fase === 'boss_turn';
-  _myTurn = !isBossTurnFase && (
-    (curUid === _uid && !bs.bossFainted) ||
-    (bs.bossFainted && bs.fase === 'capture' && myCaptureUid === _uid)
-  );
+  _myTurn = (curUid === _uid && !bs.bossFainted) ||
+            (bs.bossFainted && bs.fase === 'capture' && myCaptureUid === _uid);
 
   // Banner de turno
   const players = bs.players || {};
   const curPlayer = players[curUid];
-  // _bossAttacking é setado verdadeiro durante bossAtaca() e falso depois
+  // bs.bossTurnActive é gravado no Firebase para todos os clients verem
   let bannerTxt;
-  if (_bossAttacking || isBossTurnFase){
-    bannerTxt = '🔴 Boss is attacking...';
+  if (bs.bossTurnActive || _bossAttacking){
+    bannerTxt = '🔴 Boss Turn!';
   } else if (bs.fase === 'capture'){
     const captureQueue = bs.captureQueue || [];
     const cqIdx = bs.captureQueueIdx || 0;
@@ -1371,16 +1178,9 @@ async function renderBattle(){
   // Timer de turno — reiniciar se for meu turno (e não estiver fainted)
   const myFainted = myPlayerSnap?.fainted || (myPlayerSnap?.hp ?? 1) <= 0;
 
-  // ── Auto-skip: turno pertence a player adormecido (sleep) → pular turno ──
-  const curPlayerSnap = bs.players?.[curUid];
-  const curSleeping = curPlayerSnap?.status === 'sleep';
-  const curFainted  = curPlayerSnap?.fainted || (curPlayerSnap?.hp ?? 1) <= 0;
-  if (curSleeping && !curFainted && bs.fase === 'battle' && !bs.bossFainted && curUid && !_actionDone){
-    // onValue não é async — delegar para função async
-    _processarSleepTurno(curUid, curPlayerSnap, bs.currentTurnIdx);
-  }
-
   // ── Auto-skip: turno pertence a player fainted → avançar automaticamente ──
+  const curPlayerSnap = bs.players?.[curUid];
+  const curFainted = curPlayerSnap?.fainted || (curPlayerSnap?.hp ?? 1) <= 0;
   if (curFainted && bs.fase === 'battle' && !bs.bossFainted && curUid && !_actionDone){
     if (curUid === _uid){
       // Caso 1: sou eu o fainted — eu mesmo faço o skip imediatamente
@@ -1456,7 +1256,7 @@ function renderPlayers(bs){
     const pct       = p.hpMax > 0 ? Math.max(0, p.hp / p.hpMax * 100) : 0;
     const barCls    = pct > 50 ? '' : pct > 20 ? 'yellow' : 'red';
     const fainted   = p.fainted || p.hp <= 0;
-    const imgSrc    = p.pokemon ? (p.shiny ? `../perfil/img-shiny/${p.pokemon}.png` : `../perfil/img-pokeicon/${p.pokemon}.png`) : '';
+    const imgSrc    = p.pokemon ? `../perfil/img-pokeicon/${p.pokemon}.png` : '';
 
     // Efeito escada: cada player desloca +18px para a direita por índice
     // (i=0 = mais à frente/topo, i=1 um pouco atrás, etc.)
@@ -1467,14 +1267,11 @@ function renderPlayers(bs){
       <img class="player-poke-img ${fainted?'fainted':''}"
            id="pimg-${uid}"
            src="${sanitize(imgSrc)}"
-           onerror="this.src='../perfil/img-pokeicon/${sanitize(p.pokemon)}.png'"
+           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'"
            alt="${sanitize(p.pokemon)}">
       <div class="player-info">
         <div class="player-nick">${isMe?'You':sanitize(p.nick)}</div>
-        <div class="player-poke-name">
-          ${sanitize(cap(p.pokemon))||'—'}
-          <span class="player-poke-lv">Lv.${p.nivel||1}</span>
-        </div>
+        <div class="player-poke-name">${sanitize(cap(p.pokemon))||'—'}</div>
         ${(() => {
           const stages = p.statStages || {};
           const statNames = {atk:'Atk',def:'Def',spa:'Sp.A',spd:'Sp.D',spe:'Spd',acc:'Acc'};
@@ -1492,23 +1289,6 @@ function renderPlayers(bs){
           if (p.status === 'sleep')    statusTags.push('<span class="status-tag slp">💤SLP</span>');
           const all = [...statusTags, ...tags];
           return all.length ? `<div class="player-stages-row">${all.join('')}</div>` : '';
-        })()}
-        ${(() => {
-          // Ability badge persistente quando condição ativa (HP <= 1/3)
-          const HP_TRIGGER_ABILITIES = {
-            torrent:  { name:'Torrent',  type:'water', icon:'💧', cls:'torrent' },
-            blaze:    { name:'Blaze',    type:'fire',  icon:'🔥', cls:'blaze'   },
-            overgrow: { name:'Overgrow', type:'grass', icon:'🌿', cls:'overgrow'},
-            swarm:    { name:'Swarm',    type:'bug',   icon:'🐝', cls:'swarm'   },
-          };
-          const abData = HP_TRIGGER_ABILITIES[p.ability];
-          const hpPctNow = p.hpMax > 0 ? p.hp / p.hpMax : 1;
-          if (abData && hpPctNow <= 1/3 && !fainted) {
-            return `<div class="ability-active-badge ability-${abData.cls}">
-              ${abData.icon} ${abData.name} <span class="ability-active-label">ACTIVE</span>
-            </div>`;
-          }
-          return '';
         })()}
         <div class="player-hp-bar-wrap">
           <div class="player-hp-label">
@@ -1559,12 +1339,11 @@ function atualizarBotoes(bs){
   const captureQIdx_a  = bs_atualizar?.captureQueueIdx || 0;
   const myCaptureTurn = capture_fase && captureQueue_a[captureQIdx_a] === _uid;
 
-  // Durante o turno do boss, bloquear TODOS os botões de todos os players
-  // (tanto pelo flag local quanto pelo campo fase='boss_turn' do Firebase)
-  const bossAtuando = _bossAttacking || (_battleSnap?.fase === 'boss_turn');
-  document.getElementById('btnFight').disabled = bossAtuando || !myTurn || _capturePhase;
-  document.getElementById('btnBag').disabled   = bossAtuando || (myCaptureTurn ? false : !myTurn);
-  document.getElementById('btnPass').disabled  = bossAtuando || (myCaptureTurn ? false : !myTurn);
+  const bossTurnLock = !!_battleSnap?.bossTurnActive || _bossAttacking;
+  document.getElementById('btnFight').disabled = bossTurnLock || !myTurn || _capturePhase;
+  document.getElementById('btnBag').disabled   = bossTurnLock || (myCaptureTurn ? false : !myTurn);
+  // Pass disponível durante captura para pular a vez
+  document.getElementById('btnPass').disabled  = bossTurnLock || (myCaptureTurn ? false : !myTurn);
 
   if (!myTurn){
     setSubPanel(null);
@@ -1811,20 +1590,24 @@ window.btUsarGolpe = async function(idx, moveKey){
   if (!_myTurn || _actionDone) return;
   // Lock do Firebase: previne double-action em latência de rede
   if (_battleSnap?.players?.[_uid]?.actedThisTurn) return;
+
+  // ── Insomnia: cura sleep no início do turno ──────────────
+  const _meInsomnia = _battleSnap?.players?.[_uid];
+  if (_meInsomnia?.ability === 'insomnia' && _meInsomnia?.status === 'sleep') {
+    await update(_battleRef, {
+      [`players/${_uid}/status`]:     null,
+      [`players/${_uid}/sleepTurns`]: 0,
+    });
+    await logAction(`${getNick()}'s ${cap(_meInsomnia.pokemon)}'s Insomnia woke it up!`);
+    await avancarTurno();
+    return; // consumiu o turno acordando
+  }
+
   _actionDone = true;
   pararTurnTimer();
   setSubPanel(null);
 
   const me       = _battleSnap.players?.[_uid];
-
-  // ── Shed Skin: 30% de curar poison no início do próprio turno ─
-  if (me?.ability === 'shed_skin' && (me?.status === 'poison' || me?.status === 'toxic')) {
-    if (Math.random() < 0.3) {
-      await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), { status: null });
-      showPlayerFloat(_uid, '🌿 Shed Skin!', 'buff');
-      await logAction(`${getNick()}'s ${cap(me.pokemon)} shed its skin and cured its Poison! (Shed Skin)`);
-    }
-  }
   const bossHp   = _battleSnap.bossHp || 0;
   const bossMax  = _battleSnap.bossHpMax || 1;
   const pokeTipos= POKEMON_TIPOS[me?.pokemon]||['normal'];
@@ -1877,13 +1660,7 @@ window.btUsarGolpe = async function(idx, moveKey){
       logExtra = variou !== 0
         ? ` Boss's ${statNames[stat]||stat} fell${Math.abs(stages)>1?' sharply':''}!`
         : ` Boss's ${statNames[stat]||stat} won't go lower!`;
-      if (variou !== 0) {
-        // Float animado com seta e nome do stat
-        const arrowStr = '▼'.repeat(Math.abs(stages));
-        showBossFloat(`${statNames[stat]||stat} ${arrowStr}`, 'debuff');
-        // Sincronizar TODOS os stages ao Firebase para outros clientes verem
-        await update(_battleRef, { bossStages: { ..._bossStages } });
-      }
+      if (variou !== 0) showBossFloat(`${stat.toUpperCase()}↓`.repeat(Math.abs(stages)), 'miss');
     } else if (eff === 'buff'){
       // Buffar o próprio pokémon (stat do player)
       const stat   = move.stat || 'atk';
@@ -1895,9 +1672,6 @@ window.btUsarGolpe = async function(idx, moveKey){
       });
       const statNames = {atk:'Attack',def:'Defense',spa:'Sp. Atk',spd:'Sp. Def',spe:'Speed'};
       logExtra = ` ${cap(me.pokemon)}'s ${statNames[stat]||stat} rose${stages>1?' sharply':''}!`;
-      // Float no card do player
-      const arrowUp = '▲'.repeat(Math.abs(stages));
-      showPlayerFloat(_uid, `${statNames[stat]||stat} ${arrowUp}`, 'buff');
     }
 
     // ── Decrementar PP do golpe de status ─────────────────────
@@ -1916,10 +1690,7 @@ window.btUsarGolpe = async function(idx, moveKey){
     return;
   }
 
-  const myStats  = applyAbilityPassive(
-    calcStats(me.pokemon, me.ivs, me.nivel||1, me.nature||'Hardy', me.evs),
-    me.ability
-  );
+  const myStats  = calcStats(me.pokemon, me.ivs, me.nivel||1, me.nature||'Hardy', me.evs);
   // Aplicar stages do player (buffs/debuffs acumulados)
   const myAtkEff = getEffStat(
     move.cat === 'physical' ? myStats.atk : myStats.spa,
@@ -1936,14 +1707,7 @@ window.btUsarGolpe = async function(idx, moveKey){
   const bossStatsEff = { ..._bossStats, def: move.cat==='physical'?bossDefEff:_bossStats.def, spd: move.cat==='special'?bossDefEff:_bossStats.spd };
   const res      = calcDano(myStatsEff, bossStatsEff, move, pokeTipos, bossTipos, me.nivel||1);
 
-  // Aplicar modificador de ability (Torrent/Blaze/Overgrow/Swarm/Iron Fist etc.)
-  // Protean/Libero: forçar STAB se o tipo do golpe não for do pokémon
-  let dmgAbility = applyAbilityDmgMod(res.dmg, me.ability, move.type, me.hp, me.hpMax);
-  if ((me.ability === 'protean' || me.ability === 'libero') && res.stab === 1.0) {
-    dmgAbility = Math.floor(dmgAbility * 1.5); // STAB em tudo
-  }
-
-  const dano     = Math.min(dmgAbility, bossHp); // não vai abaixo de 0
+  const dano     = Math.min(res.dmg, bossHp); // não vai abaixo de 0
   const newBossHp= Math.max(0, bossHp - dano);
 
   // Float de dano
@@ -1954,44 +1718,38 @@ window.btUsarGolpe = async function(idx, moveKey){
   const sp = document.getElementById('bossSprite');
   sp.classList.add('shake'); setTimeout(()=>sp.classList.remove('shake'),350);
 
-  // ── Detectar se ability foi ativada neste golpe ─────────────
-  let abilityActivationLog = '';
-  {
-    const hpPct = me.hpMax > 0 ? me.hp / me.hpMax : 1;
-    const ab = me.ability;
-    const mt = move.type;
-    let abilityTriggered = false;
-    let abilityTriggerName = '';
-
-    // HP-trigger abilities (Torrent/Blaze/Overgrow/Swarm) — só se bater tipo certo
-    if (hpPct <= 1/3 && dmgAbility > res.dmg && res.dmg > 0) {
-      const HP_TRIGGERS = { torrent:'Torrent', blaze:'Blaze', overgrow:'Overgrow', swarm:'Swarm' };
-      abilityTriggerName = HP_TRIGGERS[ab] || '';
-      if (abilityTriggerName) abilityTriggered = true;
-    }
-    // Iron Fist / Sheer Force
-    if (!abilityTriggered && dmgAbility > res.dmg && res.dmg > 0) {
-      const ALWAYS_TRIGGERS = { iron_fist:'Iron Fist', sheer_force:'Sheer Force' };
-      abilityTriggerName = ALWAYS_TRIGGERS[ab] || '';
-      if (abilityTriggerName) abilityTriggered = true;
-    }
-    // Protean / Libero
-    if (!abilityTriggered && (ab === 'protean' || ab === 'libero') && dmgAbility > res.dmg) {
-      abilityTriggerName = ab === 'protean' ? 'Protean' : 'Libero';
-      abilityTriggered = true;
-    }
-
-    if (abilityTriggered && abilityTriggerName) {
-      abilityActivationLog = ` ✨ ${abilityTriggerName} activated!`;
-      showPlayerFloat(_uid, `✨ ${abilityTriggerName}!`, 'ability-trigger');
-    }
-  }
-
-  let logTxt = `${getNick()}'s ${cap(me.pokemon)} used ${move.name}! (${dano} dmg)${abilityActivationLog}`;
+  let logTxt = `${getNick()}'s ${cap(me.pokemon)} used ${move.name}! (${dano} dmg)`;
   if (res.eff > 1)  logTxt += ' ⚡ Super effective!';
   if (res.eff === 0) logTxt += ' No effect!';
   if (res.crit > 1) logTxt += ' 💥 Critical hit!';
   if (res.stab > 1 && res.eff > 1) logTxt = logTxt.replace('⚡ Super effective!','⚡⚡ Super effective!');
+
+  // ── Efeito secundário do golpe (ex: poison_sting 30% poison) ──
+  if (move.effect && move.effectChance && res.eff > 0 && newBossHp > 0) {
+    const roll = Math.random() * 100;
+    if (roll < move.effectChance) {
+      const eff2 = move.effect;
+      if ((eff2 === 'poison' || eff2 === 'toxic') && !_bossStatus.poisoned) {
+        _bossStatus.poisoned = eff2;
+        _bossStatus.poisonTurno = 0;
+        showBossFloat('☠ Poison!', 'miss');
+        logTxt += ` ${cap(me.pokemon)}'s attack poisoned the boss!`;
+      } else if (eff2 === 'burn' && !_bossStatus.burned) {
+        _bossStatus.burned = true;
+        showBossFloat('🔥 Burned!', 'super');
+        logTxt += ' The boss was burned!';
+      } else if (eff2 === 'sleep' && !_bossStatus.sleep) {
+        const turnos = Math.floor(Math.random()*3)+1;
+        _bossStatus.sleep = turnos;
+        showBossFloat('💤 Sleep!', 'miss');
+        logTxt += ` The boss fell asleep!`;
+      } else if (eff2 === 'paralysis' && !_bossStatus.paralyzed) {
+        _bossStatus.paralyzed = true;
+        showBossFloat('⚡ Paralyzed!', 'miss');
+        logTxt += ' The boss was paralyzed!';
+      }
+    }
+  }
 
   // Decrementar PP do golpe usado
   const ppAtualSnap = me.ppAtual || {};
@@ -2022,361 +1780,117 @@ window.btUsarGolpe = async function(idx, moveKey){
 };
 
 // ── Usar item ────────────────────────────────────────────────
-// ── Constante de ITEM_INFO usada em btUsarItem e btAplicarItem ────────────
-const _BATTLE_ITEM_INFO = {
-  pokebola:{name:'Poké Ball',isBall:true,ballMult:1},
-  great_ball:{name:'Great Ball',isBall:true,ballMult:1.5},
-  ultra_ball:{name:'Ultra Ball',isBall:true,ballMult:2},
-  potion:{name:'Potion',heal:20},
-  super_potion:{name:'Super Potion',heal:60},
-  hyper_potion:{name:'Hyper Potion',heal:120},
-  max_potion:{name:'Max Potion',heal:9999},
-  full_restore:{name:'Full Restore',heal:9999},
-  revive:{name:'Revive',revive:true},
-  antidote:{name:'Antidote',antidote:true},
-  awakening:{name:'Awakening',awakening:true},
-};
-
-// ── Usar item — abre seletor de alvo para cura/revive ────────────────────
 window.btUsarItem = async function(itemKey){
   if (!_myTurn || _actionDone) return;
+  // Na fase de captura, ignorar actedThisTurn (pode ser stale do turno que matou o boss)
   const isCapturePhase = _battleSnap?.fase === 'capture';
   if (!isCapturePhase && _battleSnap?.players?.[_uid]?.actedThisTurn) return;
 
-  const info = _BATTLE_ITEM_INFO[itemKey];
+  const ITEM_INFO = {
+    pokebola:{name:'Poké Ball',isBall:true,ballMult:1},
+    great_ball:{name:'Great Ball',isBall:true,ballMult:1.5},
+    ultra_ball:{name:'Ultra Ball',isBall:true,ballMult:2},
+    potion:{name:'Potion',heal:20},super_potion:{name:'Super Potion',heal:60},
+    hyper_potion:{name:'Hyper Potion',heal:120},max_potion:{name:'Max Potion',heal:9999},
+    full_restore:{name:'Full Restore',heal:9999},
+    revive:{name:'Revive',revive:true},
+  };
+
+  const info = ITEM_INFO[itemKey];
   if (!info) return;
 
   // Pokébola apenas na fase de captura
   if (info.isBall && !_capturePhase){ setSubPanel(null); return; }
 
-  // ── Itens de CURA: pedir alvo antes de usar ───────────────────────────
-  if (info.heal){
-    const players = _battleSnap?.players || {};
-    const order   = _battleSnap?.turnOrder || [];
-    // Aliados que podem receber cura (HP < max, não fainted)
-    const targets = order.filter(uid => uid !== 'boss').map(uid => {
-      const p = players[uid];
-      if (!p) return null;
-      return { uid, p };
-    }).filter(Boolean);
+  _actionDone = true;
+  pararTurnTimer();
+  setSubPanel(null);
 
-    // Montar seletor visual de alvo
-    _actionDone = false;
-    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
-    html += '<div class="item-target-header"><span class="item-target-icon">💊</span><span class="item-target-title">Use on who?</span></div>';
-    targets.forEach(({ uid, p }) => {
-      const isMe     = uid === _uid;
-      const pct      = p.hpMax > 0 ? Math.max(0, p.hp / p.hpMax * 100) : 0;
-      const barCls   = pct > 50 ? 'ok' : pct > 20 ? 'low' : 'crit';
-      const fainted  = p.fainted || p.hp <= 0;
-      const isFull   = !fainted && p.hp >= p.hpMax;
-      const disabledCls = isFull ? 'disabled' : '';
-      const hpLabel  = fainted ? '💀 Fainted' : `${Math.max(0,p.hp)} / ${p.hpMax} HP`;
-      html += `
-        <button class="sub-btn item-target-btn ${disabledCls}"
-                ${isFull ? 'disabled title="HP already full"' : ''}
-                onclick="window.btAplicarItem('${uid}','${itemKey}')">
-          <img src="${p.shiny ? '../perfil/img-shiny/' : '../perfil/img-pokeicon/'}${p.pokemon}.png"
-               class="itarget-img" onerror="this.style.display='none'">
-          <div class="itarget-info">
-            <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
-            <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
-            <div class="itarget-hpbar-bg">
-              <div class="itarget-hpbar-fill ${barCls}" style="width:${pct}%"></div>
-            </div>
-            <span class="itarget-hp">${hpLabel}</span>
-          </div>
-        </button>`;
-    });
-    setSubPanel(html);
-    return;
-  }
+  // Remover item da bag do Firestore
+  try {
+    const newBag = Object.assign({}, _userData.raidBag || {});
+    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
+    if (newBag[itemKey] <= 0) delete newBag[itemKey];
+    _userData.raidBag = newBag;
+    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
+  } catch(e){}
 
-  // ── REVIVE: seletor de alvo (só fainted) ─────────────────────────────
-  if (info.revive){
-    const players = _battleSnap?.players || {};
-    const faintedAllies = Object.entries(players)
-      .filter(([uid, p]) => (p.fainted || p.hp <= 0));
-
-    if (faintedAllies.length === 0){
-      setMsg("No fainted Pokémon to revive!");
-      return;
-    }
-    if (faintedAllies.length === 1){
-      // Só um — chamar diretamente
-      await btAplicarRevive(faintedAllies[0][0], itemKey);
-      return;
-    }
-    // Múltiplos — seletor
-    _actionDone = false;
-    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
-    html += '<div class="item-target-header"><span class="item-target-icon">💊</span><span class="item-target-title">Revive who?</span></div>';
-    faintedAllies.forEach(([uid, p]) => {
-      const isMe = uid === _uid;
-      html += `<button class="sub-btn item-target-btn"
-               onclick="window.btReviveAlly('${uid}','${itemKey}')">
-        <img src="../perfil/img-pokeicon/${p.pokemon}.png"
-             class="itarget-img" style="opacity:0.5" onerror="this.style.display='none'">
-        <div class="itarget-info">
-          <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
-          <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
-          <span class="itarget-hp">💀 Fainted</span>
-        </div>
-      </button>`;
-    });
-    setSubPanel(html);
-    return;
-  }
-
-  // ── ANTIDOTE: seletor de alvo (só envenenados) ──────────────────────────
-  if (info.antidote){
-    const players = _battleSnap?.players || {};
-    const order   = _battleSnap?.turnOrder || [];
-    const poisonedTargets = order.filter(uid => uid !== 'boss').map(uid => {
-      const p = players[uid];
-      if (!p) return null;
-      return { uid, p };
-    }).filter(t => t && (t.p.status === 'poison' || t.p.status === 'toxic'));
-
-    if (poisonedTargets.length === 0){
-      setMsg('No poisoned Pokémon!');
-      return;
-    }
-    if (poisonedTargets.length === 1){
-      await btAplicarAntidote(poisonedTargets[0].uid, itemKey);
-      return;
-    }
-    _actionDone = false;
-    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
-    html += '<div class="item-target-header"><span class="item-target-icon">🌿</span><span class="item-target-title">Cure who?</span></div>';
-    poisonedTargets.forEach(({ uid, p }) => {
-      const isMe = uid === _uid;
-      html += `<button class="sub-btn item-target-btn"
-               onclick="window.btAplicarAntidoteAlly('${uid}','${itemKey}')">
-        <img src="${p.shiny ? '../perfil/img-shiny/' : '../perfil/img-pokeicon/'}${p.pokemon}.png"
-             class="itarget-img" onerror="this.style.display='none'">
-        <div class="itarget-info">
-          <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
-          <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
-          <span class="itarget-hp" style="color:#a040a0">☠ Poisoned</span>
-        </div>
-      </button>`;
-    });
-    setSubPanel(html);
-    return;
-  }
-
-  // ── AWAKENING: seletor de alvo (só adormecidos) ───────────────────────
-  if (info.awakening){
-    const players = _battleSnap?.players || {};
-    const order   = _battleSnap?.turnOrder || [];
-    const sleepTargets = order.filter(uid => uid !== 'boss').map(uid => {
-      const p = players[uid];
-      if (!p) return null;
-      return { uid, p };
-    }).filter(t => t && t.p.status === 'sleep');
-
-    if (sleepTargets.length === 0){
-      setMsg('No sleeping Pokémon!');
-      return;
-    }
-    if (sleepTargets.length === 1){
-      await btAplicarAwakening(sleepTargets[0].uid, itemKey);
-      return;
-    }
-    _actionDone = false;
-    let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
-    html += '<div class="item-target-header"><span class="item-target-icon">☕</span><span class="item-target-title">Wake up who?</span></div>';
-    sleepTargets.forEach(({ uid, p }) => {
-      const isMe = uid === _uid;
-      html += `<button class="sub-btn item-target-btn"
-               onclick="window.btAplicarAwakeningAlly('${uid}','${itemKey}')">
-        <img src="${p.shiny ? '../perfil/img-shiny/' : '../perfil/img-pokeicon/'}${p.pokemon}.png"
-             class="itarget-img" onerror="this.style.display='none'">
-        <div class="itarget-info">
-          <span class="itarget-nick">${isMe ? 'You' : sanitize(p.nick)}</span>
-          <span class="itarget-poke">${cap(p.pokemon)} <span class="itarget-lv">Lv.${p.nivel||1}</span></span>
-          <span class="itarget-hp" style="color:#6080d0">💤 Sleeping</span>
-        </div>
-      </button>`;
-    });
-    setSubPanel(html);
-    return;
-  }
-
-  // ── POKÉBOLA: direto (sem seletor) ───────────────────────────────────
   if (info.isBall){
-    _actionDone = true;
-    pararTurnTimer();
-    setSubPanel(null);
-    try {
-      const newBag = Object.assign({}, _userData.raidBag || {});
-      newBag[itemKey] = (newBag[itemKey] || 0) - 1;
-      if (newBag[itemKey] <= 0) delete newBag[itemKey];
-      _userData.raidBag = newBag;
-      await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
-    } catch(e){}
+    // Lançar pokébola
     await arremessarPokebola(itemKey, info);
     return;
   }
 
-  await avancarTurno();
-};
-
-
-// ── Aplicar antidote no alvo selecionado ─────────────────────────────────
-async function btAplicarAntidote(targetUid, itemKey) {
-  _actionDone = true;
-  pararTurnTimer();
-  setSubPanel(null);
-
-  // Consumir item
-  try {
-    const newBag = Object.assign({}, _userData.raidBag || {});
-    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
-    if (newBag[itemKey] <= 0) delete newBag[itemKey];
-    _userData.raidBag = newBag;
-    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
-  } catch(e){}
-
-  const target = _battleSnap?.players?.[targetUid];
-  if (!target){ await avancarTurno(); return; }
-
-  if (target.status !== 'poison' && target.status !== 'toxic'){
-    setMsg('Not poisoned!');
-    _actionDone = false;
-    return;
+  if (info.heal){
+    const me = _battleSnap.players?.[_uid];
+    if (!me){ await avancarTurno(); return; }
+    if (me.hp >= me.hpMax){
+      // HP cheio — devolve item e não consome turno
+      try {
+        const devBag = Object.assign({}, _userData.raidBag || {});
+        devBag[itemKey] = (devBag[itemKey] || 0) + 1;
+        _userData.raidBag = devBag;
+        await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
+      } catch(e){}
+      setMsg("HP is already full!");
+      _actionDone = false;
+      return;
+    }
+    const healed = Math.min(info.heal, me.hpMax - me.hp);
+    const newHp  = me.hp + healed;
+    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), { hp: newHp, fainted: false });
+    showPlayerFloat(_uid, `+${healed}`, 'heal');
+    await logAction(`${getNick()} used ${info.name} and restored ${healed} HP!`);
   }
 
-  // Remover status poison no Firebase RTDB
-  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { status: null });
-  const isMe    = targetUid === _uid;
-  const whoName = isMe ? cap(target.pokemon) : `${sanitize(target.nick || 'ally')}'s ${cap(target.pokemon)}`;
-  showPlayerFloat(targetUid, '🌿 Cured!', 'heal');
-  await logAction(`${getNick()} used Antidote on ${whoName}! Poison cured!`);
+  if (info.revive){
+    // Revive pode ser usado em si mesmo OU em aliados desmaiados
+    // Se há aliados fainted, mostrar seletor
+    const players = _battleSnap?.players || {};
+    const faintedAllies = Object.entries(players)
+      .filter(([uid, p]) => p.fainted || p.hp <= 0);
 
-  await avancarTurno();
-}
-window.btAplicarAntidoteAlly = async function(targetUid, itemKey){
-  if (_actionDone) return;
-  await btAplicarAntidote(targetUid, itemKey);
-};
+    if (faintedAllies.length === 0){
+      // Ninguém fainted — devolve item
+      try {
+        const devBag = Object.assign({}, _userData.raidBag || {});
+        devBag[itemKey] = (devBag[itemKey] || 0) + 1;
+        _userData.raidBag = devBag;
+        await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
+      } catch(e){}
+      setMsg("No fainted Pokémon to revive!");
+      _actionDone = false;
+      return;
+    }
 
-// ── Aplicar awakening no alvo selecionado ────────────────────────────────
-async function btAplicarAwakening(targetUid, itemKey) {
-  _actionDone = true;
-  pararTurnTimer();
-  setSubPanel(null);
-
-  try {
-    const newBag = Object.assign({}, _userData.raidBag || {});
-    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
-    if (newBag[itemKey] <= 0) delete newBag[itemKey];
-    _userData.raidBag = newBag;
-    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
-  } catch(e){}
-
-  const target = _battleSnap?.players?.[targetUid];
-  if (!target){ await avancarTurno(); return; }
-
-  if (target.status !== 'sleep'){
-    setMsg('Not sleeping!');
-    _actionDone = false;
-    return;
+    if (faintedAllies.length === 1){
+      // Só um — reviver direto
+      const [targetUid, targetP] = faintedAllies[0];
+      const halfHp = Math.floor((targetP.hpMax||1)/2);
+      await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: halfHp, fainted: false });
+      showPlayerFloat(targetUid, `+${halfHp}`, 'heal');
+      await logAction(`${getNick()} used Revive! ${cap(targetP.pokemon)} came back with ${halfHp} HP!`);
+    } else {
+      // Múltiplos fainted — mostrar seletor
+      _actionDone = false; // desfazer lock temporariamente
+      let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
+      html += '<div style="font-size:0.7rem;color:#ffad00;padding:4px 8px 8px;text-align:center">Choose who to revive:</div>';
+      faintedAllies.forEach(([uid, p]) => {
+        const isMe = uid === _uid;
+        html += `<button class="sub-btn" onclick="window.btReviveAlly('${uid}','${itemKey}')">
+          ${isMe ? 'Your' : sanitize(p.nick) + "'s"} ${cap(p.pokemon)}
+        </button>`;
+      });
+      setSubPanel(html);
+      return;
+    }
   }
 
-  // Remover status sleep no Firebase RTDB e zerar sleepTurns
-  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { status: null, sleepTurns: 0 });
-  const isMe    = targetUid === _uid;
-  const whoName = isMe ? cap(target.pokemon) : `${sanitize(target.nick || 'ally')}'s ${cap(target.pokemon)}`;
-  showPlayerFloat(targetUid, '☕ Awake!', 'heal');
-  await logAction(`${getNick()} used Awakening on ${whoName}! Woke up!`);
-
-  await avancarTurno();
-}
-window.btAplicarAwakeningAlly = async function(targetUid, itemKey){
-  if (_actionDone) return;
-  await btAplicarAwakening(targetUid, itemKey);
-};
-
-// ── Aplicar item de cura no alvo selecionado ─────────────────────────────
-window.btAplicarItem = async function(targetUid, itemKey){
-  if (_actionDone) return;
-  const info = _BATTLE_ITEM_INFO[itemKey];
-  if (!info || !info.heal) return;
-
-  _actionDone = true;
-  pararTurnTimer();
-  setSubPanel(null);
-
-  // Consumir item
-  try {
-    const newBag = Object.assign({}, _userData.raidBag || {});
-    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
-    if (newBag[itemKey] <= 0) delete newBag[itemKey];
-    _userData.raidBag = newBag;
-    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
-  } catch(e){}
-
-  const target = _battleSnap?.players?.[targetUid];
-  if (!target){ await avancarTurno(); return; }
-
-  if (target.hp >= target.hpMax){
-    setMsg("HP is already full!");
-    _actionDone = false;
-    // Devolver item
-    try {
-      const devBag = Object.assign({}, _userData.raidBag || {});
-      devBag[itemKey] = (devBag[itemKey] || 0) + 1;
-      _userData.raidBag = devBag;
-      await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
-    } catch(e){}
-    return;
-  }
-
-  const healed  = Math.min(info.heal, target.hpMax - target.hp);
-  const newHp   = target.hp + healed;
-  const isMe    = targetUid === _uid;
-  const whoName = isMe ? 'own' : `${sanitize(target.nick || 'ally')}'s`;
-
-  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: newHp, fainted: false });
-  showPlayerFloat(targetUid, `+${healed}`, 'heal');
-  await logAction(`${getNick()} used ${info.name} on ${isMe ? cap(target.pokemon) : whoName + ' ' + cap(target.pokemon)} (+${healed} HP)!`);
-
   await avancarTurno();
 };
 
-// ── Reviver aliado (helper interno) ─────────────────────────────────────
-async function btAplicarRevive(targetUid, itemKey){
-  _actionDone = true;
-  pararTurnTimer();
-  setSubPanel(null);
-
-  try {
-    const newBag = Object.assign({}, _userData.raidBag || {});
-    newBag[itemKey] = (newBag[itemKey] || 0) - 1;
-    if (newBag[itemKey] <= 0) delete newBag[itemKey];
-    _userData.raidBag = newBag;
-    await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: newBag });
-  } catch(e){}
-
-  const targetP = _battleSnap?.players?.[targetUid];
-  if (!targetP){ await avancarTurno(); return; }
-  const halfHp = Math.floor((targetP.hpMax||1)/2);
-  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), { hp: halfHp, fainted: false, status: null });
-  showPlayerFloat(targetUid, `+${halfHp}`, 'heal');
-  await logAction(`${getNick()} used Revive! ${cap(targetP.pokemon)} came back with ${halfHp} HP!`);
-  await avancarTurno();
-}
-
-// ── Reviver aliado selecionado (chamado pelo seletor visual) ───────────────
+// ── Reviver aliado selecionado ───────────────────────────────
 window.btReviveAlly = async function(targetUid, itemKey){
-  if (_actionDone) return;
-  await btAplicarRevive(targetUid, itemKey);
-};
-
-// ── (helper interno duplicado removido — usa btAplicarRevive) ───────────
-async function _btReviveAllyLegacy(targetUid, itemKey){
   if (_actionDone) return;
   _actionDone = true;
   pararTurnTimer();
@@ -2443,50 +1957,16 @@ async function arremessarPokebola(itemKey, info){
 // ══════════════════════════════════════════════════════════════
 // ATAQUE DO BOSS
 // ══════════════════════════════════════════════════════════════
-// ── Processa skip de turno por sleep (chamado do onValue síncrono) ───────────
-async function _processarSleepTurno(sleepUid, playerSnap, idxSnapshot) {
-  if (_actionDone) return;
-  if (sleepUid === _uid) {
-    _actionDone = true;
-    const slpTurnsNow = Math.max(0, (playerSnap?.sleepTurns ?? 1) - 1);
-    const wakeUp = slpTurnsNow <= 0;
-    const slpUpdate = wakeUp ? { status: null, sleepTurns: 0 } : { sleepTurns: slpTurnsNow };
-    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), slpUpdate);
-    if (wakeUp) {
-      showPlayerFloat(_uid, '☀ Awake!', 'heal');
-      await logAction(`${getNick()}'s ${cap(playerSnap.pokemon)} woke up!`);
-    } else {
-      showPlayerFloat(_uid, '💤 Sleeping…', 'miss');
-      await logAction(`${getNick()}'s ${cap(playerSnap.pokemon)} is fast asleep! (${slpTurnsNow} turn${slpTurnsNow !== 1 ? 's' : ''} left)`);
-    }
-    setTimeout(() => avancarTurno(), 600);
-  } else {
-    // Player remoto dormindo — aguardar 4s e avançar se necessário
-    const myIdx = idxSnapshot;
-    setTimeout(async () => {
-      const bsNow = (await get(_battleRef)).val();
-      if (!bsNow || _actionDone) return;
-      if (bsNow.currentTurnIdx === myIdx &&
-          bsNow.players?.[sleepUid]?.status === 'sleep' &&
-          bsNow.fase === 'battle') {
-        await avancarTurno();
-      }
-    }, 4000);
-  }
-}
-
 async function bossAtaca(){
   _bossAttacking = true;
-  // Sinalizar no Firebase que é turno do boss — bloqueia botões em TODOS os clientes
-  await update(_battleRef, { fase: 'boss_turn' });
   const bannerEl = document.getElementById('turnBanner');
   if (bannerEl){ bannerEl.textContent = '🔴 Boss is attacking...'; bannerEl.classList.add('boss-turn'); }
 
   const bs      = (await get(_battleRef)).val();
-  if (!bs || bs.bossFainted){ _bossAttacking = false; await update(_battleRef, { fase: 'battle' }); return; }
+  if (!bs || bs.bossFainted){ _bossAttacking = false; return; }
 
   const golpes  = _bossData?.golpes || [];
-  if (!golpes.length){ _bossAttacking = false; await update(_battleRef, { fase: 'battle' }); return; }
+  if (!golpes.length){ _bossAttacking = false; return; }
 
   const bossTipos = _bossData.tipos;
 
@@ -2505,10 +1985,14 @@ async function bossAtaca(){
     showBossFloat(`-${poisonDmg}`, '');
     statusLog.push(`Boss took ${poisonDmg} poison damage!`);
     if (newBossHp <= 0){
-      statusUpdates.bossFainted = true;
-      statusUpdates.fase = 'capture';
+      const _turnOrdPoison = bs.turnOrder || [];
+      statusUpdates.bossFainted     = true;
+      statusUpdates.fase            = 'capture';
+      statusUpdates.captureQueue    = [..._turnOrdPoison];
+      statusUpdates.captureQueueIdx = 0;
+      statusUpdates.captureResults  = {};
       await update(_battleRef, statusUpdates);
-      await logAction(statusLog.join(' '));
+      await logAction((statusLog.join(' ')) + ' The boss fainted from poison! Prepare to throw!');
       _bossAttacking = false;
       return;
     }
@@ -2521,10 +2005,14 @@ async function bossAtaca(){
     showBossFloat(`-${burnDmg}`, 'super');
     statusLog.push(`Boss is hurt by its burn! (${burnDmg} dmg)`);
     if (newBossHp <= 0){
-      statusUpdates.bossFainted = true;
-      statusUpdates.fase = 'capture';
+      const _turnOrdBurn = bs.turnOrder || [];
+      statusUpdates.bossFainted     = true;
+      statusUpdates.fase            = 'capture';
+      statusUpdates.captureQueue    = [..._turnOrdBurn];
+      statusUpdates.captureQueueIdx = 0;
+      statusUpdates.captureResults  = {};
       await update(_battleRef, statusUpdates);
-      await logAction(statusLog.join(' '));
+      await logAction((statusLog.join(' ')) + ' The boss fainted from burn! Prepare to throw!');
       _bossAttacking = false;
       return;
     }
@@ -2682,19 +2170,6 @@ async function bossAtaca(){
     }
 
     const playerStats = calcStats(p.pokemon, p.ivs, p.nivel||1, p.nature||'Hardy', p.evs);
-
-    // ── Fluffy: 0.5x dano físico, 2x de Fire ─────────────────
-    let fluffyMult = 1.0;
-    if (p.ability === 'fluffy') {
-      if (move.cat === 'physical' && move.type !== 'fire') fluffyMult = 0.5;
-      else if (move.type === 'fire') fluffyMult = 2.0;
-      if (fluffyMult !== 1.0) {
-        const fluffyName = fluffyMult < 1 ? 'Fluffy reduced the damage!' : 'Fluffy doubled Fire damage!';
-        showPlayerFloat(uid, fluffyMult < 1 ? '🛡 Fluffy!' : '🔥 Fluffy!', fluffyMult < 1 ? 'buff' : 'debuff');
-        await logAction(`${cap(p.pokemon)}'s Fluffy ${fluffyMult < 1 ? 'cushioned the hit!' : 'made it vulnerable to fire!'}`);
-      }
-    }
-
     // Aplicar stages ao boss e ao player
     const bossAtkEff = getEffStat(
       move.cat === 'physical' ? _bossStats.atk : _bossStats.spa,
@@ -2717,7 +2192,7 @@ async function bossAtaca(){
       spd: getEffStat(playerStats.spd, 'spd', _playerStages[targetUid] || {}),
     };
     const res   = calcBossAtk(bossStatsEff, playerStatsEff, move, bossTipos, playerTipos, _bossData.nivel);
-    const dano  = Math.min(Math.floor(res.dmg * fluffyMult), p.hp);
+    const dano  = Math.min(res.dmg, p.hp);
     const newHp = Math.max(0, p.hp - dano);
     updates[`players/${targetUid}/hp`] = newHp;
     if (newHp <= 0) updates[`players/${targetUid}/fainted`] = true;
@@ -2726,13 +2201,31 @@ async function bossAtaca(){
     logParts.push(`${players[targetUid].nick || 'Player'}'s ${cap(p.pokemon)} took ${dano} damage!`);
     if (res.eff > 1) logParts.push('Super effective!');
 
-    // ── Secondary effect: sleep no player (ex: Hypnosis, Dark Void) ─────
-    if (move.effect === 'sleep' && newHp > 0 && !p.status){
-      const slpTurns = move.turns || Math.floor(Math.random()*3)+1;
-      updates[`players/${targetUid}/status`]     = 'sleep';
-      updates[`players/${targetUid}/sleepTurns`] = slpTurns;
-      showPlayerFloat(targetUid, '💤 Sleep!', 'miss');
-      logParts.push(`${players[targetUid].nick || 'Player'}'s ${cap(p.pokemon)} fell asleep for ${slpTurns} turn${slpTurns>1?'s':''}!`);
+    // ── Secondary effect do boss em damaging move ─────────
+    if (move.effect && move.effectChance && res.eff > 0 && newHp > 0) {
+      const roll2 = Math.random() * 100;
+      if (roll2 < (move.effectChance || 0)) {
+        const eff2 = move.effect;
+        const pAbility = p.ability || '';
+        const curStatus = p.status || '';
+        if (eff2 === 'sleep' && pAbility === 'insomnia') {
+          logParts.push(`${cap(p.pokemon)}'s Insomnia blocked sleep!`);
+        } else if (eff2 === 'sleep' && !curStatus) {
+          const sleepTurns = move.turns || Math.floor(Math.random()*3)+2;
+          updates[`players/${targetUid}/status`]      = 'sleep';
+          updates[`players/${targetUid}/sleepTurns`]  = sleepTurns;
+          logParts.push(`${cap(p.pokemon)} fell asleep!`);
+        } else if ((eff2 === 'poison' || eff2 === 'toxic') && !curStatus) {
+          updates[`players/${targetUid}/status`] = eff2;
+          logParts.push(`${cap(p.pokemon)} was poisoned!`);
+        } else if (eff2 === 'burn' && !curStatus) {
+          updates[`players/${targetUid}/status`] = 'burn';
+          logParts.push(`${cap(p.pokemon)} was burned!`);
+        } else if (eff2 === 'paralysis' && !curStatus) {
+          updates[`players/${targetUid}/status`] = 'paralysis';
+          logParts.push(`${cap(p.pokemon)} was paralyzed!`);
+        }
+      }
     }
 
     // Shake sprite do player
@@ -2750,9 +2243,8 @@ async function bossAtaca(){
     await update(_battleRef, { fase: 'defeat' });
   }
   _bossAttacking = false;
+  await update(_battleRef, { bossTurnActive: false });
   document.getElementById('turnBanner')?.classList.remove('boss-turn');
-  // Restaurar fase='battle' no Firebase — reabilita botões em todos os clientes
-  await update(_battleRef, { fase: 'battle' });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2820,8 +2312,6 @@ async function avancarTurno(){
     // Verificar se há players vivos antes de chamar o boss
     const alguemVivo = Object.values(bs.players||{}).some(p => !p.fainted && p.hp > 0);
     if (alguemVivo) {
-      // Sinalizar fase='boss_turn' ANTES dos 3s — bloqueia todos os clientes imediatamente
-      await update(_battleRef, { fase: 'boss_turn' });
       await logAction('— Boss turn! —');
       await new Promise(res => setTimeout(res, 3000)); // 3s de suspense
       await bossAtaca();
@@ -2978,12 +2468,11 @@ function pararCaptureTimer(){
 // DROPS — recompensas individuais pós-raid
 // ══════════════════════════════════════════════════════════════
 async function mostrarDrops(){
-  _bossStandbySlot = null; // resetar — será definido abaixo apenas se time cheio
   if (_dropsShown) return;
   _dropsShown = true;
 
   const bs      = (await get(_battleRef)).val();
-  const drops   = calcularDrops(_bossData?.nivel || 10, _bossNome);
+  const drops   = calcularDrops(_bossData?.nivel || 10);
   const results = bs?.captureResults || {};
   const myResult = _myCaptureResult || results[_uid] || 'skipped';
   const caught   = myResult === 'caught';
@@ -3058,9 +2547,6 @@ async function mostrarDrops(){
     // Persistir PP gasto — lê do snap da batalha (Firebase RTDB)
     // myBattlePlayer.ppAtual = { tackle: 33, water_gun: 23, ... }
     const ppFinal = myBattlePlayer?.ppAtual ?? null;
-    // Persistir status de poison da batalha para o perfil
-    const statusFinal = (myBattlePlayer?.status === 'poison' || myBattlePlayer?.status === 'toxic' || myBattlePlayer?.status === 'sleep')
-      ? myBattlePlayer.status : null;  // sleep persiste para forçar uso do Awakening
     const atualizado = {
       ...s,
       xp:       novoXP,
@@ -3071,8 +2557,6 @@ async function mostrarDrops(){
       hpAtual:  hpAtualFinal !== null ? hpAtualFinal : undefined,
       ppAtual:  ppFinal !== null ? ppFinal : (s.ppAtual || {}),
     };
-    if (statusFinal)  atualizado.status = statusFinal;
-    else              delete atualizado.status;
     // Só aplica golpes se não está pendente aprovação do usuário
     if ((leveledUp || ganheiGolpe) && !pendingNewMove) atualizado.golpes = nGolpes;
     // Se pendente, salvar na lista de pending para o UI decidir
@@ -3140,50 +2624,19 @@ async function mostrarDrops(){
     }
   }
 
-  // ── Player XP e Level Up ────────────────────────────────────────────────
-  const _bossNivelAtual = _bossData?.nivel || 10;
-  const _xpGanhoPlayer  = xpPlayerPorBoss(_bossNivelAtual);
-  let _pNivel   = userData?.playerLevel || 1;
-  let _pXP      = (userData?.playerXP   || 0) + _xpGanhoPlayer;
-  let _pLevelUp = false;
-  let _pLevelReward = null;
-  while (_pXP >= xpParaProximoNivelPlayer(_pNivel)) {
-    _pXP    -= xpParaProximoNivelPlayer(_pNivel);
-    _pNivel += 1;
-    _pLevelUp = true;
-    _pLevelReward = getPlayerLevelRewardBattle(_pNivel);
-  }
-  // Se levelou, adicionar recompensas à bag
-  if (_pLevelUp && _pLevelReward) {
-    Object.entries(_pLevelReward).forEach(([item, qty]) => {
-      newBag[item] = (newBag[item] || 0) + qty;
-    });
-  }
-
   // Gravar no Firestore
   try {
     const fsUpdate = {
-      raidBag:      newBag,
-      raidTeam:     JSON.parse(JSON.stringify(novoTeam)),
-      playerLevel:  _pNivel,
-      playerXP:     _pXP,
+      raidBag:  newBag,
+      raidTeam: JSON.parse(JSON.stringify(novoTeam)),
       ...(caught ? { pokedex: arrayUnion(_bossNome.toLowerCase()) } : {}),
     };
     // Se há stand-by, gravar o slot pendente
-    if (typeof _bossStandbySlot !== 'undefined' && _bossStandbySlot) {
+    if (_bossStandbySlot) {
       fsUpdate.raidStandby = JSON.parse(JSON.stringify(_bossStandbySlot));
     }
-    // Sinalizar level up pendente no Firestore — perfil.html vai exibir o toast
-    if (_pLevelUp) {
-      fsUpdate.playerLevelUpPending = { nivel: _pNivel, rewardItens: _pLevelReward };
-    }
     await updateDoc(doc(fsdb,'usuarios',_uid), fsUpdate);
-    if (_userData){
-      _userData.raidBag     = newBag;
-      _userData.raidTeam    = novoTeam;
-      _userData.playerLevel = _pNivel;
-      _userData.playerXP    = _pXP;
-    }
+    if (_userData){ _userData.raidBag = newBag; _userData.raidTeam = novoTeam; }
   } catch(e){ console.error('[drops] Firestore error:', e); }
 
   // ── Renderizar popup ──
@@ -3197,7 +2650,7 @@ async function mostrarDrops(){
   const lvlUpEl  = document.getElementById('dropsLevelUp');
   if (!overlay) return;
 
-  const _teamEraCheia = typeof _bossStandbySlot !== 'undefined' && _bossStandbySlot !== null;
+  const _teamEraCheia = _bossStandbySlot !== null;
   subtitle.textContent = caught
     ? (_teamEraCheia
         ? `You caught ${cap(_bossNome)}! ⏳ Team full — it's in stand-by for 2 min!`

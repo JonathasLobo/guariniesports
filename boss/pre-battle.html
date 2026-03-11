@@ -966,6 +966,7 @@ const ITEM_CURA = {
   max_revive:    { tipo:'revive',    pct:1.0 },
   antidote:      { tipo:'antidote'            },  // remove poison
   awakening:     { tipo:'awakening'           },  // remove sleep
+  ether:         { tipo:'ether'               },  // restaura PP
 };
 
 async function usarItemPreBattle(itemKey, playerData) {
@@ -1045,6 +1046,10 @@ async function usarItemPreBattle(itemKey, playerData) {
     novoStatus = null; // remove poison
   } else if (efeito.tipo === 'awakening') {
     novoStatus = null; // remove sleep
+  } else if (efeito.tipo === 'ether') {
+    // Ether: abrir seletor de golpe — não aplica aqui, retorna cedo
+    abrirEtherSelectorPre(itemKey, slot, bag, qtd);
+    return;
   }
 
   const novoTeam = team.map((s, i) => {
@@ -1078,7 +1083,6 @@ async function usarItemPreBattle(itemKey, playerData) {
     mostrarToastBag('❌ Error applying item. Try again.', '#c03030');
   }
 }
-window.usarItemPreBattle = usarItemPreBattle;
 
 function mostrarToastBag(msg, cor) {
   document.getElementById('pbFaintedWarn')?.remove();
@@ -1357,25 +1361,121 @@ window.abrirBagModal = function abrirBagModal() {
     itemsEl.innerHTML = '<div class="pb-bag-modal-empty">Your bag is empty!</div>';
   } else {
     itemsEl.innerHTML = itemKeys.map(key => {
-      const nome  = ITEM_NAMES[key]  || key;
-      const desc  = ITEM_DESCS[key]  || '';
-      const efeito= ITEM_CURA[key];
-      const qty   = bag[key] || 0;
-      const usable = !!efeito; // balls e ether não têm ITEM_CURA → disabled pré-batalha
-      return `<div class="pb-bag-modal-item${usable?'':' disabled'}"
-                   onclick="${usable?`window.usarItemPreBattle('${key}')`:'void(0)'}">
-        <img src="../boss/img-items/${key}.png" onerror="this.style.opacity='0.3'">
-        <div class="pb-bag-modal-item-info">
-          <div class="pb-bag-modal-item-name">${nome}</div>
-          <div class="pb-bag-modal-item-desc">${usable?desc:'Cannot use before battle'}</div>
-        </div>
-        <div class="pb-bag-modal-item-qty">×${qty}</div>
-      </div>`;
+      const nome   = ITEM_NAMES[key] || key;
+      const desc   = ITEM_DESCS[key] || '';
+      const efeito = ITEM_CURA[key];
+      const qty    = bag[key] || 0;
+      const usable = !!efeito;
+      const onclk  = usable ? "usarItemPreBattle('" + key + "')" : 'void(0)';
+      return '<div class="pb-bag-modal-item' + (usable ? '' : ' disabled') + '"'
+           + ' onclick="' + onclk + '">'
+           + '<img src="../boss/img-items/' + key + '.png" onerror="this.style.opacity=\'0.3\'">'
+           + '<div class="pb-bag-modal-item-info">'
+           + '<div class="pb-bag-modal-item-name">' + nome + '</div>'
+           + '<div class="pb-bag-modal-item-desc">' + (usable ? desc : 'Cannot use before battle') + '</div>'
+           + '</div>'
+           + '<div class="pb-bag-modal-item-qty">×' + qty + '</div>'
+           + '</div>';
     }).join('');
   }
 
   modal.classList.add('open');
 }
+
+// ── Ether pre-battle: seletor de golpe ───────────────────────────────────
+function abrirEtherSelectorPre(itemKey, slot, bag, qtd) {
+  // Monta a lista de golpes do pokemon selecionado
+  const golpes  = slot.golpes || [];
+  const ppAtual = slot.ppAtual || {};
+  const MOVES_LIGHT = {
+    tackle:{name:'Tackle',type:'normal',pp:35},scratch:{name:'Scratch',type:'normal',pp:35},
+    pound:{name:'Pound',type:'normal',pp:35},quick_attack:{name:'Quick Attack',type:'normal',pp:30},
+    vine_whip:{name:'Vine Whip',type:'grass',pp:25},branch_poke:{name:'Branch Poke',type:'grass',pp:40},
+    razor_leaf:{name:'Razor Leaf',type:'grass',pp:25},seed_bomb:{name:'Seed Bomb',type:'grass',pp:15},
+    ember:{name:'Ember',type:'fire',pp:25},flamethrower:{name:'Flamethrower',type:'fire',pp:15},
+    water_gun:{name:'Water Gun',type:'water',pp:25},bubble:{name:'Bubble',type:'water',pp:30},surf:{name:'Surf',type:'water',pp:15},
+    growl:{name:'Growl',type:'normal',pp:40},tail_whip:{name:'Tail Whip',type:'normal',pp:30},
+    string_shot:{name:'String Shot',type:'bug',pp:40},bug_bite:{name:'Bug Bite',type:'bug',pp:20},
+    poison_sting:{name:'Poison Sting',type:'poison',pp:35},
+    leech_life:{name:'Leech Life',type:'bug',pp:10},night_shade:{name:'Night Shade',type:'ghost',pp:15},
+    shadow_sneak:{name:'Shadow Sneak',type:'ghost',pp:30},spider_web:{name:'Spider Web',type:'bug',pp:10},
+    signal_beam:{name:'Signal Beam',type:'bug',pp:15},cross_poison:{name:'Cross Poison',type:'poison',pp:20},
+    toxic_thread:{name:'Toxic Thread',type:'poison',pp:20},scary_face:{name:'Scary Face',type:'normal',pp:10},
+    sleep_powder:{name:'Sleep Powder',type:'grass',pp:15},hypnosis:{name:'Hypnosis',type:'psychic',pp:20},
+    defense_curl:{name:'Defense Curl',type:'normal',pp:40},harden:{name:'Harden',type:'normal',pp:30},
+    withdraw:{name:'Withdraw',type:'water',pp:40},
+    double_kick:{name:'Double Kick',type:'fighting',pp:30},
+  };
+  const TIPO_C = {normal:'#aaa',water:'#6390f0',fire:'#ee8130',grass:'#7ac74c',electric:'#f7d02c',
+    ice:'#96d9d6',fighting:'#c22e28',poison:'#a33ea1',ground:'#e2bf65',flying:'#a98ff3',
+    psychic:'#f95587',bug:'#a6b91a',rock:'#b6a136',ghost:'#735797',dragon:'#6f35fc',
+    dark:'#705746',steel:'#b7b7ce',fairy:'#d685ad'};
+
+  const itemsEl = document.getElementById('pbBagModalItems');
+  let html = `<button class="sub-back" style="margin-bottom:8px;background:rgba(255,117,0,.15);border:1px solid rgba(255,117,0,.4);border-radius:8px;color:#ff7500;padding:6px 14px;cursor:pointer;font-size:0.75rem" onclick="abrirBagModal()">← Back</button>`;
+  html += `<div style="font-size:0.72rem;color:#aaa;padding:4px 8px 8px">Ether — Choose a move to restore +20 PP:</div>`;
+
+  golpes.forEach(key => {
+    const move = MOVES_LIGHT[key] || {name:key.replace(/_/g,' '),type:'normal',pp:15};
+    const ppMax = move.pp || 15;
+    const ppNow = ppAtual[key] !== undefined ? ppAtual[key] : ppMax;
+    const full  = ppNow >= ppMax;
+    const cor   = TIPO_C[move.type] || '#888';
+    html += `<div class="pb-bag-modal-item${full?' disabled':''}" 
+      style="cursor:${full?'default':'pointer'};opacity:${full?0.5:1}"
+      onclick="${full?'':'aplicarEtherPre(\''+itemKey+'\',\''+key+'\')'}">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        <span style="background:${cor};color:#fff;font-size:0.55rem;padding:2px 6px;border-radius:4px;white-space:nowrap">${(move.type||'').toUpperCase()}</span>
+        <div class="pb-bag-modal-item-info" style="flex:1">
+          <div class="pb-bag-modal-item-name">${move.name}</div>
+          <div class="pb-bag-modal-item-desc">${ppNow}/${ppMax} PP${full?' (Full)':''}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  if (!golpes.length) html += '<div style="color:#555;font-size:0.75rem;padding:8px">No moves available.</div>';
+  itemsEl.innerHTML = html;
+  // armazenar contexto para aplicarEtherPre
+  window._etherCtx = { itemKey, slot, bag, qtd };
+}
+
+async function aplicarEtherPre(itemKey, moveKey) {
+  const ctx = window._etherCtx;
+  if (!ctx) return;
+  const { slot, bag, qtd } = ctx;
+  const MOVES_PP = {tackle:35,scratch:35,pound:35,quick_attack:30,vine_whip:25,branch_poke:40,
+    razor_leaf:25,seed_bomb:15,ember:25,flamethrower:15,water_gun:25,bubble:30,surf:15,
+    growl:40,tail_whip:30,string_shot:40,bug_bite:20,poison_sting:35,leech_life:10,
+    night_shade:15,shadow_sneak:30,spider_web:10,signal_beam:15,cross_poison:20,
+    toxic_thread:20,scary_face:10,sleep_powder:15,hypnosis:20,defense_curl:40,harden:30,
+    withdraw:40,double_kick:30};
+  const ppMax   = MOVES_PP[moveKey] || 15;
+  const ppAtual = { ...(slot.ppAtual || {}) };
+  const ppNow   = ppAtual[moveKey] !== undefined ? ppAtual[moveKey] : ppMax;
+  if (ppNow >= ppMax) { mostrarToastBag('PP already full!', '#888'); return; }
+
+  ppAtual[moveKey] = Math.min(ppMax, ppNow + 20);
+  const team = _userData?.raidTeam || [];
+  const novoTeam = team.map((s, i) => i === _meuPokSlot ? {...s, ppAtual} : s);
+  bag[itemKey] = qtd - 1;
+  if (bag[itemKey] <= 0) delete bag[itemKey];
+
+  try {
+    const { getFirestore: _gfs, doc: _doc, updateDoc: _upd } =
+      await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+    await _upd(_doc(_gfs(fbApp), 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
+    _userData.raidTeam = novoTeam;
+    _userData.raidBag  = bag;
+    const moveName = moveKey.replace(/_/g,' ').replace(/\b\w/g, l=>l.toUpperCase());
+    mostrarToastBag(`\u26a1 ${moveName} PP restored (+20)!`, '#9b59b6');
+    fecharBagModal();
+    renderGrid(_salaSnap?.players || {});
+  } catch(e) {
+    mostrarToastBag('Error applying Ether.', '#c03030');
+  }
+}
+window.abrirEtherSelectorPre = abrirEtherSelectorPre;
+window.aplicarEtherPre = aplicarEtherPre;
 
 window.fecharBagModal = function fecharBagModal() {
   document.getElementById('pbBagModal')?.classList.remove('open');

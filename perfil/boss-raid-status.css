@@ -38,7 +38,7 @@
   max-height: 96vh;
   overflow: hidden;
   padding: 40px 28px 24px;
-  position: relative;
+  position: relative; /* necessário para as setas ficarem dentro do modal */
   box-shadow: 0 12px 48px rgba(255, 117, 0, 0.28);
   animation: slideDown 0.25s ease;
 }
@@ -246,11 +246,15 @@
 .raid-slot-tipos .tipo-badge { font-size: 0.5rem; padding: 1px 5px; }
 .tipo-badge-efet   { font-size: 0.58rem; padding: 2px 6px; }
 .tipo-badge-resiste {
-  background: transparent !important; border: 1.5px solid; text-shadow: none;
+  background: transparent !important;
+  border: 1.5px solid;
+  text-shadow: none;
 }
 .tipo-badge-imune {
-  background: transparent !important; border: 1.5px dashed;
-  text-shadow: none; opacity: 0.7;
+  background: transparent !important;
+  border: 1.5px dashed;
+  text-shadow: none;
+  opacity: 0.7;
 }
 
 /* ── COLUNA 2 — STATS & IVs ──────────────────────────────── */
