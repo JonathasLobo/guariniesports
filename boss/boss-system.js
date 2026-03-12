@@ -56,6 +56,7 @@ const BOSS_CONFIG = {
           effect:'debuff', stat:'spe', stages:-1 },
       ],
       catchRate: 90,
+      stars: 1,
     },
 
     {
@@ -65,11 +66,12 @@ const BOSS_CONFIG = {
       baseStats: { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
       nivel:     10,
       golpes: [
-        { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
+        { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single', effect:'poison', effectChance:30  },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
       ],
       catchRate: 90,
+      stars: 1,
     },
 
     {
@@ -87,6 +89,7 @@ const BOSS_CONFIG = {
         { name:'Rollout',      type:'rock',   cat:'physical', power:30,  acc:90,  target:'single' },
       ],
       catchRate: 90,
+      stars: 1,
     },
 
 
@@ -95,20 +98,38 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/spinarak.png',
       tipos:     ['bug','poison'],
       baseStats: { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
-      nivel:     10,
+      nivel:     15,
       golpes: [
-        { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
+        { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single', effect:'poison', effectChance:30 },
         { name:'String Shot',  type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
         { name:'Scary Face',   type:'normal', cat:'status',   power:null,acc:100, target:'single',
           effect:'debuff', stat:'spe', stages:-2 },
-        { name:'Spider Web',   type:'bug',    cat:'status',   power:null,acc:null,target:'single',
-          effect:'trap' },
+        { name:'Absorb',       type:'grass',  cat:'special',  power:20,  acc:100, target:'single', drain:0.5 },
       ],
       catchRate: 90,
+      stars: 2,
     },
 
     // ── Médio ─────────────────────────────────────────────────
+    {
+      nome:      'Bulbasaur',
+      sprite:    '/boss/img-bosses/bulbasaur.png',
+      tipos:     ['grass','poison'],
+      baseStats: { hp:45, atk:49, def:49, spa:65, spd:65, spe:45 },
+      nivel:     25,
+      golpes: [
+        { name:'Vine Whip',    type:'grass',  cat:'physical', power:45, acc:100, target:'single' },
+        { name:'Razor Leaf',   type:'grass',  cat:'physical', power:55, acc:95,  target:'all'    },
+        { name:'Sleep Powder', type:'grass',  cat:'status',   power:null,acc:75, target:'single',
+          effect:'sleep' },
+        { name:'Take Down',    type:'normal', cat:'physical', power:90, acc:85,  target:'single',
+          recoil:true, recoilFraction:0.25 },
+      ],
+      catchRate: 60,
+      stars: 3,
+    },
+
     /*{
       nome:      'Staryu',
       sprite:    '/boss/img-bosses/Staryu.gif',

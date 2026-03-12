@@ -33,8 +33,8 @@ const BASE_STATS = {
   fuecoco:    { hp:67,  atk:45, def:59,  spa:63, spd:40,  spe:36  },
   // --- Bug ---
   caterpie:  { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
+  wooloo:    { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
   weedle:    { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
-  spinarak:    { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
   // --- Water ---
   squirtle:  { hp:44,  atk:48,  def:65, spa:50,  spd:64, spe:43  },
   totodile:   { hp:50,  atk:65,  def:64,  spa:44, spd:48,  spe:43 },
@@ -45,9 +45,6 @@ const BASE_STATS = {
   popplio:   { hp:50,  atk:54, def:54,  spa:66,  spd:56, spe:40  },
   sobble:   { hp:50,  atk:40, def:40,  spa:70,  spd:40, spe:70  },
   quaxly:   { hp:55,  atk:65, def:45,  spa:50,  spd:45, spe:50  },
-
-  // ---- Normal ---
-  wooloo:    { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
 };
 
 // ============================================================
@@ -105,7 +102,6 @@ const POKEMON_TIPOS = {
   caterpie:   ['bug'],
   wooloo:     ['normal'],
   weedle:     ['bug','poison'],
-  spinarak:   ['bug', 'poison'],
 };
 
 // Cor de cada tipo
@@ -128,8 +124,7 @@ const POKEDEX_NUM = {
   popplio:728, sobble:816,   quaxly:912,
   // Bug
   caterpie:10,
-  weedle:13,
-  spinarak:167
+  weedle:13, kakuna:14, beedrill:15,
 };
 
 // ============================================================
@@ -287,22 +282,14 @@ const EVOLUTION_CHAIN = {
   // ── Linha Caterpie (Bug) ──────────────────────────────────
   // Caterpie → Metapod (L7) → Butterfree (L10)
   caterpie:   { evolvesTo: 'metapod',    levelReq: 7,  loyaltyReq: 50  },
+  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 50  },
   metapod:    { evolvesTo: 'butterfree', levelReq: 10, loyaltyReq: 50  },
 
   // ── Linha Weedle (Bug/Poison) ─────────────────────────────
   // Weedle → Kakuna (L7) → Beedrill (L10)
   weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
   kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
-
-  // ── Linha Spinarak (Bug/Poison) ─────────────────────────────
-  // Spinarak → Ariados (L22)
-  spinarak:     { evolvesTo: 'ariados',     levelReq: 22,  loyaltyReq: 255  },
-
-  // ── Linha Wooloo (Normal) ─────────────────────────────
-  // Wooloo → Dubwool (L22)
-  wooloo:     { evolvesTo: 'dubwool',    levelReq: 24, loyaltyReq: 255  },
 };
-
 
 // ============================================================
 // ABILITIES DAS FORMAS EVOLUÍDAS
@@ -401,12 +388,7 @@ const EVOLUTION_ABILITIES = {
   // ── Linha Quaxly ──────────────────────────────────────────
   quaxwell:    { normal: ['torrent'],            hidden: 'moxie'         },
   quaquaval:   { normal: ['torrent'],            hidden: 'moxie'         },
-  // ── Linha Wooloo ──────────────────────────────────────────
-  dubwool:   { normal: ['fluffy','steadfast'],   hidden: 'bulletproof'   },
-  // ── Linha Spinarak ──────────────────────────────────────────
-  ariados:   { normal: ['swarm','insomnia'],     hidden: 'sniper'   },
 };
-
 
 // ============================================================
 // TIPOS DAS FORMAS EVOLUÍDAS
@@ -472,13 +454,10 @@ const EVOLUTION_TIPOS = {
   // Caterpie line — Butterfree ganha flying
   metapod:     ['bug'],
   butterfree:  ['bug','flying'],
-  // Wooloo line
   dubwool:     ['normal'],
   // Weedle line — mantém bug/poison até Beedrill
   kakuna:      ['bug','poison'],
   beedrill:    ['bug','poison'],
-  // Spinarak line — mantém bug/poison até Ariados
-  ariados:      ['bug','poison'],
 };
 
 // ============================================================
@@ -569,13 +548,10 @@ const BASE_STATS_EVO = {
   // Caterpie line
   metapod:     { hp:50,  atk:20,  def:55,  spa:25,  spd:25,  spe:30  },
   butterfree:  { hp:60,  atk:45,  def:50,  spa:90,  spd:80,  spe:70  },
-  // Wooloo line
   dubwool:     { hp:72,  atk:80,  def:100, spa:60,  spd:90,  spe:88  },
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
-  // Spinarak line
-  ariados:     { hp:70,  atk:90,  def:70, spa:60,  spd:70,  spe:40  },
 };
 
 // ============================================================
@@ -610,10 +586,9 @@ const POKEDEX_NUM_EVO = {
   brionne:729, primarina:730,
   drizzile:817, inteleon:818,
   quaxwell:913, quaquaval:914,
+  // Caterpie line
   metapod:11,  butterfree:12,
-  kakuna:14, beedrill:15,
-  dubwool:832,
-  ariados:168,
+  wooloo:831,  dubwool:832,
 };
 
 
@@ -644,10 +619,9 @@ const CATCH_RATE = {
   dewott:45, samurott:45, frogadier:45, greninja:45,
   brionne:45, primarina:45, drizzile:45, inteleon:45,
   quaxwell:45, quaquaval:45,
-  caterpie:90, metapod:80, butterfree:45,
-  wooloo:90, dubwool:70,
-  weedle:90, kakuna:80, beedrill:45,
-  spinarak:90, ariados:70,
+  caterpie:255, metapod:120, butterfree:45,
+  wooloo:255, dubwool:127,
+  weedle:255, kakuna:120, beedrill:45,
   pikachu:190,
 };
 const TIPO_CORES = {
@@ -1002,16 +976,14 @@ const LEARNSETS = {
   popplio:    [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'disarming_voice'],[11,'baby_doll_eyes'],[15,'aqua_jet'],[18,'encore'],[22,'bubble_beam'],[25,'sing'],[29,'double_slap'],[32,'hyper_voice'],[36,'moonblast'],[39,'captivate'],[43,'hydro_pump'],[46,'misty_terrain']],
   sobble:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'bind'],[12,'water_pulse'],[16,'tearful_look'],[20,'acrobatics'],[24,'sucker_punch'],[28,'surf'],[32,'liquidation'],[36,'snipe_shot'],[40,'hydro_pump'],[44,'bounce']],
   quaxly:     [[1,'pound'],[1,'growl'],[4,'water_gun'],[8,'wing_attack'],[12,'quick_attack'],[16,'water_pulse'],[20,'aerial_ace'],[24,'aqua_jet'],[28,'acrobatics'],[32,'liquidation'],[36,'double_hit'],[40,'hydro_pump'],[44,'brave_bird']],
+  // ── Bug line ─────────────────────────────────────────────
   caterpie:   [[1,'tackle'],[1,'string_shot'],[5,'bug_bite']],
-  metapod:    [[1,'harden']],
-  butterfree: [[1,'confusion'],[1,'sleep_powder'],[10,'gust'],[12,'stun_spore'],[14,'psybeam'],[16,'silver_wind'],[18,'supersonic'],[21,'tailwind'],[24,'safeguard'],[27,'whirlwind'],[30,'psychic_move'],[33,'bug_buzz'],[36,'quiver_dance']],
   wooloo:     [[1,'tackle'],[1,'growl'],[4,'defense_curl'],[8,'rollout'],[12,'round'],[16,'double_kick'],[20,'take_down'],[24,'charm'],[28,'bulk_up'],[32,'double_edge'],[36,'swagger'],[40,'headbutt']],
-  dubwool:    [[1,'copycat'],[1,'defense_curl'],[1,'tackle'],[1,'growl'],[12,'guard_split'],[16,'double_kick'],[21,'headbutt'],[27,'take_down'],[32,'guard_swap'],[38,'reversal'],[44,'cotton_guard'],[50,'double_edge'],[56,'last_resort']],
   weedle:     [[1,'poison_sting'],[1,'string_shot']],
   kakuna:     [[1,'harden'],[7,'poison_sting']],
   beedrill:   [[1,'fury_attack'],[10,'twineedle'],[15,'poison_jab'],[20,'agility'],[28,'pin_missile'],[35,'x_scissor']],
-  spinarak:   [[1,'poison_sting'],[1,'string_shot'],[5,'absorb'],[8,'infestation'],[12,'scary_face'],[15,'night_shade'],[19,'shadow_sneak'],[22,'fury_swipes'],[26,'sucker_punch'],[29,'agility'],[33,'pin_missile'],[36,'psychic'],[40,'poison_jab'],[44,'cross_poison'],[47,'sticky_web'],[51,'tocix_thread']],
-  ariados:    [[1,'poison_sting'],[1,'string_shot'],[1,'absorb'],[1,'focus_energy'],[1,'fell_stinger'],[1,'bug_bite'],[8,'infestation'],[12,'scary_face'],[15,'night_shade'],[19,'shadow_sneak'],[23,'fury_swipes'],[28,'sucker_punch'],[31,'agility'],[35,'pin_missile'],[40,'psychic'],[46,'poison_jab'],[50,'cross_poison'],[54,'sticky_web'],[59,'tocix_thread']],
+  metapod:    [[1,'harden']],
+  butterfree: [[1,'confusion'],[1,'sleep_powder'],[10,'gust'],[12,'stun_spore'],[14,'psybeam'],[16,'silver_wind'],[18,'supersonic'],[21,'tailwind'],[24,'safeguard'],[27,'whirlwind'],[30,'psychic_move'],[33,'bug_buzz'],[36,'quiver_dance']],
 };
 
 // Retorna os golpes disponíveis até um nível (últimos 4)
@@ -1131,8 +1103,6 @@ const ABILITIES_DB = {
   ball_fetch:     { name: 'Ball Fetch',     desc: 'Fetches a Poke Ball if the first throw fails.' },
   cotton_down:    { name: 'Cotton Down',    desc: "Lowers foe's Speed when hit." },
   fluffy:         { name: 'Fluffy',         desc: 'Halves damage from contact moves; doubles from Fire.' },
-  swarm:          { name: 'Swarm',          desc: 'Powers up Bug-type moves when HP is below 1/3.' },
-  insomnia:       { name: 'Insomnia',       desc: 'Immune to Sleep Status.' },
 };
 
 // Tabela de abilities por pokémon
@@ -1174,7 +1144,6 @@ const POKEMON_ABILITIES = {
   caterpie:    { normal: ['shield_dust','run_away'], hidden: 'run_away'      },
   wooloo:      { normal: ['fluffy','run_away'],       hidden: 'bulletproof'  },
   weedle:      { normal: ['run_away'],                    hidden: 'sniper'        },
-  spinarak:    { normal: ['swarm','insomnia'], hidden: 'sniper'      },
 };
 
 // Sorteia a ability do pokémon — 5% hidden, resto dividido entre as normais
@@ -1209,8 +1178,10 @@ const ITEMS_DB = {
   full_restore:  { name:'Full Restore',  img:'../boss/img-items/full_restore.png',  category:'heal',   usableIn:'both',   desc:'Fully restores HP and heals all status conditions.',       effect:{ type:'fullrestore' } },
   ether:         { name:'Ether',         img:'../boss/img-items/ether.png',         category:'pp',     usableIn:'both',   desc:'Restores 20 PP of a chosen move. Select a Pokemon, then choose the move.',  effect:{ type:'restorepp', value:20 } },
   antidote:      { name:'Antidote',      img:'../boss/img-items/antidote.png',      category:'status', usableIn:'both',   desc:'Cures a Poisoned Pokémon. Can be used on allies in battle.',                    effect:{ type:'antidote' } },
+  awakening:     { name:'Awakening',     img:'../boss/img-items/awakening.png',     category:'status', usableIn:'both',   desc:'Wakes up a sleeping Pokémon. Can be used on allies in battle.',                  effect:{ type:'awakening' } },
+  leaf_stone:    { name:'Leaf Stone',    img:'../boss/img-items/leaf_stone.png',    category:'evo',    usableIn:'none',   desc:'A peculiar stone that makes certain species of Pokémon evolve. Rare drop from Bulbasaur.' },
 };
-const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether','antidote'];
+const BAG_ITENS_ORDEM   = ['pokebola','great_ball','ultra_ball','potion','super_potion','hyper_potion','max_potion','revive','max_revive','full_restore','ether','antidote','awakening','leaf_stone'];
 // ──────────────────────────────────────────────────────────────
 // BAG INICIAL — itens que todo novo jogador recebe ao começar
 // Para editar: altere as quantidades abaixo ou adicione novas chaves.
@@ -1299,7 +1270,11 @@ async function usarItemNoPokemon(itemKey, slotIdx) {
     if (i !== slotIdx) return s;
     const updated = Object.assign({}, s, { hpAtual: novoHP });
     if (ef?.type === 'antidote' || ef?.type === 'fullrestore') delete updated.status;
-    if (ef?.type === 'revive') delete updated.status; // ao reviver, status também some
+    if (ef?.type === 'revive') {
+      delete updated.status;    // status some ao reviver
+      updated.fainted = false;  // limpa flag fainted explicitamente
+    }
+    if (ef?.type === 'fullrestore') updated.fainted = false; // full restore também revive
     return updated;
   });
   try {
@@ -1932,19 +1907,7 @@ function renderizarBossRaid() {
   const status = _userData?.raidStatus || null;
   const team   = _userData?.raidTeam   || [];
 
-  // GUARD: se o usuário já tem pokémons no time, nunca mostrar fase 1 ou 2
-  // Isso evita que um raidStatus corrompido/null apague o time ao clicar "I Want to Play"
-  if (team.length > 0) {
-    // Corrigir raidStatus inconsistente silenciosamente
-    if (status !== 'active') {
-      salvarRaidStatus('active').catch(() => {});
-      if (_userData) _userData.raidStatus = 'active';
-    }
-    renderMyTeam(container, team);
-    return;
-  }
-
-  if (!status)                    renderPrimeiraVez(container);
+  if (!status)                  renderPrimeiraVez(container);
   else if (status === 'choosing') renderEscolhaPokemon(container);
   else if (status === 'active')   renderMyTeam(container, team);
 }
@@ -2323,49 +2286,86 @@ function initSlotDragDrop(container) {
 // Atualize esses dados quando mudar o boss/evento da rotação.
 // ─────────────────────────────────────────────────────────────
 const BOSS_EVENT_INFO = {
-  imagemEvento:  '/boss/img-event/poison.jpg',   // imagem principal do evento
+  imagemEvento:  '/boss/img-event/poison.jpg',
   nomeEvento:    'Poison Event',
   descricao:     'To celebrate the beginning of the Boss Raid system, the first wave features poison-type Pokémon from the early routes. Battle, capture, and add them to your team!',
   dataInicio:    'June 1, 2025',
   dataFim:       'Ongoing',
   bosses: [
     {
-      nome:    'Caterpie',
-      sprite:  '/boss/img-bosses/caterpie.png',
-      nivel:   10,
+      nome:     'Caterpie',
+      sprite:   '/boss/img-bosses/caterpie.png',
+      nivel:    10,
       estrelas: 1,
-      golpes: ['Tackle', 'String Shot'],
+      golpes:   ['Tackle', 'String Shot'],
       drops: [
         { item: 'Poke Ball',  chance: '100%' },
         { item: 'Potion',     chance: '100%' },
         { item: 'Revive',     chance: '100%' },
         { item: 'Ether',      chance: '50%'  },
+        { item: 'Antidote',   chance: '50%'  },
+        { item: 'Awakening',  chance: '40%'  },
       ],
     },
     {
-      nome:    'Weedle',
-      sprite:  '/boss/img-bosses/weedle.png',
-      nivel:   10,
+      nome:     'Weedle',
+      sprite:   '/boss/img-bosses/weedle.png',
+      nivel:    10,
       estrelas: 1,
-      golpes: ['Poison Sting', 'String Shot'],
+      golpes:   ['Poison Sting', 'String Shot'],
       drops: [
         { item: 'Poke Ball',  chance: '100%' },
         { item: 'Potion',     chance: '100%' },
         { item: 'Revive',     chance: '100%' },
-        { item: 'Antidote',   chance: '60%'  },
+        { item: 'Antidote',   chance: '50%'  },
+        { item: 'Awakening',  chance: '40%'  },
+        { item: 'Ether',      chance: '25%'  },
       ],
     },
     {
-      nome:    'Wooloo',
-      sprite:  '/boss/img-bosses/wooloo.png',
-      nivel:   10,
+      nome:     'Wooloo',
+      sprite:   '/boss/img-bosses/wooloo.png',
+      nivel:    10,
       estrelas: 1,
-      golpes: ['Tackle', 'Growl', 'Defense Curl', 'Rollout'],
+      golpes:   ['Tackle', 'Growl', 'Defense Curl', 'Rollout'],
       drops: [
         { item: 'Poke Ball',  chance: '100%' },
         { item: 'Potion',     chance: '100%' },
         { item: 'Revive',     chance: '100%' },
-        { item: 'Potion ×2',  chance: '50%'  },
+        { item: 'Antidote',   chance: '50%'  },
+        { item: 'Awakening',  chance: '40%'  },
+        { item: 'Potion ×2',  chance: '25%'  },
+      ],
+    },
+    {
+      nome:     'Spinarak',
+      sprite:   '/boss/img-bosses/spinarak.png',
+      nivel:    15,
+      estrelas: 2,
+      golpes:   ['Poison Sting', 'String Shot', 'Scary Face', 'Absorb'],
+      drops: [
+        { item: 'Poke Ball',    chance: '100%' },
+        { item: 'Super Potion', chance: '100%' },
+        { item: 'Revive',       chance: '100%' },
+        { item: 'Antidote',     chance: '70%'  },
+        { item: 'Awakening',    chance: '50%'  },
+        { item: 'Ether',        chance: '35%'  },
+      ],
+    },
+    {
+      nome:     'Bulbasaur',
+      sprite:   '/boss/img-bosses/bulbasaur.png',
+      nivel:    25,
+      estrelas: 3,
+      golpes:   ['Vine Whip', 'Razor Leaf', 'Sleep Powder', 'Take Down'],
+      drops: [
+        { item: 'Great Ball',   chance: '100%' },
+        { item: 'Super Potion', chance: '100%' },
+        { item: 'Revive',       chance: '100%' },
+        { item: 'Antidote',     chance: '70%'  },
+        { item: 'Awakening',    chance: '50%'  },
+        { item: 'Ether',        chance: '35%'  },
+        { item: 'Leaf Stone',   chance: '8%'   },
       ],
     },
   ],
@@ -2390,6 +2390,7 @@ const INFO_ITEM_IMG_MAP = {
   'Ether':        'ether',
   'Antidote':     'antidote',
   'Awakening':    'awakening',
+  'Leaf Stone':   'leaf_stone',
 };
 function getInfoItemImg(nome) {
   // Remove quantidade do nome (ex: "Potion ×2" -> "Potion")
@@ -2503,11 +2504,14 @@ function renderMyTeam(container, raidTeam) {
               const _ev  = typeof slot.evs?.hp === 'number' ? slot.evs.hp : 0;
               const _lvl = slot.nivel || 1;
               const hpMx = Math.floor((2 * _bs.hp + _iv + Math.floor(_ev/4)) * _lvl / 100 + _lvl + 10);
-              const hpAt = typeof slot.hpAtual === 'number' && slot.hpAtual > 0
-                ? Math.min(slot.hpAtual, hpMx)
-                : slot.hpPct !== undefined
-                  ? Math.max(1, Math.floor(hpMx * slot.hpPct))
-                  : hpMx;
+              const _isFainted = slot.fainted === true || slot.hpAtual === 0;
+              const hpAt = _isFainted
+                ? 0
+                : typeof slot.hpAtual === 'number' && slot.hpAtual > 0
+                  ? Math.min(slot.hpAtual, hpMx)
+                  : slot.hpPct !== undefined
+                    ? Math.max(1, Math.floor(hpMx * slot.hpPct))
+                    : hpMx;
               const pct = hpMx > 0 ? Math.max(0, hpAt / hpMx * 100) : 100;
               const cls = pct > 50 ? 'hp-ok' : pct > 20 ? 'hp-low' : 'hp-critical';
               return `<div class="raid-slot-hpbar-wrap" title="${hpAt}/${hpMx} HP">
@@ -3606,11 +3610,15 @@ function abrirModalStatus(slot) {
   // HP atual: usar hpAtual (absoluto da última batalha), depois hpPct, depois HP cheio
   const statsHp  = calcularStats(slot.pokemon, ivs, nivel, nature, evsSalvos);
   const hpMaxC   = statsHp.hp;
-  const hpAtualC = typeof slot.hpAtual === 'number' && slot.hpAtual > 0
-    ? Math.min(slot.hpAtual, hpMaxC)          // valor absoluto salvo
-    : slot.hpPct !== undefined
-      ? Math.max(1, Math.floor(hpMaxC * slot.hpPct)) // percentual salvo
-      : hpMaxC; // HP cheio se nunca batalhou
+  // fainted (hpAtual===0 ou slot.fainted) → mostrar 0 HP, barra zerada
+  const isFaintedC = slot.fainted === true || slot.hpAtual === 0;
+  const hpAtualC = isFaintedC
+    ? 0
+    : typeof slot.hpAtual === 'number' && slot.hpAtual > 0
+      ? Math.min(slot.hpAtual, hpMaxC)          // valor absoluto salvo
+      : slot.hpPct !== undefined
+        ? Math.max(1, Math.floor(hpMaxC * slot.hpPct)) // percentual salvo
+        : hpMaxC; // HP cheio se nunca batalhou
   const xpProx    = xpParaNivel(nivel + 1);
   const pctXP     = Math.min(100, Math.floor((xpAtual / xpProx) * 100));
   const lealdade  = slot.lealdade || 0;
@@ -4041,21 +4049,6 @@ async function salvarPrimeiroPokeRaid(slot, bag) {
   const ref  = doc(_db, "usuarios", _userId);
   const snap = await getDoc(ref);
 
-  // GUARD: se o usuário já tem pokémons no Firebase, não sobrescrever!
-  if (snap.exists()) {
-    const existingData = snap.data();
-    if (existingData.raidTeam && existingData.raidTeam.length > 0) {
-      console.warn('[BossRaid] GUARD: raidTeam já existe no Firebase — abortando salvarPrimeiroPokeRaid para proteger dados!');
-      // Restaurar estado local correto
-      if (_userData) {
-        _userData.raidTeam   = existingData.raidTeam;
-        _userData.raidStatus = 'active';
-        _userData.raidBag    = existingData.raidBag || _userData.raidBag || {};
-      }
-      return;
-    }
-  }
-
   // JSON round-trip garante serialização limpa — sem proxies, sem campos undefined
   const slotLimpo = JSON.parse(JSON.stringify(slot));
 
@@ -4071,7 +4064,7 @@ async function salvarPrimeiroPokeRaid(slot, bag) {
 
   if (snap.exists()) await updateDoc(ref, data);
   else               await setDoc(ref, data);
-  console.log('[BossRaid] Primeiro pokémon salvo no Firebase:', slotLimpo);
+  console.log('[BossRaid] Boss salvo no Firebase:', slotLimpo);
 }
 
 // ============================================================

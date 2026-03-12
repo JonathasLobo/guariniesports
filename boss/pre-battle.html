@@ -412,7 +412,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getDatabase, ref, set, get, update, onValue, push, onDisconnect, remove, query, orderByChild }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
-import { getFirestore, doc, getDoc }
+import { getFirestore, doc, getDoc, updateDoc }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -435,6 +435,7 @@ let _uid          = null;
 let _userData     = null;   // { displayName, avatar, raidTeam, raidBag }
 let _salaId       = null;
 let _bossData     = null;
+let _cachedPlayers = {};  // último snapshot de players para re-render
 let _timerMain    = null;
 let _timerCD      = null;
 let _tempoInicio  = null;
@@ -467,20 +468,36 @@ function gerarId() {
   return Array.from({length:6}, () => c[Math.floor(Math.random()*c.length)]).join('');
 }
 
+// Tabela de fallback — usada apenas se _bossData não estiver carregado ainda
 const BOSS_TIPOS = {
   Staryu:['water'], Mawile:['steel','fairy'],
   Caterpie:['bug'], Metapod:['bug'], Butterfree:['bug','flying'],
   Weedle:['bug','poison'], Kakuna:['bug','poison'], Beedrill:['bug','poison'],
   Wooloo:['normal'], Dubwool:['normal'],
   Spinarak:['bug','poison'], Ariados:['bug','poison'],
+  Bulbasaur:['grass','poison'], Ivysaur:['grass','poison'], Venusaur:['grass','poison'],
+  Charmander:['fire'], Charmeleon:['fire'], Charizard:['fire','flying'],
+  Squirtle:['water'], Wartortle:['water'], Blastoise:['water'],
+  Pikachu:['electric'], Raichu:['electric'],
 };
-function getBossTipos(nome) { return BOSS_TIPOS[nome] || ['normal']; }
-function getDiff(hp) {
-  if (hp>=3000) return {s:'★★★★★',l:'Legendary'};
-  if (hp>=2200) return {s:'★★★★',l:'Very Hard'};
-  if (hp>=1700) return {s:'★★★',l:'Hard'};
-  if (hp>=1200) return {s:'★★',l:'Normal'};
-  return {s:'★',l:'Easy'};
+// Prioridade: tipos vindos diretamente do boss_system (via Firebase) > tabela estática
+function getBossTipos(nome) {
+  const fromData = _bossData?.boss?.tipos;
+  if (Array.isArray(fromData) && fromData.length) return fromData;
+  return BOSS_TIPOS[nome] || ['normal'];
+}
+function getDiff(boss) {
+  // Prioridade: campo stars definido no boss_system (explícito por boss)
+  // Fallback: calcular pelo nivel do boss
+  const starsNum = boss.stars || (
+    boss.nivel >= 40 ? 5 :
+    boss.nivel >= 30 ? 4 :
+    boss.nivel >= 20 ? 3 :
+    boss.nivel >= 10 ? 2 : 1
+  );
+  const labels = ['','Easy','Normal','Hard','Very Hard','Legendary'];
+  const stars  = '★'.repeat(starsNum) + '☆'.repeat(5 - starsNum);
+  return { s: stars, l: labels[starsNum] || 'Easy' };
 }
 const ITEM_NAMES = {
   pokebola:'Poké Ball', great_ball:'Great Ball',    ultra_ball:'Ultra Ball',
@@ -729,7 +746,8 @@ function iniciarUI() {
 
   // Listeners RT
   onValue(ref(rdb, `boss_salas/${_salaId}/players`), snap => {
-    renderPlayers(snap.val() || {});
+    _cachedPlayers = snap.val() || {};
+    renderPlayers(_cachedPlayers);
     checarReadyAll(snap.val() || {});
   });
 
@@ -809,7 +827,7 @@ function renderBossCard() {
     `<span class="pb-type-badge t-${t}">${cap(t)}</span>`
   ).join('');
 
-  const diff = getDiff(boss.hp||1500);
+  const diff = getDiff(boss);
   document.getElementById('pbBossDiff').innerHTML = `<span class="pb-diff-stars">${diff.s}</span> ${diff.l}`;
 }
 
@@ -1062,22 +1080,24 @@ async function usarItemPreBattle(itemKey, playerData) {
   bag[itemKey] = qtd - 1;
 
   try {
-    const { getFirestore: _gfs, doc: _doc, updateDoc: _upd } =
-      await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
-    await _upd(_doc(_gfs(fbApp), 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
+    const fsdb = getFirestore(fbApp);
+    await updateDoc(doc(fsdb, 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
     _userData.raidTeam = novoTeam;
     _userData.raidBag  = bag;
-    await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { bag });
+    // Sincronizar bag no RTDB se já estiver numa sala
+    if (_salaId) {
+      await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { bag }).catch(()=>{});
+    }
     // Toast
     let emoji = '🧪', msg = '';
-    if (efeito.tipo === 'revive')    { emoji = '💊'; msg = `${emoji} ${cap(slot.pokemon)} revived → ${novoHp}/${hpMx} HP`; }
-    else if (efeito.tipo === 'hp')   { emoji = '🧪'; msg = `${emoji} ${cap(slot.pokemon)} healed → ${novoHp}/${hpMx} HP`; }
-    else if (efeito.tipo === 'fullcure') { emoji = '✨'; msg = `${emoji} ${cap(slot.pokemon)} fully restored!`; }
-    else if (efeito.tipo === 'antidote') { emoji = '🌿'; msg = `${emoji} ${cap(slot.pokemon)} cured of Poison!`; }
+    if (efeito.tipo === 'revive')         { emoji = '💊'; msg = `${emoji} ${cap(slot.pokemon)} revived → ${novoHp}/${hpMx} HP`; }
+    else if (efeito.tipo === 'hp')        { emoji = '🧪'; msg = `${emoji} ${cap(slot.pokemon)} healed → ${novoHp}/${hpMx} HP`; }
+    else if (efeito.tipo === 'fullcure')  { emoji = '✨'; msg = `${emoji} ${cap(slot.pokemon)} fully restored!`; }
+    else if (efeito.tipo === 'antidote')  { emoji = '🌿'; msg = `${emoji} ${cap(slot.pokemon)} cured of Poison!`; }
     else if (efeito.tipo === 'awakening') { emoji = '☕'; msg = `${emoji} ${cap(slot.pokemon)} woke up!`; }
     mostrarToastBag(msg, '#2ecc71');
     fecharBagModal();
-    renderGrid(_salaSnap?.players || {});
+    renderPlayers(_cachedPlayers);
   } catch(e) {
     console.error('[usarItemPreBattle]', e);
     mostrarToastBag('❌ Error applying item. Try again.', '#c03030');
@@ -1461,25 +1481,34 @@ async function aplicarEtherPre(itemKey, moveKey) {
   if (bag[itemKey] <= 0) delete bag[itemKey];
 
   try {
-    const { getFirestore: _gfs, doc: _doc, updateDoc: _upd } =
-      await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
-    await _upd(_doc(_gfs(fbApp), 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
+    const fsdb = getFirestore(fbApp);
+    await updateDoc(doc(fsdb, 'usuarios', _uid), { raidTeam: novoTeam, raidBag: bag });
     _userData.raidTeam = novoTeam;
     _userData.raidBag  = bag;
+    if (_salaId) {
+      await update(ref(rdb, `boss_salas/${_salaId}/players/${_uid}`), { bag }).catch(()=>{});
+    }
     const moveName = moveKey.replace(/_/g,' ').replace(/\b\w/g, l=>l.toUpperCase());
-    mostrarToastBag(`\u26a1 ${moveName} PP restored (+20)!`, '#9b59b6');
+    mostrarToastBag(`⚡ Ether used on ${moveName}! (+20 PP)`, '#9b59b6');
     fecharBagModal();
-    renderGrid(_salaSnap?.players || {});
+    renderPlayers(_cachedPlayers);
   } catch(e) {
+    console.error('[aplicarEtherPre]', e);
     mostrarToastBag('Error applying Ether.', '#c03030');
   }
 }
-window.abrirEtherSelectorPre = abrirEtherSelectorPre;
-window.aplicarEtherPre = aplicarEtherPre;
+window.abrirEtherSelectorPre  = abrirEtherSelectorPre;
+window.aplicarEtherPre         = aplicarEtherPre;
+window.usarItemPreBattle       = usarItemPreBattle;   // ← estava faltando!
+window.abrirTrocaPoke          = abrirTrocaPoke;
+window.toggleReady             = toggleReady;
+window.sairDaSala              = sairDaSala;
+window.enviarChat              = enviarChat;
 
-window.fecharBagModal = function fecharBagModal() {
+function fecharBagModal() {
   document.getElementById('pbBagModal')?.classList.remove('open');
 }
+window.fecharBagModal = fecharBagModal;
 
 // Fechar ao clicar fora do painel
 document.addEventListener('click', e => {

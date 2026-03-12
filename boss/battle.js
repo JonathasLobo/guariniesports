@@ -166,7 +166,7 @@ const MOVES_DB = {
   safeguard:     {name:'Safeguard',     type:'normal',  cat:'status',   power:null,acc:null,pp:25},
   whirlwind:     {name:'Whirlwind',     type:'normal',  cat:'status',   power:null,acc:null,pp:20},
   // ── Water moves ausentes ──
-  withdraw:      {name:'Withdraw',      type:'water',   cat:'status',   power:null,acc:null,pp:40,  eff:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
+  withdraw:      {name:'Withdraw',      type:'water',   cat:'status',   power:null,acc:null,pp:40,  effect:'buff', stat:'def', stages:1},
   bubble:        {name:'Bubble',        type:'water',   cat:'special',  power:40,  acc:100, pp:30},
   aqua_tail:     {name:'Aqua Tail',     type:'water',   cat:'physical', power:90,  acc:90,  pp:10},
   aqua_jet:      {name:'Aqua Jet',      type:'water',   cat:'physical', power:40,  acc:100, pp:20},
@@ -177,8 +177,7 @@ const MOVES_DB = {
   rapid_spin:    {name:'Rapid Spin',    type:'normal',  cat:'physical', power:50,  acc:100, pp:40},
   // ── Bug moves ausentes ──
   bug_bite:      {name:'Bug Bite',      type:'bug',     cat:'physical', power:60,  acc:100, pp:20},
-  string_shot:   {name:'String Shot',   type:'bug',     cat:'status',   power:null,acc:95,  pp:40, eff:'deboss', stat:'spe', stages:-1, desc:"Lowers foe's Speed."},
-  harden:        {name:'Harden',        type:'normal',  cat:'status',   power:null,acc:null,pp:30, eff:'buff',  stat:'def', stages:1, desc:"Raises own Defense."},
+  string_shot:   {name:'String Shot',   type:'bug',     cat:'status',   power:null,acc:95,  pp:40, effect:'debuff', stat:'spe', stages:-1},
   // ── Grass moves ausentes ──
   absorb:        {name:'Absorb',        type:'grass',   cat:'special',  power:20,  acc:100, pp:25},
   razor_leaf:    {name:'Razor Leaf',    type:'grass',   cat:'physical', power:55,  acc:95,  pp:25},
@@ -197,13 +196,11 @@ const MOVES_DB = {
   heat_crash:    {name:'Heat Crash',    type:'fire',    cat:'physical', power:null,acc:100, pp:10},
   // ── Misc ausentes ──
   odor_sleuth:   {name:'Odor Sleuth',   type:'normal',  cat:'status',   power:null,acc:null,pp:40},
-  defense_curl:  {name:'Defense Curl',  type:'normal',  cat:'status',   power:null,acc:null,pp:40, eff:'buff', stat:'def', stages:1},
   smog:          {name:'Smog',          type:'poison',  cat:'special',  power:30,  acc:70,  pp:20},
   rollout:       {name:'Rollout',       type:'rock',    cat:'physical', power:30,  acc:90,  pp:20},
   take_down:     {name:'Take Down',     type:'normal',  cat:'physical', power:90,  acc:85,  pp:20},
   assurance:     {name:'Assurance',     type:'dark',    cat:'physical', power:60,  acc:100, pp:10},
   head_smash:    {name:'Head Smash',    type:'rock',    cat:'physical', power:150, acc:80,  pp:5},
-  howl:          {name:'Howl',          type:'normal',  cat:'status',   power:null,acc:null,pp:40, eff:'buff', stat:'atk', stages:1},
   psybeam:       {name:'Psybeam',       type:'psychic', cat:'special',  power:65,  acc:100, pp:20},
   fire_spin:     {name:'Fire Spin',     type:'fire',    cat:'special',  power:35,  acc:85,  pp:15},
   lucky_chant:   {name:'Lucky Chant',   type:'normal',  cat:'status',   power:null,acc:null,pp:30},
@@ -216,7 +213,6 @@ const MOVES_DB = {
   revenge:       {name:'Revenge',       type:'fighting',cat:'physical', power:60,  acc:100, pp:10},
   encore:        {name:'Encore',        type:'normal',  cat:'status',   power:null,acc:100, pp:5},
   retaliate:     {name:'Retaliate',     type:'normal',  cat:'physical', power:70,  acc:100, pp:5},
-  swords_dance:  {name:'Swords Dance',  type:'normal',  cat:'status',   power:null,acc:null,pp:20, eff:'buff', stat:'atk', stages:2},
   slash:         {name:'Slash',         type:'normal',  cat:'physical', power:70,  acc:100, pp:20},
 };
 
@@ -244,7 +240,7 @@ const TIPO_CORES = {
 // Para adicionar um item: inclua { item:'chave_item', qty:1, chance:0.5 }
 // A função rola Math.random() para cada entrada com chance < 1
 // ──────────────────────────────────────────────────────────────
-function calcularDrops(bossNivel) {
+function calcularDrops(bossNivel, bossNome='') {
   const n = bossNivel || 10;
 
   // Rola os drops probabilísticos e retorna { item: qty }
@@ -258,53 +254,69 @@ function calcularDrops(bossNivel) {
     return itens;
   }
 
+  // ── Drops específicos por boss (raros) ──────────────────
+  const bossSpecific = {};
+  if (bossNome === 'bulbasaur') {
+    if (Math.random() < 0.08) bossSpecific['leaf_stone'] = 1; // 8% — raro
+  }
+  // Para novos bosses: adicionar aqui ex:
+  // if (bossNome === 'oddish') { if (Math.random() < 0.06) bossSpecific['leaf_stone'] = 1; }
+
   if (n <= 15) return { // Fácil (ex: Caterpie lv10)
     xp:       80,
     lealdade: 20,
-    itens: rolarDrops([
-      { item: 'pokebola',  qty: 1, chance: 1.0 },  // 100% — garantido
-      { item: 'potion',    qty: 1, chance: 1.0 },  // 100% — garantido
-      { item: 'ether',     qty: 1, chance: 1.0 },  // 50%  — sorte
-      { item: 'revive',    qty: 1, chance: 1.0 },  // 30%  — raro
+    itens: Object.assign(rolarDrops([
+      { item: 'pokebola',  qty: 1, chance: 1.0 },
+      { item: 'potion',    qty: 1, chance: 1.0 },
+      { item: 'ether',     qty: 1, chance: 1.0 },
+      { item: 'revive',    qty: 1, chance: 1.0 },
+      { item: 'antidote',  qty: 1, chance: 0.5 },
+      { item: 'awakening', qty: 1, chance: 0.4 },
       { item: 'ether',     qty: 1, chance: 0.25 },
       { item: 'potion',    qty: 1, chance: 0.25 },
-      { item: 'revive',    qty: 1, chance: 0.25 }, // 25%  — raro
-    ]),
+      { item: 'revive',    qty: 1, chance: 0.25 },
+    ]), bossSpecific),
   };
-  if (n <= 25) return { // Médio-baixo
+  if (n <= 25) return { // Médio-baixo (ex: Spinarak lv10, Bulbasaur lv25)
     xp:       150,
     lealdade: 20,
-    itens: rolarDrops([
+    itens: Object.assign(rolarDrops([
       { item: 'pokebola',    qty: 2, chance: 1.0 },
       { item: 'great_ball',  qty: 1, chance: 1.0 },
       { item: 'super_potion',qty: 1, chance: 1.0 },
+      { item: 'antidote',    qty: 1, chance: 0.7 },
+      { item: 'awakening',   qty: 1, chance: 0.5 },
       { item: 'super_potion',qty: 1, chance: 0.5 },
       { item: 'revive',      qty: 1, chance: 0.4 },
       { item: 'ether',       qty: 1, chance: 0.35 },
-    ]),
+    ]), bossSpecific),
   };
   if (n <= 35) return { // Médio (ex: Staryu lv30)
     xp:       250,
     lealdade: 20,
-    itens: rolarDrops([
+    itens: Object.assign(rolarDrops([
       { item: 'great_ball',  qty: 2, chance: 1.0 },
       { item: 'super_potion',qty: 2, chance: 1.0 },
+      { item: 'antidote',    qty: 1, chance: 0.6 },
+      { item: 'awakening',   qty: 1, chance: 0.5 },
       { item: 'revive',      qty: 1, chance: 1.0 },
       { item: 'revive',      qty: 1, chance: 0.5 },
       { item: 'ether',       qty: 1, chance: 0.5 },
-    ]),
+    ]), bossSpecific),
   };
   return { // Difícil (ex: Mawile lv35+)
     xp:       400,
     lealdade: 20,
-    itens: rolarDrops([
+    itens: Object.assign(rolarDrops([
       { item: 'ultra_ball',  qty: 2, chance: 1.0 },
       { item: 'hyper_potion',qty: 2, chance: 1.0 },
+      { item: 'antidote',    qty: 1, chance: 0.5 },
+      { item: 'awakening',   qty: 1, chance: 0.5 },
       { item: 'revive',      qty: 1, chance: 1.0 },
       { item: 'revive',      qty: 1, chance: 0.5 },
       { item: 'ether',       qty: 1, chance: 0.6 },
       { item: 'ether',       qty: 1, chance: 0.3 },
-    ]),
+    ]), bossSpecific),
   };
 }
 
@@ -957,6 +969,11 @@ onAuthStateChanged(auth, async user => {
     const hash = JSON.stringify(battleSemLog);
     const logChanged = _log !== undefined;
     _battleSnap = val;
+    // Sincronizar statStages do Firebase para _playerStages local (todos os players)
+    const playersSnap = val.players || {};
+    Object.entries(playersSnap).forEach(([uid, p]) => {
+      if (p.statStages) _playerStages[uid] = { ...p.statStages };
+    });
     if (hash !== _lastBattleHash) {
       _lastBattleHash = hash;
       renderBattle();
@@ -1049,6 +1066,10 @@ async function atualizarHPPlayer(){
     nature: pokemonSlot.nature||'Hardy',
     golpes,
     ppAtual: ppInicial,
+    shiny: pokemonSlot.shiny === true,   // ← propaga shiny para o RTDB
+    ability: pokemonSlot.ability || '',  // ← propaga ability também (já usada em btUsarGolpe)
+    status: pokemonSlot.status || null,  // ← status persistido (poison etc)
+    fainted: pokemonSlot.fainted === true,
   });
 }
 
@@ -1070,21 +1091,89 @@ function iniciarBattleUI(sala){
 // ══════════════════════════════════════════════════════════════
 // RENDER PRINCIPAL — chamado toda vez que o Firebase atualiza
 // ══════════════════════════════════════════════════════════════
+
+// ── Processar dano de status do player (poison/burn) após sua ação ─
+async function processarStatusDanoPlayer() {
+  const me = _battleSnap?.players?.[_uid];
+  if (!me || me.fainted || me.hp <= 0) return;
+  const status = me.status;
+  if (status !== 'poison' && status !== 'toxic' && status !== 'burn') return;
+
+  let dmg = 0;
+  let msg = '';
+  const hpMax = me.hpMax || 1;
+  const pName = cap(me.pokemon);
+
+  if (status === 'poison') {
+    dmg = Math.max(1, Math.floor(hpMax / 8));
+    msg = `${getNick()}'s ${pName} is hurt by poison! (-${dmg} HP)`;
+  } else if (status === 'toxic') {
+    const toxTurn = (me.toxicTurns || 0) + 1;
+    dmg = Math.max(1, Math.floor(hpMax / 16 * toxTurn));
+    msg = `${getNick()}'s ${pName} is badly hurt by poison! (-${dmg} HP)`;
+    await update(_battleRef, { [`players/${_uid}/toxicTurns`]: toxTurn });
+  } else if (status === 'burn') {
+    dmg = Math.max(1, Math.floor(hpMax / 8));
+    msg = `${getNick()}'s ${pName} is hurt by its burn! (-${dmg} HP)`;
+  }
+
+  const newHp = Math.max(0, me.hp - dmg);
+  await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), { hp: newHp });
+  showPlayerFloat(_uid, `-${dmg}`, 'super');
+  await logAction(msg);
+
+  if (newHp <= 0) {
+    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
+      hp: 0, fainted: true,
+    });
+    await logAction(`${getNick()}'s ${pName} fainted from ${status}!`);
+  }
+}
+
+// ── Processar turno de sleep (async, chamado pelo renderBattle) ──
+async function processarSleepTurno(playerSnap) {
+  const sleepTurns = playerSnap?.sleepTurns ?? 0;
+  const remaining  = sleepTurns - 1;
+  if (remaining <= 0) {
+    await update(_battleRef, {
+      [`players/${_uid}/status`]:     null,
+      [`players/${_uid}/sleepTurns`]: 0,
+    });
+    await logAction(`${getNick()}'s ${cap(playerSnap.pokemon)} woke up!`);
+  } else {
+    await update(_battleRef, {
+      [`players/${_uid}/sleepTurns`]: remaining,
+    });
+    await logAction(`${getNick()}'s ${cap(playerSnap.pokemon)} is fast asleep! 💤`);
+  }
+  await avancarTurno();
+}
+
 function renderBattle(){
   const bs = _battleSnap;
   if (!bs) return;
 
-  // ── Ícones de status do boss ────────────────────────────────
-  const statusIcons = [];
-  if (_bossStatus.sleep > 0)      statusIcons.push(`💤×${_bossStatus.sleep}`);
-  if (_bossStatus.confusion)      statusIcons.push('💫');
-  if (_bossStatus.poisoned === 'toxic')  statusIcons.push('☠☠');
-  else if (_bossStatus.poisoned)  statusIcons.push('☠');
-  if (_bossStatus.burned)         statusIcons.push('🔥');
+  // ── Badges de status do boss (igual ao player) ──────────────
+  const statusBadges = [];
+  if (_bossStatus.sleep > 0)
+    statusBadges.push(`<span class="boss-status-badge slp">SLP ×${_bossStatus.sleep}</span>`);
+  if (_bossStatus.poisoned === 'toxic')
+    statusBadges.push('<span class="boss-status-badge psn">TOX</span>');
+  else if (_bossStatus.poisoned)
+    statusBadges.push('<span class="boss-status-badge psn">PSN</span>');
+  if (_bossStatus.burned)
+    statusBadges.push('<span class="boss-status-badge brn">BRN</span>');
+  if (_bossStatus.paralyzed)
+    statusBadges.push('<span class="boss-status-badge par">PAR</span>');
+  if (_bossStatus.confusion)
+    statusBadges.push('<span class="boss-status-badge cnf">CNF</span>');
   const stageKeys = Object.entries(_bossStages).filter(([,v])=>v!==0);
-  stageKeys.forEach(([k,v])=> statusIcons.push(`${k.toUpperCase()}${v>0?'+':''}${v}`));
+  stageKeys.forEach(([k,v])=>{
+    const cls = v > 0 ? 'buff-tag' : 'debuff-tag';
+    statusBadges.push(`<span class="${cls}">${k.toUpperCase()}${v>0?'+':''}${v}</span>`);
+  });
   const statusEl = document.getElementById('bossStatusIcons');
-  if (statusEl) statusEl.textContent = statusIcons.join('  ');
+  if (statusEl) statusEl.innerHTML = statusBadges.join(' ');
 
   // ── Boss HP ──────────────────────────────────────────────
   const bossHpPct = bs.bossHpMax > 0 ? Math.max(0, bs.bossHp / bs.bossHpMax * 100) : 0;
@@ -1146,6 +1235,16 @@ function renderBattle(){
   }
   document.getElementById('turnBanner').textContent = bannerTxt;
 
+  // ── Seta de turno ativo ───────────────────────────────────
+  // Mostrar seta apenas quando é turno de um player (não boss, não captura)
+  const arrowUid = (!bs.bossTurnActive && !_bossAttacking && bs.fase === 'battle')
+    ? curUid : null;
+  // Sempre chamar quando muda OU quando _lastArrowUid foi resetado (retorno pós-boss)
+  if (arrowUid !== _lastArrowUid) {
+    _lastArrowUid = arrowUid;
+    mostrarFaixaTurno(arrowUid);
+  }
+
   // ── Fase de captura ──────────────────────────────────────
   _capturePhase = bs.fase === 'capture';
 
@@ -1180,7 +1279,7 @@ function renderBattle(){
 
   // ── Auto-skip: turno pertence a player fainted → avançar automaticamente ──
   const curPlayerSnap = bs.players?.[curUid];
-  const curFainted = curPlayerSnap?.fainted || (curPlayerSnap?.hp ?? 1) <= 0;
+  const curFainted = curPlayerSnap?.fainted || (curPlayerSnap?.hp ?? 1) <= 0 || curPlayerSnap?.afkKicked;
   if (curFainted && bs.fase === 'battle' && !bs.bossFainted && curUid && !_actionDone){
     if (curUid === _uid){
       // Caso 1: sou eu o fainted — eu mesmo faço o skip imediatamente
@@ -1201,6 +1300,14 @@ function renderBattle(){
         }
       }, 3000);
     }
+  }
+
+  // ── Auto-skip: player dormindo → avançar turno ─────────────
+  // (chamada async separada para não usar await em função síncrona)
+  const mySleepStatus = myPlayerSnap?.status === 'sleep';
+  if (_myTurn && !_actionDone && mySleepStatus && bs.fase === 'battle' && !bs.bossFainted) {
+    _actionDone = true;
+    processarSleepTurno(myPlayerSnap);
   }
 
   // Na captura, fainted players também têm vez (não bloquear por myFainted)
@@ -1227,7 +1334,8 @@ function renderBattle(){
   if (bs.fase === 'victory'){
     mostrarResultado('victory', bs.capturedBy);
   } else if (bs.fase === 'defeat'){
-    // Derrota: sem drops — apenas resultado
+    // Derrota: salvar fainted/HP antes de mostrar resultado
+    salvarEstadoDerrota();
     mostrarResultado('defeat');
   }
 
@@ -1241,6 +1349,39 @@ function renderBattle(){
 
 // ── Renderizar cards dos players ─────────────────────────────
 let _prevHps = {};
+// ── Faixa de turno: retângulo escuro com ponta verde ─────────
+let _lastArrowUid  = null;
+let _exitTimer     = null;
+let _entryTimer    = null;
+
+function mostrarFaixaTurno(uid) {
+  // Cancelar timers pendentes
+  if (_exitTimer)  clearTimeout(_exitTimer);
+  if (_entryTimer) clearTimeout(_entryTimer);
+
+  // 1. Iniciar saída em todos os rows ativos
+  document.querySelectorAll('.player-row.turn-active, .player-row.turn-exiting').forEach(row => {
+    row.classList.remove('turn-active');
+    row.classList.add('turn-exiting');
+  });
+
+  // 2. Após a animação de saída (0.5s), limpar classe e entrar no próximo
+  const EXIT_MS = 520;  // ligeiramente maior que a animação (0.50s)
+  _exitTimer = setTimeout(() => {
+    document.querySelectorAll('.player-row.turn-exiting').forEach(r => {
+      r.classList.remove('turn-exiting');
+    });
+    if (uid) {
+      const row = document.getElementById(`prow-${uid}`);
+      if (row) {
+        // forçar reflow para reiniciar a animação mesmo se for o mesmo row
+        void row.offsetWidth;
+        row.classList.add('turn-active');
+      }
+    }
+  }, EXIT_MS);
+}
+
 function renderPlayers(bs){
   const container = document.getElementById('playersSide');
   const players   = bs.players || {};
@@ -1256,7 +1397,12 @@ function renderPlayers(bs){
     const pct       = p.hpMax > 0 ? Math.max(0, p.hp / p.hpMax * 100) : 0;
     const barCls    = pct > 50 ? '' : pct > 20 ? 'yellow' : 'red';
     const fainted   = p.fainted || p.hp <= 0;
-    const imgSrc    = p.pokemon ? `../perfil/img-pokeicon/${p.pokemon}.png` : '';
+    const imgSrc    = p.pokemon
+      ? (p.shiny
+          ? `../perfil/img-shiny/${p.pokemon}.png`
+          : `../perfil/img-pokeicon/${p.pokemon}.png`)
+      : '';
+    const imgFallback = p.pokemon ? `../perfil/img-pokeicon/${p.pokemon}.png` : '';
 
     // Efeito escada: cada player desloca +18px para a direita por índice
     // (i=0 = mais à frente/topo, i=1 um pouco atrás, etc.)
@@ -1267,11 +1413,17 @@ function renderPlayers(bs){
       <img class="player-poke-img ${fainted?'fainted':''}"
            id="pimg-${uid}"
            src="${sanitize(imgSrc)}"
-           onerror="this.src='../estatisticas-shad/images/backgrounds/pikachu-left-bg.png'"
+           onerror="this.src='${sanitize(imgFallback)}'; this.onerror=null;"
            alt="${sanitize(p.pokemon)}">
       <div class="player-info">
         <div class="player-nick">${isMe?'You':sanitize(p.nick)}</div>
-        <div class="player-poke-name">${sanitize(cap(p.pokemon))||'—'}</div>
+        <div class="player-poke-name">
+          ${sanitize(cap(p.pokemon))||'—'}
+          ${p.status === 'burn'                              ? '<span class="inline-status-tag burn">BRN</span>' : ''}
+          ${p.status === 'paralysis'                        ? '<span class="inline-status-tag para">PAR</span>' : ''}
+          ${p.status === 'poison' || p.status === 'toxic'   ? '<span class="inline-status-tag psn">PSN</span>'  : ''}
+          ${p.status === 'sleep'                            ? '<span class="inline-status-tag slp">SLP</span>'  : ''}
+        </div>
         ${(() => {
           const stages = p.statStages || {};
           const statNames = {atk:'Atk',def:'Def',spa:'Sp.A',spd:'Sp.D',spe:'Spd',acc:'Acc'};
@@ -1282,13 +1434,7 @@ function renderPlayers(bs){
               const cls  = val > 0 ? 'buff-tag' : 'debuff-tag';
               return `<span class="${cls}">${statNames[stat]||stat}${sign}${val}</span>`;
             });
-          const statusTags = [];
-          if (p.status === 'burn')     statusTags.push('<span class="status-tag burn">🔥BRN</span>');
-          if (p.status === 'paralysis')statusTags.push('<span class="status-tag para">⚡PAR</span>');
-          if (p.status === 'poison'||p.status==='toxic') statusTags.push('<span class="status-tag psn">☠PSN</span>');
-          if (p.status === 'sleep')    statusTags.push('<span class="status-tag slp">💤SLP</span>');
-          const all = [...statusTags, ...tags];
-          return all.length ? `<div class="player-stages-row">${all.join('')}</div>` : '';
+          return tags.length ? `<div class="player-stages-row">${tags.join('')}</div>` : '';
         })()}
         <div class="player-hp-bar-wrap">
           <div class="player-hp-label">
@@ -1454,6 +1600,9 @@ window.btOpenBag = function(){
     revive:       { name:'Revive',       img:'revive',        revive:true, isBall:false },
     full_restore: { name:'Full Restore', img:'full_restore',  heal:9999,isBall:false },
     ether:        { name:'Ether',        img:'ether',         isEther:true, isBall:false },
+    antidote:     { name:'Antidote',     img:'antidote',      isBall:false },
+    awakening:    { name:'Awakening',    img:'awakening',     isBall:false },
+    max_revive:   { name:'Max Revive',   img:'max_revive',    revive:true, isBall:false },
   };
 
   let html = '<button class="sub-back" onclick="setSubPanel(null)">← Back</button>';
@@ -1564,6 +1713,59 @@ window.btEtherMove = async function(itemKey, moveKey) {
 };
 
 // ── Pass ─────────────────────────────────────────────────────
+// ── Pass automático por timeout (conta como inatividade) ────
+async function btPassAfk() {
+  if (!_myTurn || _actionDone) return;
+  const me = _battleSnap?.players?.[_uid];
+  if (!me || me.fainted || me.hp <= 0 || me.actedThisTurn) return;
+
+  // Incrementar contador AFK no Firebase
+  const afkNow = (me.afkCount || 0) + 1;
+  const AFK_LIMIT = 3;
+
+  if (afkNow >= AFK_LIMIT) {
+    // ── Kick: remover player da ordem de turno ──────────────
+    _actionDone = true;
+    pararTurnTimer();
+
+    await update(_battleRef, {
+      [`players/${_uid}/afkKicked`]: true,
+      [`players/${_uid}/afkCount`]:  afkNow,
+      [`players/${_uid}/actedThisTurn`]: true,
+    });
+
+    // AFK kick silencioso — sem log visível
+
+    // Verificar se sobrou algum player ativo
+    const bsNow = (await get(_battleRef)).val();
+    const activePlayers = Object.entries(bsNow?.players || {})
+      .filter(([uid, p]) => !p.afkKicked && !p.fainted && p.hp > 0);
+
+    if (activePlayers.length === 0) {
+      // Todos foram kickados/fainted → derrota
+      await update(_battleRef, { fase: 'defeat' });
+      return;
+    }
+
+    // Remover da turnOrder
+    const newOrder = (bsNow?.turnOrder || []).filter(uid => uid !== _uid);
+    await update(_battleRef, { turnOrder: newOrder });
+    await avancarTurno();
+  } else {
+    // Ainda dentro do limite — pass normal mas incrementa contador
+    _actionDone = true;
+    pararTurnTimer();
+    setSubPanel(null);
+
+    await update(_battleRef, {
+      [`players/${_uid}/afkCount`]: afkNow,
+    });
+
+    // timeout silencioso — sem log visível
+    await avancarTurno();
+  }
+}
+
 window.btPass = async function(){
   if (!_myTurn || _actionDone) return;
   // Na fase de captura: Pass = pular vez sem arremessar
@@ -1581,9 +1783,23 @@ window.btPass = async function(){
   _actionDone = true;
   pararTurnTimer();
   setSubPanel(null);
+  // Pass manual reseta o contador de inatividade
+  if ((_battleSnap?.players?.[_uid]?.afkCount || 0) > 0) {
+    await update(_battleRef, { [`players/${_uid}/afkCount`]: 0 });
+  }
   await logAction(`${getNick()} passed their turn.`);
   await avancarTurno();
 };
+
+// ── Verifica imunidade a status por tipo ──────────────────────
+function isPoisonImmune(pokemonKey) {
+  const tipos = POKEMON_TIPOS[pokemonKey] || [];
+  return tipos.includes('poison') || tipos.includes('steel');
+}
+function isBossPoisonImmune() {
+  const tipos = _bossData?.tipos || [];
+  return tipos.includes('poison') || tipos.includes('steel');
+}
 
 // ── Usar golpe ───────────────────────────────────────────────
 window.btUsarGolpe = async function(idx, moveKey){
@@ -1606,6 +1822,11 @@ window.btUsarGolpe = async function(idx, moveKey){
   _actionDone = true;
   pararTurnTimer();
   setSubPanel(null);
+
+  // Qualquer ação real reseta o contador AFK
+  if ((_battleSnap?.players?.[_uid]?.afkCount || 0) > 0) {
+    update(_battleRef, { [`players/${_uid}/afkCount`]: 0 }).catch(()=>{});
+  }
 
   const me       = _battleSnap.players?.[_uid];
   const bossHp   = _battleSnap.bossHp || 0;
@@ -1643,10 +1864,15 @@ window.btUsarGolpe = async function(idx, moveKey){
       showBossFloat('💫 Confused!', 'miss');
       logExtra = ' Boss became confused!';
     } else if (eff === 'poison' || eff === 'toxic'){
-      _bossStatus.poisoned  = eff;
-      _bossStatus.poisonTurno = 0;
-      showBossFloat('☠ Poison!', 'miss');
-      logExtra = ` Boss was ${eff === 'toxic' ? 'badly ' : ''}poisoned!`;
+      if (isBossPoisonImmune()) {
+        showBossFloat('Immune!', 'miss');
+        logExtra = ' Boss is immune to poison!';
+      } else {
+        _bossStatus.poisoned  = eff;
+        _bossStatus.poisonTurno = 0;
+        showBossFloat('☠ Poison!', 'miss');
+        logExtra = ` Boss was ${eff === 'toxic' ? 'badly ' : ''}poisoned!`;
+      }
     } else if (eff === 'burn'){
       _bossStatus.burned = true;
       showBossFloat('🔥 Burned!', 'super');
@@ -1665,27 +1891,33 @@ window.btUsarGolpe = async function(idx, moveKey){
       // Buffar o próprio pokémon (stat do player)
       const stat   = move.stat || 'atk';
       const stages = move.stages || 1;
-      applyPlayerStage(_uid, stat, stages);
-      // Salvar stages no Firebase para o render mostrar
-      await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
-        statStages: _playerStages[_uid] || {}
-      });
+      const variou = applyPlayerStage(_uid, stat, stages);
       const statNames = {atk:'Attack',def:'Defense',spa:'Sp. Atk',spd:'Sp. Def',spe:'Speed'};
-      logExtra = ` ${cap(me.pokemon)}'s ${statNames[stat]||stat} rose${stages>1?' sharply':''}!`;
+      if (variou !== 0) {
+        const arrow = stages > 0 ? '↑' : '↓';
+        showPlayerFloat(_uid, `${stat.toUpperCase()}${arrow.repeat(Math.min(2,Math.abs(stages)))}`, 'heal');
+        logExtra = ` ${cap(me.pokemon)}'s ${statNames[stat]||stat} rose${Math.abs(stages)>1?' sharply':''}!`;
+      } else {
+        logExtra = ` ${cap(me.pokemon)}'s ${statNames[stat]||stat} won't go higher!`;
+      }
     }
 
-    // ── Decrementar PP do golpe de status ─────────────────────
-    const ppStatusSnap = me.ppAtual || {};
+    // ── PP via _battleRef (path relativo) ────────────────────
+    const ppStatusSnap  = me.ppAtual || {};
     const ppStatusAntes = ppStatusSnap[moveKey] !== undefined
       ? ppStatusSnap[moveKey]
       : (getMoveLight(moveKey)?.pp || 10);
     const ppStatusDepois = Math.max(0, ppStatusAntes - 1);
-    await update(_battleRef, {
-      [`players/${_uid}/ppAtual/${moveKey}`]: ppStatusDepois,
+    const ppAtualNovo = { ...(me.ppAtual || {}), [moveKey]: ppStatusDepois };
+    // único write atômico: PP + statStages juntos → um único onValue → render sem race condition
+    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
+      ppAtual:    ppAtualNovo,
+      statStages: _playerStages[_uid] || {},
     });
     // ────────────────────────────────────────────────────────────
 
     await logAction(`${getNick()}'s ${cap(me.pokemon)} used ${move.name}!${logExtra}`);
+    await processarStatusDanoPlayer();
     await avancarTurno();
     return;
   }
@@ -1730,10 +1962,14 @@ window.btUsarGolpe = async function(idx, moveKey){
     if (roll < move.effectChance) {
       const eff2 = move.effect;
       if ((eff2 === 'poison' || eff2 === 'toxic') && !_bossStatus.poisoned) {
-        _bossStatus.poisoned = eff2;
-        _bossStatus.poisonTurno = 0;
-        showBossFloat('☠ Poison!', 'miss');
-        logTxt += ` ${cap(me.pokemon)}'s attack poisoned the boss!`;
+        if (isBossPoisonImmune()) {
+          // boss é imune, sem efeito
+        } else {
+          _bossStatus.poisoned = eff2;
+          _bossStatus.poisonTurno = 0;
+          showBossFloat('☠ Poison!', 'miss');
+          logTxt += ` ${cap(me.pokemon)}'s attack poisoned the boss!`;
+        }
       } else if (eff2 === 'burn' && !_bossStatus.burned) {
         _bossStatus.burned = true;
         showBossFloat('🔥 Burned!', 'super');
@@ -1748,6 +1984,20 @@ window.btUsarGolpe = async function(idx, moveKey){
         showBossFloat('⚡ Paralyzed!', 'miss');
         logTxt += ' The boss was paralyzed!';
       }
+    }
+  }
+
+  // ── Drain: curar player com % do dano causado ─────────────────
+  const drainFrac = move.drain || 0;
+  if (drainFrac > 0 && dano > 0) {
+    const myHpNow  = _battleSnap.players?.[_uid]?.hp ?? 0;
+    const myHpMax  = _battleSnap.players?.[_uid]?.hpMax ?? 1;
+    const drainAmt = Math.max(1, Math.floor(dano * drainFrac));
+    if (myHpNow < myHpMax) {
+      const healedHp = Math.min(myHpMax, myHpNow + drainAmt);
+      await update(_battleRef, { [`players/${_uid}/hp`]: healedHp });
+      showPlayerFloat(_uid, `+${drainAmt}`, 'heal');
+      logTxt += ` ${cap(me.pokemon)} drained ${drainAmt} HP!`;
     }
   }
 
@@ -1776,6 +2026,7 @@ window.btUsarGolpe = async function(idx, moveKey){
   await update(_battleRef, updates);
   await logAction(logTxt);
 
+  await processarStatusDanoPlayer();
   await avancarTurno();
 };
 
@@ -1792,8 +2043,10 @@ window.btUsarItem = async function(itemKey){
     ultra_ball:{name:'Ultra Ball',isBall:true,ballMult:2},
     potion:{name:'Potion',heal:20},super_potion:{name:'Super Potion',heal:60},
     hyper_potion:{name:'Hyper Potion',heal:120},max_potion:{name:'Max Potion',heal:9999},
-    full_restore:{name:'Full Restore',heal:9999},
+    full_restore:{name:'Full Restore',heal:9999,cureStatus:true},
     revive:{name:'Revive',revive:true},
+    antidote:{name:'Antidote',cureStatus:'poison'},
+    awakening:{name:'Awakening',cureStatus:'sleep'},
   };
 
   const info = ITEM_INFO[itemKey];
@@ -1843,6 +2096,46 @@ window.btUsarItem = async function(itemKey){
     await logAction(`${getNick()} used ${info.name} and restored ${healed} HP!`);
   }
 
+  // ── Cura de status (Antidote, Awakening, Full Restore) ──────
+  if (info.cureStatus) {
+    const me = _battleSnap.players?.[_uid];
+    if (!me) { await avancarTurno(); return; }
+    const curStatus = me.status || null;
+    const validCure = info.cureStatus === true
+      ? !!curStatus                             // full_restore cura qualquer status
+      : (curStatus === info.cureStatus ||        // antidote: poison/toxic
+         (info.cureStatus === 'poison' && curStatus === 'toxic'));
+    if (!validCure) {
+      // Devolver item
+      try {
+        const devBag = Object.assign({}, _userData.raidBag || {});
+        devBag[itemKey] = (devBag[itemKey] || 0) + 1;
+        _userData.raidBag = devBag;
+        await updateDoc(doc(fsdb,'usuarios',_uid), { raidBag: devBag });
+      } catch(e){}
+      const statusMsg = info.cureStatus === 'poison'
+        ? `${cap(me.pokemon)} is not poisoned!`
+        : info.cureStatus === 'sleep'
+        ? `${cap(me.pokemon)} is not asleep!`
+        : `${cap(me.pokemon)} has no status condition!`;
+      setMsg(statusMsg);
+      _actionDone = false;
+      return;
+    }
+    // Curar status
+    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
+      status: null,
+      sleepTurns: 0,
+    });
+    const cureMsg = info.cureStatus === 'sleep' ? 'woke up' : 'was cured of poison';
+    showPlayerFloat(_uid, '✨', 'heal');
+    await logAction(`${getNick()} used ${info.name}! ${cap(me.pokemon)} ${cureMsg}!`);
+    // full_restore também cura HP
+    if (info.cureStatus === true && me.hp < me.hpMax) {
+      await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), { hp: me.hpMax });
+    }
+  }
+
   if (info.revive){
     // Revive pode ser usado em si mesmo OU em aliados desmaiados
     // Se há aliados fainted, mostrar seletor
@@ -1886,6 +2179,7 @@ window.btUsarItem = async function(itemKey){
     }
   }
 
+  await processarStatusDanoPlayer();
   await avancarTurno();
 };
 
@@ -1959,8 +2253,10 @@ async function arremessarPokebola(itemKey, info){
 // ══════════════════════════════════════════════════════════════
 async function bossAtaca(){
   _bossAttacking = true;
+  // Gravar no Firebase para que TODOS os clients vejam "Boss Turn" no banner
+  await update(_battleRef, { bossTurnActive: true });
   const bannerEl = document.getElementById('turnBanner');
-  if (bannerEl){ bannerEl.textContent = '🔴 Boss is attacking...'; bannerEl.classList.add('boss-turn'); }
+  if (bannerEl){ bannerEl.textContent = '🔴 Boss Turn!'; bannerEl.classList.add('boss-turn'); }
 
   const bs      = (await get(_battleRef)).val();
   if (!bs || bs.bossFainted){ _bossAttacking = false; return; }
@@ -2064,7 +2360,18 @@ async function bossAtaca(){
     return true;
   });
   if (!golpesDisponiveis.length) golpesDisponiveis = golpes;  // fallback: usa tudo
-  const move = golpesDisponiveis[Math.floor(Math.random() * golpesDisponiveis.length)];
+
+  // ── Bias 60/40: prefere golpes de dano em vez de status ──────
+  const golpesAtaque = golpesDisponiveis.filter(g => g.cat !== 'status');
+  const golpesStatus = golpesDisponiveis.filter(g => g.cat === 'status');
+  let pool;
+  if (golpesAtaque.length > 0 && golpesStatus.length > 0) {
+    // 60% chance de escolher da pool de ataque, 40% de status
+    pool = Math.random() < 0.60 ? golpesAtaque : golpesStatus;
+  } else {
+    pool = golpesDisponiveis; // só tem um tipo — sem bias
+  }
+  const move = pool[Math.floor(Math.random() * pool.length)];
 
   // Targets: single → aleatório entre players vivos; all → todos os players
   const players     = bs.players || {};
@@ -2075,6 +2382,65 @@ async function bossAtaca(){
 
   const updates = {};
   let logParts  = [`Boss used ${move.name}!`];
+
+  // ── Status moves do boss com target em players ────────────
+  // (sleep_powder, hypnosis, poison_powder, etc.)
+  if (move.cat === 'status' && move.target !== 'self') {
+    const eff = move.effect || null;
+    for (const targetUid of targets) {
+      const p = players[targetUid];
+      const pAbility = p?.ability || '';
+      const curStatus = p?.status || '';
+      const acc = move.acc != null ? move.acc : 100;
+      const hit = Math.random() * 100 <= acc;
+      if (!hit) {
+        logParts.push(`But it missed ${p?.nick || 'Player'}!`);
+        continue;
+      }
+      if (eff === 'sleep') {
+        if (pAbility === 'insomnia') {
+          logParts.push(`${cap(p.pokemon)}'s Insomnia blocked sleep!`);
+        } else if (!curStatus) {
+          const sleepTurns = move.turns || Math.floor(Math.random()*3)+2;
+          updates[`players/${targetUid}/status`]     = 'sleep';
+          updates[`players/${targetUid}/sleepTurns`] = sleepTurns;
+          logParts.push(`${cap(p.pokemon)} fell asleep!`);
+        } else {
+          logParts.push(`${cap(p.pokemon)} already has a status!`);
+        }
+      } else if (eff === 'poison' || eff === 'toxic') {
+        if (isPoisonImmune(p.pokemon)) {
+          logParts.push(`${cap(p.pokemon)} is immune to poison!`);
+        } else if (!curStatus) {
+          updates[`players/${targetUid}/status`] = eff;
+          logParts.push(`${cap(p.pokemon)} was poisoned!`);
+        }
+      } else if (eff === 'paralysis') {
+        if (!curStatus) {
+          updates[`players/${targetUid}/status`] = 'paralysis';
+          logParts.push(`${cap(p.pokemon)} was paralyzed!`);
+        }
+      } else if (eff === 'debuff') {
+        const stat   = move.stat || 'spe';
+        const stages = move.stages || -1;
+        const variou = applyPlayerStage(targetUid, stat, stages);
+        update(ref(rdb, `boss_salas/${_salaId}/battle/players/${targetUid}`), {
+          statStages: _playerStages[targetUid] || {}
+        }).catch(()=>{});
+        const statNames = {atk:'Attack',def:'Defense',spa:'Sp. Atk',spd:'Sp. Def',spe:'Speed'};
+        if (variou !== 0) {
+          showPlayerFloat(targetUid, `${stat.toUpperCase()}↓`);
+          logParts.push(`${cap(p.pokemon)}'s ${statNames[stat]||stat} fell${Math.abs(stages)>1?' sharply':''}!`);
+        }
+      }
+    }
+    if (Object.keys(updates).length) await update(_battleRef, updates);
+    await logAction(logParts.join(' '));
+    _bossAttacking = false;
+    await update(_battleRef, { bossTurnActive: false });
+    document.getElementById('turnBanner')?.classList.remove('boss-turn');
+    return;
+  }
 
   for (const targetUid of targets){
     const p = players[targetUid];
@@ -2201,6 +2567,26 @@ async function bossAtaca(){
     logParts.push(`${players[targetUid].nick || 'Player'}'s ${cap(p.pokemon)} took ${dano} damage!`);
     if (res.eff > 1) logParts.push('Super effective!');
 
+    // ── Boss drain (Absorb / Mega Drain / Giga Drain) ─────────────
+    const bossDrainFrac = move.drain || 0;
+    if (bossDrainFrac > 0 && dano > 0) {
+      const bossDrainHeal = Math.max(1, Math.floor(dano * bossDrainFrac));
+      const curBossHp = updates['bossHp'] ?? bs.bossHp;
+      updates['bossHp'] = Math.min(bs.bossHpMax, curBossHp + bossDrainHeal);
+      showBossFloat(`+${bossDrainHeal}`, 'heal');
+      logParts.push(`Boss drained ${bossDrainHeal} HP!`);
+    }
+
+    // ── Recoil do boss (1/4 do dano causado) ─────────────
+    if (move.recoil) {
+      const recoilDmg = Math.max(1, Math.floor(dano * (move.recoilFraction || 0.25)));
+      const curBossHp = bs.bossHp || 0;
+      const newBossHpRecoil = Math.max(0, curBossHp - recoilDmg);
+      updates['bossHp'] = newBossHpRecoil;
+      showBossFloat(`-${recoilDmg} recoil`, 'miss');
+      logParts.push(`Boss took ${recoilDmg} recoil damage!`);
+    }
+
     // ── Secondary effect do boss em damaging move ─────────
     if (move.effect && move.effectChance && res.eff > 0 && newHp > 0) {
       const roll2 = Math.random() * 100;
@@ -2270,6 +2656,31 @@ async function avancarTurnoCaptura(){
   await update(_battleRef, { currentTurnIdx: nextIdx });
 }
 
+
+// ── Recalcular ordem de turno por SPE (base + stages) ────────
+// Chamado no início de cada nova rodada para refletir buffs/debuffs de velocidade.
+function recalcularTurnOrder(players, allUids) {
+  return [...allUids].sort((a, b) => {
+    const pa = players[a], pb = players[b];
+    if (!pa || !pb) return 0;
+    // SPE base do pokemon
+    const statsA = calcStats(pa.pokemon, pa.ivs||{}, pa.nivel||1, pa.nature||'Hardy', pa.evs||{});
+    const statsB = calcStats(pb.pokemon, pb.ivs||{}, pb.nivel||1, pb.nature||'Hardy', pb.evs||{});
+    // Aplicar stages de velocidade (do Firebase statStages ou local _playerStages)
+    const stagesA = pa.statStages || _playerStages[a] || {};
+    const stagesB = pb.statStages || _playerStages[b] || {};
+    const speA = getEffStat(statsA.spe, 'spe', stagesA);
+    const speB = getEffStat(statsB.spe, 'spe', stagesB);
+    if (speB !== speA) return speB - speA; // mais rápido primeiro
+    // desempate: manter ordem anterior se igual
+    return (allUids.indexOf(a)) - (allUids.indexOf(b));
+  }).filter(uid => {
+    // remover fainted da ordem ativa (fainted são pulados no loop de nextIdx também)
+    const p = players[uid];
+    return p && !p.fainted && p.hp > 0;
+  });
+}
+
 async function avancarTurno(){
   _actionDone = false;
 
@@ -2307,24 +2718,53 @@ async function avancarTurno(){
   }
   // Se o player atual estava fainted, não marcar actedThisTurn — só avançar
 
-  // ── Se nova rodada → boss ataca antes de liberar o turno ──
+  // ── Se nova rodada → recalcular order por SPE + boss ataca ──
   if (novaRodada && !bs.bossFainted) {
-    // Verificar se há players vivos antes de chamar o boss
     const alguemVivo = Object.values(bs.players||{}).some(p => !p.fainted && p.hp > 0);
     if (alguemVivo) {
+      // Sinalizar boss turn no Firebase
+      await update(_battleRef, { bossTurnActive: true });
+      _lastArrowUid = null;
+      mostrarFaixaTurno(null);
       await logAction('— Boss turn! —');
-      await new Promise(res => setTimeout(res, 3000)); // 3s de suspense
+      await new Promise(res => setTimeout(res, 2500));
       await bossAtaca();
     }
-    // Re-ler estado após ataque do boss (pode ter mudado fainted/hp)
+    // Re-ler estado após ataque do boss (pode ter aplicado debuffs de speed)
     const bsAfter = (await get(_battleRef)).val();
     if (!bsAfter || bsAfter.fase === 'defeat') return;
+
+    // ── Recalcular turnOrder por SPE APÓS o boss atacar ──────
+    // O boss pode ter aplicado Scary Face, String Shot, etc.
+    // A nova ordem vale a partir da próxima rodada.
+    const playersAfter = bsAfter.players || {};
+    const allUidsAfter = bsAfter.turnOrder || [];
+    if (Object.values(playersAfter).filter(p => !p.fainted && p.hp > 0).length > 1) {
+      const newOrder = recalcularTurnOrder(playersAfter, allUidsAfter);
+      const alivePrev = allUidsAfter.filter(u => {
+        const p = playersAfter[u]; return p && !p.fainted && p.hp > 0;
+      });
+      const ordenou = newOrder.join(',') !== alivePrev.join(',');
+      if (ordenou) {
+        const faintedUids = allUidsAfter.filter(u => {
+          const p = playersAfter[u]; return !p || p.fainted || p.hp <= 0;
+        });
+        const fullNewOrder = [...newOrder, ...faintedUids];
+        await update(_battleRef, { turnOrder: fullNewOrder });
+        const names = newOrder.map(u => cap(playersAfter[u]?.pokemon || 'unknown'));
+        await logAction(`⚡ Speed changed! New order: ${names.join(' → ')}`);
+      }
+    }
   }
 
-  // Avançar para o próximo player e resetar actedThisTurn do próximo
-  const nextUid = order[nextIdx];
+  // Avançar para o próximo player — re-ler order pois pode ter mudado
+  const bsFinal   = (await get(_battleRef)).val();
+  const orderFinal = bsFinal?.turnOrder || order;
+  // Encontrar nextIdx dentro do novo order
+  const nextUid = orderFinal[nextIdx] || orderFinal[0];
+  const nextIdxFinal = Math.min(nextIdx, orderFinal.length - 1);
   await update(_battleRef, {
-    currentTurnIdx: nextIdx,
+    currentTurnIdx: nextIdxFinal,
     turno: newTurno,
     ...(nextUid ? { [`players/${nextUid}/actedThisTurn`]: false } : {}),
   });
@@ -2344,7 +2784,7 @@ function iniciarTurnTimer(){
     if (t <= 3) el.classList.add('urgent');
     if (t <= 0){
       pararTurnTimer();
-      if (_myTurn && !_actionDone) await btPass();
+      if (_myTurn && !_actionDone) await btPassAfk(); // AFK-aware pass
     }
   }, 1000);
 }
@@ -2472,7 +2912,7 @@ async function mostrarDrops(){
   _dropsShown = true;
 
   const bs      = (await get(_battleRef)).val();
-  const drops   = calcularDrops(_bossData?.nivel || 10);
+  const drops   = calcularDrops(_bossData?.nivel || 10, (_bossNome||'').toLowerCase());
   const results = bs?.captureResults || {};
   const myResult = _myCaptureResult || results[_uid] || 'skipped';
   const caught   = myResult === 'caught';
@@ -2547,6 +2987,13 @@ async function mostrarDrops(){
     // Persistir PP gasto — lê do snap da batalha (Firebase RTDB)
     // myBattlePlayer.ppAtual = { tackle: 33, water_gun: 23, ... }
     const ppFinal = myBattlePlayer?.ppAtual ?? null;
+    // Persistir fainted e status final
+    const faintedFinal = (hpAtualFinal !== null && hpAtualFinal <= 0);
+    // Status que persistem entre raids: poison, toxic, burn, paralysis, sleep
+    // Status que NÃO persistem: confusion, stat stages (já resetados)
+    const statusFinalRaw = myBattlePlayer?.status || s.status || null;
+    const persistStatus  = ['poison','toxic','burn','paralysis','sleep'];
+    const statusFinal    = persistStatus.includes(statusFinalRaw) ? statusFinalRaw : null;
     const atualizado = {
       ...s,
       xp:       novoXP,
@@ -2556,6 +3003,8 @@ async function mostrarDrops(){
       hpPct:    hpFinalPct,
       hpAtual:  hpAtualFinal !== null ? hpAtualFinal : undefined,
       ppAtual:  ppFinal !== null ? ppFinal : (s.ppAtual || {}),
+      fainted:  faintedFinal ? true : false,       // true = desmaiou; false = reseta explicitamente
+      status:   statusFinal,                       // poison/burn/etc. persistem entre raids
     };
     // Só aplica golpes se não está pendente aprovação do usuário
     if ((leveledUp || ganheiGolpe) && !pendingNewMove) atualizado.golpes = nGolpes;
@@ -2825,6 +3274,48 @@ function agendarLimpezaSala(){
   setTimeout(async () => {
     try { await remove(ref(rdb, `boss_salas/${_salaId}`)); } catch(e){}
   }, 5 * 60 * 1000); // 5 minutos
+}
+
+
+// ── Salvar HP/fainted após derrota (sem drops) ──────────────
+let _defeatSaved = false;
+async function salvarEstadoDerrota() {
+  if (_defeatSaved) return;
+  _defeatSaved = true;
+
+  try {
+    const userData = _userData;
+    if (!userData) return;
+    const raidTeam = userData.raidTeam || [];
+    const bs = _battleSnap;
+    const myBattlePlayer = bs?.players?.[_uid];
+    const myPokeName = myBattlePlayer?.pokemon || raidTeam[0]?.pokemon;
+    const mySlotIdx  = raidTeam.findIndex(s => s.pokemon === myPokeName);
+    if (mySlotIdx < 0) return;
+
+    const hpFinal    = myBattlePlayer?.hp ?? null;
+    const fainted    = hpFinal !== null && hpFinal <= 0;
+    // Apenas salvar se de fato sofreu algum dano
+    if (!fainted && hpFinal === null) return;
+
+    const novoTeam = raidTeam.map((s, i) => {
+      if (i !== mySlotIdx) return s;
+      const ppFinal = myBattlePlayer?.ppAtual ?? null;
+      return {
+        ...s,
+        hpAtual: fainted ? 0 : hpFinal,
+        fainted: fainted ? true : false,
+        ppAtual: ppFinal !== null ? ppFinal : (s.ppAtual || {}),
+      };
+    });
+
+    await updateDoc(doc(fsdb, 'usuarios', _uid), {
+      raidTeam: JSON.parse(JSON.stringify(novoTeam))
+    });
+    if (_userData) _userData.raidTeam = novoTeam;
+  } catch(e) {
+    console.error('[salvarEstadoDerrota]', e);
+  }
 }
 
 function mostrarResultado(tipo, capturedBy){

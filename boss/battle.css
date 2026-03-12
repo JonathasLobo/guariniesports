@@ -95,10 +95,10 @@ body {
 
 /* ── Status conditions do boss ── */
 #bossStatusIcons {
-  min-height:22px; font-size:0.78rem; letter-spacing:4px;
-  color:#fff; text-shadow:0 0 8px rgba(255,200,0,0.8);
+  min-height:22px; font-size:0.78rem; letter-spacing:1px;
+  color:#fff;
   text-align:center; padding:2px 0 4px;
-  animation:statusPulse 2s ease-in-out infinite alternate;
+  display:flex; flex-wrap:wrap; gap:4px; justify-content:center; align-items:center;
 }
 @keyframes statusPulse {
   from { opacity:0.8; }
@@ -260,13 +260,36 @@ body {
   padding:1px 5px; letter-spacing:0.3px; line-height:1.5;
   white-space:nowrap;
 }
-.buff-tag   { background:rgba(46,204,113,0.18); border:1px solid rgba(46,204,113,0.4); color:#2ecc71; }
+.buff-tag   {
+  background: rgba(46,204,113,0.22);
+  border: 1px solid rgba(46,204,113,0.55);
+  color: #2ecc71;
+  box-shadow: 0 0 6px rgba(46,204,113,0.35);
+  animation: buffPulse 1.6s ease-in-out infinite alternate;
+}
+@keyframes buffPulse {
+  from { box-shadow: 0 0 3px rgba(46,204,113,0.2); }
+  to   { box-shadow: 0 0 10px rgba(46,204,113,0.6); }
+}
 .debuff-tag { background:rgba(231,76,60,0.18);  border:1px solid rgba(231,76,60,0.4);  color:#e74c3c; }
 .status-tag { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#ddd; }
 .status-tag.burn { background:rgba(231,76,60,0.18);  border-color:rgba(231,76,60,0.45);  color:#ff8060; }
 .status-tag.para { background:rgba(241,196,15,0.18); border-color:rgba(241,196,15,0.45); color:#f1c40f; }
 .status-tag.psn  { background:rgba(155,89,182,0.2);  border-color:rgba(155,89,182,0.45); color:#c084fc; }
 .status-tag.slp  { background:rgba(80,100,200,0.2); border-color:rgba(100,140,220,0.5); color:#90a8f0; animation:slp-pulse 1.4s ease-in-out infinite alternate; }
+
+/* ── Status badge INLINE ao lado do nome do pokémon ── */
+.inline-status-tag {
+  display:inline-block; vertical-align:middle;
+  font-size:0.52rem; font-weight:900; letter-spacing:0.5px;
+  padding:1px 4px; border-radius:3px; border:1px solid transparent;
+  margin-left:4px; line-height:1.4;
+  text-transform:uppercase;
+}
+.inline-status-tag.psn  { background:#7b2d8b; border-color:#a040a0; color:#f0c0ff; }
+.inline-status-tag.burn { background:#8b2020; border-color:#c03030; color:#ffa080; }
+.inline-status-tag.para { background:#7a6a00; border-color:#b8a000; color:#ffe060; }
+.inline-status-tag.slp  { background:#1e3080; border-color:#3050c0; color:#b0c8ff; animation:slp-pulse 1.4s ease-in-out infinite alternate; }
 
 /* ── 3 botões principais — estilo Pokémon RPG ── */
 #btnPanel {
@@ -394,14 +417,14 @@ body {
   width:100%; height:100%; object-fit:contain; pointer-events:none;
 }
 @keyframes throwBall {
-  0%  { left:80vw; top:70vh; transform:scale(0.6) rotate(0deg);   opacity:1; }
-  60% { left:30vw; top:25vh; transform:scale(1.1) rotate(540deg); opacity:1; }
-  100%{ left:10vw; top:45vh; transform:scale(1)   rotate(720deg); opacity:1; }
+  0%  { left:80vw; top:72vh; transform:scale(0.6) rotate(0deg);   opacity:1; }
+  55% { left:40vw; top:28vh; transform:scale(1.1) rotate(480deg); opacity:1; }
+  100%{ left:18vw; top:52vh; transform:scale(0.9) rotate(720deg); opacity:1; }
 }
 
 /* ── Pokébola shake (balanços) ── */
 .pokeball-shake {
-  position:fixed; left:10vw; top:45vh;
+  position:fixed; left:18vw; top:52vh;
   width:52px; height:52px; border-radius:50%;
   background: none;
   z-index:200; pointer-events:none;
@@ -738,6 +761,11 @@ body {
   from { background: rgba(70,90,190,0.15); }
   to   { background: rgba(80,110,200,0.28); }
 }
+.boss-status-badge.par {
+  background: rgba(180,160,0,0.25);
+  border-color: rgba(240,210,0,0.6);
+  color: #ffe040;
+}
 .boss-status-badge.cnf {
   background: rgba(200,180,30,0.2);
   border-color: rgba(255,220,60,0.5);
@@ -806,3 +834,69 @@ body {
   font-weight: 900;
   text-shadow: 0 0 8px rgba(255,220,50,0.8);
 }
+
+/* Entrada: seta varre da direita para a esquerda */
+/* Saída: seta retorna para a direita */
+/* Garante que o sprite e info ficam sobre a seta */
+
+/* ══════════════════════════════════════════════════════════
+   FAIXA DE TURNO ATIVO
+   ══════════════════════════════════════════════════════════ */
+
+/* overflow visible para a faixa poder sair para fora do row */
+.player-row {
+  overflow: visible;
+}
+
+/* Estado de repouso: faixa escondida fora da tela à direita.
+   Usa translateX em vez de left/right para evitar reflow e
+   garantir que começa/termina além da borda real do viewport. */
+.player-row::before {
+  content: '';
+  position: absolute;
+  top: 12px; bottom: 12px;   /* desce levemente para centralizar o sprite */
+  /* cobre do sprite (+30px além) até bem além da borda direita da tela */
+  left:  -250px;          /* 128px sprite + 122px margem à esquerda — cobre sprites grandes */
+  right: -100vw;          /* vai para além da borda direita real da tela     */
+  background: rgba(255,255,255,0.13);
+  border-left: 4px solid rgba(40,220,100,0.0);
+  border-radius: 4px 0 0 4px;
+  z-index: -1;
+  pointer-events: none;
+  /* repouso: empurrada 200% para a direita (invisível) */
+  transform: translateX(200%);
+  transition: none;
+}
+
+/* ── Entrada: desliza da direita para a posição final ── */
+@keyframes barEnter {
+  0%   { transform: translateX(200%); border-left-color: rgba(40,220,100,0.0); }
+  100% { transform: translateX(0%);   border-left-color: rgba(40,220,100,0.9); }
+}
+
+/* ── Saída: volta para a direita de forma visível (0.55s) ── */
+@keyframes barExit {
+  0%   { transform: translateX(0%);   border-left-color: rgba(40,220,100,0.9); }
+  100% { transform: translateX(200%); border-left-color: rgba(40,220,100,0.0); }
+}
+
+.player-row.turn-active::before {
+  animation:
+    barEnter 0.55s cubic-bezier(0.22,1,0.36,1) forwards,
+    tipPulse 1.6s ease-in-out 0.55s infinite;
+}
+.player-row.turn-exiting::before {
+  animation: barExit 0.50s cubic-bezier(0.55,0,0.9,0.5) forwards;
+}
+
+/* ── Ponta verde pulsante ── */
+@keyframes tipPulse {
+  0%, 100% { border-left-color: rgba(40,220,100,0.75); }
+  50%      { border-left-color: rgba(80,255,140,1);
+             box-shadow: inset 5px 0 18px rgba(40,220,100,0.45); }
+}
+
+/* Garante que sprite e info ficam sobre a faixa */
+.player-poke-img { position: relative; z-index: 1; }
+.player-info      { position: relative; z-index: 1; }
+
