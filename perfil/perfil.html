@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="perfil.css">
   <link rel="stylesheet" href="./boss-raid-status.css">
+  <link rel="stylesheet" href="./missions.css">
   <meta name="theme-color" content="#ffad00">
 
 <style>
@@ -400,6 +401,7 @@
   // Importar funções do perfil.js
   import { initRibbons } from './perfil.js';
   import { initBossRaid } from './boss-raid.js';
+  import { initMissions } from './missions.js';
   
   // ⭐ Importar sistema de avaliação
   import { createRatingViewOnly } from './build-rating.js';
@@ -1683,6 +1685,8 @@ async function updateUI(user) {
       // Inicializar sistema Boss Raid
       const raidUserData = userDocSnap.exists() ? userDocSnap.data() : {};
       await initBossRaid(user.uid, db, raidUserData);
+      // Inicializar sistema de conquistas — usa a mesma referência de dados
+      await initMissions(user.uid, db, raidUserData);
       
     } catch (error) {
       console.error('❌ Erro ao carregar dados do usuário:', error);

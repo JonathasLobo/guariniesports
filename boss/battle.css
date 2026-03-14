@@ -900,3 +900,291 @@ body {
 .player-poke-img { position: relative; z-index: 1; }
 .player-info      { position: relative; z-index: 1; }
 
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVIDADE MOBILE — Battle Screen
+   Breakpoints: 768px (tablet), 480px (phone)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── TABLET (≤768px) ── */
+@media (max-width: 768px) {
+
+  /* Arena vira coluna: boss em cima, players embaixo, HUD no rodapé */
+  #arena {
+    display: flex !important;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Área de jogo ocupa todo espaço acima do HUD */
+  #battleBG {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  /* ── Boss: centralizado no topo da área de jogo ── */
+  .boss-side {
+    position: absolute;
+    left: 50%;
+    top: 22%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    gap: 6px;
+  }
+
+  .boss-sprite {
+    width: clamp(90px, 22vw, 150px);
+  }
+
+  .boss-hp-bar-wrap {
+    width: clamp(140px, 48vw, 220px);
+  }
+
+  .boss-name-tag { font-size: 0.72rem; }
+  .boss-hp-nums  { font-size: 0.58rem; }
+
+  /* ── Players: linha horizontal na parte inferior da arena ── */
+  .players-side {
+    position: absolute;
+    bottom: 8px;
+    left: 0; right: 0;
+    top: auto;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 0 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .player-row {
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+    max-width: 90px;
+    gap: 3px;
+    /* Cancelar o efeito de escada no mobile */
+    transform: none !important;
+  }
+
+  .player-poke-img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .player-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .player-nick {
+    font-size: 0.52rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+  }
+
+  .player-poke-name {
+    font-size: 0.56rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+  }
+
+  .player-hp-label {
+    display: none; /* ocultar "X/Y HP" em mobile — pouco espaço */
+  }
+
+  .player-bar-bg {
+    height: 5px;
+    width: 100%;
+  }
+
+  .player-stages-row {
+    font-size: 0.45rem;
+    gap: 2px;
+  }
+
+  /* ── HUD inferior: reorganiza em coluna ── */
+  #actionHUD {
+    position: relative;
+    flex-direction: column;
+    min-height: auto;
+    max-height: 45vh;
+  }
+
+  /* Log de mensagens: compacto */
+  #msgBox {
+    min-width: 0;
+    max-height: 70px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    overflow: hidden;
+  }
+
+  /* Área de ações: row com log + botões */
+  #actionHUD {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 130px;
+    max-height: 48vh;
+  }
+
+  #msgBox {
+    flex: 1;
+    min-width: 0;
+    order: 1;
+    max-height: none;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    border-bottom: none;
+    font-size: 0.7rem;
+    padding: 8px 10px;
+  }
+
+  /* Botões principais: coluna compacta */
+  #btnPanel {
+    min-width: 100px;
+    max-width: 120px;
+    padding: 8px 10px;
+    gap: 5px;
+    order: 2;
+    justify-content: center;
+  }
+
+  .bt-btn {
+    padding: 9px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2px;
+  }
+
+  /* Sub-painel (golpes/itens): ocupa linha inteira abaixo */
+  #subPanel {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    order: 3;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 8px 10px;
+    max-height: 120px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+
+  /* Grid 2x2 de golpes: fica 2 colunas mas menor */
+  .move-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .move-btn {
+    padding: 7px 6px;
+    font-size: 0.68rem;
+  }
+
+  /* Sub-botões de item/back */
+  .sub-btn {
+    padding: 6px 10px;
+    font-size: 0.68rem;
+  }
+  .sub-back {
+    padding: 5px 10px;
+    font-size: 0.65rem;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  /* Banners: turn + timer */
+  #turnBanner {
+    font-size: 0.65rem;
+    padding: 4px 14px;
+    top: 6px;
+  }
+
+  #turnTimer {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    top: 6px;
+    right: 8px;
+  }
+
+  /* Modal de resultado */
+  #resultModal {
+    padding: 20px 16px;
+    max-width: 92vw;
+  }
+  #resultTitle { font-size: 1.3rem; }
+  #resultDesc  { font-size: 0.78rem; }
+}
+
+/* ── PHONE PEQUENO (≤420px) ── */
+@media (max-width: 420px) {
+
+  .boss-sprite {
+    width: clamp(70px, 20vw, 110px);
+  }
+
+  .boss-side {
+    top: 20%;
+  }
+
+  .players-side {
+    gap: 4px;
+    padding: 0 4px;
+  }
+
+  .player-row {
+    min-width: 56px;
+    max-width: 72px;
+  }
+
+  .player-poke-img {
+    width: 42px;
+    height: 42px;
+  }
+
+  #btnPanel {
+    min-width: 86px;
+    max-width: 96px;
+    padding: 6px 7px;
+    gap: 4px;
+  }
+
+  .bt-btn {
+    padding: 7px 5px;
+    font-size: 0.63rem;
+  }
+
+  #msgBox {
+    font-size: 0.64rem;
+    padding: 6px 8px;
+  }
+
+  /* Golpes: 4 em coluna única em telas muito pequenas */
+  .move-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .move-btn {
+    padding: 6px 5px;
+    font-size: 0.6rem;
+  }
+
+  #subPanel {
+    max-height: 100px;
+    padding: 6px 8px;
+  }
+}

@@ -26,6 +26,9 @@ import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.c
 //   nivel      — afeta HP e dano calculados na batalha (Gen 3+)
 //   golpes     — array de até 4 golpes (ver formato abaixo)
 //   catchRate  — 0–100 (% com Poké Ball; Great Ball ×1.5, Ultra Ball ×2)
+//   rareDrops  — (opcional) drops exclusivos deste boss
+//                ex: rareDrops: [{ item:'leaf_stone', chance:0.08 }]
+//                chance: 0.0 a 1.0 (0.08 = 8%). item: chave do ITEMS_DB.
 //
 // Formato de golpe:
 //   { name, type, cat:'physical'|'special'|'status',
@@ -49,14 +52,13 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/caterpie.png',
       tipos:     ['bug'],
       baseStats: { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
-      nivel:     10,
+      nivel:     5,
       golpes: [
         { name:'Tackle',      type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
       ],
       catchRate: 90,
-      stars: 1,
     },
 
     {
@@ -64,14 +66,13 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/weedle.png',
       tipos:     ['bug','poison'],
       baseStats: { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
-      nivel:     10,
+      nivel:     5,
       golpes: [
-        { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single', effect:'poison', effectChance:30  },
+        { name:'Poison Sting',      type:'poison', cat:'physical', power:15,  acc:100, target:'single' },
         { name:'String Shot', type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
           effect:'debuff', stat:'spe', stages:-1 },
       ],
       catchRate: 90,
-      stars: 1,
     },
 
     {
@@ -79,7 +80,7 @@ const BOSS_CONFIG = {
       sprite:    '/boss/img-bosses/wooloo.png',
       tipos:     ['normal'],
       baseStats: { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
-      nivel:     10,
+      nivel:     5,
       golpes: [
         { name:'Tackle',       type:'normal', cat:'physical', power:40,  acc:100, target:'single' },
         { name:'Growl',        type:'normal', cat:'status',   power:null,acc:100, target:'all',
@@ -89,47 +90,9 @@ const BOSS_CONFIG = {
         { name:'Rollout',      type:'rock',   cat:'physical', power:30,  acc:90,  target:'single' },
       ],
       catchRate: 90,
-      stars: 1,
-    },
-
-
-    {
-      nome:      'Spinarak',
-      sprite:    '/boss/img-bosses/spinarak.png',
-      tipos:     ['bug','poison'],
-      baseStats: { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
-      nivel:     15,
-      golpes: [
-        { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single', effect:'poison', effectChance:30 },
-        { name:'String Shot',  type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
-          effect:'debuff', stat:'spe', stages:-1 },
-        { name:'Scary Face',   type:'normal', cat:'status',   power:null,acc:100, target:'single',
-          effect:'debuff', stat:'spe', stages:-2 },
-        { name:'Absorb',       type:'grass',  cat:'special',  power:20,  acc:100, target:'single', drain:0.5 },
-      ],
-      catchRate: 90,
-      stars: 2,
     },
 
     // ── Médio ─────────────────────────────────────────────────
-    {
-      nome:      'Bulbasaur',
-      sprite:    '/boss/img-bosses/bulbasaur.png',
-      tipos:     ['grass','poison'],
-      baseStats: { hp:45, atk:49, def:49, spa:65, spd:65, spe:45 },
-      nivel:     25,
-      golpes: [
-        { name:'Vine Whip',    type:'grass',  cat:'physical', power:45, acc:100, target:'single' },
-        { name:'Razor Leaf',   type:'grass',  cat:'physical', power:55, acc:95,  target:'all'    },
-        { name:'Sleep Powder', type:'grass',  cat:'status',   power:null,acc:75, target:'single',
-          effect:'sleep' },
-        { name:'Take Down',    type:'normal', cat:'physical', power:90, acc:85,  target:'single',
-          recoil:true, recoilFraction:0.25 },
-      ],
-      catchRate: 60,
-      stars: 3,
-    },
-
     /*{
       nome:      'Staryu',
       sprite:    '/boss/img-bosses/Staryu.gif',
@@ -163,8 +126,49 @@ const BOSS_CONFIG = {
       catchRate: 45,
     },*/
 
+    // ── Médio / Poison Wave ──────────────────────────────────
+    {
+      nome:      'Spinarak',
+      sprite:    '/boss/img-bosses/spinarak.png',
+      tipos:     ['bug','poison'],
+      baseStats: { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
+      nivel:     10,
+      golpes: [
+        { name:'Poison Sting', type:'poison', cat:'physical', power:15,  acc:100, target:'single',
+          effectChance:30, effect2:'poison' },
+        { name:'String Shot',  type:'bug',    cat:'status',   power:null,acc:95,  target:'all',
+          effect:'debuff', stat:'spe', stages:-1 },
+        { name:'Scary Face',   type:'normal', cat:'status',   power:null,acc:100, target:'single',
+          effect:'debuff', stat:'spe', stages:-2 },
+        { name:'Absorb',       type:'grass',  cat:'special',  power:20,  acc:100, target:'single',
+          drain:0.5 },
+      ],
+      catchRate: 90,
+    },
+
+    {
+      nome:      'Bulbasaur',
+      sprite:    '/boss/img-bosses/bulbasaur.png',
+      tipos:     ['grass','poison'],
+      baseStats: { hp:45, atk:49, def:49, spa:65, spd:65, spe:45 },
+      nivel:     25,
+      golpes: [
+        { name:'Vine Whip',    type:'grass',  cat:'physical', power:45,  acc:100, target:'single' },
+        { name:'Razor Leaf',   type:'grass',  cat:'physical', power:55,  acc:95,  target:'single' },
+        { name:'Sleep Powder', type:'grass',  cat:'status',   power:null,acc:75,  target:'single',
+          effect:'sleep' },
+        { name:'Take Down',    type:'normal', cat:'physical', power:90,  acc:85,  target:'single',
+          recoilFraction:0.25 },
+      ],
+      catchRate: 45,
+      rareDrops: [
+        { item:'leaf_stone', chance:0.08 },
+      ],
+    },
+
     // ── Adicione novos bosses aqui ────────────────────────────
-    // { nome:'...', gif:'...', tipos:[...], baseStats:{...}, nivel:X, golpes:[...], catchRate:X },
+    // { nome:'...', sprite:'...', tipos:[...], baseStats:{...}, nivel:X, golpes:[...], catchRate:X,
+    //   rareDrops:[{ item:'nome_item', chance:0.05 }] },  // ← campo opcional
   ],
 };
 

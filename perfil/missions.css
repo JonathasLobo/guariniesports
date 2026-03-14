@@ -1,0 +1,591 @@
+/* ============================================================
+   MISSIONS.CSS — Conquistas de longo prazo + cosméticos
+   Incluir em perfil.html e battle.html
+   ============================================================ */
+
+/* ════════════════════════════════════════════════════════════
+   BOTÃO "MISSIONS" — HUD da batalha (battle.html)
+   Fica abaixo do botão Bag no #btnPanel
+   ════════════════════════════════════════════════════════════ */
+.bt-btn.missions {
+  background: linear-gradient(135deg, #6a0dad, #9b59b6);
+  border-color: #d7a2f5;
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(155, 89, 182, 0.5);
+}
+.bt-btn.missions:hover:not(:disabled) {
+  filter: brightness(1.18);
+}
+
+/* Botão no painel boss-raid (home) */
+.raid-missions-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6a0dad, #9b59b6);
+  border: 1.5px solid #d7a2f5;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  transition: filter 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.raid-missions-btn:hover {
+  filter: brightness(1.15);
+  transform: scale(1.04);
+}
+
+/* ════════════════════════════════════════════════════════════
+   OVERLAY PRINCIPAL DO PAINEL
+   ════════════════════════════════════════════════════════════ */
+.mss-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 19000;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.mss-overlay.mss-show {
+  opacity: 1;
+}
+
+.mss-box {
+  background: #0f0f1a;
+  border: 2px solid rgba(155, 89, 182, 0.55);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 48px rgba(155, 89, 182, 0.35);
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.mss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(155, 89, 182, 0.25);
+}
+.mss-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #d7a2f5;
+  letter-spacing: 0.5px;
+}
+.mss-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.mss-close:hover {
+  background: rgba(255, 0, 0, 0.25);
+  color: #fff;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.mss-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+}
+.mss-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  transition: color 0.15s, border-bottom 0.15s;
+  border-bottom: 2px solid transparent;
+}
+.mss-tab:hover {
+  color: #ccc;
+}
+.mss-tab.mss-tab-active {
+  color: #d7a2f5;
+  border-bottom: 2px solid #9b59b6;
+}
+
+/* ── Panels ──────────────────────────────────────────────────── */
+.mss-content {
+  overflow-y: auto;
+  flex: 1;
+  padding: 16px 20px;
+}
+.mss-panel-hidden {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONQUISTAS
+   ════════════════════════════════════════════════════════════ */
+.mss-ach-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mss-ach-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.mss-ach-card:hover {
+  border-color: rgba(155, 89, 182, 0.3);
+}
+
+.mss-ach-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.mss-ach-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.mss-ach-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mss-ach-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #eee;
+}
+.mss-ach-desc {
+  font-size: 0.72rem;
+  color: #888;
+}
+
+/* ── Tiers ───────────────────────────────────────────────────── */
+.mss-tiers-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mss-tier {
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.mss-tier-done {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: rgba(46, 204, 113, 0.25);
+}
+.mss-tier-active {
+  background: rgba(255, 117, 0, 0.10);
+  border-color: rgba(255, 117, 0, 0.35);
+}
+/* Tier concluído mas aguardando claim do usuário */
+.mss-tier-pending {
+  background: rgba(241, 196, 15, 0.10);
+  border-color: rgba(241, 196, 15, 0.5);
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.15);
+  animation: mss-pending-pulse 2s ease-in-out infinite alternate;
+}
+@keyframes mss-pending-pulse {
+  from { box-shadow: 0 0 4px rgba(241,196,15,0.1); }
+  to   { box-shadow: 0 0 14px rgba(241,196,15,0.35); }
+}
+.mss-tier-locked {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+  opacity: 0.5;
+}
+
+/* Botão Claim */
+.mss-claim-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 7px 0;
+  background: linear-gradient(135deg, #b8860b, #f1c40f);
+  border: 1px solid rgba(241, 196, 15, 0.7);
+  border-radius: 7px;
+  color: #1a1000;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  transition: filter 0.15s, transform 0.1s;
+}
+.mss-claim-btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: scale(1.02);
+}
+.mss-claim-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.mss-tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.mss-tier-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ccc;
+}
+.mss-tier-target {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #d7a2f5;
+}
+.mss-tier-done .mss-tier-target {
+  color: #2ecc71;
+}
+
+.mss-tier-bar-bg {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.mss-tier-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #e67e00, #ffad00);
+  transition: width 0.5s ease;
+}
+
+.mss-tier-reward {
+  font-size: 0.68rem;
+  color: #e0b845;
+  margin-top: 2px;
+}
+.mss-tier-done .mss-tier-reward {
+  color: #666;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COSMÉTICOS
+   ════════════════════════════════════════════════════════════ */
+.mss-cosmetic-hint {
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.mss-cosmetic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.mss-cosmetic-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+  position: relative;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.mss-cosmetic-card.mss-unlocked {
+  cursor: default;
+}
+.mss-cosmetic-card.mss-equipped {
+  border-color: rgba(155, 89, 182, 0.7);
+  background: rgba(155, 89, 182, 0.1);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.25);
+}
+.mss-cosmetic-card.mss-locked {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+.mss-cosmetic-card:hover.mss-unlocked:not(.mss-equipped) {
+  border-color: rgba(215, 162, 245, 0.4);
+  transform: translateY(-2px);
+}
+
+.mss-cosmetic-preview {
+  font-size: 2rem;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 2px solid #888;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mss-cosmetic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mss-cosmetic-name {
+  font-size: 0.77rem;
+  font-weight: 700;
+  color: #ddd;
+}
+.mss-cosmetic-rarity {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mss-cosmetic-equipped-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #d7a2f5;
+  background: rgba(155, 89, 182, 0.2);
+  border: 1px solid rgba(155, 89, 182, 0.4);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.mss-cosmetic-locked-badge {
+  font-size: 0.65rem;
+  color: #666;
+}
+.mss-equip-btn {
+  background: linear-gradient(135deg, #6a0dad, #9b59b6);
+  border: 1px solid #d7a2f5;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.mss-equip-btn:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+.mss-equip-btn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TOASTS DE CONQUISTA
+   ════════════════════════════════════════════════════════════ */
+.mss-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20000;
+  background: #0f0f1a;
+  border: 1.5px solid rgba(155, 89, 182, 0.7);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 260px;
+  max-width: 340px;
+  box-shadow: 0 6px 32px rgba(155, 89, 182, 0.4);
+  transform: translateX(110%);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.mss-toast.mss-toast-show {
+  transform: translateX(0);
+}
+.mss-toast.mss-toast-cosmetic {
+  border-color: rgba(243, 156, 18, 0.7);
+  box-shadow: 0 6px 32px rgba(243, 156, 18, 0.35);
+}
+.mss-toast.mss-toast-claim {
+  border-color: rgba(241, 196, 15, 0.7);
+  box-shadow: 0 6px 32px rgba(241, 196, 15, 0.3);
+}
+.mss-toast-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.mss-toast-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mss-toast-titulo {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #d7a2f5;
+}
+.mss-toast-sub {
+  font-size: 0.75rem;
+  color: #ccc;
+}
+.mss-toast-reward {
+  font-size: 0.68rem;
+  color: #e0b845;
+  margin-top: 2px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COSMÉTICOS DE BORDA — classes aplicadas ao modal de stats
+   (.raid-modal-content.raid-modal-status-content)
+
+   COMO ADICIONAR UMA NOVA BORDA:
+   1. Crie uma nova classe abaixo seguindo o padrão
+   2. Adicione a entrada correspondente em cosmetics-config.js
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Silver ──────────────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-silver {
+  border: 2px solid #c0c0c0;
+  box-shadow:
+    0 0 0 1px rgba(192, 192, 192, 0.15),
+    0 8px 48px rgba(192, 192, 192, 0.2);
+}
+
+/* ── Green ───────────────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-green {
+  border: 2px solid #2ecc71;
+  box-shadow:
+    0 0 0 1px rgba(46, 204, 113, 0.15),
+    0 8px 48px rgba(46, 204, 113, 0.25);
+  animation: mss-border-glow-green 2.5s ease-in-out infinite alternate;
+}
+@keyframes mss-border-glow-green {
+  from { box-shadow: 0 0 8px rgba(46, 204, 113, 0.2), 0 8px 40px rgba(46, 204, 113, 0.2); }
+  to   { box-shadow: 0 0 22px rgba(46, 204, 113, 0.55), 0 8px 48px rgba(46, 204, 113, 0.35); }
+}
+
+/* ── Blue ────────────────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-blue {
+  border: 2px solid #3498db;
+  box-shadow:
+    0 0 0 1px rgba(52, 152, 219, 0.15),
+    0 8px 48px rgba(52, 152, 219, 0.3);
+  animation: mss-border-pulse-blue 2s ease-in-out infinite alternate;
+}
+@keyframes mss-border-pulse-blue {
+  from { box-shadow: 0 0 6px rgba(52, 152, 219, 0.2), 0 8px 40px rgba(52, 152, 219, 0.25); }
+  to   { box-shadow: 0 0 24px rgba(52, 152, 219, 0.6), 0 8px 48px rgba(52, 152, 219, 0.4); }
+}
+
+/* ── Fire ────────────────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-fire {
+  border: 2px solid #e74c3c;
+  box-shadow:
+    0 0 0 1px rgba(231, 76, 60, 0.2),
+    0 8px 48px rgba(231, 76, 60, 0.35);
+  animation: mss-border-fire 1.5s ease-in-out infinite alternate;
+}
+@keyframes mss-border-fire {
+  0%   { border-color: #e74c3c; box-shadow: 0 0 8px rgba(231,76,60,0.3),  0 8px 40px rgba(231,76,60,0.3); }
+  33%  { border-color: #f39c12; box-shadow: 0 0 16px rgba(243,156,18,0.4), 0 8px 44px rgba(243,156,18,0.3); }
+  66%  { border-color: #e74c3c; box-shadow: 0 0 12px rgba(231,76,60,0.5),  0 8px 42px rgba(231,76,60,0.4); }
+  100% { border-color: #f39c12; box-shadow: 0 0 24px rgba(243,156,18,0.6), 0 8px 48px rgba(243,156,18,0.35); }
+}
+
+/* ── Rainbow ─────────────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-rainbow {
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+.raid-modal-content.raid-modal-status-content.cosmetic-border-rainbow::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000, #ff7700, #ffff00,
+    #00ff00, #0077ff, #8800ff,
+    #ff0000
+  );
+  animation: mss-rainbow-spin 3s linear infinite;
+}
+@keyframes mss-rainbow-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Dark / Shadow ───────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-dark {
+  border: 2px solid #9b59b6;
+  box-shadow:
+    0 0 0 1px rgba(155, 89, 182, 0.2),
+    0 8px 48px rgba(155, 89, 182, 0.45),
+    inset 0 0 20px rgba(100, 0, 150, 0.08);
+  animation: mss-border-dark 3s ease-in-out infinite alternate;
+}
+@keyframes mss-border-dark {
+  from { box-shadow: 0 0 8px rgba(155,89,182,0.3),  inset 0 0 10px rgba(100,0,150,0.05); }
+  to   { box-shadow: 0 0 28px rgba(155,89,182,0.7), inset 0 0 24px rgba(100,0,150,0.12); }
+}
+
+/* ── Gold — Legendary ────────────────────────────────────────── */
+.raid-modal-content.raid-modal-status-content.cosmetic-border-gold {
+  border: 3px solid #f1c40f;
+  box-shadow:
+    0 0 0 1px rgba(241, 196, 15, 0.25),
+    0 0 32px rgba(241, 196, 15, 0.45),
+    0 8px 48px rgba(241, 196, 15, 0.3),
+    inset 0 0 20px rgba(241, 196, 15, 0.04);
+  animation: mss-border-gold 2s ease-in-out infinite alternate;
+}
+@keyframes mss-border-gold {
+  from {
+    border-color: #f1c40f;
+    box-shadow: 0 0 12px rgba(241,196,15,0.35), 0 8px 40px rgba(241,196,15,0.25);
+  }
+  to {
+    border-color: #ffe566;
+    box-shadow: 0 0 36px rgba(241,196,15,0.75), 0 8px 60px rgba(241,196,15,0.45);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .mss-box {
+    max-height: 92vh;
+    border-radius: 12px;
+  }
+  .mss-cosmetic-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mss-toast {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    min-width: unset;
+    max-width: unset;
+  }
+}

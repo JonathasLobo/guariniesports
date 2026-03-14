@@ -35,6 +35,7 @@ const BASE_STATS = {
   caterpie:  { hp:45, atk:30, def:35, spa:20, spd:20, spe:45 },
   wooloo:    { hp:42, atk:40, def:55, spa:40, spd:45, spe:48 },
   weedle:    { hp:40, atk:35, def:30, spa:20, spd:20, spe:50 },
+  spinarak:  { hp:40, atk:60, def:40, spa:40, spd:40, spe:30 },
   // --- Water ---
   squirtle:  { hp:44,  atk:48,  def:65, spa:50,  spd:64, spe:43  },
   totodile:   { hp:50,  atk:65,  def:64,  spa:44, spd:48,  spe:43 },
@@ -98,10 +99,11 @@ const POKEMON_TIPOS = {
   squirtle:   ['water'],          totodile:   ['water'],    mudkip:     ['water'],
   piplup:     ['water'],          oshawott:   ['water'],    froakie:    ['water'],
   popplio:    ['water'],          sobble:     ['water'],    quaxly:     ['water'],
-  pikachu:    ['electric'],
-  caterpie:   ['bug'],
-  wooloo:     ['normal'],
-  weedle:     ['bug','poison'],
+  pikachu:    ['electric'],       raichu:     ['electric'],
+  caterpie:   ['bug'],            metapod:    ['bug'],      butterfree: ['bug','flying'],
+  weedle:     ['bug','poison'],   kakuna:     ['bug','poison'], beedrill: ['bug','poison'],
+  spinarak:   ['bug','poison'],   ariados:    ['bug','poison'],
+  wooloo:     ['normal'],         dubwool:    ['normal'],
 };
 
 // Cor de cada tipo
@@ -289,6 +291,10 @@ const EVOLUTION_CHAIN = {
   // Weedle → Kakuna (L7) → Beedrill (L10)
   weedle:     { evolvesTo: 'kakuna',     levelReq: 7,  loyaltyReq: 50  },
   kakuna:     { evolvesTo: 'beedrill',   levelReq: 10, loyaltyReq: 50  },
+
+  // ── Linha Spinarak (Bug/Poison) ───────────────────────────
+  // Spinarak → Ariados (L22)
+  spinarak:   { evolvesTo: 'ariados',    levelReq: 22, loyaltyReq: 50  },
 };
 
 // ============================================================
@@ -307,6 +313,8 @@ const EVOLUTION_ABILITIES = {
   // Weedle line
   kakuna:      { normal: ['shed_skin'],           hidden: null, noHidden: true  },  // sem hidden, linhagem continua
   beedrill:    { normal: ['swarm'],               hidden: 'sniper'              },
+  // Spinarak line
+  ariados:     { normal: ['swarm','insomnia'],    hidden: 'sniper'              },
   // ── Linha Bulbasaur ───────────────────────────────────────
   ivysaur:     { normal: ['overgrow'],           hidden: 'chlorophyll'   },
   venusaur:    { normal: ['overgrow','thick_fat'],hidden: 'chlorophyll'   },
@@ -552,6 +560,8 @@ const BASE_STATS_EVO = {
   // Weedle line
   kakuna:      { hp:45,  atk:25,  def:50,  spa:25,  spd:25,  spe:35  },
   beedrill:    { hp:65,  atk:90,  def:40,  spa:45,  spd:80,  spe:75  },
+  // Spinarak line
+  ariados:     { hp:70,  atk:90,  def:70,  spa:60,  spd:60,  spe:40  },
 };
 
 // ============================================================
@@ -1103,6 +1113,12 @@ const ABILITIES_DB = {
   ball_fetch:     { name: 'Ball Fetch',     desc: 'Fetches a Poke Ball if the first throw fails.' },
   cotton_down:    { name: 'Cotton Down',    desc: "Lowers foe's Speed when hit." },
   fluffy:         { name: 'Fluffy',         desc: 'Halves damage from contact moves; doubles from Fire.' },
+  // ── Bug abilities ────────────────────────────────────────
+  shed_skin:      { name: 'Shed Skin',      desc: 'The Pokémon may heal its own status conditions at the end of each turn (30% chance).' },
+  swarm:          { name: 'Swarm',          desc: 'Powers up Bug-type moves when HP is below 1/3.' },
+  insomnia:       { name: 'Insomnia',       desc: 'Prevents the Pokémon from falling asleep.' },
+  compound_eyes:  { name: 'Compound Eyes',  desc: 'Raises the accuracy of moves by 30%.' },
+  tinted_lens:    { name: 'Tinted Lens',    desc: 'Doubles the power of "not very effective" moves.' },
 };
 
 // Tabela de abilities por pokémon
@@ -1143,7 +1159,8 @@ const POKEMON_ABILITIES = {
   // Bug starters
   caterpie:    { normal: ['shield_dust','run_away'], hidden: 'run_away'      },
   wooloo:      { normal: ['fluffy','run_away'],       hidden: 'bulletproof'  },
-  weedle:      { normal: ['run_away'],                    hidden: 'sniper'        },
+  weedle:      { normal: ['run_away'],                hidden: 'sniper'       },
+  spinarak:    { normal: ['swarm','insomnia'],        hidden: 'sniper'       },
 };
 
 // Sorteia a ability do pokémon — 5% hidden, resto dividido entre as normais
@@ -1749,6 +1766,16 @@ function inicializarQuestWidget() {
 // Expor globalmente para outros modulos (perfil-view, build-rating, etc.)
 window.missaoDiariaCompleta = completarMissaoDiaria;
 window.iniciarQuestRaid     = iniciarQuest;
+
+// Expor processarPlayerLevelUp para missions.js usar no claim
+window.processarPlayerLevelUpGlobal = function(xpGanho) {
+  if (!_userData || !xpGanho) return;
+  const result = processarPlayerLevelUp(_userData, xpGanho);
+  _userData.playerLevel = result.novoNivel;
+  _userData.playerXP    = result.novoXP;
+  window._bossRaidUserData = _userData;
+  renderizarBossRaid();
+};
 // Expor quest ativa para scripts cross-page (ex: sobre.html, contato.html)
 // Uso: window.completarMissaoCrossPage('missaoKey') — lê slotTarget do localStorage
 window.completarMissaoCrossPage = function(missaoKey) {
@@ -1819,6 +1846,27 @@ export async function initBossRaid(userId, db, userData) {
   _userId   = userId;
   _userData = userData;
   console.log('[BossRaid] Inicializando:', userId);
+
+  // Normalizar playerXP/Level ao iniciar — corrige dados com XP acima do threshold
+  {
+    let nivel   = _userData.playerLevel || 1;
+    let xp      = _userData.playerXP    || 0;
+    let changed = false;
+    while (xp >= xpParaProximoNivelPlayer(nivel)) {
+      xp    -= xpParaProximoNivelPlayer(nivel);
+      nivel += 1;
+      changed = true;
+    }
+    if (changed) {
+      _userData.playerLevel = nivel;
+      _userData.playerXP    = xp;
+      import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js')
+        .then(({ doc, updateDoc }) =>
+          updateDoc(doc(db, 'usuarios', userId), { playerLevel: nivel, playerXP: xp })
+        ).catch(e => console.warn('[BossRaid] fix playerXP:', e));
+    }
+  }
+
   renderizarBossRaid();
   // Iniciar poison tick (1 HP/min para pokemons envenenados fora de batalha)
   iniciarPoisonTick();
@@ -2138,10 +2186,15 @@ function xpPlayerPorBoss(bossNivel) {
 
 // Renderiza a barra de XP/Level do player — inserida entre My Team e Pokédex
 function renderPlayerLevelWidget(userData) {
-  const nivel    = userData?.playerLevel    || 1;
-  const xpAtual  = userData?.playerXP       || 0;
-  const xpProx   = xpParaProximoNivelPlayer(nivel);
-  const pct      = Math.min(100, Math.floor((xpAtual / xpProx) * 100));
+  // Normalizar XP acumulado — processa level-ups pendentes para exibir corretamente
+  let nivel   = userData?.playerLevel || 1;
+  let xpAtual = userData?.playerXP    || 0;
+  while (xpAtual >= xpParaProximoNivelPlayer(nivel)) {
+    xpAtual -= xpParaProximoNivelPlayer(nivel);
+    nivel   += 1;
+  }
+  const xpProx = xpParaProximoNivelPlayer(nivel);
+  const pct    = Math.min(100, Math.floor((xpAtual / xpProx) * 100));
 
   return `
     <div class="player-level-widget">
@@ -2479,8 +2532,11 @@ function renderMyTeam(container, raidTeam) {
     <div class="raid-myteam">
       <div class="raid-myteam-topbar">
         <h3 class="raid-myteam-titulo">⚔️ My Team</h3>
-        <button class="raid-pokedex-btn" id="btnAbrirInfo">ℹ️ Info</button>
-        <button class="raid-pokedex-btn" id="btnAbrirPokedex">📖 Pokédex</button>
+        <div class="raid-topbar-btns">
+          <button class="raid-pokedex-btn" id="btnAbrirInfo">ℹ️ Info</button>
+          <button class="raid-pokedex-btn" id="btnAbrirPokedex">📖 Pokédex</button>
+          <button class="raid-pokedex-btn raid-pokedex-btn-missions" id="btnAbrirMissions">🏆 Missions</button>
+        </div>
       </div>
       ${renderPlayerLevelWidget(_userData)}
       <p class="raid-myteam-desc">Click to view its stats</p>
@@ -2608,6 +2664,9 @@ function renderMyTeam(container, raidTeam) {
 
   document.getElementById('btnAbrirInfo')?.addEventListener('click', () => abrirModalInfo());
   document.getElementById('btnAbrirPokedex')?.addEventListener('click', () => abrirPokedex());
+  document.getElementById('btnAbrirMissions')?.addEventListener('click', () => {
+    if (typeof window.missionsOpen === 'function') window.missionsOpen();
+  });
   document.getElementById('btnFecharPokedex')?.addEventListener('click', () =>
     document.getElementById('raidPokedexModal').classList.remove('show'));
   document.getElementById('raidPokedexModal')?.addEventListener('click', e => {
@@ -3876,16 +3935,19 @@ function abrirModalStatus(slot) {
 
   document.getElementById('raidModalStatus').classList.add('show');
 
-  // ── Setas de navegação entre pokémons ───────────────────────
+  // Aplicar borda cosmetica equipada (missions.js)
+  if (typeof window.aplicarBordaEquipada === 'function') window.aplicarBordaEquipada();
+
+  // Setas de navegação — standby slots não têm .slot, pular
+  const _isStandbyNav = slot.expiraEm !== undefined && slot.slot === undefined;
   const teamNav    = _userData?.raidTeam || [];
-  const idxAtual   = teamNav.findIndex(s => s.slot === slot.slot);
-  const idxPrev    = idxAtual - 1;
-  const idxNext    = idxAtual + 1;
-  const slotPrev   = teamNav[idxPrev] || null;
-  const slotNext   = teamNav[idxNext] || null;
+  const idxAtual   = _isStandbyNav ? -1 : teamNav.findIndex(s => s.slot === slot.slot);
+  const idxPrev    = idxAtual > 0 ? idxAtual - 1 : -1;
+  const idxNext    = idxAtual >= 0 && idxAtual < teamNav.length - 1 ? idxAtual + 1 : -1;
+  const slotPrev   = idxPrev  >= 0 ? teamNav[idxPrev]  : null;
+  const slotNext   = idxNext  >= 0 ? teamNav[idxNext]  : null;
   const modalEl    = document.getElementById('raidModalStatus');
 
-  // Remover setas antigas se houver
   modalEl.querySelectorAll('.raid-nav-arrow').forEach(el => el.remove());
 
   if (slotPrev) {

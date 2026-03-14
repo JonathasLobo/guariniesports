@@ -1386,9 +1386,9 @@ window.abrirBagModal = function abrirBagModal() {
       const efeito = ITEM_CURA[key];
       const qty    = bag[key] || 0;
       const usable = !!efeito;
-      const onclk  = usable ? "usarItemPreBattle('" + key + "')" : 'void(0)';
       return '<div class="pb-bag-modal-item' + (usable ? '' : ' disabled') + '"'
-           + ' onclick="' + onclk + '">'
+           + (usable ? ' data-item-key="' + key + '" style="cursor:pointer"' : '')
+           + '>'
            + '<img src="../boss/img-items/' + key + '.png" onerror="this.style.opacity=\'0.3\'">'
            + '<div class="pb-bag-modal-item-info">'
            + '<div class="pb-bag-modal-item-name">' + nome + '</div>'
@@ -1397,6 +1397,15 @@ window.abrirBagModal = function abrirBagModal() {
            + '<div class="pb-bag-modal-item-qty">×' + qty + '</div>'
            + '</div>';
     }).join('');
+
+    // Event delegation — um único listener no container, sem onclick inline
+    itemsEl.querySelectorAll('[data-item-key]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = el.getAttribute('data-item-key');
+        if (key) usarItemPreBattle(key);
+      });
+    });
   }
 
   modal.classList.add('open');

@@ -434,13 +434,32 @@
 }
 .raid-myteam-titulo { color: #ffad00; font-size: 1rem; font-weight: 700; margin: 0; }
 .raid-myteam-desc   { color: #666; font-size: 0.72rem; margin: 0 0 12px; }
+
+/* Wrapper que agrupa os 3 botões do lado direito */
+.raid-topbar-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .raid-pokedex-btn {
   background: rgba(255,117,0,0.12); border: 1px solid rgba(255,117,0,0.35);
   color: #ffad00; border-radius: 8px; padding: 5px 12px;
   font-size: 0.74rem; cursor: pointer; font-weight: 600;
   transition: background 0.2s;
+  white-space: nowrap;
 }
 .raid-pokedex-btn:hover { background: rgba(255,117,0,0.25); }
+
+/* Missions: mesma base, apenas cor roxa diferente */
+.raid-pokedex-btn.raid-pokedex-btn-missions {
+  background: rgba(155,89,182,0.15);
+  border-color: rgba(155,89,182,0.45);
+  color: #d7a2f5;
+}
+.raid-pokedex-btn.raid-pokedex-btn-missions:hover {
+  background: rgba(155,89,182,0.28);
+}
 
 .raid-slots-grid {
   display: grid;

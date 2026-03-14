@@ -609,11 +609,13 @@ function golpesAteNivelBattle(pokemon, nivel) {
 // Tabela de abilities dos bosses disponíveis no BOSS_CONFIG
 const BOSS_ABILITIES = {
   caterpie: { normal: ['shield_dust','run_away'], hidden: 'run_away' },
+  metapod:  { normal: ['shed_skin'],              hidden: null        },  // shed skin only
+  kakuna:   { normal: ['shed_skin'],              hidden: null        },  // shed skin only
   staryu:   { normal: ['illuminate','natural_cure'], hidden: 'analytic' },
   mawile:   { normal: ['hyper_cutter','intimidate'], hidden: 'sheer_force' },
-  spinarak: { normal: ['swarm','insomnia'], hidden: 'sniper' },
-  weedle:   { normal: ['run_away'], hidden: 'sniper' },
-  wooloo:   { normal: ['fluffy','run_away'], hidden: 'bulletproof' },
+  spinarak: { normal: ['swarm','insomnia'],        hidden: 'sniper'   },  // swarm, not shed_skin
+  weedle:   { normal: ['run_away'],                hidden: 'sniper'   },
+  wooloo:   { normal: ['fluffy','run_away'],        hidden: 'bulletproof' },
 };
 function gerarAbilityBoss(pokemon) {
   const entry = BOSS_ABILITIES[pokemon];
@@ -1098,6 +1100,18 @@ async function processarStatusDanoPlayer() {
   if (!me || me.fainted || me.hp <= 0) return;
   const status = me.status;
   if (status !== 'poison' && status !== 'toxic' && status !== 'burn') return;
+
+  // ── Shed Skin: 30% chance de curar status antes do dano ──────────────
+  // Funciona para poison, toxic e burn
+  if (me.ability === 'shed_skin' && Math.random() < 0.30) {
+    await update(ref(rdb, `boss_salas/${_salaId}/battle/players/${_uid}`), {
+      status:     null,
+      toxicTurns: 0,
+    });
+    showPlayerFloat(_uid, '✨ Shed Skin!', 'heal');
+    await logAction(`${getNick()}'s ${cap(me.pokemon)}'s Shed Skin cured its ${status}!`);
+    return; // curado — sem dano
+  }
 
   let dmg = 0;
   let msg = '';
@@ -2602,8 +2616,12 @@ async function bossAtaca(){
           updates[`players/${targetUid}/sleepTurns`]  = sleepTurns;
           logParts.push(`${cap(p.pokemon)} fell asleep!`);
         } else if ((eff2 === 'poison' || eff2 === 'toxic') && !curStatus) {
-          updates[`players/${targetUid}/status`] = eff2;
-          logParts.push(`${cap(p.pokemon)} was poisoned!`);
+          if (isPoisonImmune(p.pokemon)) {
+            logParts.push(`${cap(p.pokemon)} is immune to poison!`);
+          } else {
+            updates[`players/${targetUid}/status`] = eff2;
+            logParts.push(`${cap(p.pokemon)} was poisoned!`);
+          }
         } else if (eff2 === 'burn' && !curStatus) {
           updates[`players/${targetUid}/status`] = 'burn';
           logParts.push(`${cap(p.pokemon)} was burned!`);
@@ -2990,10 +3008,11 @@ async function mostrarDrops(){
     // Persistir fainted e status final
     const faintedFinal = (hpAtualFinal !== null && hpAtualFinal <= 0);
     // Status que persistem entre raids: poison, toxic, burn, paralysis, sleep
-    // Status que NÃO persistem: confusion, stat stages (já resetados)
+    // Status que NÃO persistem: confusion, stat stages
+    // Pokémon fainted: status removido (fainted já comunica o estado)
     const statusFinalRaw = myBattlePlayer?.status || s.status || null;
     const persistStatus  = ['poison','toxic','burn','paralysis','sleep'];
-    const statusFinal    = persistStatus.includes(statusFinalRaw) ? statusFinalRaw : null;
+    const statusFinal    = faintedFinal ? null : (persistStatus.includes(statusFinalRaw) ? statusFinalRaw : null);
     const atualizado = {
       ...s,
       xp:       novoXP,
@@ -3191,6 +3210,22 @@ async function mostrarDrops(){
   // como side-effect da captura/drops.
   try { localStorage.removeItem('bossraid_pending_mission'); } catch(e) {}
 
+  // ── Gravar resultado da raid para missions.js processar na home ──────────
+  try {
+    const _totalPlayersRaid = Object.keys(bs?.players || {}).length;
+    const _raidResult = {
+      won:         true,
+      playerCount: _totalPlayersRaid,
+      bossNivel:   _bossData?.nivel || 10,
+      caught:      caught,
+      shiny:       caught && !!bossSlot?.shiny,
+      hasMaxIV:    caught && bossSlot?.ivs
+                   ? Object.values(bossSlot.ivs).some(v => v === 31)
+                   : false,
+    };
+    localStorage.setItem('missions_raid_result', JSON.stringify(_raidResult));
+  } catch(_e) { console.warn('[missions] localStorage raid result:', _e); }
+
   agendarLimpezaSala();
 }
 
@@ -3335,6 +3370,14 @@ function mostrarResultado(tipo, capturedBy){
   } else if (tipo === 'defeat'){
     icon.textContent='💀'; title.style.color='#ff4444'; title.textContent='Defeated!';
     desc.textContent='Your entire team has fainted. Better luck next time!';
+    try {
+      localStorage.setItem('missions_raid_result', JSON.stringify({
+        won: false,
+        playerCount: Object.keys(_battleSnap?.players || {}).length,
+        bossNivel:   _bossData?.nivel || 10,
+        caught: false, shiny: false, hasMaxIV: false,
+      }));
+    } catch(_e) {}
   }
 
   ov.classList.add('show');
